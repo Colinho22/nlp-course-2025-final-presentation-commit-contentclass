@@ -1,0 +1,9 @@
+CLAUDE.md
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+temp/

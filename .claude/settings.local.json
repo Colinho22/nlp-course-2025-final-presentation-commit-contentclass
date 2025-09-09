@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(dir:*)",
+      "Bash(python generate_week2_evolution_charts.py:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
