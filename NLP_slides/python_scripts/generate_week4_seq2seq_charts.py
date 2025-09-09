@@ -399,6 +399,226 @@ def plot_information_flow():
     plt.savefig('../figures/information_flow.pdf', dpi=300, bbox_inches='tight')
     plt.close()
 
+# 6. Attention Pattern Comparison - Shows with/without attention
+def plot_attention_pattern_comparison():
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 7))
+    
+    # Source and target sentences
+    source_words = ['The', 'black', 'cat', 'sat', 'on', 'mat']
+    target_words = ['Le', 'chat', 'noir', 's\'est', 'assis', 'sur', 'tapis']
+    
+    # Without Attention (left)
+    ax1.set_title('Without Attention\n(Fixed Context)', fontsize=14, fontweight='bold')
+    
+    # Draw uniform connections (all source to context)
+    for i, src in enumerate(source_words):
+        ax1.text(i * 0.15 + 0.1, 0.8, src, ha='center', fontsize=11)
+        # Draw arrow to context
+        ax1.arrow(i * 0.15 + 0.1, 0.75, 0, -0.15, 
+                 head_width=0.02, head_length=0.02, fc='gray', ec='gray', alpha=0.3)
+    
+    # Context vector (bottleneck)
+    ax1.add_patch(plt.Rectangle((0.05, 0.45), 0.85, 0.12, 
+                                fill=True, facecolor='red', alpha=0.3))
+    ax1.text(0.475, 0.51, 'Fixed Context Vector', ha='center', fontsize=12, 
+            fontweight='bold', color='darkred')
+    
+    # Draw connections to outputs
+    for i, tgt in enumerate(target_words):
+        ax1.text(i * 0.13 + 0.08, 0.2, tgt, ha='center', fontsize=11)
+        ax1.arrow(0.475, 0.45, (i * 0.13 + 0.08) - 0.475, -0.2, 
+                 head_width=0.02, head_length=0.02, fc='gray', ec='gray', alpha=0.3)
+    
+    ax1.text(0.5, 0.05, '⚠ Same context for all outputs', ha='center', 
+            fontsize=10, color='red', style='italic')
+    
+    ax1.set_xlim(0, 1)
+    ax1.set_ylim(0, 0.9)
+    ax1.axis('off')
+    
+    # With Attention (right)
+    ax2.set_title('With Attention\n(Dynamic Focus)', fontsize=14, fontweight='bold')
+    
+    # Attention weights for each target word
+    attention_patterns = [
+        [0.8, 0.1, 0.05, 0.03, 0.01, 0.01],  # Le -> The
+        [0.1, 0.05, 0.7, 0.1, 0.03, 0.02],   # chat -> cat
+        [0.05, 0.8, 0.1, 0.03, 0.01, 0.01],  # noir -> black
+        [0.02, 0.03, 0.1, 0.8, 0.03, 0.02],  # s'est -> sat
+        [0.01, 0.02, 0.03, 0.04, 0.8, 0.1],  # assis -> on
+        [0.01, 0.01, 0.02, 0.03, 0.03, 0.9], # sur -> mat
+        [0.02, 0.02, 0.03, 0.03, 0.1, 0.8],  # tapis -> mat
+    ]
+    
+    # Draw source words
+    for i, src in enumerate(source_words):
+        ax2.text(i * 0.15 + 0.1, 0.8, src, ha='center', fontsize=11)
+    
+    # Draw target words with attention connections
+    for j, (tgt, weights) in enumerate(zip(target_words, attention_patterns)):
+        y_pos = 0.7 - j * 0.08
+        ax2.text(0.85, y_pos, tgt, ha='left', fontsize=11, fontweight='bold')
+        
+        # Draw attention arrows
+        for i, weight in enumerate(weights):
+            if weight > 0.05:  # Only show significant connections
+                ax2.arrow(i * 0.15 + 0.1, 0.75, 0.7 - i * 0.15, y_pos - 0.75,
+                         head_width=0.015, head_length=0.01, 
+                         fc='green', ec='green', alpha=weight, linewidth=weight*3)
+    
+    ax2.text(0.5, 0.05, '✓ Dynamic focus on relevant source words', 
+            ha='center', fontsize=10, color='green', style='italic')
+    
+    ax2.set_xlim(0, 1)
+    ax2.set_ylim(0, 0.9)
+    ax2.axis('off')
+    
+    plt.suptitle('How Attention Solves the Bottleneck Problem', fontsize=16, fontweight='bold', y=0.98)
+    plt.tight_layout()
+    plt.savefig('../figures/attention_pattern_comparison.pdf', dpi=300, bbox_inches='tight')
+    plt.close()
+
+# 7. Translation Quality Heatmap
+def plot_translation_quality_heatmap():
+    fig, ax = plt.subplots(figsize=(10, 8))
+    
+    # Data: BLEU improvement with attention (%)
+    sentence_lengths = ['5-10', '10-15', '15-20', '20-25', '25-30', '30+']
+    language_pairs = ['EN→FR', 'EN→DE', 'EN→ZH', 'EN→ES', 'EN→JA', 'EN→RU']
+    
+    # Improvement matrix (% improvement with attention)
+    improvements = np.array([
+        [3, 8, 15, 28, 45, 92],    # EN→FR
+        [4, 10, 18, 32, 52, 105],  # EN→DE
+        [5, 12, 22, 38, 61, 125],  # EN→ZH
+        [3, 7, 14, 25, 42, 88],    # EN→ES
+        [6, 14, 25, 42, 68, 135],  # EN→JA
+        [4, 9, 17, 30, 48, 98],    # EN→RU
+    ])
+    
+    # Create heatmap
+    im = ax.imshow(improvements, cmap='YlOrRd', aspect='auto', vmin=0, vmax=140)
+    
+    # Set ticks
+    ax.set_xticks(np.arange(len(sentence_lengths)))
+    ax.set_yticks(np.arange(len(language_pairs)))
+    ax.set_xticklabels(sentence_lengths)
+    ax.set_yticklabels(language_pairs)
+    
+    # Rotate the tick labels
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+    
+    # Add text annotations
+    for i in range(len(language_pairs)):
+        for j in range(len(sentence_lengths)):
+            text = ax.text(j, i, f'+{improvements[i, j]}%',
+                          ha="center", va="center", color="black" if improvements[i, j] < 70 else "white",
+                          fontsize=10, fontweight='bold')
+    
+    # Add colorbar
+    cbar = plt.colorbar(im, ax=ax)
+    cbar.set_label('BLEU Score Improvement (%)', rotation=270, labelpad=20, fontsize=12)
+    
+    # Labels and title
+    ax.set_xlabel('Sentence Length (words)', fontsize=12, fontweight='bold')
+    ax.set_ylabel('Language Pair', fontsize=12, fontweight='bold')
+    ax.set_title('Attention Impact Across Languages and Sentence Lengths\n'
+                'Percentage Improvement in BLEU Score', fontsize=14, fontweight='bold')
+    
+    # Add dividing lines
+    for i in range(1, len(language_pairs)):
+        ax.axhline(i - 0.5, color='white', linewidth=2)
+    for j in range(1, len(sentence_lengths)):
+        ax.axvline(j - 0.5, color='white', linewidth=2)
+    
+    # Add annotation
+    ax.text(0.5, -0.15, 'Longer sentences benefit dramatically more from attention',
+           transform=ax.transAxes, ha='center', fontsize=11, style='italic',
+           bbox=dict(boxstyle="round,pad=0.3", facecolor='lightyellow'))
+    
+    plt.tight_layout()
+    plt.savefig('../figures/translation_quality_heatmap.pdf', dpi=300, bbox_inches='tight')
+    plt.close()
+
+# 8. Attention Flow Steps - Shows step-by-step attention
+def plot_attention_flow_steps():
+    fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+    axes = axes.flatten()
+    
+    # Example translation: "The cat sat" -> "Le chat s'est assis"
+    source = ['The', 'cat', 'sat']
+    targets = ['Le', 'chat', "s'est", 'assis']
+    
+    # Attention patterns for each decoding step
+    attention_steps = [
+        ([0.8, 0.15, 0.05], 'Le'),      # Step 1
+        ([0.1, 0.85, 0.05], 'chat'),     # Step 2
+        ([0.05, 0.15, 0.8], "s'est"),    # Step 3
+        ([0.05, 0.1, 0.85], 'assis'),    # Step 4
+    ]
+    
+    for step, (ax, (weights, word)) in enumerate(zip(axes[:4], attention_steps)):
+        ax.set_title(f'Step {step+1}: Generating "{word}"', fontsize=12, fontweight='bold')
+        
+        # Draw source words
+        for i, src in enumerate(source):
+            y = 0.7
+            ax.text(0.2 + i * 0.3, y, src, ha='center', fontsize=14,
+                   bbox=dict(boxstyle="round,pad=0.3", 
+                            facecolor='lightblue' if weights[i] > 0.3 else 'white',
+                            alpha=weights[i]))
+        
+        # Draw attention weights as bars
+        bar_width = 0.06
+        bars = ax.bar([0.2 + i * 0.3 for i in range(3)], weights, 
+                      bar_width, color=['red' if w > 0.5 else 'orange' if w > 0.2 else 'gray' 
+                                       for w in weights], alpha=0.7)
+        
+        # Add percentage labels
+        for i, (bar, w) in enumerate(zip(bars, weights)):
+            ax.text(bar.get_x() + bar.get_width()/2, w + 0.02, f'{w*100:.0f}%',
+                   ha='center', fontsize=10, fontweight='bold')
+        
+        # Draw output word
+        ax.text(0.5, 0.15, word, ha='center', fontsize=16, fontweight='bold',
+               bbox=dict(boxstyle="round,pad=0.4", facecolor='lightgreen'))
+        
+        # Arrow from attention to output
+        ax.arrow(0.5, 0.35, 0, -0.12, head_width=0.03, head_length=0.02,
+                fc='green', ec='green', linewidth=2)
+        
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 0.9)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+    
+    # Summary in the 5th subplot
+    axes[4].text(0.5, 0.7, 'Key Insights:', ha='center', fontsize=14, fontweight='bold')
+    insights = [
+        '• Attention changes for each output word',
+        '• Focuses on relevant source words',
+        '• Handles word reordering naturally',
+        '• No information bottleneck'
+    ]
+    for i, insight in enumerate(insights):
+        axes[4].text(0.1, 0.5 - i*0.1, insight, fontsize=12)
+    
+    axes[4].set_xlim(0, 1)
+    axes[4].set_ylim(0, 1)
+    axes[4].axis('off')
+    
+    # Hide the 6th subplot
+    axes[5].axis('off')
+    
+    plt.suptitle('Step-by-Step Attention Mechanism', fontsize=16, fontweight='bold')
+    plt.tight_layout()
+    plt.savefig('../figures/attention_flow_steps.pdf', dpi=300, bbox_inches='tight')
+    plt.close()
+
 # Generate all Week 4 visualizations
 if __name__ == "__main__":
     print("Generating Week 4 Seq2Seq visualizations...")
@@ -412,4 +632,10 @@ if __name__ == "__main__":
     print("- Performance timeline visualization created")
     plot_information_flow()
     print("- Information flow visualization created")
+    plot_attention_pattern_comparison()
+    print("- Attention pattern comparison created")
+    plot_translation_quality_heatmap()
+    print("- Translation quality heatmap created")
+    plot_attention_flow_steps()
+    print("- Attention flow steps visualization created")
     print("\nWeek 4 visualizations completed!")

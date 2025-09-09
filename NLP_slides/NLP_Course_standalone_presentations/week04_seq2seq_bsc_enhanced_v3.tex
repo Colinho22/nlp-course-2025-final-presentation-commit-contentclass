@@ -982,7 +982,7 @@ for t in range(max_length):
     \begin{columns}[T]
         \column{0.55\textwidth}
         \begin{lstlisting}[language=Python, basicstyle=\ttfamily\tiny]
-def beam_search(encoder_outputs, beam_size=3):
+def beam_search(encoder_outputs, beam\_size=3):
     # Start with single hypothesis
     beams = [([<START>], 0.0)]
     
@@ -998,7 +998,7 @@ def beam_search(encoder_outputs, beam_size=3):
             probs = decode_step(sequence, encoder_outputs)
             
             # Keep top k words
-            top_words = top_k(probs, beam_size)
+            top_words = top_k(probs, beam\_size)
             
             for word, prob in top_words:
                 new_seq = sequence + [word]
@@ -1006,7 +1006,7 @@ def beam_search(encoder_outputs, beam_size=3):
                 new_beams.append((new_seq, new_score))
         
         # Keep top k beams overall
-        beams = sorted(new_beams, key=score)[:beam_size]
+        beams = sorted(new_beams, key=score)[:beam\_size]
     
     return best_completed()
         \end{lstlisting}
@@ -1015,7 +1015,7 @@ def beam_search(encoder_outputs, beam_size=3):
         \includegraphics[width=\textwidth]{../figures/beam_search_tree.pdf}
         
         \vspace{0.5em}
-        \textbf{Example with \texttt{beam\_size=2}:}
+        \textbf{Example with $\text{beam\_size}=2$:}
         \small
         \begin{itemize}
             \item Start: ``Le'' (0.7), ``Un'' (0.3)
