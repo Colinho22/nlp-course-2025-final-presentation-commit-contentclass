@@ -1,0 +1,216 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+% Theme settings
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Custom colors
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{173,216,230}
+\definecolor{accent1}{RGB}{255,107,107}  % Red
+\definecolor{accent2}{RGB}{78,205,196}   % Teal
+\definecolor{accent3}{RGB}{149,231,126}  % Green
+\definecolor{accent4}{RGB}{255,195,0}    % Gold
+
+% Custom commands
+\newcommand{\highlight}[1]{\textcolor{darkblue}{\textbf{#1}}}
+
+\title[Week 2 Overview]{Week 2: Neural Language Models \& Word Embeddings}
+\subtitle{From Discrete to Continuous Representations}
+\author{Natural Language Processing Course}
+\date{BSc Computer Science}
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+    \titlepage
+\end{frame}
+
+%============================================================================
+% SLIDE 1: What We'll Learn - Neural Evolution
+%============================================================================
+\begin{frame}[t]{The Neural Revolution in Language Modeling}
+    \centering
+    \includegraphics[width=0.85\textwidth]{../figures/week2_neural_evolution.pdf}
+    
+    \vspace{0.3em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{\textcolor{accent1}{Paradigm Shift:}}
+            \small
+            \begin{itemize}
+                \item \textbf{From Counting to Learning}
+                    \begin{itemize}
+                        \tiny
+                        \item No more sparse matrices
+                        \item Learn representations from data
+                        \item Generalize to unseen contexts
+                    \end{itemize}
+                \item \textbf{Continuous Space}
+                    \begin{itemize}
+                        \tiny
+                        \item Words as dense vectors
+                        \item Smooth interpolation
+                        \item Semantic similarity captured
+                    \end{itemize}
+                \item \textbf{Neural Architecture}
+                    \begin{itemize}
+                        \tiny
+                        \item Input embedding layer
+                        \item Hidden layers with activation
+                        \item Softmax output layer
+                    \end{itemize}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{\textcolor{accent2}{Key Innovations:}}
+            \small
+            \begin{itemize}
+                \item Distributed representations
+                \item Backpropagation training
+                \item Parameter sharing
+                \item Context window flexibility
+                \item Transfer learning potential
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \begin{tcolorbox}[colback=accent4!10,colframe=accent4,boxrule=0.5pt]
+                \centering
+                \small \textbf{2003 Breakthrough:} Bengio's neural LM paper changes everything
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+%============================================================================
+% SLIDE 2: Key Concept - Word Embeddings
+%============================================================================
+\begin{frame}[t]{Word Embeddings: Semantic Space Discovery}
+    \centering
+    \includegraphics[width=0.85\textwidth]{../figures/week2_embedding_space.pdf}
+    
+    \vspace{0.3em}
+    \begin{columns}[T]
+        \begin{column}{0.32\textwidth}
+            \textbf{\textcolor{accent1}{Semantic Properties}}
+            \small
+            \begin{itemize}
+                \item Similar words cluster
+                \item Relationships as vectors
+                \item Analogies work:
+                    \begin{itemize}
+                        \tiny
+                        \item king - man + woman = queen
+                        \item Paris - France + Germany = Berlin
+                    \end{itemize}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \textbf{\textcolor{accent2}{Training Methods}}
+            \small
+            \begin{itemize}
+                \item Word2Vec (2013)
+                \item GloVe (2014)
+                \item FastText (2016)
+                \item Learned from context
+                \item Self-supervised
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \textbf{\textcolor{accent3}{Dimensions}}
+            \small
+            \begin{itemize}
+                \item Typical: 50-300 dims
+                \item Each captures feature
+                \item Gender, size, location
+                \item Interpretable directions
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.3em}
+    \begin{tcolorbox}[colback=lightblue!10,colframe=darkblue,boxrule=0.5pt]
+        \centering
+        \small \textbf{Magic of Embeddings:} Arithmetic operations on words reveal hidden structure of language
+    \end{tcolorbox}
+\end{frame}
+
+%============================================================================
+% SLIDE 3: Applications & Impact
+%============================================================================
+\begin{frame}[t]{Applications \& Real-World Impact}
+    \centering
+    \includegraphics[width=0.85\textwidth]{../figures/week2_applications_impact.pdf}
+    
+    \vspace{0.3em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{\textcolor{accent1}{Word2Vec Algorithms:}}
+            \small
+            \begin{itemize}
+                \item \textbf{CBOW (Continuous Bag of Words)}
+                    \begin{itemize}
+                        \tiny
+                        \item Predict center from context
+                        \item Faster training
+                        \item Good for frequent words
+                    \end{itemize}
+                \item \textbf{Skip-gram}
+                    \begin{itemize}
+                        \tiny
+                        \item Predict context from center
+                        \item Better for rare words
+                        \item Higher quality vectors
+                    \end{itemize}
+            \end{itemize}
+            
+            \vspace{0.3em}
+            \textbf{Downstream Applications:}
+            \small
+            \begin{itemize}
+                \item Sentiment analysis
+                \item Named entity recognition
+                \item Machine translation
+                \item Information retrieval
+                \item Text classification
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{\textcolor{accent2}{Why This Matters:}}
+            \small
+            \begin{itemize}
+                \item Foundation for all modern NLP
+                \item Transfer learning enabler
+                \item Reduces data requirements
+                \item Universal feature extractors
+                \item Cross-lingual applications
+            \end{itemize}
+            
+            \vspace{0.3em}
+            \begin{tcolorbox}[colback=accent3!10,colframe=accent3,boxrule=0.5pt]
+                \textbf{Lab Preview:}\\
+                \small
+                \begin{itemize}
+                    \item Train Word2Vec models
+                    \item Explore semantic relationships
+                    \item Visualize embedding space
+                    \item Build simple neural LM
+                \end{itemize}
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\end{document}

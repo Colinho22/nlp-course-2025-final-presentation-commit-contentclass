@@ -1,0 +1,46 @@
+% Enhanced Main Document - Word Embeddings: A Visual Deep Dive
+% This version includes all improvements and new modules
+
+\documentclass[8pt,aspectratio=169]{beamer}
+
+% Load configuration first
+\input{config/settings}
+
+% Include enhanced preamble with visual framework
+\input{preamble_enhanced}
+
+% Document metadata
+\input{metadata}
+
+\begin{document}
+
+% Front matter
+\input{content/00_frontmatter}
+
+% Part I: Fundamentals
+\part{Fundamentals}
+\input{content/01_introduction}
+\input{content/02_basic_concepts}
+\input{content/03_word2vec}
+\input{content/04_contextual}
+
+% Part II: Advanced Topics
+\part{Advanced Topics}
+\input{content/05_advanced_topics}
+\input{content/06_dimensionality}
+\input{content/07_training}
+
+% Part III: Modern Developments (NEW)
+\part{Modern Developments}
+\input{content/09_latest_research}
+\input{content/10_practical_implementation}
+
+% Summary
+\input{content/08_summary}
+
+% Appendices
+\appendix
+\input{appendix/A_mathematics}
+\input{appendix/B_skipgram}
+
+\end{document}

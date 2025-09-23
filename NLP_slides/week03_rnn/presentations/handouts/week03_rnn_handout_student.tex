@@ -1,0 +1,327 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes}
+
+% Custom commands
+\newcommand{\highlight}[1]{\textbf{#1}}
+
+% Box for exercises
+\newtcolorbox{exercise}[1][]{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=#1,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{discovery}[1][]{
+    colback=yellow!5!white,
+    colframe=orange!75!black,
+    title=Discovery Moment,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{think}[1][]{
+    colback=green!5!white,
+    colframe=green!75!black,
+    title=Think About It,
+    fonttitle=\bfseries
+}
+
+\title{\textbf{Week 3: Teaching Networks to Remember}\\
+\large Discovering RNNs, LSTMs, and the Memory Problem\\
+\large Pre-Lab Exercise (No Programming Required)}
+\author{NLP Course 2025 - Student Version}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Time:} 40 minutes\\
+\textbf{Objective:} Discover why networks need memory and how gates solve the vanishing gradient problem.
+
+\section*{Part 1: The Context Problem (10 minutes)}
+
+\begin{exercise}[Why Order Matters]
+\textbf{Task 1: Same words, different meanings}
+
+Rearrange these words to create two sentences with opposite meanings:
+\begin{center}
+\{dog, bites, man\}
+\end{center}
+
+Sentence 1: \rule{6cm}{0.4pt}
+
+Sentence 2: \rule{6cm}{0.4pt}
+
+\vspace{0.5em}
+\textbf{Task 2: Context tracking}
+
+Read this sentence word by word and track what you remember:
+
+"The student who studied hard..."
+
+\begin{enumerate}
+    \item After "The": I expect \rule{5cm}{0.4pt}
+    \item After "student": I remember \rule{5cm}{0.4pt}
+    \item After "who": I expect \rule{5cm}{0.4pt}
+    \item After "studied hard": I'm waiting for \rule{5cm}{0.4pt}
+\end{enumerate}
+
+\textbf{Task 3: What information are you maintaining?}
+
+List three things your brain tracks while reading:
+\begin{itemize}
+    \item \rule{6cm}{0.4pt}
+    \item \rule{6cm}{0.4pt}
+    \item \rule{6cm}{0.4pt}
+\end{itemize}
+\end{exercise}
+
+\begin{think}
+Word embeddings (Week 2) treat "dog bites man" and "man bites dog" as identical - they have the same word vectors. How can we teach networks that order matters?
+\end{think}
+
+\section*{Part 2: Building Memory - Discovering Hidden States (10 minutes)}
+
+\begin{exercise}[Designing Memory for Networks]
+\textbf{Scenario:} You're teaching a computer to read "The cat sat on the mat" word by word.
+
+\textbf{Task 1: Design your memory system}
+
+The computer can only see one word at a time. How would you help it remember previous words?
+
+Your design: 
+\vspace{2cm}
+
+\textbf{Task 2: Memory updates}
+
+Fill in how memory should update at each step:
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Current Word} & \textbf{Previous Memory} & \textbf{New Memory Should Contain} \\
+\hline
+"The" & (empty) & \rule{4cm}{0.4pt} \\
+\hline
+"cat" & "The" & \rule{4cm}{0.4pt} \\
+\hline
+"sat" & "The cat" & \rule{4cm}{0.4pt} \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Task 3: Mathematical pattern}
+
+The pattern you discovered can be written as:
+
+New Memory = Function(Current Word, Previous Memory)
+
+Or mathematically: $h_t = f(x_t, h_{t-1})$
+
+What are the inputs to this function?
+\begin{itemize}
+    \item Input 1: \rule{4cm}{0.4pt}
+    \item Input 2: \rule{4cm}{0.4pt}
+\end{itemize}
+
+What is the output? \rule{6cm}{0.4pt}
+\end{exercise}
+
+\begin{discovery}
+Congratulations! You've just invented the core idea of RNNs - using hidden states ($h_t$) to maintain memory of previous inputs!
+\end{discovery}
+
+\section*{Part 3: When Memory Fails - The Vanishing Gradient Problem (10 minutes)}
+
+\begin{exercise}[Long-Distance Dependencies]
+\textbf{Task 1: The forgetting problem}
+
+Try to complete this sentence:
+"The keys that I left on the table in the kitchen yesterday before going to work \rule{2cm}{0.4pt} missing."
+
+What word did you need to remember? \rule{3cm}{0.4pt}
+
+How many words back was it? \rule{2cm}{0.4pt}
+
+\textbf{Task 2: Memory decay simulation}
+
+Imagine your memory fades by 10\% at each word. Starting with strength 1.0:
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Step} & \textbf{Calculation} & \textbf{Memory Strength} \\
+\hline
+Start & 1.0 & 1.0 \\
+\hline
+After 1 word & $1.0 \times 0.9$ & 0.9 \\
+\hline
+After 2 words & $0.9 \times 0.9$ & \rule{2cm}{0.4pt} \\
+\hline
+After 5 words & $0.9^5$ & \rule{2cm}{0.4pt} \\
+\hline
+After 10 words & $0.9^{10}$ & \rule{2cm}{0.4pt} \\
+\hline
+After 20 words & $0.9^{20}$ & \rule{2cm}{0.4pt} \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Task 3: The problem}
+
+At what point does memory become effectively zero (< 0.01)? \rule{3cm}{0.4pt}
+
+This is why RNNs can't handle long sequences - the gradient (learning signal) vanishes!
+\end{exercise}
+
+\begin{think}
+If memory decays exponentially, how can we preserve important information for longer?
+\end{think}
+
+\section*{Part 4: The Gate Solution - Selective Memory (10 minutes)}
+
+\begin{exercise}[Designing Gates]
+\textbf{Scenario:} You're managing your email inbox. You have three actions:
+\begin{itemize}
+    \item Delete (forget) spam
+    \item Save (input) important emails
+    \item Reply to (output) urgent emails
+\end{itemize}
+
+\textbf{Task 1: Gate design}
+
+For the sentence "The cat that was black sat on the mat", decide what to do with each word:
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Word} & \textbf{Forget?} & \textbf{Save?} & \textbf{Use Now?} \\
+ & (0=forget all, 1=keep all) & (0=ignore, 1=save) & (0=hide, 1=use) \\
+\hline
+"The" & 0.5 & 0.3 & 0.2 \\
+\hline
+"cat" & \rule{1cm}{0.4pt} & \rule{1cm}{0.4pt} & \rule{1cm}{0.4pt} \\
+\hline
+"that" & \rule{1cm}{0.4pt} & \rule{1cm}{0.4pt} & \rule{1cm}{0.4pt} \\
+\hline
+"was" & \rule{1cm}{0.4pt} & \rule{1cm}{0.4pt} & \rule{1cm}{0.4pt} \\
+\hline
+"black" & \rule{1cm}{0.4pt} & \rule{1cm}{0.4pt} & \rule{1cm}{0.4pt} \\
+\hline
+"sat" & \rule{1cm}{0.4pt} & \rule{1cm}{0.4pt} & \rule{1cm}{0.4pt} \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Task 2: Gate benefits}
+
+How do gates help with the vanishing gradient problem?
+
+If forget gate = 1.0, then memory decay = $1.0^{20}$ = \rule{2cm}{0.4pt}
+
+This creates a "highway" for gradients!
+
+\textbf{Task 3: Memory update with gates}
+
+New formula with gates:
+\begin{center}
+New Memory = (Forget Gate × Old Memory) + (Input Gate × New Info)
+\end{center}
+
+Write this mathematically using your notation:
+
+\rule{8cm}{0.4pt}
+\end{exercise}
+
+\begin{discovery}
+You've just invented LSTM! The three gates you designed (Forget, Input/Save, Output/Use) are exactly how LSTMs work!
+\end{discovery}
+
+\section*{Part 5: Comparing Memory Systems (10 minutes)}
+
+\begin{exercise}[RNN vs LSTM vs GRU]
+\textbf{Task 1: Complete the comparison}
+
+Based on your discoveries, fill in this table:
+
+\begin{center}
+\begin{tabular}{|l|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+\textbf{Aspect} & \textbf{Simple RNN} & \textbf{LSTM} & \textbf{GRU} \\
+& (No gates) & (3 gates) & (2 gates) \\
+\hline
+How it handles & Overwrites & & Selective \\
+memory & completely & & update \\
+\hline
+Maximum & ~10-20 & & ~100 \\
+sequence length & words & & words \\
+\hline
+Gradient & Exponential & & Good \\
+flow & decay & & preservation \\
+\hline
+Best for & & Long & Quick \\
+& & documents & training \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Task 2: Application matching}
+
+Which architecture would you choose for:
+\begin{enumerate}
+    \item Predicting the next character in a name: \rule{3cm}{0.4pt}
+    \item Summarizing a 10-page document: \rule{3cm}{0.4pt}
+    \item Real-time speech recognition on phone: \rule{3cm}{0.4pt}
+    \item Analyzing sentiment in tweets: \rule{3cm}{0.4pt}
+\end{enumerate}
+
+\textbf{Task 3: Design your own architecture}
+
+If you could add a fourth gate to LSTM, what would it do?
+
+Gate name: \rule{4cm}{0.4pt}
+
+Function: \rule{8cm}{0.4pt}
+
+When would it activate (0 or 1)? \rule{6cm}{0.4pt}
+\end{exercise}
+
+\section*{Synthesis Questions}
+
+\begin{enumerate}
+    \item \textbf{Why can't we just make the memory infinitely large?}
+    
+    \vspace{2cm}
+    
+    \item \textbf{The forget gate seems counterintuitive - why would we want to forget?}
+    
+    \vspace{2cm}
+    
+    \item \textbf{How is an LSTM like a computer's RAM?}
+    
+    \vspace{2cm}
+    
+    \item \textbf{Could we have more than 3 gates? What would be the trade-off?}
+    
+    \vspace{2cm}
+\end{enumerate}
+
+\vspace{1cm}
+\noindent\rule{\textwidth}{0.4pt}
+\begin{center}
+\textbf{Key Discoveries:}\\
+• Order matters in language → need memory\\
+• Hidden states maintain context → RNN\\
+• Gradients vanish over time → long sequences fail\\
+• Gates control information flow → LSTM solves vanishing gradients
+\end{center}
+
+\end{document}

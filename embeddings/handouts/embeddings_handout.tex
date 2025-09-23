@@ -1,0 +1,409 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usetikzlibrary{shapes,arrows,positioning,3d}
+
+% Minimal neutral styling
+\usepackage{framed}
+\usepackage{enumitem}
+
+\title{\textbf{Word Embeddings: A Guided Discovery}\\
+\large Pre-Class Worksheet}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-1cm}
+
+%==============================================================================
+\section{Character-Based Similarity}
+%==============================================================================
+
+\subsection*{Exploration 1: Comparing Words by Letters}
+
+Let's explore whether comparing words by their shared letters captures semantic similarity.
+
+\begin{framed}
+\noindent\textbf{Exercise:} Calculate the character overlap between word pairs.
+
+\vspace{0.3cm}
+\noindent For each pair, identify:
+\begin{itemize}[leftmargin=*]
+    \item Common letters (ignore duplicates)
+    \item Total unique letters in the longer word
+    \item Overlap percentage
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{center}
+\begin{tabular}{|l|l|c|c|c|}
+\hline
+\textbf{Word 1} & \textbf{Word 2} & \textbf{Common} & \textbf{Total} & \textbf{Overlap \%} \\
+\hline
+cat & car & \underline{\hspace{1cm}} & 3 & \underline{\hspace{1cm}} \\
+cat & kitten & \underline{\hspace{1cm}} & 6 & \underline{\hspace{1cm}} \\
+bank & tank & \underline{\hspace{1cm}} & 4 & \underline{\hspace{1cm}} \\
+dog & puppy & \underline{\hspace{1cm}} & 5 & \underline{\hspace{1cm}} \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+\noindent\textbf{Observation:} Which word pair has the highest character overlap? \underline{\hspace{4cm}}
+
+\noindent\textbf{Question:} Does this match semantic similarity? \underline{\hspace{2cm}}
+\end{framed}
+
+%==============================================================================
+\section{Understanding Dot Product as Similarity}
+%==============================================================================
+
+\subsection*{Mathematical Foundation}
+
+The dot product is fundamental to measuring similarity in vector spaces.
+
+\begin{framed}
+\noindent\textbf{Definition:} For vectors $\vec{a} = [a_1, a_2, ..., a_n]$ and $\vec{b} = [b_1, b_2, ..., b_n]$:
+
+$$\vec{a} \cdot \vec{b} = \sum_{i=1}^{n} a_i \times b_i = a_1b_1 + a_2b_2 + ... + a_nb_n$$
+
+\vspace{0.3cm}
+\noindent\textbf{Geometric Interpretation:}
+$$\vec{a} \cdot \vec{b} = |\vec{a}| \times |\vec{b}| \times \cos(\theta)$$
+
+where $\theta$ is the angle between vectors.
+
+\vspace{0.3cm}
+\noindent\textbf{Key Insights:}
+\begin{itemize}[leftmargin=*]
+    \item When $\theta = 0^\circ$ (parallel): $\cos(0^\circ) = 1$ $\rightarrow$ Maximum similarity
+    \item When $\theta = 90^\circ$ (orthogonal): $\cos(90^\circ) = 0$ $\rightarrow$ No similarity
+    \item When $\theta = 180^\circ$ (opposite): $\cos(180^\circ) = -1$ $\rightarrow$ Maximum dissimilarity
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Practice:} Calculate the dot product:
+\begin{itemize}[leftmargin=*]
+    \item $[1, 0, 1] \cdot [1, 1, 0] = $ \underline{\hspace{2cm}}
+    \item $[2, 3] \cdot [1, 2] = $ \underline{\hspace{2cm}}
+    \item $[1, 0, 0] \cdot [0, 1, 0] = $ \underline{\hspace{2cm}}
+\end{itemize}
+\end{framed}
+
+\begin{center}
+\tdplotsetmaincoords{60}{120}
+\begin{tikzpicture}[tdplot_main_coords, scale=2.0]
+    % Origin
+    \coordinate (O) at (0,0,0);
+
+    % Three vectors showing different angles
+    \coordinate (A) at (2,0,0.5);
+    \coordinate (B1) at (2,0.2,0.4); % Nearly parallel to A
+    \coordinate (B2) at (0,2,0);      % Orthogonal to A
+    \coordinate (B3) at (-1.8,-0.2,-0.4); % Nearly opposite to A
+
+    % Draw axes
+    \draw[->] (0,0,0) -- (2.5,0,0) node[anchor=north east]{x};
+    \draw[->] (0,0,0) -- (0,2.5,0) node[anchor=north west]{y};
+    \draw[->] (0,0,0) -- (0,0,1.5) node[anchor=south]{z};
+
+    % Draw vectors
+    \draw[->,thick,gray] (O) -- (A) node[midway,below] {$\vec{a}$};
+    \draw[->,thick,gray!70] (O) -- (B1) node[midway,above] {$\vec{b}_1$};
+    \draw[->,thick,gray!70] (O) -- (B2) node[midway,right] {$\vec{b}_2$};
+    \draw[->,thick,gray!70] (O) -- (B3) node[midway,below] {$\vec{b}_3$};
+
+    % Show angles
+    \draw[dashed,gray] (0.5,0,0.125) arc (0:6:0.5);
+    \node at (0.7,0.1,0.2) {\tiny $\theta_1 \approx 0^\circ$};
+
+    \draw[dashed,gray] (0.5,0,0.125) arc (0:90:0.5);
+    \node at (0.3,0.5,0.1) {\tiny $\theta_2 = 90^\circ$};
+
+    \draw[dashed,gray] (0.5,0,0.125) arc (0:170:0.5);
+    \node at (-0.3,0.1,-0.1) {\tiny $\theta_3 \approx 180^\circ$};
+
+    % Annotations
+    \node[align=center] at (1.5,-1,0) {\small Similar\\$\vec{a} \cdot \vec{b}_1 > 0$};
+    \node[align=center] at (0,-1,0) {\small Orthogonal\\$\vec{a} \cdot \vec{b}_2 = 0$};
+    \node[align=center] at (-1.5,-1,0) {\small Opposite\\$\vec{a} \cdot \vec{b}_3 < 0$};
+\end{tikzpicture}
+\end{center}
+
+%==============================================================================
+\section{One-Hot Encoding}
+%==============================================================================
+
+\subsection*{Exploration 2: Vector Representation Attempt}
+
+One-hot encoding assigns each word a unique position in a high-dimensional space.
+
+\begin{framed}
+\noindent\textbf{Vocabulary:} \{cat, dog, kitten, car, truck\}
+
+\vspace{0.3cm}
+\noindent\textbf{One-Hot Vectors:}
+\begin{center}
+\begin{tabular}{|l|ccccc|}
+\hline
+\textbf{Word} & \multicolumn{5}{c|}{\textbf{Vector Components}} \\
+\hline
+cat    & 1 & 0 & 0 & 0 & 0 \\
+dog    & 0 & 1 & 0 & 0 & 0 \\
+kitten & 0 & 0 & 1 & 0 & 0 \\
+car    & 0 & 0 & 0 & 1 & 0 \\
+truck  & 0 & 0 & 0 & 0 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+\noindent\textbf{Calculate Similarities:} Using dot product
+
+\begin{align*}
+\text{cat} \cdot \text{dog} &= (1 \times 0) + (0 \times 1) + (0 \times 0) + (0 \times 0) + (0 \times 0) = \underline{\hspace{1cm}} \\
+\text{cat} \cdot \text{kitten} &= (1 \times 0) + (0 \times 0) + (0 \times 1) + (0 \times 0) + (0 \times 0) = \underline{\hspace{1cm}} \\
+\text{cat} \cdot \text{car} &= \underline{\hspace{5cm}} = \underline{\hspace{1cm}} \\
+\text{dog} \cdot \text{truck} &= \underline{\hspace{5cm}} = \underline{\hspace{1cm}}
+\end{align*}
+
+\vspace{0.3cm}
+\noindent\textbf{Discovery:} What pattern do you notice? \underline{\hspace{6cm}}
+
+\noindent\textbf{Problem:} What angle exists between all word pairs? \underline{\hspace{2cm}} degrees
+\end{framed}
+
+\begin{center}
+\tdplotsetmaincoords{60}{120}
+\begin{tikzpicture}[tdplot_main_coords, scale=1.5]
+    % Orthogonal vectors in 3D
+    \draw[->] (0,0,0) -- (2,0,0) node[right] {cat};
+    \draw[->] (0,0,0) -- (0,2,0) node[above] {dog};
+    \draw[->] (0,0,0) -- (0,0,2) node[above] {kitten};
+
+    % Show 90-degree angles
+    \draw[gray,dashed] (0.3,0,0) -- (0.3,0.3,0) -- (0,0.3,0);
+    \draw[gray,dashed] (0.3,0,0) -- (0.3,0,0.3) -- (0,0,0.3);
+    \draw[gray,dashed] (0,0.3,0) -- (0,0.3,0.3) -- (0,0,0.3);
+
+    \node at (0,-0.5,0) {All vectors orthogonal};
+\end{tikzpicture}
+\end{center}
+
+%==============================================================================
+\section{Dense Vector Representations}
+%==============================================================================
+
+\subsection*{Solution: Distributed Representations}
+
+Instead of one-hot vectors, we use dense vectors where each dimension captures semantic properties.
+
+\begin{framed}
+\noindent\textbf{Example Dense Vectors:} (3-dimensional for visualization)
+
+\begin{center}
+\begin{tabular}{|l|ccc|}
+\hline
+\textbf{Word} & \textbf{Dim 1} & \textbf{Dim 2} & \textbf{Dim 3} \\
+\hline
+cat    & 0.2 & 0.8 & 0.5 \\
+dog    & 0.3 & 0.7 & 0.6 \\
+kitten & 0.15 & 0.85 & 0.45 \\
+car    & 0.9 & 0.1 & 0.2 \\
+truck  & 0.85 & 0.15 & 0.25 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+\noindent\textbf{Calculate Similarities:}
+
+\begin{align*}
+\text{cat} \cdot \text{dog} &= (0.2 \times 0.3) + (0.8 \times 0.7) + (0.5 \times 0.6) = \underline{\hspace{2cm}} \\
+\text{cat} \cdot \text{kitten} &= (0.2 \times 0.15) + (0.8 \times 0.85) + (0.5 \times 0.45) = \underline{\hspace{2cm}} \\
+\text{cat} \cdot \text{car} &= (0.2 \times 0.9) + (0.8 \times 0.1) + (0.5 \times 0.2) = \underline{\hspace{2cm}} \\
+\text{car} \cdot \text{truck} &= \underline{\hspace{5cm}} = \underline{\hspace{2cm}}
+\end{align*}
+
+\vspace{0.3cm}
+\noindent\textbf{Rank by Similarity to "cat":}
+\begin{enumerate}
+    \item \underline{\hspace{2cm}} (score: \underline{\hspace{1cm}})
+    \item \underline{\hspace{2cm}} (score: \underline{\hspace{1cm}})
+    \item \underline{\hspace{2cm}} (score: \underline{\hspace{1cm}})
+    \item \underline{\hspace{2cm}} (score: \underline{\hspace{1cm}})
+\end{enumerate}
+\end{framed}
+
+\begin{center}
+\tdplotsetmaincoords{60}{120}
+\begin{tikzpicture}[tdplot_main_coords, scale=1.8]
+    % Axes
+    \draw[->] (0,0,0) -- (3.5,0,0) node[right] {\small Dim 1};
+    \draw[->] (0,0,0) -- (0,3.5,0) node[above] {\small Dim 2};
+    \draw[->] (0,0,0) -- (0,0,3) node[above] {\small Dim 3};
+
+    % Animal cluster
+    \draw[gray!30, fill=gray!10, opacity=0.3] (1,2,1.5) circle (0.6);
+    \node[circle,fill=gray!50,draw] at (1,2,1.5) {cat};
+    \node[circle,fill=gray!50,draw] at (1.3,2.2,1.6) {dog};
+    \node[circle,fill=gray!50,draw] at (0.8,1.9,1.4) {kitten};
+
+    % Vehicle cluster
+    \draw[gray!30, fill=gray!10, opacity=0.3] (2.5,0.5,0.5) circle (0.4);
+    \node[circle,fill=gray!50,draw] at (2.5,0.5,0.5) {car};
+    \node[circle,fill=gray!50,draw] at (2.7,0.6,0.4) {truck};
+
+    % Distance measurements
+    \draw[<->,thick] (1,2,1.5) -- (1.3,2.2,1.6);
+    \node at (1.15,2.3,1.8) {\tiny 0.4};
+
+    \draw[<->,thick] (1,2,1.5) -- (2.5,0.5,0.5);
+    \node at (1.75,1.25,1) {\small 2.1};
+
+    \node[gray] at (1,2,2.2) {Animals};
+    \node[gray] at (2.5,0.5,-0.2) {Vehicles};
+\end{tikzpicture}
+\end{center}
+
+%==============================================================================
+\section{Vector Relationships}
+%==============================================================================
+
+\subsection*{Discovery: Consistent Relationships}
+
+Relationships between concepts form parallel vectors in embedding space.
+
+\begin{center}
+\tdplotsetmaincoords{60}{130}
+\begin{tikzpicture}[tdplot_main_coords, scale=1.5]
+    % Cities and landmarks
+    \coordinate (paris) at (1,1,1);
+    \coordinate (eiffel) at (1,2.5,1.5);
+    \coordinate (london) at (2.5,1,1);
+    \coordinate (bigben) at (2.5,2.5,1.5);
+
+    % Plot points
+    \node[circle,fill=gray!50,draw] at (paris) {Paris};
+    \node[diamond,fill=gray!50,draw] at (eiffel) {Eiffel};
+    \node[circle,fill=gray!50,draw] at (london) {London};
+    \node[diamond,fill=gray!50,draw] at (bigben) {Big Ben};
+
+    % Parallel relationships
+    \draw[->,thick] (paris) -- (eiffel);
+    \draw[->,thick] (london) -- (bigben);
+
+    % Show parallelism
+    \node at (0.5,1.75,1.25) {city$\rightarrow$landmark};
+\end{tikzpicture}
+\end{center}
+
+\begin{framed}
+\noindent\textbf{Vector Arithmetic:}
+
+The relationship ``city to its landmark'' is consistent across examples:
+$$\text{Eiffel Tower} - \text{Paris} \approx \text{Big Ben} - \text{London}$$
+
+Therefore:
+$$\text{Paris} - \text{France} + \text{UK} \approx \text{London}$$
+
+\vspace{0.3cm}
+\noindent\textbf{Complete These Analogies:}
+\begin{itemize}[leftmargin=*]
+    \item king - man + woman = \underline{\hspace{2cm}}
+    \item Tokyo - Japan + France = \underline{\hspace{2cm}}
+    \item Einstein - physics + music = \underline{\hspace{2cm}}
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Reflection:} Why might relationships form parallel vectors?
+
+\underline{\hspace{12cm}}
+
+\underline{\hspace{12cm}}
+\end{framed}
+
+%==============================================================================
+\section{Context-Dependent Representations}
+%==============================================================================
+
+\subsection*{Advanced: Dynamic Embeddings}
+
+Modern systems adjust word positions based on surrounding context.
+
+\begin{center}
+\tdplotsetmaincoords{60}{130}
+\begin{tikzpicture}[tdplot_main_coords, scale=1.5]
+    % Axes
+    \draw[->] (0,0,0) -- (4,0,0) node[anchor=north east]{\small Finance};
+    \draw[->] (0,0,0) -- (0,4,0) node[anchor=north west]{\small Nature};
+    \draw[->] (0,0,0) -- (0,0,3) node[anchor=south]{\small Abstract};
+
+    % Financial context cluster
+    \node[circle,fill=gray!30,draw] at (3,0.5,1) {\small money};
+    \node[circle,fill=gray!30,draw] at (3.5,0.8,1.2) {\small account};
+    \node[circle,fill=gray!30,draw] at (3.2,0.3,0.8) {\small loan};
+    \node[star,fill=gray!60,draw,scale=1.2] at (3.2,0.6,1.1) {bank$_1$};
+
+    % Nature context cluster
+    \node[circle,fill=gray!30,draw] at (0.5,3,0.5) {\small river};
+    \node[circle,fill=gray!30,draw] at (0.8,3.5,0.6) {\small water};
+    \node[circle,fill=gray!30,draw] at (0.3,3.2,0.4) {\small fish};
+    \node[star,fill=gray!60,draw,scale=1.2] at (0.6,3.2,0.55) {bank$_2$};
+
+    % Show movement
+    \draw[<->,ultra thick,gray,dashed] (2.5,1,0.8) -- (1,2.5,0.7);
+    \node[gray] at (1.75,1.75,1.2) {\small Context shift};
+
+    % Labels
+    \node[gray] at (3.2,0.6,1.8) {\small Financial};
+    \node[gray] at (0.6,3.2,1.2) {\small River};
+\end{tikzpicture}
+\end{center}
+
+\begin{framed}
+\noindent\textbf{Examples of Ambiguous Words:}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Word} & \textbf{Context 1} & \textbf{Context 2} \\
+\hline
+Apple & fruit, juice, tree & iPhone, Mac, company \\
+Java & coffee, beans, island & programming, code, software \\
+Python & snake, reptile, zoo & programming, AI, library \\
+Spring & season, flowers, warm & coil, bounce, mechanism \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+\noindent\textbf{Question:} How might a system determine which meaning to use?
+
+\underline{\hspace{12cm}}
+
+\underline{\hspace{12cm}}
+\end{framed}
+
+%==============================================================================
+\section*{Summary}
+%==============================================================================
+
+\begin{framed}
+\noindent\textbf{Key Discoveries:}
+\begin{enumerate}
+    \item Character overlap fails to capture semantic similarity
+    \item Dot product measures vector alignment and similarity
+    \item One-hot vectors are orthogonal, showing no relationships
+    \item Dense vectors place similar words nearby in space
+    \item Vector arithmetic captures analogical relationships
+    \item Context determines word position in modern systems
+\end{enumerate}
+\end{framed}
+
+\end{document}

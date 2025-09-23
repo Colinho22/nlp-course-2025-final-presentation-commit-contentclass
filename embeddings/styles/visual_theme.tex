@@ -1,0 +1,265 @@
+% Visual Theme and Consistency Framework for Embeddings Presentation
+% Provides unified visual language across all slides
+
+% ====================================================================
+% COLOR CODING SYSTEM
+% ====================================================================
+
+% Concept Categories - Each major concept has a signature color
+\definecolor{conceptEmbedding}{RGB}{70,130,180}    % Steel Blue - for embedding concepts
+\definecolor{conceptTraining}{RGB}{255,140,0}       % Dark Orange - for training/learning
+\definecolor{conceptMath}{RGB}{148,0,211}          % Dark Violet - for mathematical concepts
+\definecolor{conceptDimensional}{RGB}{220,20,60}   % Crimson - for dimensionality issues
+\definecolor{conceptContext}{RGB}{46,139,87}       % Sea Green - for context/attention
+\definecolor{conceptApplication}{RGB}{255,215,0}    % Gold - for applications
+
+% Difficulty Levels - Visual indicators for complexity
+\definecolor{levelBasic}{RGB}{144,238,144}         % Light Green
+\definecolor{levelIntermediate}{RGB}{255,218,185}  % Peach
+\definecolor{levelAdvanced}{RGB}{255,182,193}      % Light Pink
+\definecolor{levelExpert}{RGB}{230,230,250}        % Lavender
+
+% Alert/Status Colors
+\definecolor{alertSuccess}{RGB}{34,139,34}         % Forest Green
+\definecolor{alertWarning}{RGB}{255,140,0}         % Dark Orange
+\definecolor{alertError}{RGB}{178,34,34}           % Fire Brick
+\definecolor{alertInfo}{RGB}{70,130,180}           % Steel Blue
+
+% ====================================================================
+% VISUAL ELEMENTS AND BOXES
+% ====================================================================
+
+% Concept Box - For introducing new concepts
+\newtcolorbox{conceptbox}[2][]{
+  colback=conceptEmbedding!5!white,
+  colframe=conceptEmbedding!75!black,
+  fonttitle=\bfseries,
+  title=#2,
+  arc=3mm,
+  boxrule=1pt,
+  #1
+}
+
+% Math Box - For mathematical definitions
+\newtcolorbox{mathbox}[1][]{
+  colback=conceptMath!5!white,
+  colframe=conceptMath!50!black,
+  arc=2mm,
+  boxrule=0.5pt,
+  #1
+}
+
+% Try This Box - For exercises and activities
+\newtcolorbox{trybox}{
+  colback=conceptApplication!10!white,
+  colframe=conceptApplication!60!black,
+  title={\faLightbulbO\ Try This!},
+  fonttitle=\bfseries,
+  arc=3mm,
+  boxrule=1pt
+}
+
+% Key Insight Box - For important takeaways
+\newtcolorbox{insightbox}{
+  colback=alertInfo!10!white,
+  colframe=alertInfo!60!black,
+  title={\faKey\ Key Insight},
+  fonttitle=\bfseries,
+  arc=3mm,
+  boxrule=1.5pt
+}
+
+% Warning Box - For common pitfalls
+\newtcolorbox{warningbox}{
+  colback=alertWarning!10!white,
+  colframe=alertWarning!60!black,
+  title={\faWarning\ Common Pitfall},
+  fonttitle=\bfseries,
+  arc=3mm,
+  boxrule=1pt
+}
+
+% ====================================================================
+% COMPLEXITY INDICATORS
+% ====================================================================
+
+% Difficulty stars command
+\newcommand{\difficulty}[1]{%
+  \ifcase#1\relax
+  \or \textcolor{levelBasic}{\faStar\faStarO\faStarO\faStarO\faStarO} % 1 star
+  \or \textcolor{levelBasic}{\faStar\faStar\faStarO\faStarO\faStarO} % 2 stars
+  \or \textcolor{levelIntermediate}{\faStar\faStar\faStar\faStarO\faStarO} % 3 stars
+  \or \textcolor{levelAdvanced}{\faStar\faStar\faStar\faStar\faStarO} % 4 stars
+  \or \textcolor{levelExpert}{\faStar\faStar\faStar\faStar\faStar} % 5 stars
+  \fi
+}
+
+% Progress bar for multi-part concepts
+\newcommand{\conceptprogress}[2]{%
+  \begin{tikzpicture}[baseline=-0.5ex]
+    \draw[thick,gray!30] (0,0) rectangle (3,0.3);
+    \fill[conceptEmbedding!70] (0,0) rectangle ({3*#1/#2},0.3);
+    \node[right] at (3.1,0.15) {\small #1/#2};
+  \end{tikzpicture}
+}
+
+% ====================================================================
+% ICON SYSTEM FOR OPERATIONS
+% ====================================================================
+
+% Define consistent icons for common operations
+\newcommand{\iconAdd}{\textcolor{alertSuccess}{\faPlus}}
+\newcommand{\iconSubtract}{\textcolor{alertError}{\faMinus}}
+\newcommand{\iconMultiply}{\textcolor{conceptMath}{\faTimes}}
+\newcommand{\iconTransform}{\textcolor{conceptTraining}{\faRandom}}
+\newcommand{\iconProject}{\textcolor{conceptDimensional}{\faArrowsAlt}}
+\newcommand{\iconAttention}{\textcolor{conceptContext}{\faEye}}
+\newcommand{\iconEmbedding}{\textcolor{conceptEmbedding}{\faCube}}
+\newcommand{\iconNetwork}{\textcolor{conceptTraining}{\faShareAlt}}
+\newcommand{\iconGradient}{\textcolor{conceptMath}{\faLineChart}}
+\newcommand{\iconOptimize}{\textcolor{alertSuccess}{\faCogs}}
+
+% ====================================================================
+% VISUAL CONSISTENCY COMMANDS
+% ====================================================================
+
+% Highlighted concept introduction
+\newcommand{\concept}[1]{\textcolor{conceptEmbedding}{\textbf{#1}}}
+\newcommand{\mathconcept}[1]{\textcolor{conceptMath}{\textbf{#1}}}
+\newcommand{\trainingconcept}[1]{\textcolor{conceptTraining}{\textbf{#1}}}
+
+% Dimension notation with visual hint
+\newcommand{\dimension}[1]{\textcolor{conceptDimensional}{$d=#1$}}
+
+% Vector notation with consistent style
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand{\embedvec}[1]{\textcolor{conceptEmbedding}{\vec{#1}}}
+
+% Matrix notation
+\newcommand{\embedmatrix}[1]{\textcolor{conceptEmbedding}{\mathbf{#1}}}
+
+% ====================================================================
+% SLIDE TEMPLATES
+% ====================================================================
+
+% Section intro slide with visual theme
+\newcommand{\sectionintro}[3]{% {section name}{icon}{description}
+  \begin{frame}[plain]
+    \begin{center}
+      \vspace{2cm}
+      {\Huge #2}\\[0.5cm]
+      {\Large \textcolor{conceptEmbedding}{#1}}\\[0.3cm]
+      {\normalsize #3}
+    \end{center}
+  \end{frame}
+}
+
+% Concept introduction slide
+\newenvironment{conceptslide}[2]{% {title}{difficulty}
+  \begin{frame}{#1 \hfill \difficulty{#2}}
+}{
+  \end{frame}
+}
+
+% ====================================================================
+% PROGRESS TRACKING
+% ====================================================================
+
+% Visual progress indicator for sections
+\newcommand{\sectionprogress}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=south east,xshift=-0.5cm,yshift=0.5cm] at (current page.south east) {
+      \conceptprogress{\thesection}{\totalsections}
+    };
+  \end{tikzpicture}
+}
+
+% Time indicator for presentations
+\newcommand{\timeindicator}[1]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=south west,xshift=0.5cm,yshift=0.5cm] at (current page.south west) {
+      \textcolor{gray}{\faClock\ #1 min}
+    };
+  \end{tikzpicture}
+}
+
+% ====================================================================
+% ANIMATION HELPERS
+% ====================================================================
+
+% Step-by-step reveal with visual cues
+\newcommand{\step}[2]{\only<#1->{\textcolor<#1>{conceptEmbedding}{#2}}}
+\newcommand{\highlight}[2]{\textcolor<#1>{alertWarning}{#2}}
+\newcommand{\fade}[2]{\textcolor<#1>{gray!30}{#2}}
+
+% Progressive complexity reveal
+\newenvironment{progressive}[1]{% {number of steps}
+  \setcounter{beamerpauses}{#1}
+}{
+}
+
+% ====================================================================
+% FORMULA WITH CHART COMMAND
+% ====================================================================
+
+% Command to display formula with accompanying chart
+\newcommand{\formulaWithChart}[3]{%
+% #1: formula content
+% #2: chart filename (without path/extension)
+% #3: chart caption
+\begin{columns}[T]
+\column{0.48\textwidth}
+\vspace{0.5cm}
+\begin{block}{Mathematical Formula}
+#1
+\end{block}
+\column{0.48\textwidth}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{../figures/embeddings/formulas/#2.pdf}
+\caption{\small #3}
+\end{figure}
+\end{columns}
+}
+
+% Alternative layout for larger formulas
+\newcommand{\formulaWithChartWide}[3]{%
+% #1: formula content  
+% #2: chart filename (without path/extension)
+% #3: chart caption
+\begin{block}{Mathematical Formula}
+#1
+\end{block}
+\vspace{0.3cm}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{../figures/embeddings/formulas/#2.pdf}
+\end{center}
+\vspace{-0.2cm}
+\textit{\small #3}
+}
+
+% ====================================================================
+% VISUAL CONSISTENCY RULES
+% ====================================================================
+
+% Set default itemize/enumerate colors
+\setbeamercolor{itemize item}{fg=conceptEmbedding}
+\setbeamercolor{itemize subitem}{fg=conceptEmbedding!70}
+\setbeamercolor{itemize subsubitem}{fg=conceptEmbedding!50}
+
+\setbeamercolor{enumerate item}{fg=conceptMath}
+\setbeamercolor{enumerate subitem}{fg=conceptMath!70}
+\setbeamercolor{enumerate subsubitem}{fg=conceptMath!50}
+
+% Consistent alert colors
+\setbeamercolor{alerted text}{fg=alertWarning}
+
+% Block colors
+\setbeamercolor{block title}{bg=conceptEmbedding,fg=white}
+\setbeamercolor{block body}{bg=conceptEmbedding!10}
+
+\setbeamercolor{block title alerted}{bg=alertWarning,fg=white}
+\setbeamercolor{block body alerted}{bg=alertWarning!10}
+
+\setbeamercolor{block title example}{bg=conceptApplication,fg=black}
+\setbeamercolor{block body example}{bg=conceptApplication!10}

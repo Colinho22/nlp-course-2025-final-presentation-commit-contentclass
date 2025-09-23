@@ -1,0 +1,727 @@
+\documentclass[8pt,aspectratio=169,8pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm2e}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{subfigure}
+\usepackage{hyperref}
+
+% Theme settings
+\usetheme{Frankfurt}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Custom colors
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{173,216,230}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codegray}{RGB}{150,150,150}
+\definecolor{codepurple}{RGB}{128,0,128}
+\definecolor{backcolor}{RGB}{245,245,245}
+
+% Code listing settings
+\lstset{
+    backgroundcolor=\color{backcolor},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    showstringspaces=false,
+    frame=single,
+    numbers=left,
+    language=Python
+}
+
+% Include slide layouts
+\input{../slide_layouts.tex}
+
+\title[Week 5: Transformers]{Natural Language Processing Course}
+\subtitle{Week 5: The Transformer Architecture}
+\author{Joerg R. Osterrieder \\ \url{www.joergosterrieder.com}}
+\date{}
+
+\begin{document}
+
+% Title page
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\section{Week 5: The Transformer Revolution}
+
+% Title slide
+\begin{frame}
+    \centering
+    \vspace{2cm}
+    {\Large \textbf{Week 5}}\\
+    \vspace{0.5cm}
+    {\huge \textbf{The Transformer}}\\
+    \vspace{1cm}
+    {\large Attention Is All You Need}
+\end{frame}
+
+% Motivation: The parallelization problem
+\begin{frame}[t]{Why Google Couldn't Scale Translation Fast Enough}
+    \textbf{The RNN bottleneck (2016):}
+    
+    \vspace{0.5em}
+    To translate "I love machine learning":
+    \begin{enumerate}
+        \item Process "I" → wait → 
+        \item Process "love" → wait →
+        \item Process "machine" → wait →
+        \item Process "learning" → done
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{red!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            RNNs must process words one at a time - can't parallelize!
+        }
+    }
+    \end{center}
+    
+    \vspace{0.5em}
+    \textbf{The cost:}
+    \begin{itemize}
+        \item Training large models: Weeks to months\footnotemark
+        \item Can't use modern GPUs effectively (built for parallel computation)
+        \item Google needed 8,000 TPUs for production\footnotemark
+    \end{itemize}
+    
+    \footnotetext[1]{Original transformer trained in 3.5 days vs weeks for RNNs}
+    \footnotetext[2]{Wu et al. (2016) Google NMT system requirements}
+\end{frame}
+
+% The radical idea
+\begin{frame}[t]{A Radical Idea: What If We Remove RNNs Entirely?}
+    \textbf{The 2017 breakthrough:}\footnotemark
+    
+    \vspace{0.5em}
+    "What if we use ONLY attention mechanisms?"
+    
+    \vspace{0.5em}
+    \textbf{Revolutionary insights:}
+    \begin{enumerate}
+        \item Attention can capture all relationships directly
+        \item No sequential processing needed
+        \item Every word can look at every other word simultaneously
+        \item Parallelization becomes trivial!
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \textbf{The impact:}
+    \begin{itemize}
+        \item Training time: Weeks → Days
+        \item Model quality: BLEU 41.8 → 28.4 (EN-DE)\footnotemark
+        \item Spawned GPT, BERT, and all modern LLMs
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{green!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            The Transformer: Process all words in parallel using attention
+        }
+    }
+    \end{center}
+    
+    \footnotetext[1]{Vaswani et al. (2017). "Attention Is All You Need", NeurIPS}
+    \footnotetext[2]{New state-of-the-art on WMT 2014 English-German}
+\end{frame}
+
+% Real-world impact
+\begin{frame}[t]{Transformers Power Everything You Use (2024)}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Language Models:}
+            \begin{itemize}
+                \item ChatGPT (GPT-4): 1.76T params\footnotemark
+                \item Google Bard (Gemini)
+                \item Claude (Anthropic)
+                \item GitHub Copilot
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Search \& Translation:}
+            \begin{itemize}
+                \item Google Search (BERT)
+                \item DeepL Translator
+                \item Microsoft Translator
+                \item Every modern NMT system
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Multimodal AI:}
+            \begin{itemize}
+                \item DALL-E (text → image)
+                \item Whisper (speech → text)
+                \item CLIP (vision-language)
+                \item Flamingo (image understanding)
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Key Advantages:}
+            \begin{itemize}
+                \item 100x faster training\footnotemark
+                \item Better long-range dependencies
+                \item Transfer learning revolution
+                \item Scale to trillions of parameters
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            98\% of state-of-the-art NLP uses transformers (2024)
+        }
+    }
+    \end{center}
+    
+    \footnotetext[1]{Estimated from performance characteristics}
+    \footnotetext[2]{Compared to equivalent RNN models}
+\end{frame}
+
+% Learning objectives
+\begin{frame}[t]{Week 5: What You'll Master}
+    \textbf{By the end of this week, you will:}
+    \begin{itemize}
+        \item \textbf{Understand} why parallelization changes everything
+        \item \textbf{Build} intuition for self-attention mechanism
+        \item \textbf{Implement} a complete transformer from scratch
+        \item \textbf{Master} positional encodings and multi-head attention
+        \item \textbf{Create} your own mini-GPT
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            \textbf{Core Insight:} Let every word attend to every other word directly
+        }
+    }
+    \end{center}
+\end{frame}
+
+% Self-attention intuition
+\begin{frame}[t]{The Genius of Self-Attention}
+    \textbf{How humans read "The cat sat on the mat":}
+    
+    \vspace{0.5em}
+    When we see "sat", we instantly know:
+    \begin{itemize}
+        \item WHO sat? → look at "cat"
+        \item WHERE? → look at "mat"
+        \item No need to process sequentially!
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Self-attention does exactly this:}
+    \begin{enumerate}
+        \item Each word asks: "Who should I pay attention to?"
+        \item Computes attention scores with all other words
+        \item Creates weighted combination of relevant words
+        \item All happening simultaneously!
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \textbf{Example: "The student who studied hard passed"}
+    \begin{itemize}
+        \item "passed" attends strongly to "student" (not "hard")
+        \item "hard" attends to "studied"
+        \item All connections computed in parallel
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{yellow!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            Self-attention = Each word decides what's relevant to it
+        }
+    }
+    \end{center}
+\end{frame}
+
+% Visual self-attention
+\begin{frame}[t]{Visualizing Self-Attention}
+    \centering
+    \includegraphics[width=0.9\textwidth]{../figures/self_attention_visualization.pdf}
+    
+    \vspace{0.5em}
+    \textbf{Key insights:}
+    \begin{itemize}
+        \item Every word connects to every other word
+        \item Attention weights learned during training
+        \item No fixed left-to-right processing
+        \item Captures long-range dependencies naturally
+    \end{itemize}
+\end{frame}
+
+% Mathematical formulation
+\conceptslide{Self-Attention Mathematics: Elegantly Simple}{
+    \textbf{The attention formula:}
+    
+    \vspace{0.5em}
+    \eqbox{
+        \[\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V\]
+    }
+    
+    \vspace{0.5em}
+    Where for each word:
+    \begin{itemize}
+        \item $Q$ (Query): "What am I looking for?"
+        \item $K$ (Key): "What do I contain?"
+        \item $V$ (Value): "What information do I provide?"
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{In plain English:}
+    \begin{enumerate}
+        \item Compare my query with all keys (dot product)
+        \item Scale by $\sqrt{d_k}$ to prevent saturation
+        \item Apply softmax to get attention weights
+        \item Weighted sum of values
+    \end{enumerate}
+}{
+    \textbf{Why this works:}
+    \begin{itemize}
+        \item Dot product measures similarity
+        \item Softmax creates probability distribution
+        \item Fully differentiable
+        \item Parallelizable!
+    \end{itemize}
+}
+
+% Implementation
+\begin{frame}[fragile]{Building Self-Attention: Complete Implementation}
+    \begin{columns}[T]
+\column{0.55\textwidth}
+
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import math
+
+class SelfAttention(nn.Module):
+    def __init__(self, embed_size, heads=8):
+        """Multi-head self-attention"""
+        super().__init__()
+        self.embed_size = embed_size
+        self.heads = heads
+        self.head_dim = embed_size // heads
+        
+        assert self.head_dim * heads == embed_size
+        
+        # Linear projections for Q, K, V
+        self.queries = nn.Linear(embed_size, embed_size)
+        self.keys = nn.Linear(embed_size, embed_size)
+        self.values = nn.Linear(embed_size, embed_size)
+        self.fc_out = nn.Linear(embed_size, embed_size)
+        
+    def forward(self, x, mask=None):
+        """Compute multi-head attention"""
+        N, seq_len, _ = x.shape
+        
+        # Project to Q, K, V
+        Q = self.queries(x)
+        K = self.keys(x)
+        V = self.values(x)
+        
+        # Reshape for multi-head attention
+        Q = Q.reshape(N, seq_len, self.heads, self.head_dim)
+        K = K.reshape(N, seq_len, self.heads, self.head_dim)
+        V = V.reshape(N, seq_len, self.heads, self.head_dim)
+        
+        # Compute attention scores
+        energy = torch.einsum("nqhd,nkhd->nhqk", [Q, K])
+        
+        if mask is not None:
+            energy = energy.masked_fill(mask == 0, float("-1e20"))
+            
+        attention = F.softmax(energy / math.sqrt(self.head_dim), dim=3)
+        
+        # Apply attention to values
+        out = torch.einsum("nhql,nlhd->nqhd", [attention, V])
+        out = out.reshape(N, seq_len, self.embed_size)
+        
+        return self.fc_out(out)
+\end{lstlisting}
+\column{0.43\textwidth}
+        \codeexplanation{
+            \textbf{Design Choices:}
+            \begin{itemize}
+                \item 8 heads typical (parallel attention)\footnotemark
+                \item Head dim = 64 (512 / 8)
+                \item Scaling prevents gradient issues
+            \end{itemize}
+            
+            \vspace{0.3em}
+            \textbf{Multi-Head Benefits:}
+            \begin{itemize}
+                \item Different heads learn different relationships
+                \item One head: syntax
+                \item Another: semantics
+                \item Another: position
+            \end{itemize}
+            
+            \footnotetext{Original paper used 8 heads}
+        }
+    \end{columns}
+\end{frame}
+
+% Positional encoding
+\begin{frame}[t]{The Position Problem: Order Still Matters!}
+    \textbf{Self-attention has no notion of position!}
+    
+    \vspace{0.5em}
+    These are identical to self-attention:
+    \begin{itemize}
+        \item "The cat sat on the mat"
+        \item "Mat the on sat the cat"
+        \item "Cat mat the the on sat"
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{The solution: Positional Encoding}\footnotemark
+    
+    Add position information to each word embedding:
+    
+    \vspace{0.5em}
+    \eqbox{
+        \[\begin{aligned}
+        PE_{(pos,2i)} &= \sin(pos/10000^{2i/d}) \\
+        PE_{(pos,2i+1)} &= \cos(pos/10000^{2i/d})
+        \end{aligned}\]
+    }
+    
+    \vspace{0.5em}
+    \textbf{Why sinusoids?}
+    \begin{itemize}
+        \item Unique pattern for each position
+        \item Can extrapolate to longer sequences
+        \item Relative positions have consistent patterns
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            Positional encoding = GPS coordinates for words
+        }
+    }
+    \end{center}
+    
+    \footnotetext{Many alternatives explored: learned, RoPE, ALiBi}
+\end{frame}
+
+% Complete transformer block
+\begin{frame}[fragile]{The Transformer Block: Putting It Together}
+    \begin{columns}[T]
+        \column{0.55\textwidth}
+
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+class TransformerBlock(nn.Module):
+    def __init__(self, embed_size, heads, dropout, forward_expansion):
+        """One transformer encoder block"""
+        super().__init__()
+        self.attention = SelfAttention(embed_size, heads)
+        self.norm1 = nn.LayerNorm(embed_size)
+        self.norm2 = nn.LayerNorm(embed_size)
+        
+        self.feed_forward = nn.Sequential(
+            nn.Linear(embed_size, forward_expansion * embed_size),
+            nn.ReLU(),
+            nn.Linear(forward_expansion * embed_size, embed_size)
+        )
+        self.dropout = nn.Dropout(dropout)
+        
+    def forward(self, x, mask=None):
+        """Forward pass with residual connections"""
+        # Self-attention with residual
+        attention = self.attention(x, mask)
+        x = self.dropout(self.norm1(attention + x))
+        
+        # Feed-forward with residual
+        forward = self.feed_forward(x)
+        out = self.dropout(self.norm2(forward + x))
+        
+        return out
+
+class Transformer(nn.Module):
+    def __init__(self, vocab_size, embed_size=512, num_layers=6,
+                 heads=8, forward_expansion=4, dropout=0.1, max_len=5000):
+        """Complete transformer model"""
+        super().__init__()
+        self.embed_size = embed_size
+        self.word_embedding = nn.Embedding(vocab_size, embed_size)
+        self.position_embedding = nn.Embedding(max_len, embed_size)
+        
+        self.layers = nn.ModuleList([
+            TransformerBlock(embed_size, heads, dropout, forward_expansion)
+            for _ in range(num_layers)
+        ])
+        
+        self.dropout = nn.Dropout(dropout)
+        self.fc_out = nn.Linear(embed_size, vocab_size)
+\end{lstlisting}
+        \column{0.45\textwidth}
+
+        \codeexplanation{
+            \textbf{Architecture (Base):}
+            \begin{itemize}
+                \item 6 layers deep\footnotemark
+                \item 512 embedding dimension
+                \item 2048 feed-forward dimension
+                \item Residual connections crucial
+            \end{itemize}
+            
+            \vspace{0.3em}
+            \textbf{Why Residuals?}
+            \begin{itemize}
+                \item Enable deep networks
+                \item Gradient flow preservation
+                \item Each layer learns refinement
+            \end{itemize}
+            
+            \footnotetext{GPT-3 has 96 layers!}
+        }
+    \end{columns}
+\end{frame}
+
+% Training improvements
+\begin{frame}[t]{Why Transformers Train So Fast}
+    \centering
+    \includegraphics[width=0.55\textwidth]{../figures/transformer_vs_rnn_speed.pdf}
+    
+    \vspace{0.5em}
+    \textbf{The parallelization advantage:}
+    \begin{itemize}
+        \item RNN: Must wait for each step (sequential)
+        \item Transformer: All positions computed simultaneously
+        \item GPU utilization: 15\% → 90\%\footnotemark
+        \item Training time: Weeks → Days
+    \end{itemize}
+    
+    \footnotetext{Typical GPU utilization improvements reported}
+\end{frame}
+
+% Results comparison
+\resultslide{Transformer Impact: Immediate Dominance}{
+    \centering
+    \includegraphics[width=0.55\textwidth]{../figures/transformer_benchmarks.pdf}
+}{
+    \begin{itemize}
+        \item WMT'14 EN-DE: 28.4 BLEU (previous best: 25.2)
+        \item WMT'14 EN-FR: 41.8 BLEU (previous best: 37.0)
+        \item Training: 3.5 days on 8 GPUs (vs weeks)
+        \item Started the pre-training era (BERT, GPT)
+        \item Every subsequent breakthrough built on transformers
+    \end{itemize}
+}
+
+% Modern variants
+\begin{frame}[t]{The Transformer Family Tree (2024)}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Encoder-Only (BERT-style):}
+            \begin{itemize}
+                \item BERT: Bidirectional understanding
+                \item RoBERTa: Better training
+                \item DeBERTa: Disentangled attention
+                \item Used for: Classification, NER, QA
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Decoder-Only (GPT-style):}
+            \begin{itemize}
+                \item GPT-4: 1.76T parameters\footnotemark
+                \item Claude: Constitutional AI
+                \item LLaMA: Efficient architecture
+                \item Used for: Generation, chat, code
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Encoder-Decoder (T5-style):}
+            \begin{itemize}
+                \item T5: Text-to-text unified
+                \item BART: Denoising approach
+                \item mT5: Multilingual
+                \item Used for: Translation, summarization
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Efficient Variants:}
+            \begin{itemize}
+                \item FlashAttention: 2-3x faster\footnotemark
+                \item Linformer: Linear complexity
+                \item Performer: Kernel approximation
+                \item Used for: Long sequences
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{yellow!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            All modern LLMs are transformer variants!
+        }
+    }
+    \end{center}
+    
+    \footnotetext[1]{Estimated from capabilities}
+    \footnotetext[2]{Dao et al. (2022) FlashAttention}
+\end{frame}
+
+% Common pitfalls
+\begin{frame}[t]{Transformer Gotchas and Solutions}
+    \textbf{1. Attention is Quadratic}
+    \begin{itemize}
+        \item Problem: $O(n^2)$ memory for sequence length $n$
+        \item Solution: Sparse attention, sliding windows
+        \item Example: GPT-3 uses sparse patterns
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{2. Position Extrapolation}
+    \begin{itemize}
+        \item Problem: Fails on sequences longer than training
+        \item Solution: ALiBi, RoPE, or relative encodings
+        \item Example: LLaMA uses RoPE for 100k+ context
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{3. Training Instability}
+    \begin{itemize}
+        \item Problem: Large models diverge easily
+        \item Solution: Learning rate warmup, careful initialization
+        \item Example: GPT-3 took months of tuning
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Real Example - ChatGPT:}
+    \begin{itemize}
+        \item Uses modified attention (sparse + dense)
+        \item Special position encodings for long context
+        \item Extensive stability modifications
+    \end{itemize}
+\end{frame}
+
+% Exercise
+\begin{frame}[t]{Week 5 Exercise: Build Your Own Mini-GPT}
+    \textbf{Your Mission:} Create a character-level GPT for text generation
+    
+    \vspace{0.5em}
+    \textbf{Implementation Steps:}
+    \begin{enumerate}
+        \item Implement multi-head self-attention
+        \item Add positional encodings
+        \item Stack 6 transformer blocks
+        \item Train on Shakespeare/your favorite text
+        \item Generate new text autoregressively
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \textbf{Key Experiments:}
+    \begin{itemize}
+        \item Compare 1 vs 8 vs 16 attention heads
+        \item Try with/without positional encoding
+        \item Measure GPU utilization vs RNN
+        \item Visualize attention patterns
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Bonus Challenges:}
+    \begin{itemize}
+        \item Implement sparse attention for longer sequences
+        \item Add beam search for better generation
+        \item Try different position encoding schemes
+        \item Build a simple chatbot interface
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{You'll discover:} Why transformers took over the world!
+\end{frame}
+
+% Summary
+\begin{frame}[t]{Key Takeaways: The Attention Revolution}
+    \textbf{What we learned:}
+    \begin{itemize}
+        \item Sequential processing was the bottleneck
+        \item Self-attention enables full parallelization
+        \item Every word can attend to every other word
+        \item Position encodings restore order information
+        \item Transformers scale to trillions of parameters
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{The evolution:}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            Sequential (RNN) $\rightarrow$ Parallel (Transformer) $\rightarrow$ Scale (GPT/BERT)
+        }
+    }
+    \end{center}
+    
+    \vspace{0.5em}
+    \textbf{Why it matters:}
+    \begin{itemize}
+        \item Enabled training on internet-scale data
+        \item Made transfer learning practical
+        \item Started the LLM revolution
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Next week: Pre-trained Language Models}
+    
+    How do we use transformers to learn from all of human knowledge?
+\end{frame}
+
+% References
+\begin{frame}[t]{References and Further Reading}
+    \textbf{Foundational Papers:}
+    \begin{itemize}
+        \item Vaswani et al. (2017). "Attention Is All You Need", NeurIPS
+        \item Devlin et al. (2019). "BERT: Pre-training of Deep Bidirectional Transformers"
+        \item Radford et al. (2018). "Improving Language Understanding by Generative Pre-Training"
+    \end{itemize}
+    
+    \textbf{Implementation Resources:}
+    \begin{itemize}
+        \item "The Illustrated Transformer" by Jay Alammar
+        \item "The Annotated Transformer" (Harvard NLP)
+        \item Hugging Face Transformers library
+    \end{itemize}
+    
+    \textbf{Recent Advances:}
+    \begin{itemize}
+        \item FlashAttention: Making attention practical
+        \item Scaling laws for neural language models
+        \item Efficient transformers survey (2022)
+    \end{itemize}
+\end{frame}
+
+\end{document}

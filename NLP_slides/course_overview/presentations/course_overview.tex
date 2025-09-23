@@ -1,0 +1,236 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+% Theme settings
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Custom colors for consistency
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{173,216,230}
+\definecolor{accent1}{RGB}{255,107,107}  % Red for current/important
+\definecolor{accent2}{RGB}{78,205,196}   % Teal for context
+\definecolor{accent3}{RGB}{149,231,126}  % Green for output/success
+\definecolor{accent4}{RGB}{255,195,0}    % Gold for highlights
+
+% Custom commands
+\newcommand{\highlight}[1]{\textcolor{darkblue}{\textbf{#1}}}
+\newcommand{\yearmarker}[1]{\textcolor{accent1}{\textbf{#1}}}
+
+\title[NLP Course Overview]{Natural Language Processing}
+\subtitle{Complete Course Overview}
+\author{Joerg R. Osterrieder \\ \url{www.joergosterrieder.com}}
+\date{BSc Computer Science}
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+    \titlepage
+\end{frame}
+
+%============================================================================
+% SLIDE 1: The NLP Journey - From Counting to Understanding
+%============================================================================
+\begin{frame}[t]{The NLP Journey: From Counting to Understanding}
+    \centering
+    \includegraphics[width=0.85\textwidth]{../figures/course_roadmap.pdf}
+    
+    \vspace{0.3em}
+    \begin{columns}[T]
+        \begin{column}{0.32\textwidth}
+            \centering
+            \textbf{\textcolor{accent1}{Foundation Phase}}\\
+            \small Weeks 1-4\\
+            \tiny
+            \begin{itemize}
+                \item Statistical models
+                \item Neural basics
+                \item Sequential processing
+                \item First architectures
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \centering
+            \textbf{\textcolor{accent2}{Revolution Phase}}\\
+            \small Weeks 5-8\\
+            \tiny
+            \begin{itemize}
+                \item Transformer breakthrough
+                \item Pre-trained models
+                \item Advanced architectures
+                \item Tokenization mastery
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \centering
+            \textbf{\textcolor{accent3}{Application Phase}}\\
+            \small Weeks 9-12\\
+            \tiny
+            \begin{itemize}
+                \item Decoding strategies
+                \item Fine-tuning expertise
+                \item Efficiency optimization
+                \item Ethical deployment
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.3em}
+    \begin{tcolorbox}[colback=lightblue!10,colframe=darkblue,boxrule=0.5pt]
+        \centering
+        \small \textbf{12 Weeks} • \textbf{3 Paradigm Shifts} • \textbf{From 0 to State-of-the-Art}
+    \end{tcolorbox}
+\end{frame}
+
+%============================================================================
+% SLIDE 2: Core Technologies & Breakthroughs
+%============================================================================
+\begin{frame}[t]{Core Technologies \& Breakthroughs}
+    \centering
+    \includegraphics[width=0.85\textwidth]{../figures/technology_evolution.pdf}
+    
+    \vspace{0.3em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Major Paradigm Shifts:}
+            \small
+            \begin{itemize}
+                \item[\yearmarker{1990s}] \textbf{Statistical Era}
+                    \begin{itemize}
+                        \tiny
+                        \item N-grams dominate
+                        \item Count-based methods
+                        \item Limited context
+                    \end{itemize}
+                \item[\yearmarker{2013}] \textbf{Embedding Revolution}
+                    \begin{itemize}
+                        \tiny
+                        \item Word2Vec breakthrough
+                        \item Semantic understanding
+                        \item Transfer learning begins
+                    \end{itemize}
+                \item[\yearmarker{2017}] \textbf{Transformer Age}
+                    \begin{itemize}
+                        \tiny
+                        \item Attention is all you need
+                        \item Parallel processing
+                        \item Unlimited context
+                    \end{itemize}
+                \item[\yearmarker{2020+}] \textbf{Scale \& Capability}
+                    \begin{itemize}
+                        \tiny
+                        \item GPT-3/4, Claude, Gemini
+                        \item Emergent abilities
+                        \item Human-level tasks
+                    \end{itemize}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Performance Leaps:}
+            \small
+            \begin{center}
+            \begin{tabular}{lcc}
+                \toprule
+                \textbf{Technology} & \textbf{Year} & \textbf{Impact} \\
+                \midrule
+                N-grams & 1990s & Baseline \\
+                Neural LMs & 2003 & 2x better \\
+                Word2Vec & 2013 & 5x better \\
+                LSTMs & 2014 & 10x better \\
+                Transformers & 2017 & 50x better \\
+                BERT & 2018 & 100x better \\
+                GPT-3 & 2020 & 1000x better \\
+                GPT-4 & 2023 & 10000x better \\
+                \bottomrule
+            \end{tabular}
+            \end{center}
+            
+            \vspace{0.5em}
+            \begin{tcolorbox}[colback=accent4!10,colframe=accent4,boxrule=0.5pt]
+                \centering
+                \tiny Model parameters: 1M → 1T in 20 years
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+%============================================================================
+% SLIDE 3: Learning Outcomes & Real-World Impact
+%============================================================================
+\begin{frame}[t]{Learning Outcomes \& Real-World Impact}
+    \centering
+    \includegraphics[width=0.85\textwidth]{../figures/skills_applications.pdf}
+    
+    \vspace{0.3em}
+    \begin{columns}[T]
+        \begin{column}{0.32\textwidth}
+            \textbf{\textcolor{accent1}{Core Skills}}
+            \small
+            \begin{itemize}
+                \item Implement transformers
+                \item Fine-tune BERT/GPT
+                \item Build chat systems
+                \item Deploy models
+                \item Optimize efficiency
+                \item Ensure fairness
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \textbf{\textcolor{accent2}{Technologies}}
+            \small
+            \begin{itemize}
+                \item PyTorch/TensorFlow
+                \item Hugging Face
+                \item LangChain
+                \item ONNX/TensorRT
+                \item Docker/Kubernetes
+                \item MLOps tools
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \textbf{\textcolor{accent3}{Applications}}
+            \small
+            \begin{itemize}
+                \item ChatGPT-like systems
+                \item Translation services
+                \item Code assistants
+                \item Content generation
+                \item Search engines
+                \item Virtual assistants
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.3em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{tcolorbox}[colback=accent1!10,colframe=accent1,boxrule=0.5pt]
+                \centering
+                \textbf{Industry Demand}\\
+                \small NLP Engineers: \textbf{\$150k-300k}\\
+                \tiny 10,000+ open positions globally
+            \end{tcolorbox}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{tcolorbox}[colback=accent3!10,colframe=accent3,boxrule=0.5pt]
+                \centering
+                \textbf{Market Impact}\\
+                \small NLP Market: \textbf{\$43B by 2025}\\
+                \tiny 20\% annual growth rate
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\end{document}

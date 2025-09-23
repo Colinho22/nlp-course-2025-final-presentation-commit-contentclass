@@ -1,0 +1,434 @@
+\documentclass[8pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+% Colors
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Code style
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% Custom commands
+\newcommand{\question}[1]{\vspace{0.5em}\noindent\textbf{Q: #1}\vspace{0.3em}}
+\newcommand{\exercise}[1]{\vspace{0.5em}\noindent\textbf{Exercise: #1}\vspace{0.3em}}
+\newcommand{\think}[1]{\vspace{0.3em}\noindent\textit{Think: #1}\vspace{0.3em}}
+\newcommand{\discovery}[1]{
+    \begin{tcolorbox}[colback=green!5!white,colframe=green!75!black,title=Discovery]
+    #1
+    \end{tcolorbox}
+}
+\newcommand{\hint}[1]{
+    \begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!75!black,title=Hint]
+    #1
+    \end{tcolorbox}
+}
+
+\title{Week 5: Attention Is All You Need - Transformers\\
+\large Discovery-Based Learning Exercises (Student Version)}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Learning Objectives}
+By the end of this session, you will:
+\begin{itemize}
+    \item Discover why RNNs have fundamental limitations
+    \item Reinvent self-attention from first principles
+    \item Design the multi-head attention mechanism
+    \item Build a complete transformer architecture
+    \item Understand positional encodings
+\end{itemize}
+
+\hrule
+\vspace{1em}
+
+\section{Part 1: The Sequential Processing Problem (10 minutes)}
+
+\subsection{The Waiting Game}
+
+\exercise{Let's process this sentence with an RNN. Mark the dependencies:}
+
+"The student who studied hard and completed all assignments passed the exam"
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Word} & \textbf{Step} & \textbf{Depends on previous steps?} \\
+\hline
+The & 1 & No \\
+student & 2 & Yes (step 1) \\
+who & 3 & \_\_\_\_\_\_\_ \\
+studied & 4 & \_\_\_\_\_\_\_ \\
+hard & 5 & \_\_\_\_\_\_\_ \\
+and & 6 & \_\_\_\_\_\_\_ \\
+completed & 7 & \_\_\_\_\_\_\_ \\
+all & 8 & \_\_\_\_\_\_\_ \\
+assignments & 9 & \_\_\_\_\_\_\_ \\
+passed & 10 & \_\_\_\_\_\_\_ \\
+the & 11 & \_\_\_\_\_\_\_ \\
+exam & 12 & \_\_\_\_\_\_\_ \\
+\hline
+\end{tabular}
+\end{center}
+
+\question{Can we process "passed" before we process "assignments"? Why or why not in an RNN?}
+
+\vspace{3em} % Space for answer
+
+\subsection{Parallelization Challenge}
+
+\think{You have 12 GPUs. How many can you use simultaneously to process this sentence with an RNN?}
+
+Answer: \_\_\_\_\_\_\_
+
+\question{What if you could look at ALL words at once instead of sequentially?}
+
+\vspace{3em} % Space for answer
+
+\discovery{
+You've identified the key limitation of RNNs: sequential processing prevents parallelization. What if we could process all positions simultaneously?
+}
+
+\section{Part 2: Inventing Self-Attention (15 minutes)}
+
+\subsection{The Direct Connection Idea}
+
+\exercise{Instead of passing information step-by-step, let's connect every word directly to every other word.}
+
+For the sentence "The cat sat", draw arrows showing which words should connect:
+
+\begin{center}
+\begin{tikzpicture}[scale=1.5]
+    \node at (0,0) {The};
+    \node at (2,0) {cat};
+    \node at (4,0) {sat};
+    % Students draw arrows here
+\end{tikzpicture}
+\end{center}
+
+\vspace{3em} % Space for drawing
+
+\question{How many connections did you draw? For a sentence with n words, how many connections would we need?}
+
+Connections = \_\_\_\_\_\_\_
+
+\subsection{Computing Relevance}
+
+\exercise{For each word pair, assign a relevance score (0-1):}
+
+When processing "sat", how relevant is each word?
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Query: "sat"} & \textbf{Key} & \textbf{Relevance Score} \\
+\hline
+sat looks at $\rightarrow$ & The & \_\_\_ \\
+sat looks at $\rightarrow$ & cat & \_\_\_ \\
+sat looks at $\rightarrow$ & sat & \_\_\_ \\
+\hline
+\textbf{Total} & & Should sum to 1.0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\think{How would you compute these scores mathematically?}
+
+\subsection{The Three Roles}
+
+\question{Each word needs to play three roles. Can you identify them?}
+
+\begin{enumerate}
+    \item \textbf{Q\_\_\_\_\_}: The word asking "who is relevant to me?"
+    \item \textbf{K\_\_\_}: The word answering "here's what I offer"
+    \item \textbf{V\_\_\_\_}: The word providing "here's my actual information"
+\end{enumerate}
+
+\hint{Think: Query, Key, Value - like a database lookup!}
+
+\subsection{The Attention Formula}
+
+\exercise{Design the attention mechanism. Fill in the steps:}
+
+\begin{enumerate}
+    \item Compute similarity: $Q \times K^T = $ \_\_\_\_\_\_\_
+    \item Scale by: $\frac{1}{\sqrt{\_\_\_}}$ (why scale?)
+    \item Apply \_\_\_\_\_\_\_ to get weights that sum to 1
+    \item Multiply by \_\_\_\_\_ to get final output
+\end{enumerate}
+
+\discovery{
+Congratulations! You just invented self-attention: 
+$$\text{Attention}(Q,K,V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+}
+
+\section{Part 3: Why Multiple Heads? (10 minutes)}
+
+\subsection{Different Types of Relationships}
+
+\exercise{Consider the sentence: "The bank by the river bank"}
+
+First "bank" should attend to different words for different reasons:
+\begin{itemize}
+    \item Syntactic: "bank" is a \_\_\_\_\_\_ (noun/verb)
+    \item Semantic: "bank" means \_\_\_\_\_\_ (financial/shore)
+    \item Position: "bank" is the \_\_\_\_\_\_ word
+\end{itemize}
+
+\question{Can a single attention pattern capture all these relationships?}
+
+\vspace{2em}
+
+\subsection{Multi-Head Design}
+
+\think{What if we had multiple attention mechanisms running in parallel, each looking for different patterns?}
+
+\exercise{Design multi-head attention:}
+
+\begin{enumerate}
+    \item Number of parallel attentions: \_\_\_\_\_ (typically 8-16)
+    \item Each head size: $\frac{d_{model}}{\_\_\_\_\_}$
+    \item How to combine outputs: \_\_\_\_\_\_\_\_\_\_\_
+\end{enumerate}
+
+\discovery{
+Multi-head attention lets the model attend to different types of information simultaneously - syntax, semantics, position, etc.
+}
+
+\section{Part 4: The Position Problem (10 minutes)}
+
+\subsection{Order Blindness}
+
+\exercise{Self-attention treats these as identical. Why is this a problem?}
+
+\begin{enumerate}
+    \item "The cat chased the mouse"
+    \item "The mouse chased the cat"
+\end{enumerate}
+
+Both have the same words, same attention scores between words...
+
+\question{What information is self-attention missing?}
+
+\vspace{2em}
+
+\subsection{Encoding Position}
+
+\think{How can we tell the model about word positions?}
+
+\exercise{Evaluate these approaches:}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Approach} & \textbf{Pros} & \textbf{Cons} \\
+\hline
+Add position number [1,2,3...] & Simple & \_\_\_\_\_\_\_ \\
+Learn position embeddings & Flexible & \_\_\_\_\_\_\_ \\
+Use sin/cos waves & \_\_\_\_\_\_ & Complex \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Sinusoidal Encoding}
+
+\question{Why use sine and cosine for positions?}
+
+Properties to achieve:
+\begin{itemize}
+    \item Each position should be unique
+    \item Model should understand relative positions
+    \item Should work for any sequence length
+\end{itemize}
+
+\exercise{Fill in the position encoding formula:}
+
+$$PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{\_\_\_\_\_}}\right)$$
+$$PE_{(pos, 2i+1)} = \_\_\_\left(\frac{pos}{10000^{2i/d_{model}}}\right)$$
+
+\discovery{
+Sinusoidal position encodings allow the model to learn relative positions and generalize to longer sequences than seen during training!
+}
+
+\section{Part 5: Building the Complete Transformer (15 minutes)}
+
+\subsection{Layer Design}
+
+\exercise{Design one transformer layer. What components do we need?}
+
+\begin{enumerate}
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_ (computes attention)
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_ (adds shortcut)
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_ (normalizes)
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_ (processes each position)
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_ (another shortcut)
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_ (normalizes again)
+\end{enumerate}
+
+\subsection{The Feed-Forward Network}
+
+\question{After attention, why do we need position-wise feed-forward networks?}
+
+Think about:
+\begin{itemize}
+    \item Attention combines information from different positions
+    \item FFN processes \_\_\_\_\_\_\_\_\_\_\_\_\_
+\end{itemize}
+
+\subsection{Residual Connections}
+
+\exercise{Why add the input to the output (residual/skip connections)?}
+
+Benefits:
+\begin{enumerate}
+    \item Gradient flow: \_\_\_\_\_\_\_\_\_\_\_
+    \item Information preservation: \_\_\_\_\_\_\_\_\_\_\_
+    \item Training stability: \_\_\_\_\_\_\_\_\_\_\_
+\end{enumerate}
+
+\subsection{Stack and Scale}
+
+\question{If one layer is good, what about many layers?}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Model} & \textbf{Layers} & \textbf{Parameters} \\
+\hline
+BERT-Base & 12 & 110M \\
+GPT-2 & \_\_\_ & 1.5B \\
+GPT-3 & \_\_\_ & 175B \\
+\hline
+\end{tabular}
+\end{center}
+
+\discovery{
+Transformers scale exceptionally well - more layers and parameters consistently improve performance!
+}
+
+\section{Part 6: Advantages Analysis (10 minutes)}
+
+\subsection{Parallelization}
+
+\exercise{Compare processing time:}
+
+100-word sequence:
+\begin{itemize}
+    \item RNN: 100 sequential steps = \_\_\_\_ time units
+    \item Transformer: \_\_\_ parallel step(s) = \_\_\_\_ time unit(s)
+\end{itemize}
+
+Speedup factor: \_\_\_\_$\times$
+
+\subsection{Long-Range Dependencies}
+
+\question{How many steps for word 1 to influence word 100?}
+
+\begin{itemize}
+    \item RNN: \_\_\_\_ steps (through all intermediate)
+    \item Transformer: \_\_\_\_ step(s) (direct connection)
+\end{itemize}
+
+\subsection{Interpretability}
+
+\think{With attention weights, what can we visualize?}
+
+\vspace{3em}
+
+\section{Coding Challenge: Build Your Own Attention}
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+def self_attention(Q, K, V):
+    """
+    Q, K, V: matrices of shape (seq_len, d_k)
+    """
+    d_k = Q.shape[1]
+    
+    # Step 1: Compute scores
+    scores = # YOUR CODE: Q x K^T
+    
+    # Step 2: Scale
+    scores = scores / # YOUR CODE
+    
+    # Step 3: Softmax
+    weights = # YOUR CODE: softmax(scores)
+    
+    # Step 4: Apply to values
+    output = # YOUR CODE: weights x V
+    
+    return output, weights
+
+# Test it!
+seq_len, d_k = 4, 8
+Q = np.random.randn(seq_len, d_k)
+K = np.random.randn(seq_len, d_k)
+V = np.random.randn(seq_len, d_k)
+
+output, weights = self_attention(Q, K, V)
+print("Attention weights:", weights)
+print("Do weights sum to 1?", np.allclose(weights.sum(axis=1), 1))
+\end{lstlisting}
+
+\section{Reflection Questions}
+
+\question{Why is the paper titled "Attention Is All You Need"?}
+
+\vspace{3em}
+
+\question{What tasks beyond NLP could benefit from transformers?}
+
+\vspace{3em}
+
+\question{What are potential limitations of transformers?}
+
+\vspace{3em}
+
+\hrule
+\vspace{1em}
+
+\section*{Summary}
+
+Today you discovered:
+\begin{enumerate}
+    \item Self-attention enables parallel processing
+    \item Multi-head attention captures different relationships
+    \item Positional encoding provides sequence information
+    \item Transformers scale better than RNNs
+\end{enumerate}
+
+These concepts you "invented" power ChatGPT, BERT, and virtually all modern NLP systems!
+
+\vspace{2em}
+\noindent\textbf{Next Week:} We'll explore pre-trained language models and the revolution they started!
+
+\end{document}

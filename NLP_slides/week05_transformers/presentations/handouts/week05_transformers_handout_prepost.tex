@@ -1,0 +1,629 @@
+\documentclass[10pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+% Colors
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Code style
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% Custom commands
+\newcommand{\question}[1]{\vspace{0.5em}\noindent\textbf{Q: #1}\vspace{0.3em}}
+\newcommand{\exercise}[1]{\vspace{0.5em}\noindent\textbf{Exercise: #1}\vspace{0.3em}}
+\newcommand{\think}[1]{\vspace{0.3em}\noindent\textit{Think: #1}\vspace{0.3em}}
+\newcommand{\intuition}[1]{
+    \begin{tcolorbox}[colback=purple!5!white,colframe=purple!60!black,title=Intuition]
+    #1
+    \end{tcolorbox}
+}
+\newcommand{\checkpoint}[1]{
+    \begin{tcolorbox}[colback=yellow!10!white,colframe=yellow!75!black,title=Checkpoint]
+    #1
+    \end{tcolorbox}
+}
+\newcommand{\discovery}[1]{
+    \begin{tcolorbox}[colback=green!5!white,colframe=green!75!black,title=Discovery]
+    #1
+    \end{tcolorbox}
+}
+\newcommand{\realworld}[1]{
+    \begin{tcolorbox}[colback=orange!5!white,colframe=orange!75!black,title=Real World]
+    #1
+    \end{tcolorbox}
+}
+\newcommand{\technical}[1]{
+    \begin{tcolorbox}[colback=blue!5!white,colframe=blue!60!black,title=Technical Detail]
+    #1
+    \end{tcolorbox}
+}
+
+\title{Week 5: Transformers - The Architecture Behind ChatGPT\\
+\large Pre-Class Discovery \& Post-Class Application}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{How to Use This Handout}
+\begin{itemize}
+    \item \textbf{Before Class}: Complete Part A to build intuition and discover key problems
+    \item \textbf{During Class}: Learn the technical solutions to these problems
+    \item \textbf{After Class}: Complete Part B to apply and deepen your understanding
+\end{itemize}
+
+\hrule
+\vspace{2em}
+
+\huge\textbf{PART A: PRE-CLASS DISCOVERY}
+\normalsize
+
+\vspace{1em}
+\textit{No prior knowledge required - Let's discover why we need transformers!}
+
+\section{A1: The Speed Problem (10 minutes)}
+
+\subsection{The Telephone Game}
+
+\realworld{
+Imagine passing a message through 100 people in a line, where each person can only whisper to the next person. How long would it take? What could go wrong?
+}
+
+\exercise{Let's think about processing this sentence word by word:}
+
+``The student who studied hard and completed all assignments passed the exam''
+
+If you could only read one word at a time, in order:
+\begin{enumerate}
+    \item How many steps would it take to read the whole sentence? \_\_\_\_
+    \item Could you understand ``passed'' before reading ``student''? \_\_\_\_
+    \item What if you had 12 friends to help - but you still had to read in order? \_\_\_\_
+\end{enumerate}
+
+\think{What if you could see ALL words at the same time, like looking at a complete picture?}
+
+\vspace{3em}
+
+\subsection{Drawing the Difference}
+
+\exercise{Draw how you think these two approaches would look:}
+
+\textbf{Approach 1: One word at a time}
+\vspace{4em}
+
+\textbf{Approach 2: All words at once}
+\vspace{4em}
+
+\discovery{
+You've just discovered the key limitation that transformers solve! Reading sequentially is slow and can lose information. Seeing everything at once is the breakthrough.
+}
+
+\section{A2: The Connection Problem (10 minutes)}
+
+\subsection{Who Talks to Whom?}
+
+\intuition{
+In a classroom, imagine if students could only talk to their immediate neighbors vs. everyone being able to talk to everyone. Which would be better for group understanding?
+}
+
+\exercise{Look at this sentence: ``The cat that chased the mouse sat''}
+
+Draw lines connecting words that need to ``talk'' to understand the sentence:
+
+\begin{center}
+\Large
+The \hspace{1cm} cat \hspace{1cm} that \hspace{1cm} chased \hspace{1cm} the \hspace{1cm} mouse \hspace{1cm} sat
+\normalsize
+\end{center}
+
+\vspace{3em}
+
+\question{Which words need to connect to understand who did the sitting?}
+
+\vspace{2em}
+
+\question{Which words need to connect to understand what was chased?}
+
+\vspace{2em}
+
+\subsection{The Spotlight Metaphor}
+
+\realworld{
+Imagine each word has a spotlight it can shine on other words. The brightness shows how much attention it pays to that word. ``Cat'' might shine bright light on ``sat'' (the action) and dimmer light on ``the'' (less important).
+}
+
+\exercise{For the word ``sat'', how bright should its spotlight be on each word? (Use High/Medium/Low)}
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{``sat'' looks at:} & \textbf{Brightness} \\
+\hline
+The & \_\_\_\_\_\_ \\
+cat & \_\_\_\_\_\_ \\
+that & \_\_\_\_\_\_ \\
+chased & \_\_\_\_\_\_ \\
+the & \_\_\_\_\_\_ \\
+mouse & \_\_\_\_\_\_ \\
+sat & \_\_\_\_\_\_ \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{A3: The Multiple Viewpoints Problem (10 minutes)}
+
+\subsection{Ambiguous Words}
+
+\exercise{Consider: ``The bank by the river bank collapsed''}
+
+The first ``bank'' could mean:
+\begin{itemize}
+    \item A financial institution
+    \item The edge of a river
+\end{itemize}
+
+\question{What different types of information would help you decide?}
+\begin{enumerate}
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\end{enumerate}
+
+\subsection{Multiple Cameras}
+
+\realworld{
+Like filming a scene with multiple cameras:
+- Camera 1: Shows who's doing what (grammar)
+- Camera 2: Shows what words mean (meaning)  
+- Camera 3: Shows where words are (position)
+- Camera 4: Shows the mood (sentiment)
+}
+
+\think{If you had 8 different ``cameras'' looking at a sentence, what would each look for?}
+
+\vspace{3em}
+
+\section{A4: The Order Problem (10 minutes)}
+
+\subsection{When Order Matters}
+
+\exercise{These sentences use the exact same words. What's different?}
+
+1. ``The dog chased the cat''
+2. ``The cat chased the dog''
+
+If a computer only saw the words without positions, could it tell them apart? \_\_\_\_
+
+\question{How would you tell a computer about word positions? List 3 ideas:}
+\begin{enumerate}
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\end{enumerate}
+
+\subsection{Position as a Fingerprint}
+
+\intuition{
+What if each position had a unique ``fingerprint'' - a special pattern that never repeats? Like musical notes at different frequencies creating unique combinations.
+}
+
+\exercise{Design your own position system. How would you mark positions 1, 2, 3?}
+
+\vspace{3em}
+
+\section{A5: The Stacking Problem (5 minutes)}
+
+\subsection{Building Understanding}
+
+\realworld{
+Like a layer cake where each layer adds more flavor:
+- Layer 1: Basic word connections
+- Layer 2: Phrase understanding
+- Layer 3: Sentence meaning
+- Layer 4: Paragraph context
+- And so on...
+}
+
+\question{If one layer gives basic understanding, what happens with 12 layers? 96 layers?}
+
+\vspace{2em}
+
+\think{GPT-3 has 96 layers. What might each layer be learning?}
+
+\vspace{2em}
+
+\checkpoint{
+Pre-Class Complete! You've discovered:
+\begin{itemize}
+    \item Why sequential processing is limiting
+    \item Why words need to connect directly
+    \item Why multiple viewpoints matter
+    \item Why position information is crucial
+    \item Why stacking layers increases power
+\end{itemize}
+Now you're ready to learn HOW transformers solve these problems!
+}
+
+\newpage
+
+\huge\textbf{PART B: POST-CLASS APPLICATION}
+\normalsize
+
+\vspace{1em}
+\textit{Now that you know the concepts, let's apply them!}
+
+\section{B1: Attention Mechanism Mathematics (15 minutes)}
+
+\subsection{Query, Key, Value}
+
+\technical{
+You learned in class:
+\begin{itemize}
+    \item Query (Q): What information am I looking for?
+    \item Key (K): What information do I contain?
+    \item Value (V): What actual content do I provide?
+\end{itemize}
+Attention scores = $\frac{QK^T}{\sqrt{d_k}}$
+}
+
+\exercise{Complete the attention computation steps:}
+
+Given:
+- $Q$ = Query matrix (what ``sat'' is looking for)
+- $K$ = Key matrix (what each word offers)
+- $V$ = Value matrix (actual information)
+- $d_k$ = 64 (dimension size)
+
+\begin{enumerate}
+    \item Compute similarity: $Q \times K^T$ gives us \_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item Why divide by $\sqrt{64}$ = 8? \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item Apply softmax to get \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item Multiply by $V$ to get \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\end{enumerate}
+
+\subsection{Calculating Attention Weights}
+
+\exercise{Calculate actual attention weights:}
+
+If the dot products between ``sat'' and other words are:
+- sat $\cdot$ The = 2
+- sat $\cdot$ cat = 8  
+- sat $\cdot$ sat = 6
+
+After scaling by $\sqrt{64} = 8$:
+- Score(The) = 2/8 = 0.25
+- Score(cat) = 8/8 = \_\_\_
+- Score(sat) = 6/8 = \_\_\_
+
+After softmax (approximately):
+- Weight(The) = 0.20
+- Weight(cat) = \_\_\_
+- Weight(sat) = \_\_\_
+
+(Weights must sum to 1.0)
+
+\section{B2: Multi-Head Attention Design (10 minutes)}
+
+\subsection{Head Dimension Calculation}
+
+\technical{
+With multi-head attention:
+- Model dimension: $d_{model}$ = 512
+- Number of heads: $h$ = 8
+- Head dimension: $d_k = d_{model} / h$
+}
+
+\exercise{Calculate dimensions:}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Model} & \textbf{Calculations} & \textbf{Head Size} \\
+\hline
+512-dim, 8 heads & 512 / 8 = & \_\_\_ \\
+768-dim, 12 heads & \_\_\_\_\_\_ = & \_\_\_ \\
+1024-dim, 16 heads & \_\_\_\_\_\_ = & \_\_\_ \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Combining Heads}
+
+\question{After each head computes attention separately, how do we combine them?}
+
+Steps:
+1. Each head outputs: \_\_\_\_\_\_\_\_\_\_\_\_\_
+2. Concatenate all heads: \_\_\_\_\_\_\_\_\_\_\_\_\_
+3. Apply linear transformation: \_\_\_\_\_\_\_\_\_\_\_\_\_
+
+\section{B3: Positional Encoding (10 minutes)}
+
+\subsection{Sinusoidal Encoding Formula}
+
+\technical{
+Position encoding uses:
+$$PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{model}}}\right)$$
+$$PE_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d_{model}}}\right)$$
+}
+
+\exercise{Calculate position encoding for position 1, dimension 0:}
+
+Given: pos = 1, i = 0, $d_{model}$ = 512
+
+\begin{align}
+PE_{(1, 0)} &= \sin\left(\frac{1}{10000^{0/512}}\right) \\
+&= \sin\left(\frac{1}{10000^0}\right) \\
+&= \sin(\_\_\_) \\
+&= \_\_\_\_\_
+\end{align}
+
+\question{Why use different frequencies (the $10000^{2i/d_{model}}$ term)?}
+
+\vspace{2em}
+
+\section{B4: Complete Transformer Architecture (10 minutes)}
+
+\subsection{Layer Components}
+
+\exercise{Fill in the missing components and their purposes:}
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Component} & \textbf{Purpose} \\
+\hline
+Multi-Head Attention & \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ \\
+Residual Connection & Preserves information, helps gradients \\
+Layer Normalization & \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ \\
+Feed-Forward Network & Processes each position independently \\
+Dropout & \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Residual Connection Math}
+
+\technical{
+Residual connection: $\text{Output} = \text{Layer}(x) + x$
+}
+
+\question{If Layer(x) fails (outputs near zero), what happens to the output?}
+
+\vspace{2em}
+
+\question{Why is this important for training deep networks?}
+
+\vspace{2em}
+
+\section{B5: Implementation Exercise (15 minutes)}
+
+\subsection{Implementing Scaled Dot-Product Attention}
+
+\technical{
+Now implement the attention mechanism you learned in class.
+}
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+def softmax(x):
+    """Compute softmax values."""
+    exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
+    return exp_x / np.sum(exp_x, axis=-1, keepdims=True)
+
+def scaled_dot_product_attention(Q, K, V):
+    """
+    Implement scaled dot-product attention.
+    
+    Args:
+        Q: Query matrix [seq_len, d_k]
+        K: Key matrix [seq_len, d_k]
+        V: Value matrix [seq_len, d_k]
+    
+    Returns:
+        output: Attention output [seq_len, d_k]
+        weights: Attention weights [seq_len, seq_len]
+    """
+    d_k = Q.shape[1]
+    
+    # Step 1: Compute QK^T
+    scores = # YOUR CODE HERE
+    
+    # Step 2: Scale by sqrt(d_k)
+    scores = # YOUR CODE HERE
+    
+    # Step 3: Apply softmax
+    weights = # YOUR CODE HERE
+    
+    # Step 4: Compute weighted sum of values
+    output = # YOUR CODE HERE
+    
+    return output, weights
+
+# Test your implementation
+seq_len, d_k = 4, 64
+Q = np.random.randn(seq_len, d_k)
+K = np.random.randn(seq_len, d_k)
+V = np.random.randn(seq_len, d_k)
+
+output, weights = scaled_dot_product_attention(Q, K, V)
+
+# Verify
+print(f"Output shape: {output.shape}")
+print(f"Weights shape: {weights.shape}")
+print(f"Weights sum to 1: {np.allclose(weights.sum(axis=1), 1)}")
+print(f"Sample weights:\n{weights[0]}")
+\end{lstlisting}
+
+\subsection{Multi-Head Attention}
+
+\exercise{Implement multi-head attention splitting:}
+
+\begin{lstlisting}[language=Python]
+def split_heads(x, num_heads):
+    """
+    Split last dimension into multiple heads.
+    
+    Args:
+        x: Input tensor [seq_len, d_model]
+        num_heads: Number of attention heads
+    
+    Returns:
+        Split tensor [num_heads, seq_len, d_k]
+    """
+    seq_len, d_model = x.shape
+    d_k = d_model // num_heads
+    
+    # Reshape to [seq_len, num_heads, d_k]
+    x = x.reshape(seq_len, num_heads, d_k)
+    
+    # Transpose to [num_heads, seq_len, d_k]
+    return # YOUR CODE HERE
+
+# Test
+x = np.random.randn(10, 512)  # 10 tokens, 512 dimensions
+heads = split_heads(x, 8)
+print(f"Split shape: {heads.shape}")  # Should be [8, 10, 64]
+\end{lstlisting}
+
+\section{B6: Analysis Questions (10 minutes)}
+
+\subsection{Computational Complexity}
+
+\exercise{Compare computational costs:}
+
+For a sequence of length $n$:
+\begin{itemize}
+    \item RNN: $O(n)$ sequential steps, can't parallelize
+    \item Transformer self-attention: $O(\_\_\_)$ complexity, fully parallel
+\end{itemize}
+
+\question{What's the trade-off here?}
+
+\vspace{2em}
+
+\subsection{Long-Range Dependencies}
+
+\exercise{Path length analysis:}
+
+To connect position 1 to position 100:
+\begin{itemize}
+    \item RNN path length: \_\_\_ steps
+    \item Transformer path length: \_\_\_ step(s)
+\end{itemize}
+
+\question{How does this affect gradient flow during training?}
+
+\vspace{2em}
+
+\subsection{Memory Requirements}
+
+\technical{
+Attention weights matrix is $n \times n$ for sequence length $n$.
+}
+
+\exercise{Calculate memory for attention weights:}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Sequence Length} & \textbf{Matrix Size} & \textbf{Memory (float32)} \\
+\hline
+100 tokens & $100 \times 100$ & 40 KB \\
+512 tokens & $\_\_\_ \times \_\_\_$ & \_\_\_ MB \\
+2048 tokens & $\_\_\_ \times \_\_\_$ & \_\_\_ MB \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{B7: Advanced Concepts (Optional)}
+
+\subsection{Attention Patterns}
+
+\exercise{Identify what type of attention pattern each head might learn:}
+
+\begin{enumerate}
+    \item Head attending mostly to previous word: \_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item Head attending to first token: \_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item Head attending uniformly: \_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item Head attending to same word: \_\_\_\_\_\_\_\_\_\_\_\_\_
+\end{enumerate}
+
+\subsection{Transformer Variants}
+
+\question{How would you modify transformers for:}
+\begin{enumerate}
+    \item Very long sequences (>10,000 tokens)?
+    \item Real-time processing?
+    \item Limited memory devices?
+\end{enumerate}
+
+\vspace{3em}
+
+\hrule
+\vspace{1em}
+
+\section*{Key Takeaways}
+
+\checkpoint{
+After completing both parts, you understand:
+
+\textbf{From Pre-Class:}
+\begin{itemize}
+    \item Why parallel processing beats sequential
+    \item Why direct connections matter
+    \item Why multiple viewpoints are needed
+    \item Why position encoding is crucial
+\end{itemize}
+
+\textbf{From Post-Class:}
+\begin{itemize}
+    \item How attention mathematics works (QKV, scaling, softmax)
+    \item How multi-head attention divides and conquers
+    \item How positional encoding uses sinusoids
+    \item How residual connections enable deep networks
+    \item How to implement attention in code
+\end{itemize}
+}
+
+\section*{Next Steps}
+
+\begin{enumerate}
+    \item Implement a complete transformer block
+    \item Visualize attention patterns on real text
+    \item Explore pre-trained models (BERT, GPT)
+    \item Read the original ``Attention Is All You Need'' paper
+\end{enumerate}
+
+\realworld{
+You now understand the architecture powering ChatGPT, Claude, and modern AI. From discovering the problems to implementing solutions - you've mastered transformers!
+}
+
+\end{document}

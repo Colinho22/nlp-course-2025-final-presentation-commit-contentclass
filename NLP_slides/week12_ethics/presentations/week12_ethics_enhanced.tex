@@ -1,0 +1,603 @@
+\documentclass[8pt,aspectratio=169,8pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm2e}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{subfigure}
+\usepackage{hyperref}
+
+% Theme settings
+\usetheme{Frankfurt}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Custom colors
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{173,216,230}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codegray}{RGB}{150,150,150}
+\definecolor{codepurple}{RGB}{128,0,128}
+\definecolor{backcolor}{RGB}{245,245,245}
+
+% Code listing settings
+\lstset{
+    backgroundcolor=\color{backcolor},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    showstringspaces=false,
+    frame=single,
+    numbers=left,
+    language=Python
+}
+
+% Include slide layouts
+\input{../slide_layouts.tex}
+
+\title[Week 12: Ethics]{Natural Language Processing Course}
+\subtitle{Week 12: Ethics and Future Directions}
+\author{Joerg R. Osterrieder \\ \url{www.joergosterrieder.com}}
+\date{}
+
+\begin{document}
+
+% Title page
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\section{Week 12: Ethics and Future Directions}
+
+% Title slide
+\begin{frame}
+    \centering
+    \vspace{2cm}
+    {\Large \textbf{Week 12}}\\
+    \vspace{0.5cm}
+    {\huge \textbf{Ethics \& Future Directions}}\\
+    \vspace{1cm}
+    {\large With Great Power Comes Great Responsibility}
+\end{frame}
+
+% Motivation: The AI ethics wake-up call
+\begin{frame}[t]{When AI Goes Wrong: Real-World Consequences}
+    \textbf{Recent AI failures that shocked the world:}
+    
+    \vspace{0.5em}
+    \begin{itemize}
+        \item \textbf{2016}: Microsoft Tay becomes racist in 24 hours\footnotemark
+        \item \textbf{2018}: Amazon hiring AI discriminates against women
+        \item \textbf{2020}: GPT-3 generates toxic content at scale
+        \item \textbf{2022}: DALL-E deepfakes threaten democracy
+        \item \textbf{2023}: ChatGPT helps write malware
+        \item \textbf{2024}: AI-generated misinformation floods social media
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{red!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            We're building systems that affect billions - we must do it responsibly
+        }
+    }
+    \end{center}
+    
+    \vspace{0.5em}
+    \textbf{The fundamental questions:}
+    \begin{itemize}
+        \item Who decides what AI should/shouldn't do?
+        \item How do we prevent harm while enabling benefits?
+        \item What future are we building?
+    \end{itemize}
+    
+    \footnotetext{Documented cases from major tech companies' incident reports}
+\end{frame}
+
+% The ethics landscape
+\begin{frame}[t]{The AI Ethics Landscape: Challenges We Face}
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figures/ai_ethics_landscape.pdf}
+    
+    \vspace{0.5em}
+    \textbf{Key ethical dimensions:}
+    \begin{itemize}
+        \item Bias and fairness
+        \item Privacy and surveillance
+        \item Misinformation and manipulation
+        \item Environmental impact
+        \item Job displacement
+    \end{itemize}
+\end{frame}
+
+% Real-world impact
+\begin{frame}[t]{AI Ethics in Practice (2024)}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Positive Applications:}
+            \begin{itemize}
+                \item Medical diagnosis assistance
+                \item Educational accessibility
+                \item Climate change modeling
+                \item Disaster response
+                \item Scientific discovery
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Regulations Emerging:}
+            \begin{itemize}
+                \item EU AI Act (2024)\footnotemark
+                \item US Executive Order on AI
+                \item China AI regulations
+                \item Industry self-governance
+                \item Academic guidelines
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Ongoing Concerns:}
+            \begin{itemize}
+                \item Bias amplification
+                \item Privacy violations
+                \item Deepfakes/disinformation
+                \item Autonomous weapons
+                \item Concentration of power
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Industry Response:}
+            \begin{itemize}
+                \item Red teaming
+                \item Safety research
+                \item Alignment work
+                \item Transparency reports
+                \item External audits
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            2024: The year ethics moved from afterthought to core requirement
+        }
+    }
+    \end{center}
+    
+    \footnotetext{European Parliament approval of comprehensive AI regulation}
+\end{frame}
+
+% Learning objectives
+\begin{frame}[t]{Week 12: What You'll Master}
+    \textbf{By the end of this week, you will:}
+    \begin{itemize}
+        \item \textbf{Understand} key ethical challenges in NLP
+        \item \textbf{Identify} bias in language models
+        \item \textbf{Apply} fairness techniques
+        \item \textbf{Design} responsible AI systems
+        \item \textbf{Envision} positive futures for NLP
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            \textbf{Core Insight:} Technology is not neutral - it embodies our values
+        }
+    }
+    \end{center}
+\end{frame}
+
+% Bias in language models
+\begin{frame}[t]{Bias in Language Models: Mirror of Society}
+    \textbf{Where bias comes from:}
+    
+    \vspace{0.5em}
+    \centering
+    \includegraphics[width=0.65\textwidth]{../figures/bias_sources.pdf}
+    
+    \vspace{0.5em}
+    \textbf{Types of bias:}\footnotemark
+    \begin{itemize}
+        \item \textbf{Historical bias}: Past discrimination in data
+        \item \textbf{Representation bias}: Underrepresented groups
+        \item \textbf{Measurement bias}: What we choose to measure
+        \item \textbf{Aggregation bias}: One-size-fits-all models
+        \item \textbf{Evaluation bias}: Biased benchmarks
+    \end{itemize}
+    
+    \footnotetext{Suresh \& Guttag (2021) "A Framework for Understanding Sources of Harm"}
+\end{frame}
+
+% Measuring bias
+\begin{frame}[t]{Detecting and Measuring Bias}
+    \textbf{Key approaches to detect bias:}
+    
+    \vspace{0.5em}
+    \textbf{1. Template-based testing:}
+    \begin{itemize}
+        \item Fill-in-the-blank: "The [MASK] is a doctor"
+        \item Compare male vs female completion rates
+        \item Measure occupation stereotypes systematically
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{2. Word Embedding Association Test (WEAT):}
+    \begin{itemize}
+        \item Compare semantic associations between groups
+        \item Measure implicit biases in word embeddings
+        \item Statistical significance testing for bias
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{3. Counterfactual evaluation:}
+    \begin{itemize}
+        \item Swap demographic attributes in text
+        \item Measure prediction differences
+        \item Identify systematic discriminatory patterns
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Common findings across models:}
+    \begin{itemize}
+        \item Gender: 3:1 male bias in technical roles
+        \item Race: Name-based discrimination in hiring contexts
+        \item Age: Strong preference for youth-associated terms
+        \item Toxicity: Small percentage but harmful impact
+    \end{itemize}
+\end{frame}
+
+% Fairness techniques
+\begin{frame}[t]{Fairness Techniques: Building Better Models}
+    \centering
+    \includegraphics[width=0.65\textwidth]{../figures/fairness_techniques.pdf}
+    
+    \vspace{0.5em}
+    \textbf{Approaches to fairness:}
+    \begin{itemize}
+        \item \textbf{Pre-processing}: Fix the data
+        \item \textbf{In-processing}: Fair training objectives
+        \item \textbf{Post-processing}: Adjust outputs
+        \item \textbf{Ongoing monitoring}: Continuous improvement
+    \end{itemize}
+\end{frame}
+
+% Privacy and security
+\begin{frame}[t]{Privacy and Security: Protecting User Data}
+    \textbf{Privacy risks in language models:}\footnotemark
+    
+    \vspace{0.5em}
+    \begin{itemize}
+        \item \textbf{Memorization}: Models can leak training data
+        \item \textbf{Inference attacks}: Extract personal information
+        \item \textbf{Re-identification}: Deanonymize text
+        \item \textbf{Model inversion}: Reconstruct training examples
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Protection techniques:}
+    \begin{itemize}
+        \item Differential privacy training
+        \item Federated learning
+        \item Secure multi-party computation
+        \item Data minimization
+        \item Regular audits
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \centering
+    \includegraphics[width=0.5\textwidth]{../figures/privacy_protection.pdf}
+    
+    \footnotetext{Carlini et al. (2021) "Extracting Training Data from Large Language Models"}
+\end{frame}
+
+% Environmental impact
+\begin{frame}[t]{Environmental Responsibility: Green AI}
+    \textbf{The carbon cost of progress:}
+    
+    \vspace{0.5em}
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figures/carbon_footprint.pdf}
+    
+    \vspace{0.5em}
+    \textbf{Sustainable AI practices:}
+    \begin{itemize}
+        \item Efficient architectures first
+        \item Carbon-aware training scheduling
+        \item Model recycling and fine-tuning
+        \item Compute measurement and reporting
+        \item Renewable energy data centers
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{green!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            Question: Is a 0.1\% accuracy gain worth 10x the carbon?
+        }
+    }
+    \end{center}
+\end{frame}
+
+% Future of NLP
+\begin{frame}[t]{The Future of NLP: Next 10 Years}
+    \centering
+    \includegraphics[width=0.65\textwidth]{../figures/nlp_future_timeline.pdf}
+    
+    \vspace{0.5em}
+    \textbf{Emerging capabilities:}
+    \begin{itemize}
+        \item Truly multilingual models (7000+ languages)
+        \item Real-time universal translation
+        \item Perfect long-term memory
+        \item Multimodal understanding
+        \item Reasoning and planning
+    \end{itemize}
+\end{frame}
+
+% AGI and beyond
+\begin{frame}[t]{Towards AGI: The Big Questions}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Technical Milestones:}
+            \begin{itemize}
+                \item 2025: 10T parameter models
+                \item 2027: Human-level dialogue
+                \item 2030: Scientific discovery
+                \item 2035: Creative professionals?
+                \item 2040: Artificial general intelligence?
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Capabilities Growth:}\footnotemark
+            \begin{itemize}
+                \item Emergent abilities
+                \item Cross-domain transfer
+                \item Self-improvement
+                \item Autonomous research
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Societal Questions:}
+            \begin{itemize}
+                \item How do we maintain human agency?
+                \item What work will humans do?
+                \item How do we distribute benefits?
+                \item Can we ensure alignment?
+                \item What does thriving mean?
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Governance Needs:}
+            \begin{itemize}
+                \item International cooperation
+                \item Safety standards
+                \item Benefit sharing
+                \item Rights framework
+                \item Democratic input
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{yellow!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            We're not just building technology - we're shaping the future of humanity
+        }
+    }
+    \end{center}
+    
+    \footnotetext{Anthropic (2024) "Constitutional AI"; OpenAI (2023) "Planning for AGI"}
+\end{frame}
+
+% Positive vision
+\begin{frame}[t]{A Positive Vision: AI for Good}
+    \textbf{What we could build:}
+    
+    \vspace{0.5em}
+    \begin{itemize}
+        \item \textbf{Education}: Personal tutor for every child
+        \item \textbf{Healthcare}: Doctor in every pocket
+        \item \textbf{Science}: 1000x research acceleration
+        \item \textbf{Creativity}: Amplified human expression
+        \item \textbf{Communication}: No language barriers
+        \item \textbf{Accessibility}: Equal access for all abilities
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \centering
+    \includegraphics[width=0.5\textwidth]{../figures/ai_for_good.pdf}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{green!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            The best future is one we build together - diverse, inclusive, beneficial for all
+        }
+    }
+    \end{center}
+\end{frame}
+
+% Call to action
+\begin{frame}[t]{Your Role in Shaping the Future}
+    \textbf{As NLP practitioners, we have responsibilities:}
+    
+    \vspace{0.5em}
+    \textbf{Technical Excellence:}
+    \begin{itemize}
+        \item Build robust, reliable systems
+        \item Measure and mitigate bias
+        \item Protect user privacy
+        \item Optimize for efficiency
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Ethical Leadership:}
+    \begin{itemize}
+        \item Ask "should we?" not just "can we?"
+        \item Include diverse perspectives
+        \item Consider long-term consequences
+        \item Speak up about concerns
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Positive Impact:}
+    \begin{itemize}
+        \item Work on problems that matter
+        \item Make technology accessible
+        \item Share knowledge openly
+        \item Mentor the next generation
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            \textbf{You have the skills to predict the next word - \\
+            now use them to write a better future}
+        }
+    }
+    \end{center}
+\end{frame}
+
+% Course conclusion
+\begin{frame}[t]{Course Conclusion: From N-grams to the Future}
+    \textbf{Our 12-week journey:}
+    
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item Statistical foundations
+        \item Neural language models
+        \item RNNs and memory
+        \item Sequence-to-sequence
+        \item Transformer revolution
+        \item Pre-training paradigm
+        \item Scaling and emergent abilities
+        \item Tokenization fundamentals
+        \item Decoding strategies
+        \item Fine-tuning and prompting
+        \item Efficiency and deployment
+        \item Ethics and future
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{green!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            You now understand how ChatGPT works from first principles!
+        }
+    }
+    \end{center}
+    
+    \vspace{0.5em}
+    \textbf{Remember:} With great power comes great responsibility. \\
+    Build technology that empowers humanity.
+\end{frame}
+
+% Exercise
+\begin{frame}[t]{Week 12 Exercise: Design Your Ethical AI System}
+    \textbf{Your Mission:} Create a responsible NLP application
+    
+    \vspace{0.5em}
+    \textbf{Part 1: Choose Your Impact Area}
+    \begin{itemize}
+        \item Healthcare, education, accessibility, environment
+        \item Identify specific problem to solve
+        \item Define success metrics beyond accuracy
+        \item Consider stakeholders and impacts
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Part 2: Build with Ethics in Mind}
+    \begin{itemize}
+        \item Implement bias detection
+        \item Add privacy protection
+        \item Create transparency features
+        \item Design for inclusivity
+        \item Measure environmental impact
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Part 3: Future-Proof Your Design}
+    \begin{itemize}
+        \item Write ethical guidelines
+        \item Create monitoring plan
+        \item Design governance structure
+        \item Plan for unintended consequences
+        \item Share your vision
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Deliverable:} Complete proposal for ethical AI system + prototype
+\end{frame}
+
+% Final thoughts
+\begin{frame}[t]{Final Thoughts: The Journey Continues}
+    \centering
+    \vspace{1cm}
+    {\Large \textbf{Thank you for joining this journey!}}
+    
+    \vspace{1cm}
+    \textit{"The best way to predict the future is to invent it"} \\
+    - Alan Kay
+    
+    \vspace{1cm}
+    \textbf{What will you build?}
+    
+    \vspace{1cm}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            The next chapter of NLP will be written by people like you. \\
+            Make it a story worth telling.
+        }
+    }
+    \end{center}
+    
+    \vspace{1cm}
+\end{frame}
+
+% References
+\begin{frame}[t]{References and Further Reading}
+    \textbf{Ethics and Bias:}
+    \begin{itemize}
+        \item Bender et al. (2021). "On the Dangers of Stochastic Parrots"
+        \item Crawford (2021). "Atlas of AI"
+        \item Gebru et al. (2021). "Datasheets for Datasets"
+    \end{itemize}
+    
+    \textbf{Future Directions:}
+    \begin{itemize}
+        \item Bommasani et al. (2021). "On the Opportunities and Risks of Foundation Models"
+        \item Anthropic (2024). "Constitutional AI: Harmlessness from AI Feedback"
+        \item Future of Humanity Institute reports
+    \end{itemize}
+    
+    \textbf{Practical Resources:}
+    \begin{itemize}
+        \item AI Ethics Guidelines (EU, IEEE, Partnership on AI)
+        \item Model Cards and Data Statements
+        \item Responsible AI Toolkits (Google, Microsoft, IBM)
+    \end{itemize}
+\end{frame}
+\end{document}

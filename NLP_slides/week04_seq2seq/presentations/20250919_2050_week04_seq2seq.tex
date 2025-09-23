@@ -1,0 +1,984 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm2e}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+% Theme settings - Minimalist design
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamertemplate{blocks}[default]
+\setbeamertemplate{title page}[default][colsep=-4bp,rounded=false]
+
+% Minimalist color scheme
+\definecolor{maingray}{RGB}{64,64,64}
+\definecolor{annotgray}{RGB}{180,180,180}
+\definecolor{backgray}{RGB}{240,240,240}
+\definecolor{darkgray}{RGB}{51,51,51}
+\definecolor{midgray}{RGB}{102,102,102}
+\definecolor{lightgray}{RGB}{153,153,153}
+\definecolor{vlightgray}{RGB}{204,204,204}
+
+% Set colors
+\setbeamercolor{structure}{fg=maingray}
+\setbeamercolor{title}{fg=maingray}
+\setbeamercolor{frametitle}{fg=maingray}
+\setbeamercolor{normal text}{fg=maingray}
+\setbeamercolor{itemize item}{fg=midgray}
+\setbeamercolor{enumerate item}{fg=midgray}
+\setbeamercolor{block title}{bg=backgray,fg=darkgray}
+\setbeamercolor{block body}{bg=backgray!50,fg=maingray}
+
+% Code listing settings
+\lstset{
+    backgroundcolor=\color{backgray},
+    basicstyle=\ttfamily\tiny,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{midgray},
+    keywordstyle=\color{darkgray}\bfseries,
+    numberstyle=\tiny\color{lightgray},
+    stringstyle=\color{midgray},
+    showstringspaces=false,
+    frame=single,
+    rulecolor=\color{lightgray},
+    numbers=left,
+    language=Python
+}
+
+% Mathematical notation
+\newcommand{\given}{\mid}
+\newcommand{\argmax}{\operatorname{argmax}}
+\newcommand{\softmax}{\operatorname{softmax}}
+\newcommand{\prob}[1]{P(#1)}
+
+% Layout commands
+\newcommand{\twocol}[2]{
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            #1
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            #2
+        \end{column}
+    \end{columns}
+}
+
+\title{Natural Language Processing}
+\subtitle{Week 4: Sequence-to-Sequence Models}
+\author{NLP Course 2025}
+\date{}
+
+\begin{document}
+
+% Title slide
+\begin{frame}[plain]
+    \titlepage
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Breaking the fixed-length barrier in neural sequence modeling}
+\end{frame}
+
+% Overview
+\begin{frame}{Course Progress}
+    \twocol{
+        \textbf{Previous Weeks:}
+        \begin{itemize}
+            \item Week 1: Statistical language models
+            \item Week 2: Neural language models
+            \item Week 3: RNN/LSTM architectures
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{This Week:}
+        \begin{itemize}
+            \item Sequence-to-sequence architecture
+            \item Encoder-decoder models
+            \item Attention mechanisms
+            \item Applications and impact
+        \end{itemize}
+    }{
+        \textbf{Learning Objectives:}
+        \begin{itemize}
+            \item Understand variable-length sequence processing
+            \item Master encoder-decoder architecture
+            \item Grasp attention mechanism fundamentals
+            \item Apply seq2seq to real problems
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Key Innovation:}\\
+        Decoupling input and output sequence lengths
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Foundation for modern NLP: machine translation, summarization, dialogue}
+\end{frame}
+
+% Section 1: The Problem
+\section{The Variable-Length Challenge}
+
+\begin{frame}{The Fundamental Problem}
+    \twocol{
+        \textbf{Fixed-Length Limitation:}
+        \begin{itemize}
+            \item Traditional RNNs: one input $\rightarrow$ one output
+            \item Cannot handle length mismatches
+            \item Real tasks need flexibility
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Real-World Examples:}
+        \begin{itemize}
+            \item ``I love you'' (3) $\rightarrow$ ``Je t'aime'' (2)
+            \item ``Thank you'' (2) $\rightarrow$ ``Arigato'' (1)
+            \item Article (500 words) $\rightarrow$ Summary (50)
+        \end{itemize}
+    }{
+        \textbf{Failed Approaches:}
+        \begin{itemize}
+            \item Padding to maximum length
+            \item Truncating sequences
+            \item Forced 1:1 word mapping
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Requirements:}
+        \begin{itemize}
+            \item Variable input length $T$
+            \item Variable output length $T'$
+            \item No fixed relationship $T \neq T'$
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} The core challenge that motivated sequence-to-sequence models (2014)}
+\end{frame}
+
+\begin{frame}{Applications Driving Innovation}
+    \begin{center}
+        \includegraphics[width=0.85\textwidth]{../figures/week4_applications_timeline_minimalist.pdf}
+    \end{center}
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Each application requires handling different input-output length relationships}
+\end{frame}
+
+% Section 2: The Architecture
+\section{Encoder-Decoder Architecture}
+
+\begin{frame}{The Seq2Seq Solution}
+    \begin{center}
+        \includegraphics[width=0.9\textwidth]{../figures/week4_seq2seq_architecture_minimalist.pdf}
+    \end{center}
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Two-stage process: understanding (encoding) then generation (decoding)}
+\end{frame}
+
+\begin{frame}{Mathematical Formulation}
+    \twocol{
+        \textbf{Encoder:}
+        \begin{align*}
+            h_t &= \text{LSTM}(h_{t-1}, x_t)\\
+            &\quad t = 1, \ldots, T\\
+            c &= h_T
+        \end{align*}
+
+        \vspace{\fill}
+
+        \textbf{Decoder:}
+        \begin{align*}
+            s_t &= \text{LSTM}(s_{t-1}, y_{t-1}, c)\\
+            &\quad t = 1, \ldots, T'\\
+            P(y_t \given y_{<t}, x) &= \softmax(W_s s_t + b)
+        \end{align*}
+    }{
+        \textbf{Training Objective:}
+        $$\mathcal{L} = -\sum_{t=1}^{T'} \log P(y_t^* \given y_{<t}^*, x)$$
+
+        \vspace{\fill}
+
+        \textbf{Key Components:}
+        \begin{itemize}
+            \item $h_t$: encoder hidden states
+            \item $c$: context vector
+            \item $s_t$: decoder hidden states
+            \item $y_t$: output tokens
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Context vector $c$ bridges variable-length sequences through fixed representation}
+\end{frame}
+
+\begin{frame}[fragile]{Implementation Overview}
+    \twocol{
+        \begin{lstlisting}
+class Seq2Seq(nn.Module):
+    def __init__(self,
+                 input_dim,
+                 output_dim,
+                 hidden_dim):
+        super().__init__()
+        self.encoder = nn.LSTM(
+            input_dim, hidden_dim
+        )
+        self.decoder = nn.LSTM(
+            output_dim, hidden_dim
+        )
+        self.output = nn.Linear(
+            hidden_dim, output_dim
+        )
+
+    def forward(self, src, tgt):
+        # Encode source
+        _, (h, c) = self.encoder(src)
+
+        # Decode with context
+        outputs = []
+        for t in range(tgt.shape[0]):
+            out, (h, c) = self.decoder(
+                tgt[t], (h, c)
+            )
+            outputs.append(
+                self.output(out)
+            )
+        return torch.stack(outputs)
+        \end{lstlisting}
+    }{
+        \textbf{Key Design Choices:}
+        \begin{itemize}
+            \item LSTM for both encoder/decoder
+            \item Final hidden state as context
+            \item Teacher forcing during training
+            \item Beam search for inference
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Training Strategy:}
+        \begin{itemize}
+            \item Mini-batch processing
+            \item Gradient clipping
+            \item Learning rate scheduling
+            \item Early stopping on validation
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Typical Hyperparameters:}
+        \begin{itemize}
+            \item Hidden size: 256-512
+            \item Layers: 2-4
+            \item Dropout: 0.2-0.3
+            \item Batch size: 32-64
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} PyTorch implementation showing core architecture components}
+\end{frame}
+
+% Section 3: Training Process
+\section{Training and Inference}
+
+\begin{frame}{Training vs Inference}
+    \begin{center}
+        \includegraphics[width=0.9\textwidth]{../figures/week4_training_process_minimalist.pdf}
+    \end{center}
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Teacher forcing accelerates training but creates exposure bias at inference}
+\end{frame}
+
+\begin{frame}{Information Bottleneck Problem}
+    \twocol{
+        \textbf{The Challenge:}
+        \begin{itemize}
+            \item Entire input compressed to fixed $c$
+            \item Information loss inevitable
+            \item Longer sequences suffer more
+            \item Context vector becomes bottleneck
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Observable Effects:}
+        \begin{itemize}
+            \item Performance degrades with length
+            \item Details lost in translation
+            \item Poor on rare words
+            \item Struggles with long-range dependencies
+        \end{itemize}
+    }{
+        \textbf{Attempted Solutions:}
+        \begin{itemize}
+            \item Larger hidden dimensions
+            \item Bidirectional encoders
+            \item Multiple layers
+            \item Ensemble methods
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{The Real Solution:}\\
+        Attention mechanism (next section)
+
+        \vspace{\fill}
+
+        \textbf{Impact on Performance:}\\
+        BLEU drops 1 point per 5 tokens after length 20
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Fixed-size bottleneck motivates attention mechanism innovation}
+\end{frame}
+
+% Section 4: Attention Mechanism
+\section{Attention Revolution}
+
+\begin{frame}{Attention Mechanism}
+    \begin{center}
+        \includegraphics[width=0.9\textwidth]{../figures/week4_attention_mechanism_minimalist.pdf}
+    \end{center}
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Dynamic context: each decoder step attends to relevant encoder states}
+\end{frame}
+
+\begin{frame}{Attention Mathematics}
+    \twocol{
+        \textbf{Attention Computation:}
+        \begin{align*}
+            e_{tj} &= a(s_{t-1}, h_j)\\
+            \alpha_{tj} &= \frac{\exp(e_{tj})}{\sum_{k=1}^{T} \exp(e_{tk})}\\
+            c_t &= \sum_{j=1}^{T} \alpha_{tj} h_j
+        \end{align*}
+
+        \vspace{\fill}
+
+        \textbf{Alignment Functions:}
+        \begin{itemize}
+            \item Dot: $a(s, h) = s^T h$
+            \item General: $a(s, h) = s^T W h$
+            \item Concat: $a(s, h) = v^T \tanh(W[s; h])$
+        \end{itemize}
+    }{
+        \textbf{Benefits:}
+        \begin{itemize}
+            \item No information bottleneck
+            \item Direct connection to all inputs
+            \item Learns alignment automatically
+            \item Handles long sequences
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Interpretation:}
+        \begin{itemize}
+            \item $\alpha_{tj}$: attention weights
+            \item Soft alignment between sequences
+            \item Differentiable selection mechanism
+            \item Visualizable for debugging
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Bahdanau et al. (2015): +5.5 BLEU points on WMT14 English-French}
+\end{frame}
+
+\begin{frame}{Types of Attention}
+    \twocol{
+        \textbf{Bahdanau Attention (2015):}
+        \begin{itemize}
+            \item Uses previous decoder state
+            \item Computes attention before output
+            \item More computationally expensive
+            \item Better for alignment tasks
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Luong Attention (2015):}
+        \begin{itemize}
+            \item Uses current decoder state
+            \item Computes attention after RNN
+            \item More efficient computation
+            \item Simpler implementation
+        \end{itemize}
+    }{
+        \textbf{Global vs Local:}
+        \begin{itemize}
+            \item Global: attends to all positions
+            \item Local: window around aligned position
+            \item Monotonic: forward-only attention
+            \item Hard: discrete selection (non-differentiable)
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Modern Extensions:}
+        \begin{itemize}
+            \item Multi-head attention
+            \item Self-attention
+            \item Cross-attention
+            \item Scaled dot-product
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Different attention mechanisms suit different tasks and constraints}
+\end{frame}
+
+% Section 5: Performance and Evaluation
+\section{Performance Analysis}
+
+\begin{frame}{Translation Quality Evolution}
+    \begin{center}
+        \includegraphics[width=0.85\textwidth]{../figures/week4_bleu_comparison_minimalist.pdf}
+    \end{center}
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Attention mechanism provides largest single improvement in translation quality}
+\end{frame}
+
+\begin{frame}{Evaluation Metrics}
+    \twocol{
+        \textbf{BLEU Score:}
+        \begin{itemize}
+            \item N-gram precision based
+            \item Brevity penalty for short outputs
+            \item Range: 0-100 (higher better)
+            \item Standard for MT evaluation
+        \end{itemize}
+
+        $$\text{BLEU} = BP \cdot \exp\left(\sum_{n=1}^{4} \frac{1}{4} \log p_n\right)$$
+
+        \vspace{\fill}
+
+        \textbf{Other Metrics:}
+        \begin{itemize}
+            \item METEOR: considers synonyms
+            \item ROUGE: for summarization
+            \item ChrF: character-level F-score
+            \item BERTScore: semantic similarity
+        \end{itemize}
+    }{
+        \textbf{Human Evaluation:}
+        \begin{itemize}
+            \item Fluency: grammatical correctness
+            \item Adequacy: meaning preservation
+            \item Preference: side-by-side comparison
+            \item Error analysis: categorized mistakes
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Typical BLEU Scores:}
+        \begin{itemize}
+            \item \textless 10: Poor quality
+            \item 10-20: Understandable
+            \item 20-30: Good quality
+            \item 30-40: High quality
+            \item \textgreater 40: Near human
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Multiple metrics needed for comprehensive evaluation}
+\end{frame}
+
+% Section 6: Practical Considerations
+\section{Implementation Details}
+
+\begin{frame}{Beam Search Decoding}
+    \twocol{
+        \textbf{Greedy vs Beam Search:}
+        \begin{itemize}
+            \item Greedy: select top-1 at each step
+            \item Beam: maintain top-k hypotheses
+            \item Trade-off: quality vs speed
+            \item Typical beam size: 4-10
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Algorithm:}
+        \begin{enumerate}
+            \item Initialize with \textless START\textgreater
+            \item For each position:
+                \begin{itemize}
+                    \item Expand all beams
+                    \item Score continuations
+                    \item Keep top-k
+                \end{itemize}
+            \item Return best complete sequence
+        \end{enumerate}
+    }{
+        \textbf{Length Normalization:}
+        $$\text{score} = \frac{1}{T^\alpha} \sum_{t=1}^{T} \log P(y_t)$$
+
+        \vspace{\fill}
+
+        \textbf{Coverage Penalty:}
+        \begin{itemize}
+            \item Prevents repetition
+            \item Encourages attending to all inputs
+            \item Improves translation coverage
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Practical Tips:}
+        \begin{itemize}
+            \item Length penalty $\alpha \approx 0.6$
+            \item Early stopping on \textless END\textgreater
+            \item Ensemble multiple models
+            \item Re-rank with language model
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Beam search typically improves BLEU by 1-2 points over greedy}
+\end{frame}
+
+\begin{frame}{Common Implementation Challenges}
+    \twocol{
+        \textbf{Training Issues:}
+        \begin{itemize}
+            \item Gradient explosion/vanishing
+            \item Slow convergence
+            \item Overfitting on short sequences
+            \item Memory constraints
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Solutions:}
+        \begin{itemize}
+            \item Gradient clipping (norm 5-10)
+            \item Learning rate scheduling
+            \item Curriculum learning
+            \item Gradient accumulation
+        \end{itemize}
+    }{
+        \textbf{Data Processing:}
+        \begin{itemize}
+            \item Vocabulary size (30k-50k)
+            \item Unknown word handling
+            \item Sequence length limits
+            \item Batch padding strategy
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Best Practices:}
+        \begin{itemize}
+            \item Reversing source sequences
+            \item Bidirectional encoder
+            \item Residual connections
+            \item Layer normalization
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Proper implementation details crucial for state-of-the-art performance}
+\end{frame}
+
+% Section 7: Applications
+\section{Real-World Applications}
+
+\begin{frame}{Machine Translation Systems}
+    \twocol{
+        \textbf{Google Translate (2016):}
+        \begin{itemize}
+            \item GNMT: Google Neural MT
+            \item 8-layer LSTM seq2seq
+            \item Attention mechanism
+            \item 100+ language pairs
+            \item 1 billion daily translations
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Technical Details:}
+        \begin{itemize}
+            \item WordPiece tokenization
+            \item Shared encoder-decoder
+            \item Quantization for mobile
+            \item TPU optimization
+        \end{itemize}
+    }{
+        \textbf{Performance Gains:}
+        \begin{itemize}
+            \item 60\% error reduction vs phrase-based
+            \item Human parity on news (2018)
+            \item Real-time translation
+            \item Offline capability
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Other Systems:}
+        \begin{itemize}
+            \item Facebook: fairseq
+            \item Microsoft: Translator
+            \item Amazon: Translate
+            \item DeepL: Transformer-based
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Seq2seq enabled neural machine translation revolution (2014-2017)}
+\end{frame}
+
+\begin{frame}{Text Summarization}
+    \twocol{
+        \textbf{Abstractive Summarization:}
+        \begin{itemize}
+            \item Generates new sentences
+            \item Seq2seq with attention
+            \item Pointer-generator networks
+            \item Coverage mechanism
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Architecture Adaptations:}
+        \begin{itemize}
+            \item Hierarchical attention
+            \item Copy mechanism
+            \item Content selection
+            \item Sentence rewriting
+        \end{itemize}
+    }{
+        \textbf{Applications:}
+        \begin{itemize}
+            \item News summarization
+            \item Research paper abstracts
+            \item Email summaries
+            \item Meeting minutes
+            \item Legal document briefs
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Challenges:}
+        \begin{itemize}
+            \item Factual consistency
+            \item Length control
+            \item Multi-document input
+            \item Domain adaptation
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Pointer networks solve OOV problem in summarization}
+\end{frame}
+
+\begin{frame}{Dialogue Systems}
+    \twocol{
+        \textbf{Conversational AI:}
+        \begin{itemize}
+            \item Context-aware responses
+            \item Multi-turn dialogue
+            \item Personality consistency
+            \item Task-oriented dialogue
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Seq2Seq Extensions:}
+        \begin{itemize}
+            \item Hierarchical encoder
+            \item Memory networks
+            \item Persona embedding
+            \item Emotion modeling
+        \end{itemize}
+    }{
+        \textbf{Commercial Systems:}
+        \begin{itemize}
+            \item Customer service bots
+            \item Virtual assistants
+            \item Mental health support
+            \item Educational tutors
+            \item Game NPCs
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Key Improvements:}
+        \begin{itemize}
+            \item Context carry-over
+            \item Intent recognition
+            \item Slot filling
+            \item Response diversity
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Foundation for modern chatbots before large language models}
+\end{frame}
+
+% Section 8: Historical Context
+\section{Historical Impact}
+
+\begin{frame}{From Seq2Seq to Transformers}
+    \twocol{
+        \textbf{Seq2Seq Legacy (2014-2017):}
+        \begin{itemize}
+            \item Proved end-to-end learning viable
+            \item Introduced attention mechanism
+            \item Established encoder-decoder paradigm
+            \item Enabled many applications
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Limitations Leading to Transformers:}
+        \begin{itemize}
+            \item Sequential processing bottleneck
+            \item Long-range dependency issues
+            \item Training inefficiency
+            \item Limited parallelization
+        \end{itemize}
+    }{
+        \textbf{Key Innovations Retained:}
+        \begin{itemize}
+            \item Encoder-decoder architecture
+            \item Attention mechanism (scaled up)
+            \item Teacher forcing training
+            \item Beam search decoding
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Transformer Advantages:}
+        \begin{itemize}
+            \item Full parallelization
+            \item Self-attention throughout
+            \item Positional encoding
+            \item Multi-head attention
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} ``Attention is All You Need'' (2017) builds directly on seq2seq attention}
+\end{frame}
+
+\begin{frame}{Key Papers and Milestones}
+    \twocol{
+        \textbf{Foundational Papers:}
+        \begin{itemize}
+            \item Sutskever et al. (2014):\\
+                  {\footnotesize Sequence to Sequence Learning with Neural Networks}
+            \item Cho et al. (2014):\\
+                  {\footnotesize Learning Phrase Representations using RNN Encoder-Decoder}
+            \item Bahdanau et al. (2015):\\
+                  {\footnotesize Neural MT by Jointly Learning to Align and Translate}
+            \item Luong et al. (2015):\\
+                  {\footnotesize Effective Approaches to Attention-based NMT}
+        \end{itemize}
+    }{
+        \textbf{Impact Timeline:}
+        \begin{itemize}
+            \item 2014: First seq2seq models
+            \item 2015: Attention mechanism
+            \item 2016: Google Translate deployment
+            \item 2017: Transformer supersedes
+            \item Today: Foundation understood
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Citations (2024):}
+        \begin{itemize}
+            \item Sutskever: 20,000+
+            \item Bahdanau: 25,000+
+            \item Fundamental to modern NLP
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} These papers established the foundation for modern neural NLP}
+\end{frame}
+
+% Section 9: Hands-on Exercise
+\section{Practical Exercise}
+
+\begin{frame}[fragile]{Exercise: Simple Seq2Seq Implementation}
+    \twocol{
+        \textbf{Task: Number Translation}
+        \begin{lstlisting}
+# Input: "one two three"
+# Output: "1 2 3"
+
+vocab_in = {
+    'zero': 0, 'one': 1,
+    'two': 2, 'three': 3,
+    'four': 4, 'five': 5
+}
+
+vocab_out = {
+    '0': 0, '1': 1,
+    '2': 2, '3': 3,
+    '4': 4, '5': 5
+}
+
+# Your task:
+# 1. Encode word sequence
+# 2. Generate number sequence
+# 3. Handle variable lengths
+        \end{lstlisting}
+    }{
+        \textbf{Implementation Steps:}
+        \begin{enumerate}
+            \item Tokenize input sequence
+            \item Embed tokens
+            \item Run through encoder LSTM
+            \item Extract context vector
+            \item Initialize decoder with context
+            \item Generate output sequence
+            \item Convert to numbers
+        \end{enumerate}
+
+        \vspace{\fill}
+
+        \textbf{Extensions:}
+        \begin{itemize}
+            \item Add attention mechanism
+            \item Try different languages
+            \item Implement beam search
+            \item Visualize attention weights
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Simple task demonstrates core seq2seq concepts without complexity}
+\end{frame}
+
+% Section 10: Summary
+\section{Summary and Outlook}
+
+\begin{frame}{Key Takeaways}
+    \twocol{
+        \textbf{Architecture Insights:}
+        \begin{itemize}
+            \item Encoder-decoder decouples lengths
+            \item Context vector bridges sequences
+            \item Attention solves bottleneck
+            \item Teacher forcing for training
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Practical Lessons:}
+        \begin{itemize}
+            \item Implementation details matter
+            \item Beam search improves quality
+            \item Multiple metrics needed
+            \item Domain adaptation crucial
+        \end{itemize}
+    }{
+        \textbf{Historical Significance:}
+        \begin{itemize}
+            \item Enabled neural MT revolution
+            \item Introduced attention concept
+            \item Foundation for Transformers
+            \item Still used in production
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Modern Relevance:}
+        \begin{itemize}
+            \item Core concepts remain valid
+            \item Understanding aids Transformer learning
+            \item Useful for constrained devices
+            \item Baseline for new research
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Seq2seq: the bridge between RNNs and modern Transformer architectures}
+\end{frame}
+
+\begin{frame}{Next Week: Transformers}
+    \twocol{
+        \textbf{Preview of Week 5:}
+        \begin{itemize}
+            \item Self-attention mechanism
+            \item Multi-head attention
+            \item Positional encoding
+            \item Parallel processing
+            \item ``Attention is All You Need''
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Building on Seq2Seq:}
+        \begin{itemize}
+            \item Attention becomes primary
+            \item No recurrence needed
+            \item Massive parallelization
+            \item Scale to billions of parameters
+        \end{itemize}
+    }{
+        \textbf{Preparation:}
+        \begin{itemize}
+            \item Review attention mechanism
+            \item Understand matrix operations
+            \item Read Vaswani et al. (2017)
+            \item Practice with PyTorch
+        \end{itemize}
+
+        \vspace{\fill}
+
+        \textbf{Key Questions:}
+        \begin{itemize}
+            \item Why abandon recurrence?
+            \item How does self-attention work?
+            \item What enables parallelization?
+            \item Why so successful?
+        \end{itemize}
+    }
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} The Transformer revolution: from 2017 to GPT and beyond}
+\end{frame}
+
+% References
+\begin{frame}{References}
+    \footnotesize
+    \begin{itemize}
+        \item Sutskever, I., Vinyals, O., \& Le, Q. V. (2014). Sequence to sequence learning with neural networks. NeurIPS.
+
+        \item Cho, K., et al. (2014). Learning phrase representations using RNN encoder-decoder for statistical machine translation. EMNLP.
+
+        \item Bahdanau, D., Cho, K., \& Bengio, Y. (2015). Neural machine translation by jointly learning to align and translate. ICLR.
+
+        \item Luong, M. T., Pham, H., \& Manning, C. D. (2015). Effective approaches to attention-based neural machine translation. EMNLP.
+
+        \item Wu, Y., et al. (2016). Google's neural machine translation system. arXiv:1609.08144.
+
+        \item Vaswani, A., et al. (2017). Attention is all you need. NeurIPS.
+
+        \item See, A., Liu, P. J., \& Manning, C. D. (2017). Get to the point: Summarization with pointer-generator networks. ACL.
+    \end{itemize}
+
+    \vspace{\fill}
+    {\footnotesize\color{annotgray} Comprehensive reading list available on course website}
+\end{frame}
+
+\end{document}

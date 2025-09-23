@@ -1,0 +1,828 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+% Theme settings
+\usetheme{Frankfurt}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Colors
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{173,216,230}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codegray}{RGB}{150,150,150}
+\definecolor{codepurple}{RGB}{128,0,128}
+\definecolor{backcolor}{RGB}{245,245,245}
+
+% Exercise boxes
+\newtcolorbox{exercise}{
+    colback=blue!10,
+    colframe=blue!50!black,
+    title={\textbf{Exercise}},
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{solution}{
+    colback=green!10,
+    colframe=green!50!black,
+    title={\textbf{Solution}},
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{hint}{
+    colback=yellow!10,
+    colframe=yellow!50!black,
+    title={\textbf{Hint}},
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{challenge}{
+    colback=red!10,
+    colframe=red!50!black,
+    title={\textbf{Challenge}},
+    fonttitle=\bfseries
+}
+
+% Code listing settings
+\lstset{
+    backgroundcolor=\color{backcolor},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    showstringspaces=false,
+    frame=single,
+    numbers=left,
+    language=Python
+}
+
+\title[Week 6 Exercises]{Pre-trained Language Models}
+\subtitle{Hands-on Exercises}
+\author{NLP Course - Week 6}
+\date{}
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Table of Contents
+\begin{frame}{Exercise Overview}
+    \tableofcontents
+\end{frame}
+
+% ===============================================
+% SECTION 1: UNDERSTANDING PRE-TRAINING
+% ===============================================
+
+\section{Understanding Pre-training}
+
+\begin{frame}[fragile]{Exercise 1: The Waste Problem Calculator}
+    \begin{exercise}
+    Calculate the computational waste when 20 companies independently train models for NLP tasks.
+    
+    Given:
+    \begin{itemize}
+        \item Each model training costs: \$500,000
+        \item Training time per model: 336 hours (2 weeks)
+        \item 90\% of training is learning general language features
+        \item 10\% is task-specific learning
+    \end{itemize}
+    
+    Calculate:
+    \begin{enumerate}
+        \item Total cost for all companies
+        \item Total wasted cost (duplicate effort)
+        \item Potential savings with pre-training
+    \end{enumerate}
+    \end{exercise}
+    
+    \begin{hint}
+    Wasted cost = Cost of duplicated general language learning across all companies
+    \end{hint}
+\end{frame}
+
+\begin{frame}[fragile]{Exercise 1: Solution}
+    \begin{solution}
+    \begin{lstlisting}[language=Python]
+# Calculate waste
+companies = 20
+cost_per_model = 500000
+general_learning_percent = 0.9
+task_specific_percent = 0.1
+
+# Total cost
+total_cost = companies * cost_per_model
+print(f"Total cost: ${total_cost:,}")  # $10,000,000
+
+# Duplicated effort (all learn same general features)
+general_cost_per_company = cost_per_model * general_learning_percent
+wasted_cost = general_cost_per_company * (companies - 1)
+print(f"Wasted cost: ${wasted_cost:,}")  # $8,550,000
+
+# With pre-training
+pretrain_cost = cost_per_model  # Train once
+finetune_cost = cost_per_model * task_specific_percent * companies
+efficient_total = pretrain_cost + finetune_cost
+savings = total_cost - efficient_total
+print(f"Savings: ${savings:,}")  # $8,000,000 (80% reduction)
+    \end{lstlisting}
+    \end{solution}
+\end{frame}
+
+% ===============================================
+% SECTION 2: MLM EXERCISES
+% ===============================================
+
+\section{Masked Language Modeling}
+
+\begin{frame}[fragile]{Exercise 2: Implement Simple MLM}
+    \begin{exercise}
+    Implement a simple masked language model training example.
+    
+    Task: Create a function that:
+    \begin{enumerate}
+        \item Takes a sentence
+        \item Randomly masks 15\% of tokens
+        \item Returns masked sentence and targets
+    \end{enumerate}
+    \end{exercise}
+    
+    \begin{lstlisting}[language=Python]
+def create_mlm_example(sentence, mask_rate=0.15):
+    """Create MLM training example"""
+    # Your code here
+    pass
+
+# Test
+sentence = "The quick brown fox jumps over the lazy dog"
+masked, targets = create_mlm_example(sentence)
+print(f"Masked: {masked}")
+print(f"Targets: {targets}")
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Exercise 2: Solution}
+    \begin{solution}
+    \begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+import random
+
+def create_mlm_example(sentence, mask_rate=0.15):
+    """Create MLM training example"""
+    words = sentence.split()
+    n_masks = max(1, int(len(words) * mask_rate))
+    
+    # Select random positions to mask
+    mask_positions = random.sample(range(len(words)), n_masks)
+    
+    masked_sentence = []
+    targets = {}
+    
+    for i, word in enumerate(words):
+        if i in mask_positions:
+            # 80% [MASK], 10% random, 10% unchanged
+            r = random.random()
+            if r < 0.8:
+                masked_sentence.append("[MASK]")
+            elif r < 0.9:
+                masked_sentence.append(random.choice(words))
+            else:
+                masked_sentence.append(word)
+            targets[i] = word
+        else:
+            masked_sentence.append(word)
+    
+    return " ".join(masked_sentence), targets
+
+# Test
+sentence = "The quick brown fox jumps over the lazy dog"
+masked, targets = create_mlm_example(sentence)
+print(f"Masked: {masked}")  # "The [MASK] brown fox jumps over the [MASK] dog"
+print(f"Targets: {targets}")  # {1: 'quick', 7: 'lazy'}
+    \end{lstlisting}
+    \end{solution}
+\end{frame}
+
+\begin{frame}[fragile]{Exercise 3: BERT vs GPT Prediction Game}
+    \begin{exercise}
+    Play the prediction game for both BERT and GPT approaches.
+    
+    \textbf{BERT Style (Bidirectional):}
+    \begin{itemize}
+        \item "The [MASK] is shining brightly today."
+        \item "She plays the [MASK] beautifully."
+        \item "The capital of [MASK] is Paris."
+    \end{itemize}
+    
+    \textbf{GPT Style (Left-to-right):}
+    \begin{itemize}
+        \item "Once upon a time, there was a..."
+        \item "The weather today is..."
+        \item "Machine learning is..."
+    \end{itemize}
+    
+    Write your predictions and explain which context helps more.
+    \end{exercise}
+\end{frame}
+
+\begin{frame}{Exercise 3: Solution}
+    \begin{solution}
+    \textbf{BERT Predictions (uses both sides):}
+    \begin{itemize}
+        \item "The \textbf{sun} is shining brightly today." (context: shining + today)
+        \item "She plays the \textbf{piano/violin} beautifully." (context: plays + beautifully)
+        \item "The capital of \textbf{France} is Paris." (context: capital + Paris)
+    \end{itemize}
+    
+    \textbf{GPT Completions (uses only left):}
+    \begin{itemize}
+        \item "Once upon a time, there was a \textbf{princess/king/dragon...}"
+        \item "The weather today is \textbf{sunny/cloudy/beautiful...}"
+        \item "Machine learning is \textbf{a field/powerful/transforming...}"
+    \end{itemize}
+    
+    \textbf{Analysis:}
+    \begin{itemize}
+        \item BERT: More constrained, often single correct answer
+        \item GPT: More creative, multiple valid continuations
+        \item BERT better for understanding, GPT better for generation
+    \end{itemize}
+    \end{solution}
+\end{frame}
+
+% ===============================================
+% SECTION 3: FINE-TUNING
+% ===============================================
+
+\section{Fine-tuning Strategies}
+
+\begin{frame}[fragile]{Exercise 4: Choose Your Fine-tuning Strategy}
+    \begin{exercise}
+    For each scenario, choose the best fine-tuning strategy:
+    
+    \begin{enumerate}
+        \item Startup with 100 labeled examples for sentiment analysis
+        \item Research lab with 1M examples for medical NER
+        \item Student with laptop GPU and 1K examples
+        \item Company needing real-time inference with 10K examples
+    \end{enumerate}
+    
+    Options:
+    \begin{itemize}
+        \item A: Few-shot prompting
+        \item B: Full fine-tuning
+        \item C: LoRA/PEFT
+        \item D: Prompt tuning
+    \end{itemize}
+    \end{exercise}
+\end{frame}
+
+\begin{frame}{Exercise 4: Solution}
+    \begin{solution}
+    \textbf{Optimal Strategies:}
+    
+    \begin{enumerate}
+        \item \textbf{Startup (100 examples)} → \textbf{A: Few-shot prompting}
+        \begin{itemize}
+            \item Too few examples for fine-tuning
+            \item Use GPT-3/Claude API with examples in prompt
+        \end{itemize}
+        
+        \item \textbf{Research lab (1M examples)} → \textbf{B: Full fine-tuning}
+        \begin{itemize}
+            \item Abundant data justifies full training
+            \item Can afford computational resources
+        \end{itemize}
+        
+        \item \textbf{Student (laptop, 1K examples)} → \textbf{C: LoRA/PEFT}
+        \begin{itemize}
+            \item Limited GPU memory
+            \item Enough data for adaptation
+            \item LoRA uses only 1\% parameters
+        \end{itemize}
+        
+        \item \textbf{Company (real-time, 10K examples)} → \textbf{C: LoRA or D: Prompt tuning}
+        \begin{itemize}
+            \item Need fast inference
+            \item LoRA adds minimal latency
+            \item Prompt tuning even more efficient
+        \end{itemize}
+    \end{enumerate}
+    \end{solution}
+\end{frame}
+
+\begin{frame}[fragile]{Exercise 5: Implement LoRA Concept}
+    \begin{exercise}
+    Understand LoRA by implementing its core concept.
+    
+    Given a weight matrix W (512×512), implement low-rank adaptation:
+    \end{exercise}
+    
+    \begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+import numpy as np
+
+def apply_lora(W, x, rank=8):
+    """
+    Apply LoRA: W_new = W + A @ B
+    where A is (512, rank) and B is (rank, 512)
+    """
+    d = W.shape[0]
+    
+    # Initialize low-rank matrices
+    A = np.random.randn(d, rank) * 0.01
+    B = np.random.randn(rank, d) * 0.01
+    
+    # Your code: compute output with LoRA
+    # output = ?
+    
+    return output, A, B
+
+# Test
+W = np.random.randn(512, 512)
+x = np.random.randn(512, 1)
+output, A, B = apply_lora(W, x)
+
+# Calculate parameter reduction
+original_params = W.size
+lora_params = A.size + B.size
+print(f"Reduction: {lora_params/original_params:.1%}")
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Exercise 5: Solution}
+    \begin{solution}
+    \begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+import numpy as np
+
+def apply_lora(W, x, rank=8):
+    """
+    Apply LoRA: W_new = W + A @ B
+    where A is (512, rank) and B is (rank, 512)
+    """
+    d = W.shape[0]
+    
+    # Initialize low-rank matrices (in practice, learned)
+    A = np.random.randn(d, rank) * 0.01
+    B = np.random.randn(rank, d) * 0.01
+    
+    # Standard computation
+    standard_output = W @ x
+    
+    # LoRA adaptation
+    lora_adaptation = A @ (B @ x)
+    
+    # Combined output
+    output = standard_output + lora_adaptation
+    
+    return output, A, B
+
+# Test
+W = np.random.randn(512, 512)
+x = np.random.randn(512, 1)
+output, A, B = apply_lora(W, x)
+
+# Calculate parameter reduction
+original_params = W.size  # 262,144
+lora_params = A.size + B.size  # 8,192
+print(f"Original: {original_params:,} params")
+print(f"LoRA: {lora_params:,} params")
+print(f"Reduction: {lora_params/original_params:.1%}")  # 3.1%
+    \end{lstlisting}
+    \end{solution}
+\end{frame}
+
+% ===============================================
+% SECTION 4: PRACTICAL APPLICATIONS
+% ===============================================
+
+\section{Practical Applications}
+
+\begin{frame}[fragile]{Exercise 6: Build a Sentiment Classifier}
+    \begin{exercise}
+    Create a simple sentiment classifier using a pre-trained model.
+    
+    Steps:
+    \begin{enumerate}
+        \item Load a pre-trained BERT model
+        \item Add classification head
+        \item Prepare data
+        \item Fine-tune on movie reviews
+    \end{enumerate}
+    \end{exercise}
+    
+    \begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import TrainingArguments, Trainer
+import torch
+
+# Your implementation here
+model_name = "bert-base-uncased"
+num_labels = 2  # positive/negative
+
+# Load model and tokenizer
+# Add classification head
+# Prepare dataset
+# Fine-tune
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Exercise 6: Solution}
+    \begin{solution}
+    \begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import TrainingArguments, Trainer
+import torch
+from torch.utils.data import Dataset
+
+class SentimentDataset(Dataset):
+    def __init__(self, texts, labels, tokenizer, max_length=128):
+        self.encodings = tokenizer(texts, truncation=True, 
+                                   padding=True, max_length=max_length)
+        self.labels = labels
+    
+    def __getitem__(self, idx):
+        item = {key: torch.tensor(val[idx]) 
+                for key, val in self.encodings.items()}
+        item['labels'] = torch.tensor(self.labels[idx])
+        return item
+    
+    def __len__(self):
+        return len(self.labels)
+
+# Load pre-trained model
+model_name = "bert-base-uncased"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSequenceClassification.from_pretrained(
+    model_name, num_labels=2
+)
+
+# Example data
+texts = ["I love this movie!", "This was terrible.", 
+         "Amazing performance!", "Waste of time."]
+labels = [1, 0, 1, 0]  # 1: positive, 0: negative
+
+# Create dataset
+dataset = SentimentDataset(texts, labels, tokenizer)
+
+# Training arguments (for fine-tuning)
+training_args = TrainingArguments(
+    output_dir="./sentiment_model",
+    num_train_epochs=3,
+    per_device_train_batch_size=16,
+    learning_rate=2e-5,
+    warmup_steps=500,
+)
+
+# Create trainer
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=dataset,
+)
+
+# Fine-tune (in practice, would train on larger dataset)
+# trainer.train()
+    \end{lstlisting}
+    \end{solution}
+\end{frame}
+
+\begin{frame}[fragile]{Exercise 7: Zero-shot Classification}
+    \begin{exercise}
+    Practice zero-shot classification without any training.
+    
+    Task: Classify news headlines into categories without fine-tuning.
+    
+    Headlines:
+    \begin{enumerate}
+        \item "Stock market reaches all-time high"
+        \item "New species discovered in Amazon"
+        \item "Team wins championship after 20 years"
+        \item "Breakthrough in quantum computing announced"
+    \end{enumerate}
+    
+    Categories: Business, Science, Sports, Technology
+    
+    Use the template: "This headline is about [CATEGORY]"
+    \end{exercise}
+\end{frame}
+
+\begin{frame}[fragile]{Exercise 7: Solution}
+    \begin{solution}
+    \begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+from transformers import pipeline
+
+# Use zero-shot classification pipeline
+classifier = pipeline("zero-shot-classification", 
+                     model="facebook/bart-large-mnli")
+
+headlines = [
+    "Stock market reaches all-time high",
+    "New species discovered in Amazon", 
+    "Team wins championship after 20 years",
+    "Breakthrough in quantum computing announced"
+]
+
+categories = ["Business", "Science", "Sports", "Technology"]
+
+# Classify each headline
+for headline in headlines:
+    result = classifier(headline, candidate_labels=categories)
+    top_label = result['labels'][0]
+    confidence = result['scores'][0]
+    print(f"{headline[:30]}... -> {top_label} ({confidence:.2%})")
+
+# Expected output:
+# Stock market reaches all-time... -> Business (95%)
+# New species discovered in Ama... -> Science (92%)
+# Team wins championship after ... -> Sports (98%)
+# Breakthrough in quantum compu... -> Technology (89%)
+    \end{lstlisting}
+    
+    \textbf{Key Insight:} Pre-trained models understand concepts without task-specific training!
+    \end{solution}
+\end{frame}
+
+% ===============================================
+% SECTION 5: ADVANCED CHALLENGES
+% ===============================================
+
+\section{Advanced Challenges}
+
+\begin{frame}{Challenge 1: Model Comparison}
+    \begin{challenge}
+    Compare BERT and GPT for a real task.
+    
+    Task: Question Answering
+    \begin{itemize}
+        \item Context: "Paris is the capital of France. It has a population of 2.1 million people. The Eiffel Tower, built in 1889, is its most famous landmark."
+        \item Question: "When was the Eiffel Tower built?"
+    \end{itemize}
+    
+    \begin{enumerate}
+        \item Explain how BERT would approach this
+        \item Explain how GPT would approach this
+        \item Which is better suited and why?
+        \item Implement extraction with both approaches
+    \end{enumerate}
+    \end{challenge}
+\end{frame}
+
+\begin{frame}[fragile]{Challenge 1: Solution}
+    \begin{solution}
+    \textbf{BERT Approach:}
+    \begin{itemize}
+        \item Encodes question + context bidirectionally
+        \item Predicts start/end positions of answer span
+        \item Direct extraction: "1889"
+    \end{itemize}
+    
+    \textbf{GPT Approach:}
+    \begin{itemize}
+        \item Generates answer token by token
+        \item Input: "Context: [text] Question: When was... Answer:"
+        \item Generated: "The Eiffel Tower was built in 1889"
+    \end{itemize}
+    
+    \begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+# BERT for QA (extractive)
+from transformers import pipeline
+qa_bert = pipeline("question-answering", model="bert-base-uncased")
+result = qa_bert(question="When was the Eiffel Tower built?",
+                context=context)
+print(result['answer'])  # "1889"
+
+# GPT for QA (generative)
+qa_gpt = pipeline("text-generation", model="gpt2")
+prompt = f"{context}\nQ: When was the Eiffel Tower built?\nA:"
+answer = qa_gpt(prompt, max_length=50)
+    \end{lstlisting}
+    
+    \textbf{Winner:} BERT for extractive QA (more accurate, faster)
+    \end{solution}
+\end{frame}
+
+\begin{frame}{Challenge 2: Environmental Impact Calculator}
+    \begin{challenge}
+    Calculate and compare the carbon footprint of different approaches.
+    
+    Given:
+    \begin{itemize}
+        \item Training BERT from scratch: 1,400 kWh
+        \item Fine-tuning BERT: 5 kWh
+        \item LoRA fine-tuning: 0.5 kWh
+        \item Inference per 1M requests: 2 kWh
+        \item CO2 per kWh: 0.5 kg
+    \end{itemize}
+    
+    Calculate for a company serving 10M requests/month:
+    \begin{enumerate}
+        \item Annual carbon footprint for each approach
+        \item Break-even point for pre-training investment
+        \item Recommendations for sustainability
+    \end{enumerate}
+    \end{challenge}
+\end{frame}
+
+\begin{frame}[fragile]{Challenge 2: Solution}
+    \begin{solution}
+    \begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+# Carbon footprint calculator
+def calculate_carbon(training_kwh, inference_kwh_per_m, 
+                     requests_per_month, months=12):
+    co2_per_kwh = 0.5  # kg CO2
+    
+    # Training emissions (one-time)
+    training_co2 = training_kwh * co2_per_kwh
+    
+    # Inference emissions (ongoing)
+    monthly_requests_m = requests_per_month / 1_000_000
+    monthly_inference_kwh = monthly_requests_m * inference_kwh_per_m
+    annual_inference_co2 = monthly_inference_kwh * months * co2_per_kwh
+    
+    total_co2 = training_co2 + annual_inference_co2
+    return training_co2, annual_inference_co2, total_co2
+
+# Compare approaches
+approaches = {
+    "From Scratch": calculate_carbon(1400, 2, 10_000_000),
+    "Fine-tuning": calculate_carbon(5, 2, 10_000_000),
+    "LoRA": calculate_carbon(0.5, 2, 10_000_000),
+}
+
+for name, (train, inference, total) in approaches.items():
+    print(f"{name}:")
+    print(f"  Training: {train:.1f} kg CO2")
+    print(f"  Annual inference: {inference:.1f} kg CO2")
+    print(f"  Total first year: {total:.1f} kg CO2")
+
+# Results:
+# From Scratch: 700 + 120 = 820 kg CO2
+# Fine-tuning: 2.5 + 120 = 122.5 kg CO2
+# LoRA: 0.25 + 120 = 120.25 kg CO2
+
+# Break-even: Pre-training worth it if shared across 
+# 700 / 2.5 = 280 fine-tuning projects
+    \end{lstlisting}
+    \end{solution}
+\end{frame}
+
+% ===============================================
+% SECTION 6: HANDS-ON PROJECT
+% ===============================================
+
+\section{Hands-on Project}
+
+\begin{frame}{Final Project: Build Your Own Application}
+    \begin{exercise}
+    \textbf{Choose one project to implement:}
+    
+    \begin{enumerate}
+        \item \textbf{Customer Support Bot}
+        \begin{itemize}
+            \item Use GPT for response generation
+            \item Fine-tune on company FAQs
+            \item Implement context memory
+        \end{itemize}
+        
+        \item \textbf{Research Paper Summarizer}
+        \begin{itemize}
+            \item Use BERT for extraction
+            \item Identify key findings
+            \item Generate abstract
+        \end{itemize}
+        
+        \item \textbf{Code Documentation Generator}
+        \begin{itemize}
+            \item Fine-tune CodeBERT
+            \item Generate docstrings
+            \item Explain complex functions
+        \end{itemize}
+        
+        \item \textbf{Multi-lingual Sentiment Analyzer}
+        \begin{itemize}
+            \item Use mBERT or XLM-R
+            \item Zero-shot transfer to new languages
+            \item Compare performance across languages
+        \end{itemize}
+    \end{enumerate}
+    \end{exercise}
+\end{frame}
+
+\begin{frame}[fragile]{Project Starter Code}
+    \begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+# Project template
+from transformers import AutoTokenizer, AutoModel
+import torch
+
+class PreTrainedApplication:
+    def __init__(self, model_name, task_type):
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.model = self._load_model(model_name, task_type)
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.model.to(self.device)
+    
+    def _load_model(self, model_name, task_type):
+        # Load appropriate model based on task
+        if task_type == "generation":
+            from transformers import AutoModelForCausalLM
+            return AutoModelForCausalLM.from_pretrained(model_name)
+        elif task_type == "classification":
+            from transformers import AutoModelForSequenceClassification
+            return AutoModelForSequenceClassification.from_pretrained(model_name)
+        elif task_type == "qa":
+            from transformers import AutoModelForQuestionAnswering
+            return AutoModelForQuestionAnswering.from_pretrained(model_name)
+    
+    def process(self, input_text):
+        # Tokenize input
+        inputs = self.tokenizer(input_text, return_tensors="pt", 
+                               truncation=True, padding=True)
+        inputs = {k: v.to(self.device) for k, v in inputs.items()}
+        
+        # Get model output
+        with torch.no_grad():
+            outputs = self.model(**inputs)
+        
+        return self._decode_output(outputs)
+    
+    def _decode_output(self, outputs):
+        # Implement based on task type
+        pass
+
+# Example usage
+app = PreTrainedApplication("bert-base-uncased", "classification")
+result = app.process("This movie is fantastic!")
+    \end{lstlisting}
+\end{frame}
+
+% ===============================================
+% SUMMARY
+% ===============================================
+
+\begin{frame}{Exercise Summary}
+    \textbf{What You've Practiced:}
+    \begin{enumerate}
+        \item ✓ Calculated computational savings of pre-training
+        \item ✓ Implemented MLM masking strategy
+        \item ✓ Compared BERT vs GPT approaches
+        \item ✓ Selected appropriate fine-tuning strategies
+        \item ✓ Understood LoRA's efficiency
+        \item ✓ Built a sentiment classifier
+        \item ✓ Performed zero-shot classification
+        \item ✓ Analyzed environmental impact
+        \item ✓ Started a real-world project
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \begin{tcolorbox}[colback=green!10,colframe=green!50!black]
+    \centering
+    \textbf{Next Steps:}\\
+    Complete your chosen project and share results!\\
+    Join the discussion forum for help and feedback.
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Resources for Further Practice}
+    \textbf{Online Platforms:}
+    \begin{itemize}
+        \item Hugging Face Course: \url{https://huggingface.co/course}
+        \item Google Colab (free GPU): \url{https://colab.research.google.com}
+        \item Kaggle Notebooks: \url{https://www.kaggle.com/code}
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Datasets:}
+    \begin{itemize}
+        \item GLUE Benchmark: Multi-task evaluation
+        \item IMDB Reviews: Sentiment analysis
+        \item SQuAD: Question answering
+        \item Common Crawl: Pre-training data
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Models to Explore:}
+    \begin{itemize}
+        \item BERT variants: RoBERTa, ALBERT, DistilBERT
+        \item GPT family: GPT-2, GPT-Neo, GPT-J
+        \item Multilingual: mBERT, XLM-R
+        \item Domain-specific: BioBERT, SciBERT, CodeBERT
+    \end{itemize}
+\end{frame}
+
+\end{document}

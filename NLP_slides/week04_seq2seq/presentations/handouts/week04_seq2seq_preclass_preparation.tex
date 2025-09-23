@@ -1,0 +1,379 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+% Define colors
+\definecolor{lightblue}{RGB}{173,216,230}
+
+% Custom commands
+\newcommand{\highlight}[1]{\textbf{\color{blue}#1}}
+
+% Environment definitions
+\newtcolorbox{motivation}[1][]{
+    colback=yellow!10!white,
+    colframe=orange!75!black,
+    title=Why This Matters,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{prereq}[1][]{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=Prerequisites Check,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{think}[1][]{
+    colback=green!5!white,
+    colframe=green!75!black,
+    title=Think About It,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{explore}[1][]{
+    colback=purple!5!white,
+    colframe=purple!75!black,
+    title=Quick Exploration,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{preview}[1][]{
+    colback=orange!5!white,
+    colframe=orange!75!black,
+    title=Coming Up,
+    fonttitle=\bfseries
+}
+
+% Title
+\title{\textbf{Week 4 Pre-Class Preparation}\\
+\large Sequence-to-Sequence Models\\
+\vspace{0.5em}
+\large \textit{Get Ready to Understand Google Translate!}}
+\author{NLP Course 2025}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Time Required:} 20-30 minutes\\
+\textbf{Purpose:} Prepare your mind for the seq2seq breakthrough\\
+\textbf{Format:} Reading, thinking, and light exploration (no coding required)
+
+\begin{motivation}
+\textbf{This Week's Big Question:} How do you translate ``Hello world'' to ``Bonjour le monde'' when the word counts don't match?
+
+This seemingly simple question stumped computer scientists for decades. The solution you'll learn this week powers:
+\begin{itemize}
+    \item Google Translate (1+ billion daily translations)
+    \item GitHub Copilot (40\% faster development)
+    \item Email summarization in Gmail/Outlook
+    \item Customer service chatbots (80\% automation)
+    \item The foundation of ChatGPT and modern AI
+\end{itemize}
+\end{motivation}
+
+\section*{Part 1: The Challenge - Why Translation is Hard for Computers}
+
+\begin{explore}[The Length Mismatch Problem]
+\textbf{Quick Exercise:} Look at these translations and count the words:
+
+\begin{center}
+\begin{tabular}{|l|l|c|c|}
+\hline
+\textbf{English} & \textbf{Translation} & \textbf{English Words} & \textbf{Target Words} \\
+\hline
+``Thank you'' & French: ``Merci'' & 2 & 1 \\
+\hline
+``Good morning'' & German: ``Guten Morgen'' & 2 & 2 \\
+\hline
+``How are you?'' & Spanish: ``¿Cómo estás?'' & 3 & 2 \\
+\hline
+``I don't understand'' & Italian: ``Non capisco'' & 3 & 2 \\
+\hline
+``See you later'' & Japanese: ``Mata ne'' & 3 & 2 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{What do you notice?} 
+
+\rule{10cm}{0.4pt}
+
+\textbf{The Problem:} If you had a neural network that produces one output for each input, how would you handle these mismatched lengths?
+
+\rule{10cm}{0.4pt}
+
+\rule{10cm}{0.4pt}
+\end{explore}
+
+\begin{think}
+\textbf{Real-World Impact:} Before 2014, the best translation systems were phrase-based statistical models that:
+\begin{itemize}
+    \item Required hand-crafted rules for each language pair
+    \item Couldn't handle long sentences well
+    \item Failed completely on languages with very different structures
+    \item Needed separate systems for each translation direction
+\end{itemize}
+
+\textbf{Question:} What would make a ``universal'' translation approach?
+
+\rule{10cm}{0.4pt}
+\end{think}
+
+\section*{Part 2: Prerequisites Check - Are You Ready?}
+
+\begin{prereq}
+Before diving into seq2seq models, make sure you understand these concepts from previous weeks:
+
+\textbf{From Week 3 (RNNs):}
+\begin{itemize}
+    \item[$\square$] RNNs process sequences one element at a time
+    \item[$\square$] Hidden states carry information through time
+    \item[$\square$] LSTMs can remember long-term dependencies
+    \item[$\square$] RNNs can be used for sequence classification
+\end{itemize}
+
+\textbf{From Earlier Weeks:}
+\begin{itemize}
+    \item[$\square$] Neural networks learn through backpropagation
+    \item[$\square$] Softmax converts logits to probabilities
+    \item[$\square$] Cross-entropy loss for classification
+    \item[$\square$] Basic understanding of embeddings
+\end{itemize}
+
+\textbf{Mathematical Concepts:}
+\begin{itemize}
+    \item[$\square$] Vector dot products and similarity
+    \item[$\square$] Probability distributions and sampling
+    \item[$\square$] Chain rule and conditional probability
+\end{itemize}
+
+\textbf{If you checked fewer than 8 boxes:} Review the relevant material before class!
+\end{prereq}
+
+\section*{Part 3: Building Intuition - The Human Translation Process}
+
+\begin{explore}[How Do Humans Translate?]
+\textbf{Thought Experiment:} You're fluent in English and French. Someone says: ``The quick brown fox jumps over the lazy dog.''
+
+How do you translate this to French?
+
+\textbf{Step 1:} What do you do first?
+\begin{itemize}
+    \item[$\square$] Immediately start translating word by word
+    \item[$\square$] Listen to the entire sentence and understand its meaning
+    \item[$\square$] Look up each word in a dictionary
+\end{itemize}
+
+\textbf{Step 2:} After understanding the sentence, what happens?
+\begin{itemize}
+    \item[$\square$] You think of the French equivalent meaning
+    \item[$\square$] You construct French words in the right order
+    \item[$\square$] You output the complete French sentence
+\end{itemize}
+
+\textbf{Key Insight:} You \textit{separate} understanding from generation!
+
+\textbf{Your Process:}
+\begin{enumerate}
+    \item \rule{6cm}{0.4pt} (understand the input)
+    \item \rule{6cm}{0.4pt} (form internal representation)
+    \item \rule{6cm}{0.4pt} (generate output)
+\end{enumerate}
+
+\textbf{Computer Challenge:} How can we teach computers to do the same?
+\end{explore}
+
+\section*{Part 4: Modern Context - Why This Still Matters}
+
+\begin{motivation}
+\textbf{2024 Reality Check:} Even though we have ChatGPT and advanced AI, the principles you'll learn this week are still fundamental. Here's why:
+
+\textbf{Current AI Systems Using Seq2Seq Principles:}
+\begin{itemize}
+    \item \textbf{Google Translate:} Uses encoder-decoder transformers (evolved from seq2seq)
+    \item \textbf{GitHub Copilot:} Comment → code is a seq2seq task
+    \item \textbf{Email Apps:} Long email → summary uses seq2seq principles
+    \item \textbf{ChatGPT:} Uses attention mechanism you'll learn today
+    \item \textbf{Voice Assistants:} Speech → text → response → speech pipeline
+\end{itemize}
+
+\textbf{Market Impact (2024 Data):}
+\begin{itemize}
+    \item Translation industry: \$15.7 billion market
+    \item Code assistance tools: \$8.5 billion market
+    \item Text summarization: \$12.3 billion market
+    \item Conversational AI: \$45.2 billion market
+\end{itemize}
+
+\textbf{Why Learn the ``Old'' Approach?}
+Understanding seq2seq models is like learning basic physics before quantum mechanics - you need the fundamentals to understand how modern transformers work!
+\end{motivation}
+
+\section*{Part 5: Warm-Up Questions - Get Your Brain Ready}
+
+\begin{think}
+Answer these to prime your thinking for class:
+
+\textbf{Question 1:} If you had to design a system that converts English to French, what would be your biggest challenges?
+
+1. \rule{8cm}{0.4pt}
+
+2. \rule{8cm}{0.4pt}
+
+3. \rule{8cm}{0.4pt}
+
+\textbf{Question 2:} When you use Google Translate, what do you think happens ``under the hood'' when you paste in a long paragraph?
+
+\rule{10cm}{0.4pt}
+
+\rule{10cm}{0.4pt}
+
+\textbf{Question 3:} RNNs produce one output for each input. How might you work around this for translation?
+
+Possible approach 1: \rule{8cm}{0.4pt}
+
+Possible approach 2: \rule{8cm}{0.4pt}
+
+\textbf{Question 4:} If you compress a 20-word sentence into a single ``meaning vector,'' what might you lose?
+
+\rule{10cm}{0.4pt}
+
+\textbf{Question 5:} When translating ``The black cat sleeps,'' which English words are most important for generating the French word ``noir'' (black)?
+
+Most important: \rule{6cm}{0.4pt}
+
+Least important: \rule{6cm}{0.4pt}
+
+Why? \rule{8cm}{0.4pt}
+\end{think}
+
+\section*{Part 6: Quick Exploration - No Coding Required}
+
+\begin{explore}[Try Google Translate]
+\textbf{5-Minute Investigation:} Go to Google Translate and try these examples:
+
+\textbf{Test 1:} Translate increasingly long sentences from English to a language you know:
+\begin{itemize}
+    \item Short: ``Hello world''
+    \item Medium: ``The cat sat on the comfortable red chair''
+    \item Long: ``The International Conference on Machine Learning, which is one of the premier venues for artificial intelligence research, was held in Vienna last summer''
+\end{itemize}
+
+\textbf{Observations:}
+\begin{itemize}
+    \item Quality for short sentences: \rule{6cm}{0.4pt}
+    \item Quality for long sentences: \rule{6cm}{0.4pt}
+    \item Any weird translations? \rule{8cm}{0.4pt}
+\end{itemize}
+
+\textbf{Test 2:} Try translating the same sentence through multiple languages (English → French → German → English). What happens?
+
+Result: \rule{10cm}{0.4pt}
+
+\textbf{What This Shows:} Even modern systems face challenges with very long texts and multiple translation steps. The principles you'll learn explain why!
+\end{explore}
+
+\section*{Part 7: Mindset Preparation}
+
+\begin{preview}
+\textbf{What to Expect in Week 4:}
+
+\textbf{Big Ideas You'll Discover:}
+\begin{enumerate}
+    \item Why ``fixed-length thinking'' limits neural networks
+    \item How to separate encoding (understanding) from decoding (generation)
+    \item The ``information bottleneck'' problem and why it matters
+    \item How ``attention'' revolutionized machine translation
+    \item Why beam search is better than greedy search
+\end{enumerate}
+
+\textbf{Hands-On Activities:}
+\begin{itemize}
+    \item Build your own encoder-decoder model
+    \item Implement the attention mechanism from scratch
+    \item Visualize how attention ``looks at'' different words
+    \item Compare translation strategies
+    \item Connect everything to modern AI systems
+\end{itemize}
+
+\textbf{Breakthrough Moment:} You'll experience the ``aha!'' moment when you understand how attention eliminates the bottleneck problem. This is the same insight that led to transformers and modern AI!
+
+\textbf{Modern Connection:} By the end of the week, you'll understand the core technology behind systems worth hundreds of billions of dollars in market value.
+\end{preview}
+
+\section*{Part 8: Optional Advanced Preparation}
+
+\begin{think}
+\textbf{For Students Who Want to Go Deeper:}
+
+\textbf{Optional Reading (15 minutes):}
+\begin{itemize}
+    \item Google's 2016 blog post: ``Found in Translation: More Accurate, Fluent Sentences in Google Translate''
+    \item Jay Alammar's ``Visualizing A Neural Machine Translation Model'' (just the intro)
+    \item Wikipedia entry on ``Neural Machine Translation'' (overview section)
+\end{itemize}
+
+\textbf{Optional Thought Experiments:}
+\begin{enumerate}
+    \item How would you design a system to automatically generate email replies?
+    \item What makes a good vs bad translation?
+    \item If you could only remember 3 numbers about a 20-word sentence, what would they be?
+    \item How do you think Google Translate improved so dramatically between 2010 and 2020?
+\end{enumerate}
+
+\textbf{Optional Technical Preview:}
+Look up the terms ``encoder-decoder architecture'' and ``attention mechanism'' - don't worry about understanding them fully, just get a visual sense of what they look like.
+\end{think}
+
+\section*{Getting Ready for Class}
+
+\textbf{What to Bring:}
+\begin{itemize}
+    \item Your completed warm-up questions (above)
+    \item A curious mindset about how AI translation works
+    \item Questions about any AI translation tools you've used
+    \item Your laptop ready for the interactive lab session
+\end{itemize}
+
+\textbf{Mental Preparation:}
+\begin{itemize}
+    \item Be ready to think about ``information compression''
+    \item Prepare for some mathematical notation (but it's mostly intuitive)
+    \item Expect several ``aha!'' moments as concepts click
+    \item Get excited about understanding technology you use daily
+\end{itemize}
+
+\textbf{Technical Setup:}
+\begin{itemize}
+    \item Ensure you can run Jupyter notebooks
+    \item Python libraries: numpy, matplotlib, seaborn (we'll help with installation)
+    \item No pre-training of models required - we'll build everything from scratch!
+\end{itemize}
+
+\vspace{2em}
+\begin{center}
+\colorbox{lightblue!30}{
+    \parbox{0.8\textwidth}{
+        \centering
+        \textbf{Ready to discover the breakthrough that made modern AI possible?}\\
+        \vspace{0.5em}
+        See you in class for an exciting journey from simple RNNs to the foundations of ChatGPT!
+    }
+}
+\end{center}
+
+\vspace{2em}
+
+\textbf{Questions before class?} Email the course team or post in the discussion forum.
+
+\textbf{Excited about the topic?} Start thinking about how you might use seq2seq principles in your own projects!
+
+\end{document}

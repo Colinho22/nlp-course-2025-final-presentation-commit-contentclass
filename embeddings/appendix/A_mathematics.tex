@@ -1,0 +1,123 @@
+% Appendix A: Mathematical Foundations
+
+\appendix
+\section{Mathematical Appendix}
+
+% Mathematical Foundations of Word2Vec
+\begin{frame}{Mathematical Foundations: Skip-gram Objective}
+\formulaWithChart{
+\textbf{Objective Function:}
+$$J(\theta) = -\frac{1}{T} \sum_{t=1}^{T} \sum_{-c \leq j \leq c, j \neq 0} \log p(w_{t+j} | w_t; \theta)$$
+
+\textbf{Softmax Formulation:}
+$$p(w_O | w_I) = \frac{\exp({v'_{w_O}}^T v_{w_I})}{\sum_{w=1}^{W} \exp({v'_w}^T v_{w_I})}$$
+
+where $v_{w_I}$ is input vector, $v'_{w_O}$ is output vector
+}{skipgram_loss_surface}{3D loss surface with gradient descent path}
+
+\vspace{0.3cm}
+\textbf{Key Properties:}
+\begin{itemize}
+    \item Gradient: $\frac{\partial J}{\partial v_{w_I}} = \sum_{j} (\sum_{w} p(w|w_I)v'_w - v'_{w_{t+j}})$
+    \item Complexity: $O(W)$ per word - intractable for large vocabularies!
+\end{itemize}
+\end{frame}
+
+% Negative Sampling Mathematics
+\begin{frame}{Negative Sampling: Making Training Tractable}
+\formulaWithChart{
+\textbf{Modified Objective:}
+$$\log \sigma({v'_{w_O}}^T v_{w_I}) + \sum_{i=1}^{k} \mathbb{E}_{w_i \sim P_n(w)} [\log \sigma(-{v'_{w_i}}^T v_{w_I})]$$
+
+where $\sigma(x) = \frac{1}{1 + e^{-x}}$ (sigmoid), $k$ = negative samples
+
+\textbf{Gradient Update:}
+$$v_{w_I}^{new} = v_{w_I}^{old} - \eta [\text{positive} + \text{negative terms}]$$
+}{negative_sampling_comparison}{Computational savings: O(W) → O(k+1)}
+
+\vspace{0.3cm}
+\textbf{Key Benefits:}
+\begin{itemize}
+    \item Speed-up factor: $\frac{W}{k+1}$ (e.g., 10,000× for W=100K, k=10)
+    \item Noise distribution: $P_n(w) \propto U(w)^{3/4}$
+\end{itemize}
+\end{frame}
+
+% GloVe Mathematics
+\begin{frame}{GloVe: Global Vectors Mathematical Framework}
+\formulaWithChartWide{
+\textbf{Key Insight - Probability Ratios:}
+$$\frac{P_{ik}}{P_{jk}} = \frac{X_{ik}/X_i}{X_{jk}/X_j}$$
+
+\textbf{GloVe Objective:}
+$$J = \sum_{i,j=1}^{V} f(X_{ij}) (w_i^T \tilde{w}_j + b_i + \tilde{b}_j - \log X_{ij})^2$$
+
+Weighting: $f(x) = (x/x_{max})^\alpha$ if $x < x_{max}$, else 1
+}{glove_cooccurrence_matrix}{Co-occurrence patterns capture semantic relationships}
+\end{frame}
+
+% GloVe Weighting Function
+\begin{frame}{GloVe Weighting Function}
+\formulaWithChart{
+\textbf{Weighting Function Design:}
+$$f(x) = \begin{cases} 
+(x/x_{max})^\alpha & \text{if } x < x_{max} \\ 
+1 & \text{otherwise} 
+\end{cases}$$
+
+Typical values: $\alpha = 0.75$, $x_{max} = 100$
+
+\textbf{Purpose:}
+\begin{itemize}
+    \item Prevent rare words from dominating
+    \item Cap influence of very frequent pairs
+    \item Smooth contribution across frequency spectrum
+\end{itemize}
+}{glove_weighting_curves}{Effect of α on weighting function}
+\end{frame}
+
+% Attention Mechanism Mathematics
+\begin{frame}{Self-Attention: Mathematical Formulation}
+\formulaWithChartWide{
+\textbf{Scaled Dot-Product Attention:}
+$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+
+\textbf{Step-by-step:}
+\begin{enumerate}
+    \item Score: $S = QK^T$
+    \item Scale: $\tilde{S} = S/\sqrt{d_k}$
+    \item Normalize: $A = \text{softmax}(\tilde{S})$
+    \item Weight: $O = AV$
+\end{enumerate}
+}{attention_matrix_visual}{Attention computation visualized step-by-step}
+\end{frame}
+
+% Positional Encoding Mathematics
+\begin{frame}{Positional Encoding: Injecting Order Information}
+\formulaWithChartWide{
+\textbf{Sinusoidal Encoding:}
+$$PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{model}}}\right)$$
+$$PE_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d_{model}}}\right)$$
+
+\textbf{Key Property:} $PE_{pos+k}$ = linear function of $PE_{pos}$
+}{positional_encoding_patterns}{Sinusoidal patterns at different frequencies}
+\end{frame}
+
+% BERT Masked Language Model
+\begin{frame}{BERT: Bidirectional Training Mathematics}
+\formulaWithChartWide{
+\textbf{MLM Objective:}
+$$\mathcal{L}_{MLM} = -\mathbb{E}_{\mathbf{x}} \sum_{i \in \mathcal{M}} \log P(x_i | \mathbf{x}_{\backslash \mathcal{M}})$$
+
+\textbf{Masking Strategy:}
+\begin{itemize}
+    \item 15\% of tokens selected
+    \item 80\% replaced with [MASK]
+    \item 10\% replaced with random token
+    \item 10\% unchanged
+\end{itemize}
+}{bert_mlm_masking}{BERT masking and prediction process}
+\end{frame}
+
+% Additional Mathematical Topics...
+% (Continuing with remaining slides from the appendix)

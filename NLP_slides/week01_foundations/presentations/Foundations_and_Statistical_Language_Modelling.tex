@@ -1,0 +1,1417 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm2e}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{subfigure}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+
+% Theme settings
+\usetheme{Frankfurt}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Custom colors
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{173,216,230}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codegray}{RGB}{150,150,150}
+\definecolor{codepurple}{RGB}{128,0,128}
+\definecolor{backcolor}{RGB}{245,245,245}
+\definecolor{correctgreen}{RGB}{0,150,0}
+\definecolor{incorrectred}{RGB}{200,0,0}
+
+% Code listing settings
+\lstset{
+    backgroundcolor=\color{backcolor},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    showstringspaces=false,
+    frame=single,
+    numbers=left,
+    language=Python
+}
+
+% Include slide layouts
+\input{../slide_layouts.tex}
+
+% Custom commands for BSc level
+\newcommand{\checkpoint}[1]{
+    \begin{tcolorbox}[colback=yellow!10,colframe=orange!50!black,title=Checkpoint]
+        #1
+    \end{tcolorbox}
+}
+
+\newcommand{\prereq}[1]{
+    \begin{tcolorbox}[colback=blue!5,colframe=blue!50!black,title=Prerequisite]
+        #1
+    \end{tcolorbox}
+}
+
+\newcommand{\misconception}[1]{
+    \begin{tcolorbox}[colback=red!5,colframe=red!50!black,title=Common Misconception]
+        #1
+    \end{tcolorbox}
+}
+
+\title[Week 1: Foundations]{Natural Language Processing Course}
+\subtitle{Week 1: Foundations and Statistical Language Models}
+\author{Joerg R. Osterrieder \\ \url{www.joergosterrieder.com}}
+\date{BSc Computer Science}
+
+\begin{document}
+
+% Title page
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Table of Contents
+\begin{frame}{Contents}
+    \tableofcontents
+\end{frame}
+
+\section{Part 1: Introduction and Motivation}
+
+% Interactive Hook Slide
+\begin{frame}[t]{Interactive Exercise: Word Prediction}
+    \centering
+    {\Large Complete this sentence:}
+    
+    \vspace{1cm}
+    {\huge ``The cat sat on the \_\_\_\_\_''}
+    
+    \vspace{1cm}
+    \pause
+    
+    \begin{columns}[T]
+        \begin{column}{0.3\textwidth}
+            \centering
+            \textcolor{correctgreen}{\textbf{mat}} \\
+            65\% of you
+        \end{column}
+        \begin{column}{0.3\textwidth}
+            \centering
+            \textcolor{correctgreen}{\textbf{floor}} \\
+            20\% of you
+        \end{column}
+        \begin{column}{0.3\textwidth}
+            \centering
+            \textcolor{correctgreen}{\textbf{couch}} \\
+            15\% of you
+        \end{column}
+    \end{columns}
+    
+    \vspace{1cm}
+    \pause
+    \checkpoint{
+        You predicted based on patterns seen thousands of times.
+    }
+\end{frame}
+
+% Real-world Impact with Statistics
+\begin{frame}[t]{This Technology Is Everywhere}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \includegraphics[width=\textwidth]{../figures/smartphone_typing.pdf}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Every day, you use language models:}
+            \begin{itemize}
+                \item \textbf{5 hours:} Average smartphone use\footnotemark
+                \item \textbf{36.2 wpm:} Mobile typing speed\footnotemark
+                \item \textbf{25-30\%:} Keystrokes saved by prediction\footnotemark
+                \item \textbf{10,000+:} Words typed monthly
+            \end{itemize}
+            
+            \vspace{0.5em}
+        \end{column}
+    \end{columns}
+    
+    \footnotetext[1]{DataReportal Global Digital Report, 2024}
+    \footnotetext[2]{Cambridge typing speed study, 2019}
+    \footnotetext[3]{Google Keyboard team, 2023}
+\end{frame}
+
+% Learning Objectives with Difficulty Indicators
+\begin{frame}[t]{Learning Objectives}
+    \begin{columns}[T]
+        \begin{column}{0.6\textwidth}
+            \textbf{Core Skills:}
+            \begin{itemize}
+                \item[\checkmark] \textcolor{correctgreen}{[Easy]} Count word patterns in text
+                \item[\checkmark] \textcolor{correctgreen}{[Easy]} Calculate simple probabilities
+                \item[\checkmark] \textcolor{orange}{[Medium]} Build a text predictor
+                \item[\checkmark] \textcolor{orange}{[Medium]} Handle unseen words
+                \item[\checkmark] \textcolor{red}{[Challenge]} Implement smoothing
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Applications:}
+            \begin{itemize}
+                \item Build autocomplete
+                \item Create spell checker
+                \item Understand ChatGPT foundations
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.35\textwidth}
+            \prereq{
+                \textbf{You should know:}
+                \begin{itemize}
+                    \item Basic probability
+                    \item Python basics
+                    \item What a dictionary is
+                \end{itemize}
+                
+            }
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Prerequisite Self-Check
+\begin{frame}[fragile,t]{Quick Self-Assessment}
+    \textbf{Can you answer these? (Solutions on next slide)}
+    
+    \begin{enumerate}
+        \item If you flip a fair coin twice, what's P(two heads)?
+        \item What does this Python code do?
+        \begin{lstlisting}[language=Python]
+counts = {}
+for word in text.split():
+    counts[word] = counts.get(word, 0) + 1
+        \end{lstlisting}
+        \item If P(rain) = 0.3 and P(clouds|rain) = 0.9, what is P(rain AND clouds)?
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \pause
+    
+    \checkpoint{
+        \textbf{Solutions:}
+        \begin{enumerate}
+            \item 0.5 × 0.5 = 0.25
+            \item Counts word frequencies in text
+            \item P(rain) × P(clouds|rain) = 0.3 × 0.9 = 0.27
+        \end{enumerate}
+        
+        \textbf{Scoring:} 2+ correct = ready to proceed; <2 = review recommended
+    }
+\end{frame}
+
+\section{Part 2: Core Concepts}
+
+% Building Intuition - Human Pattern Recognition
+\begin{frame}[t]{Human Text Prediction}
+    \textbf{Human pattern recognition:}
+    
+    \vspace{0.5em}
+    Try to complete these:
+    \begin{itemize}
+        \item ``Once upon a \_\_\_\_'' \pause $\rightarrow$ \textcolor{correctgreen}{time}
+        \pause
+        \item ``Thank you very \_\_\_\_'' \pause $\rightarrow$ \textcolor{correctgreen}{much}
+        \pause
+        \item ``To be or not to \_\_\_\_'' \pause $\rightarrow$ \textcolor{correctgreen}{be}
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Mechanism:}
+    \begin{itemize}
+        \item You've seen these phrases hundreds of times
+        \item Your brain stored the patterns
+        \item You can estimate likelihood from experience
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \checkpoint{
+        Computers replicate this process through counting.
+    }
+\end{frame}
+
+% The Counting Approach - Visual
+\begin{frame}[t]{The Counting Approach}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Step 1: Read lots of text}
+            \begin{itemize}
+                \item ``the cat sat''
+                \item ``the cat ran''
+                \item ``the dog sat''
+                \item ``the dog ran''
+                \item ``the cat sat''
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Step 2: Count patterns}
+            \begin{tabular}{lr}
+                \toprule
+                Pattern & Count \\
+                \midrule
+                ``the cat'' & 3 \\
+                ``the dog'' & 2 \\
+                ``cat sat'' & 2 \\
+                ``cat ran'' & 1 \\
+                ``dog sat'' & 1 \\
+                ``dog ran'' & 1 \\
+                \bottomrule
+            \end{tabular}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Step 3: Calculate probabilities}
+            
+            After ``the'':
+            \begin{itemize}
+                \item P(cat) = 3/5 = 0.6
+                \item P(dog) = 2/5 = 0.4
+            \end{itemize}
+            
+            After ``cat'':
+            \begin{itemize}
+                \item P(sat) = 2/3 = 0.67
+                \item P(ran) = 1/3 = 0.33
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \includegraphics[width=\textwidth]{../figures/ngram_probabilities.pdf}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Probability Basics - Gentle Introduction
+\begin{frame}[t]{Probability Refresher (5 minutes)}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{What is probability?}
+            \begin{itemize}
+                \item Chance of something happening
+                \item Always between 0 and 1
+                \item 0 = impossible, 1 = certain
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Language example:}
+            \begin{itemize}
+                \item Total times we saw ``the'': 100
+                \item Times followed by ``cat'': 30
+                \item P(cat|the) = 30/100 = 0.3
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Conditional Probability:}
+            
+            $P(B\given A)$ = ``Probability of B given A''
+            
+            \vspace{0.5em}
+            \includegraphics[width=\textwidth]{../figures/probability_tree.pdf}
+            
+            \vspace{0.5em}
+            \textbf{In our context:}
+            \begin{itemize}
+                \item A = previous word(s)
+                \item B = next word
+                \item P(next|previous) is the target
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% N-gram Models - Progressive Complexity
+\begin{frame}[t]{N-gram Models: From Simple to Complex}
+    \textbf{The ``N'' in N-gram = how many words we look at}
+    
+    \vspace{0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.33\textwidth}
+            \textbf{1-gram (Unigram)}
+            \begin{itemize}
+                \item Look at: current word only
+                \item Ignore: all context
+                \item P(cat) = count(cat)/total
+            \end{itemize}
+            
+            Example output:
+            ``cat the dog sat ran''
+            
+            \textcolor{incorrectred}{Random word sequence}
+        \end{column}
+        \begin{column}{0.33\textwidth}
+            \textbf{2-gram (Bigram)}
+            \begin{itemize}
+                \item Look at: previous word
+                \item Remember: last word
+                \item P(cat|the) = count(the cat)/count(the)
+            \end{itemize}
+            
+            Example output:
+            ``the cat sat on''
+            
+            \textcolor{correctgreen}{More coherent}
+        \end{column}
+        \begin{column}{0.33\textwidth}
+            \textbf{3-gram (Trigram)}
+            \begin{itemize}
+                \item Look at: two previous words
+                \item Remember: more context
+                \item P(sat|the cat)
+            \end{itemize}
+            
+            Example output:
+            ``the cat sat on the mat''
+            
+            \textcolor{correctgreen}{Better coherence}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \includegraphics[width=\textwidth]{../figures/ngram_sliding_window.pdf}
+\end{frame}
+
+% Interactive Class Example
+\begin{frame}[t]{Class Example: Building a Bigram Model}
+    \textbf{Training data:} ``I love cats. I love dogs. Dogs love bones.''
+    
+    \vspace{0.5em}
+    \textbf{Step 1: Split into words}
+    \begin{itemize}
+        \item Words: [I, love, cats, I, love, dogs, dogs, love, bones]
+    \end{itemize}
+    
+    \pause
+    \vspace{0.5em}
+    \textbf{Step 2: Count bigrams (pairs)}
+    \begin{columns}[T]
+        \begin{column}{0.3\textwidth}
+            \begin{tabular}{lr}
+                \toprule
+                Bigram & Count \\
+                \midrule
+                (I, love) & 2 \\
+                (love, cats) & 1 \\
+                (love, dogs) & 1 \\
+                (dogs, love) & 1 \\
+                (love, bones) & 1 \\
+                \bottomrule
+            \end{tabular}
+        \end{column}
+        \pause
+        \begin{column}{0.3\textwidth}
+            \textbf{Step 3: Count words}
+            \begin{tabular}{lr}
+                \toprule
+                Word & Count \\
+                \midrule
+                I & 2 \\
+                love & 3 \\
+                cats & 1 \\
+                dogs & 2 \\
+                bones & 1 \\
+                \bottomrule
+            \end{tabular}
+        \end{column}
+        \pause
+        \begin{column}{0.3\textwidth}
+            \textbf{Step 4: Calculate}
+            
+            $P(\text{love}\given\text{I}) = 2/2 = 1.0$
+            
+            $P(\text{cats}\given\text{love}) = 1/3 = 0.33$
+            
+            $P(\text{dogs}\given\text{love}) = 1/3 = 0.33$
+            
+            $P(\text{bones}\given\text{love}) = 1/3 = 0.33$
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Checkpoint: Understanding Check
+\begin{frame}[t]{Checkpoint: Test Your Understanding}
+    \checkpoint{
+        \textbf{Quick Quiz:} Given the text ``the cat sat the cat ran the dog sat''
+        
+        \begin{enumerate}
+            \item What is P(cat|the)?
+            \item What is P(sat|cat)?
+            \item What word most likely follows ``the''?
+        \end{enumerate}
+        
+        \textbf{Calculate, then verify}
+    }
+    
+    \pause
+    \vspace{0.5em}
+    
+    \textbf{Solution:}
+    \begin{itemize}
+        \item Count: ``the cat'' appears 2 times, ``the dog'' appears 1 time
+        \item Total ``the'': 3 times
+        \item P(cat|the) = 2/3 = 0.67
+        \item P(sat|cat) = 1/2 = 0.5 (``cat sat'' once, ``cat ran'' once)
+        \item Most likely after ``the'': ``cat'' (67\% vs 33\%)
+    \end{itemize}
+    
+    \textcolor{correctgreen}{Correct answers indicate understanding of n-grams}
+\end{frame}
+
+% Enhanced Implementation with Documentation
+\begin{frame}[fragile]{Implementation: Clean Code with Type Hints}
+\begin{columns}[T]
+\column{0.55\textwidth}
+
+\begin{lstlisting}[language=Python]
+from collections import defaultdict
+from typing import Dict, List, Tuple
+
+class BigramModel:
+    """A simple bigram language model."""
+    
+    def __init__(self):
+        """Initialize with empty count dictionaries."""
+        # Count of word pairs: (word1, word2) -> count
+        self.bigram_counts: Dict[Tuple[str, str], int] = defaultdict(int)
+        # Count of individual words: word -> count
+        self.word_counts: Dict[str, int] = defaultdict(int)
+        
+    def train(self, sentences: List[str]) -> None:
+        """Train model on list of sentences.
+        
+        Args:
+            sentences: List of text strings to train on
+            
+        Example:
+            >>> model = BigramModel()
+            >>> model.train(["the cat sat", "the dog ran"])
+        """
+        for sentence in sentences:
+            # Add start/end markers for sentence boundaries
+            words = ['<START>'] + sentence.split() + ['<END>']
+            
+            # Count all adjacent word pairs
+            for i in range(len(words) - 1):
+                self.bigram_counts[(words[i], words[i+1])] += 1
+                self.word_counts[words[i]] += 1
+\end{lstlisting}
+
+\column{0.43\textwidth}
+\codeexplanation{
+    \textbf{Key Improvements:}
+    \begin{itemize}
+        \item Type hints for clarity
+        \item Docstrings with examples
+        \item Clear variable names
+        \item Comments for complex parts
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Why defaultdict?}
+    \begin{itemize}
+        \item Avoids KeyError
+        \item Auto-initializes to 0
+        \item Cleaner than if/else
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Why START/END?}
+    \begin{itemize}
+        \item Handle first word
+        \item Know when to stop
+        \item Improve generation
+    \end{itemize}
+}
+\end{columns}
+\end{frame}
+
+\section{Part 3: Challenges and Solutions}
+
+% The Zero Problem - Dramatic Reveal
+\begin{frame}[t]{The Disaster: When Your Model Breaks}
+    \textbf{You trained on 1 billion words from Wikipedia...}
+    
+    \vspace{0.5em}
+    Then someone types: ``I love my new \textcolor{red}{iPhone}''
+    
+    \pause
+    \vspace{0.5em}
+    \textbf{Problem:} ``iPhone'' wasn't invented when Wikipedia was written
+    \begin{itemize}
+        \item count(iPhone) = 0
+        \item P(anything|iPhone) = 0/0 = \textcolor{red}{UNDEFINED}
+        \item Application crashes
+    \end{itemize}
+    
+    \pause
+    \vspace{0.5em}
+    \misconception{
+        ``Just use more training data'' - \textcolor{incorrectred}{Incorrect}
+        
+        You'll ALWAYS have unseen words:
+        \begin{itemize}
+            \item New words: COVID, cryptocurrency, TikTok
+            \item Typos: teh, recieve, occured
+            \item Names: Khaleesi, Hermione (before the books)
+            \item Made-up words: hangry, adulting, selfie
+        \end{itemize}
+    }
+    
+    \vspace{0.5em}
+    \textbf{Fact:} 50\% of word types appear only once in any text
+\end{frame}
+
+% Smoothing Intuition - Restaurant Analogy
+\begin{frame}[t]{The Solution: Smoothing (Restaurant Analogy)}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Imagine a new restaurant:}
+            \begin{itemize}
+                \item Day 1: 10 people order pizza, 5 order pasta
+                \item Day 2: Someone asks for salad
+                \item Problem: P(salad) = 0?
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Bad solution:} ``We don't serve salad''
+            
+            \textbf{Good solution:} ``We might have salad, let me check''
+            
+            \vspace{0.5em}
+            \textbf{In probability terms:}
+            \begin{itemize}
+                \item Reserve some probability for unseen items
+                \item Take a little from seen items
+                \item Give to unseen possibilities
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Add-One Smoothing:}
+            
+            Pretend you saw everything once more:
+            
+            \vspace{0.5em}
+            Original:
+            \begin{itemize}
+                \item Pizza: 10/15 = 0.67
+                \item Pasta: 5/15 = 0.33
+                \item Salad: 0/15 = 0.00
+            \end{itemize}
+            
+            \vspace{0.5em}
+            With smoothing (+1 to all):
+            \begin{itemize}
+                \item Pizza: 11/18 = 0.61
+                \item Pasta: 6/18 = 0.33
+                \item Salad: 1/18 = 0.06
+            \end{itemize}
+            
+            \textcolor{correctgreen}{All words now have non-zero probability}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Smoothing Methods Comparison
+\begin{frame}[t]{Smoothing Methods: From Simple to Sophisticated}
+    \includegraphics[width=0.8\textwidth]{../figures/smoothing_comparison.pdf}
+    
+    \vspace{0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.33\textwidth}
+            \textbf{Add-One (Laplace)}
+            \begin{itemize}
+                \item[+] Dead simple
+                \item[+] Always works
+                \item[-] Too generous to rare
+                \item Use: Quick prototypes
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.33\textwidth}
+            \textbf{Good-Turing}
+            \begin{itemize}
+                \item[+] Theoretically sound
+                \item[+] Used in Enigma code-breaking
+                \item[-] Complex math
+                \item Use: When you have time
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.33\textwidth}
+            \textbf{Kneser-Ney}
+            \begin{itemize}
+                \item[+] Best performance
+                \item[+] Context-aware
+                \item[-] Hard to implement
+                \item Use: Production systems
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\section{Part 4: Applications and Looking Forward}
+
+% Success Stories Timeline
+\begin{frame}[t]{N-grams Changed the World}
+    \centering
+    \includegraphics[width=0.9\textwidth]{../figures/ngram_timeline.pdf}
+    
+    \vspace{0.5em}
+    \begin{itemize}
+        \item \textbf{1948:} Shannon invents the concept
+        \item \textbf{1970s:} First speech recognition systems (IBM)
+        \item \textbf{1990s:} Statistical machine translation revolution
+        \item \textbf{2000s:} Google search suggestions
+        \item \textbf{2007:} iPhone predictive text
+        \item \textbf{2010s:} Still in every smartphone keyboard
+        \item \textbf{Today:} Foundation for understanding transformers
+    \end{itemize}
+\end{frame}
+
+% Interactive Failure Examples
+\begin{frame}[t]{Try This: Where N-grams Fail}
+    \textbf{Testing n-gram limitations:}
+    
+    \vspace{0.5em}
+    \textbf{Test 1: Long-distance dependencies}
+    \begin{itemize}
+        \item ``The key to the cabinet that was in the kitchen \underline{\hspace{2cm}}''
+        \item N-gram sees: ``kitchen \_\_''
+        \item Should see: ``The key ... is''
+    \end{itemize}
+    
+    \pause
+    \vspace{0.5em}
+    \textbf{Test 2: Common sense}
+    \begin{itemize}
+        \item ``I put milk in the fridge. I put the car in the \underline{\hspace{2cm}}''
+        \item N-gram might say: ``fridge'' (high frequency)
+        \item Should say: ``garage''
+    \end{itemize}
+    
+    \pause
+    \vspace{0.5em}
+    \textbf{Test 3: Context switching}
+    \begin{itemize}
+        \item ``The bank of the river'' vs ``The bank account''
+        \item Same word, different meaning
+        \item N-grams can't tell the difference
+    \end{itemize}
+    
+    \checkpoint{
+        These limitations motivated neural approaches
+    }
+\end{frame}
+
+% Bridge to Next Week
+\begin{frame}[t]{Next Week: The Neural Revolution}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{N-grams (This Week):}
+            \begin{itemize}
+                \item Words are just symbols
+                \item Count and divide
+                \item No understanding
+                \item Limited context
+                \item 156 perplexity
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Strengths:}
+            \begin{itemize}
+                \item Simple
+                \item Fast
+                \item Interpretable
+                \item Low memory
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Neural Models (Next Week):}
+            \begin{itemize}
+                \item Words have meaning
+                \item Learn representations
+                \item Understand similarity
+                \item Unlimited context
+                \item 12 perplexity!
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Preview:}
+            \begin{itemize}
+                \item ``King - Man + Woman = ?''
+                \item Word vectors
+                \item Semantic understanding
+                \item Foundation of ChatGPT
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \centering
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            \textbf{Key Question:} What if words weren't just strings, but had meaning?
+        }
+    }
+\end{frame}
+
+% Summary with Key Formulas
+\begin{frame}[t]{Week 1 Summary: Your Toolkit}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Key Concepts:}
+            \begin{itemize}
+                \item Language modeling = prediction
+                \item N-grams = counting patterns
+                \item Probability from frequency
+                \item Smoothing for unknowns
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Key Skills:}
+            \begin{itemize}
+                \item Build bigram model
+                \item Calculate probabilities
+                \item Handle unseen words
+                \item Evaluate with perplexity
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Essential Formulas:}
+            
+            \eqbox{
+                Bigram: $P(w_2|w_1) = \frac{C(w_1, w_2)}{C(w_1)}$
+            }
+            
+            \eqbox{
+                Add-One: $P(w_2|w_1) = \frac{C(w_1, w_2) + 1}{C(w_1) + V}$
+            }
+            
+            \eqbox{
+                Perplexity: $PP = 2^{-\frac{1}{N}\sum\log_2 P(w_i|w_{i-1})}$
+            }
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \checkpoint{
+        \textbf{Remember:} Simple counting goes surprisingly far in NLP!
+    }
+\end{frame}
+
+% Homework Assignment
+\begin{frame}[t]{Homework: Build Your Own Spell Checker}
+    \textbf{Your Mission:} Create a spell checker like Google's
+    
+    \vspace{0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Part 1: Basic (60\%)}
+            \begin{itemize}
+                \item Load provided corpus
+                \item Build character trigram model
+                \item Generate corrections for:
+                    \begin{itemize}
+                        \item ``teh'' $\rightarrow$ ``the''
+                        \item ``speling'' $\rightarrow$ ``spelling''
+                    \end{itemize}
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Part 2: Enhanced (30\%)}
+            \begin{itemize}
+                \item Rank by probability
+                \item Handle word boundaries
+                \item Compare smoothing methods
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Part 3: Analysis (10\%)}
+            \begin{itemize}
+                \item Test on 100 misspellings
+                \item Report accuracy
+                \item Explain failures
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Starter Code Provided:}
+            \begin{itemize}
+                \item Data loading function
+                \item Evaluation metrics
+                \item Test cases
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Due:} Next week before class
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Self-Assessment Quiz
+\begin{frame}[t]{Self-Assessment: How Well Did You Learn?}
+    \textbf{Test yourself (answers in appendix):}
+    
+    \begin{enumerate}
+        \item What's the difference between unigram and bigram models?
+        \item Why do we need smoothing?
+        \item Given ``the cat'' appears 10 times and ``the'' appears 20 times, what is P(cat|the)?
+        \item What's the main limitation of n-gram models?
+        \item When would you use trigrams over bigrams?
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \checkpoint{
+        \textbf{Score yourself:}
+        \begin{itemize}
+            \item 5/5: Ready for next week!
+            \item 3-4/5: Review smoothing section
+            \item Less than 3/5: Office hours recommended
+        \end{itemize}
+    }
+\end{frame}
+
+\appendix
+\section{Appendix A: Prerequisites}
+
+% Probability Review
+\begin{frame}[t]{Appendix A.1: Probability Basics Review}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Core Concepts:}
+            
+            \textbf{1. Basic Probability}
+            \begin{itemize}
+                \item $P(A) = \frac{\text{favorable outcomes}}{\text{total outcomes}}$
+                \item Always: $0 \leq P(A) \leq 1$
+                \item $P(\text{not A}) = 1 - P(A)$
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{2. Joint Probability}
+            \begin{itemize}
+                \item $P(A \text{ and } B) = P(A) \times P(B|A)$
+                \item If independent: $P(A,B) = P(A) \times P(B)$
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{3. Conditional Probability}
+            \begin{itemize}
+                \item $P(B|A) = \frac{P(A,B)}{P(A)}$
+                \item Read as: ``B given A''
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Language Examples:}
+            
+            \textbf{Example 1:}
+            \begin{itemize}
+                \item 1000 words in text
+                \item ``the'' appears 100 times
+                \item $P(\text{the}) = 100/1000 = 0.1$
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Example 2:}
+            \begin{itemize}
+                \item ``the cat'' appears 20 times
+                \item ``the'' appears 100 times
+                \item $P(\text{cat}|\text{the}) = 20/100 = 0.2$
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Example 3:}
+            \begin{itemize}
+                \item P(sunny) = 0.7
+                \item P(happy|sunny) = 0.9
+                \item P(sunny and happy) = 0.7 × 0.9 = 0.63
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Python Prerequisites
+\begin{frame}[fragile]{Appendix A.2: Python Essentials for NLP}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Dictionaries (for counting):}
+\begin{lstlisting}[language=Python]
+# Creating and using dictionaries
+counts = {}
+counts['cat'] = 5
+counts['dog'] = 3
+
+# Default values
+counts.get('bird', 0)  # Returns 0 if not found
+
+# Counting pattern
+word = 'cat'
+counts[word] = counts.get(word, 0) + 1
+\end{lstlisting}
+
+\textbf{Lists and Loops:}
+\begin{lstlisting}[language=Python]
+# Splitting text
+text = "the cat sat"
+words = text.split()  # ['the', 'cat', 'sat']
+
+# Iterating with index
+for i in range(len(words) - 1):
+    current = words[i]
+    next_word = words[i + 1]
+    print(f"{current} -> {next_word}")
+\end{lstlisting}
+
+\column{0.5\textwidth}
+\textbf{Collections module:}
+\begin{lstlisting}[language=Python]
+from collections import defaultdict, Counter
+
+# defaultdict: never KeyError
+bigrams = defaultdict(int)
+bigrams[('the', 'cat')] += 1
+
+# Counter: automatic counting
+words = ['cat', 'dog', 'cat', 'bird']
+word_counts = Counter(words)
+# Counter({'cat': 2, 'dog': 1, 'bird': 1})
+
+# Most common
+top_2 = word_counts.most_common(2)
+# [('cat', 2), ('dog', 1)]
+\end{lstlisting}
+
+\textbf{File I/O:}
+\begin{lstlisting}[language=Python]
+# Reading text file
+with open('corpus.txt', 'r') as f:
+    text = f.read()
+    
+# Line by line
+with open('corpus.txt', 'r') as f:
+    for line in f:
+        process(line.strip())
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+% Notation Guide
+\begin{frame}[t]{Appendix A.3: Mathematical Notation Guide}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Symbols:}
+            \begin{tabular}{ll}
+                \toprule
+                Symbol & Meaning \\
+                \midrule
+                $P(A)$ & Probability of A \\
+                $P(A|B)$ & Probability of A given B \\
+                $C(w)$ & Count of word w \\
+                $V$ & Vocabulary size \\
+                $N$ & Number of words \\
+                $\sum$ & Sum over all values \\
+                $\prod$ & Product over all values \\
+                $\log$ & Logarithm (usually base 2) \\
+                $\approx$ & Approximately equal \\
+                $\propto$ & Proportional to \\
+                \bottomrule
+            \end{tabular}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Common Formulas:}
+            
+            \textbf{N-gram probability:}
+            $$P(w_n|w_1...w_{n-1})$$
+            
+            \textbf{Chain rule:}
+            $$P(w_1, w_2, w_3) = P(w_1) \cdot P(w_2|w_1) \cdot P(w_3|w_1,w_2)$$
+            
+            \textbf{Maximum likelihood:}
+            $$P_{ML}(w_i|w_{i-1}) = \frac{C(w_{i-1}, w_i)}{C(w_{i-1})}$$
+            
+            \textbf{Log probability (avoid underflow):}
+            $$\log P(sentence) = \sum_i \log P(w_i|w_{i-1})$$
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\section{Appendix B: Extended Examples}
+
+% Shakespeare Generation
+\begin{frame}[fragile]{Appendix B.1: Generate Shakespeare with N-grams}
+    \textbf{Let's build a Shakespeare text generator!}
+    
+\begin{lstlisting}[language=Python]
+import random
+from collections import defaultdict
+
+class ShakespeareGenerator:
+    def __init__(self, n=2):
+        self.n = n  # Use bigrams by default
+        self.model = defaultdict(list)
+        
+    def train(self, text):
+        words = text.split()
+        for i in range(len(words) - self.n):
+            context = tuple(words[i:i+self.n])
+            next_word = words[i+self.n]
+            self.model[context].append(next_word)
+    
+    def generate(self, length=20, start=None):
+        if start is None:
+            start = random.choice(list(self.model.keys()))
+        
+        result = list(start)
+        context = start
+        
+        for _ in range(length):
+            if context in self.model:
+                next_word = random.choice(self.model[context])
+                result.append(next_word)
+                # Slide the context window
+                context = tuple(list(context)[1:] + [next_word])
+            else:
+                break  # No continuation found
+                
+        return ' '.join(result)
+\end{lstlisting}
+\end{frame}
+
+% WhatsApp Analysis
+\begin{frame}[fragile]{Appendix B.2: Analyze Your WhatsApp Messages}
+    \textbf{Find your most predictable phrases:}
+    
+\begin{lstlisting}[language=Python]
+def analyze_whatsapp_chat(filename):
+    """Find most common patterns in your chats."""
+    
+    # Parse WhatsApp export
+    messages = []
+    with open(filename, 'r', encoding='utf-8') as f:
+        for line in f:
+            # Extract just the message text
+            if ': ' in line:
+                message = line.split(': ', 1)[1].strip()
+                messages.append(message)
+    
+    # Build trigram model
+    trigrams = defaultdict(int)
+    for message in messages:
+        words = message.lower().split()
+        for i in range(len(words) - 2):
+            trigram = (words[i], words[i+1], words[i+2])
+            trigrams[trigram] += 1
+    
+    # Find your catchphrases
+    print("Your most common phrases:")
+    for trigram, count in sorted(trigrams.items(), 
+                                  key=lambda x: x[1], 
+                                  reverse=True)[:10]:
+        print(f"  '{' '.join(trigram)}' - {count} times")
+    
+    return trigrams
+\end{lstlisting}
+\end{frame}
+
+% Autocomplete Implementation
+\begin{frame}[fragile]{Appendix B.3: Build Autocomplete from Scratch}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{lstlisting}[language=Python]
+class Autocomplete:
+    def __init__(self):
+        self.bigrams = defaultdict(Counter)
+        
+    def train(self, corpus):
+        """Train on text corpus."""
+        for sentence in corpus:
+            words = ['<S>'] + sentence.split()
+            for i in range(len(words)-1):
+                self.bigrams[words[i]][words[i+1]] += 1
+    
+    def predict(self, context, n=3):
+        """Get top n predictions."""
+        if context not in self.bigrams:
+            return []
+        
+        # Get all possibilities with counts
+        candidates = self.bigrams[context]
+        
+        # Sort by frequency
+        predictions = candidates.most_common(n)
+        
+        # Convert to probabilities
+        total = sum(candidates.values())
+        result = []
+        for word, count in predictions:
+            prob = count / total
+            result.append({
+                'word': word,
+                'probability': prob,
+                'confidence': self.confidence(prob)
+            })
+        
+        return result
+\end{lstlisting}
+
+\column{0.43\textwidth}
+\begin{lstlisting}[language=Python]
+    def confidence(self, prob):
+        """Convert probability to confidence level."""
+        if prob > 0.5:
+            return "high"
+        elif prob > 0.2:
+            return "medium"
+        else:
+            return "low"
+    
+    def interactive_demo(self):
+        """Run interactive autocomplete."""
+        print("Type a word, I'll predict the next!")
+        
+        while True:
+            word = input("\nEnter word: ").strip()
+            if word == 'quit':
+                break
+                
+            predictions = self.predict(word)
+            
+            if predictions:
+                print("Predictions:")
+                for i, pred in enumerate(predictions, 1):
+                    print(f"{i}. {pred['word']} "
+                          f"({pred['probability']:.1%}, "
+                          f"{pred['confidence']})")
+            else:
+                print("No predictions available")
+
+# Usage
+auto = Autocomplete()
+auto.train(sentences)
+auto.interactive_demo()
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+\section{Appendix C: Advanced Topics}
+
+% Kneser-Ney Mathematics
+\begin{frame}[t]{Appendix C.1: Kneser-Ney Smoothing Details}
+    \textbf{The Problem with Simple Counting:}
+    
+    ``San Francisco'' is common, but ``Francisco'' alone is rare.
+    Simple smoothing would overestimate P(Francisco|new context).
+    
+    \vspace{0.5em}
+    \textbf{Kneser-Ney Solution:}
+    
+    Consider word ``versatility'' - how many different contexts it appears in.
+    
+    \vspace{0.5em}
+    \textbf{The Mathematics:}
+    
+    \begin{align}
+        P_{KN}(w_i|w_{i-1}) &= \frac{\max(C(w_{i-1}, w_i) - d, 0)}{C(w_{i-1})} + \lambda(w_{i-1}) P_{continuation}(w_i)
+    \end{align}
+    
+    Where:
+    \begin{itemize}
+        \item $d$ = discount parameter (typically 0.75)
+        \item $\lambda(w_{i-1})$ = normalization to ensure probabilities sum to 1
+        \item $P_{continuation}(w_i)$ = probability based on number of unique contexts
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Continuation Probability:}
+    $$P_{continuation}(w) = \frac{|\{v : C(v, w) > 0\}|}{|\{(u, v) : C(u, v) > 0\}|}$$
+    
+    This counts unique bigram types, not tokens!
+\end{frame}
+
+% Perplexity Deep Dive
+\begin{frame}[t]{Appendix C.2: Understanding Perplexity}
+    \textbf{What is Perplexity?}
+    
+    ``How surprised is the model by the test data?''
+    
+    \vspace{0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Formal Definition:}
+            
+            $$PP(W) = P(w_1, w_2, ..., w_N)^{-\frac{1}{N}}$$
+            
+            \textbf{Using Chain Rule:}
+            
+            $$PP = \sqrt[N]{\frac{1}{\prod_{i=1}^N P(w_i|w_1...w_{i-1})}}$$
+            
+            \textbf{In Practice (using logs):}
+            
+            $$PP = 2^{-\frac{1}{N}\sum_{i=1}^N \log_2 P(w_i|w_{i-1})}$$
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Intuition:}
+            \begin{itemize}
+                \item PP = 10: Model is as confused as choosing from 10 equally likely options
+                \item PP = 100: Like choosing from 100 options
+                \item Lower is better!
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Typical Values:}
+            \begin{itemize}
+                \item Random: 10,000+
+                \item Unigram: 1,000
+                \item Bigram: 200
+                \item Trigram: 100
+                \item Neural: 20-50
+                \item Human: 10-20
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Relationship to Entropy:}
+            $$H = \log_2(PP)$$
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Information Theory Connection
+\begin{frame}[t]{Appendix C.3: Connection to Information Theory}
+    \textbf{Shannon's Fundamental Question:}
+    
+    How much information is in English text?
+    
+    \vspace{0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Information Content:}
+            
+            Surprising events = more information
+            
+            $$I(w) = -\log_2 P(w)$$
+            
+            \vspace{0.5em}
+            \textbf{Examples:}
+            \begin{itemize}
+                \item P(``the'') = 0.1 $\rightarrow$ 3.3 bits
+                \item P(``dog'') = 0.01 $\rightarrow$ 6.6 bits
+                \item P(``aardvark'') = 0.00001 $\rightarrow$ 16.6 bits
+            \end{itemize}
+            
+            Rare words carry more information!
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Entropy of Language:}
+            
+            Average information per word:
+            
+            $$H(L) = -\sum_{w} P(w) \log_2 P(w)$$
+            
+            \vspace{0.5em}
+            \textbf{Shannon's Experiments:}
+            \begin{itemize}
+                \item Random letters: 4.7 bits/char
+                \item English letters: 4.14 bits/char
+                \item With context: ~1 bit/char
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Implications:}
+            \begin{itemize}
+                \item English is ~75\% redundant
+                \item Compression possible!
+                \item Prediction possible!
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \centering
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            N-gram models approximate the true entropy of language
+        }
+    }
+\end{frame}
+
+% Quiz Answers
+\begin{frame}[t]{Self-Assessment Answers}
+    \textbf{Quiz Answers:}
+    
+    \begin{enumerate}
+        \item \textbf{Difference between unigram and bigram:}
+        \begin{itemize}
+            \item Unigram: considers single words independently
+            \item Bigram: considers pairs of adjacent words
+            \item Bigram uses context, unigram doesn't
+        \end{itemize}
+        
+        \item \textbf{Why we need smoothing:}
+        \begin{itemize}
+            \item Handle unseen word combinations
+            \item Avoid zero probabilities
+            \item Prevent model crashes/errors
+        \end{itemize}
+        
+        \item \textbf{Calculate P(cat|the):}
+        \begin{itemize}
+            \item P(cat|the) = count(the cat) / count(the)
+            \item P(cat|the) = 10 / 20 = 0.5
+        \end{itemize}
+        
+        \item \textbf{Main limitation of n-grams:}
+        \begin{itemize}
+            \item No semantic understanding
+            \item Limited context window
+            \item Treat words as meaningless symbols
+        \end{itemize}
+        
+        \item \textbf{When to use trigrams over bigrams:}
+        \begin{itemize}
+            \item When you have lots of training data
+            \item When longer context matters
+            \item When bigram accuracy isn't sufficient
+        \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+% References
+\begin{frame}[t]{References and Further Reading}
+    \textbf{Core Papers:}
+    \begin{itemize}
+        \item Shannon, C.E. (1948). ``A Mathematical Theory of Communication''
+        \item Kneser, R. \& Ney, H. (1995). ``Improved backing-off for M-gram language modeling''
+        \item Chen, S.F. \& Goodman, J. (1999). ``An empirical study of smoothing techniques''
+    \end{itemize}
+    
+    \textbf{Textbooks:}
+    \begin{itemize}
+        \item Jurafsky \& Martin (2024). ``Speech and Language Processing'' Chapter 3
+        \item Manning \& Schütze (1999). ``Foundations of Statistical NLP''
+    \end{itemize}
+    
+    \textbf{Online Resources:}
+    \begin{itemize}
+        \item Peter Norvig's ``How to Write a Spelling Corrector'' (2007)
+        \item Google's ``The Unreasonable Effectiveness of Data'' (2009)
+        \item Michael Collins' NLP course notes (Columbia)
+    \end{itemize}
+    
+    \textbf{Implementation Resources:}
+    \begin{itemize}
+        \item NLTK library: \url{https://www.nltk.org/}
+        \item KenLM (fast n-gram toolkit): \url{https://kheafield.com/code/kenlm/}
+    \end{itemize}
+\end{frame}
+
+\end{document}

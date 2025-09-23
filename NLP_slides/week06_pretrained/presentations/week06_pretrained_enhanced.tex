@@ -1,0 +1,725 @@
+\documentclass[8pt,aspectratio=169,8pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm2e}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{subfigure}
+\usepackage{hyperref}
+
+% Theme settings
+\usetheme{Frankfurt}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Custom colors
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{173,216,230}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codegray}{RGB}{150,150,150}
+\definecolor{codepurple}{RGB}{128,0,128}
+\definecolor{backcolor}{RGB}{245,245,245}
+
+% Code listing settings
+\lstset{
+    backgroundcolor=\color{backcolor},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    showstringspaces=false,
+    frame=single,
+    numbers=left,
+    language=Python
+}
+
+% Include slide layouts
+\input{../slide_layouts.tex}
+
+\title[Week 6: Pre-trained]{Natural Language Processing Course}
+\subtitle{Week 6: Pre-trained Language Models}
+\author{Joerg R. Osterrieder \\ \url{www.joergosterrieder.com}}
+\date{}
+
+\begin{document}
+
+% Title page
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\section{Week 6: Pre-trained Language Models}
+
+% Title slide
+\begin{frame}
+    \centering
+    \vspace{2cm}
+    {\Large \textbf{Week 6}}\\
+    \vspace{0.5cm}
+    {\huge \textbf{Pre-trained Language Models}}\\
+    \vspace{1cm}
+    {\large Learning from All of Human Knowledge}
+\end{frame}
+
+% Motivation: The waste problem
+\begin{frame}[t]{The \$10 Million Problem No One Talked About}
+    \textbf{Training a language model from scratch (2018):}
+    \vspace{0.5em}
+    Company A trains model for sentiment analysis:
+    \begin{itemize}
+        \item Cost: \$500,000 in compute\footnotemark
+        \item Time: 2 weeks on 64 GPUs
+        \item Learns: Grammar, syntax, word meanings, sentiment
+    \end{itemize}
+    
+    \vspace{0.5em}
+    Company B trains model for question answering:
+    \begin{itemize}
+        \item Cost: \$500,000 in compute
+        \item Time: 2 weeks on 64 GPUs
+        \item Learns: Grammar, syntax, word meanings... again!
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{red!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            Every team re-learning what "the" means from scratch!
+        }
+    }
+    \end{center}
+    
+    \vspace{0.5em}
+    \textbf{The waste:} 90\% of training teaches same basic language understanding
+    
+    \footnotetext{Based on 2018 cloud GPU pricing and typical training times}
+\end{frame}
+
+% The transfer learning revolution
+\begin{frame}[t]{The Revolution: Learn Language Once, Use Everywhere}
+    \textbf{The breakthrough idea (2018):}\footnotemark
+    
+    \vspace{0.5em}
+    What if we:
+    \begin{enumerate}
+        \item Train ONE model on massive text (Wikipedia, books, web)
+        \item Learn general language understanding
+        \item Share this pre-trained model with everyone
+        \item Fine-tune for specific tasks with little data
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \textbf{The impact:}
+    \begin{itemize}
+        \item Training cost: \$10M → \$100\footnotemark
+        \item Training time: Weeks → Hours
+        \item Data needed: 1M examples → 1K examples
+        \item Performance: 70\% → 95\% accuracy
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{green!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            Transfer Learning: Don't start from scratch, start from knowledge!
+        }
+    }
+    \end{center}
+    
+    \footnotetext[1]{Howard \& Ruder (2018) ULMFiT; Radford et al. (2018) GPT; Devlin et al. (2019) BERT}
+    \footnotetext[2]{Fine-tuning costs vs pre-training from scratch}
+\end{frame}
+
+% Real-world impact
+\begin{frame}[t]{Pre-trained Models Power Everything (2024)}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Search \& Understanding:}
+            \begin{itemize}
+                \item Google Search: BERT since 2019\footnotemark
+                \item Affects 10\% of all queries
+                \item Bing: Multiple BERT variants
+                \item Every modern search engine
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Writing Assistants:}
+            \begin{itemize}
+                \item Grammarly: BERT-based
+                \item Google Docs: Smart compose
+                \item Microsoft Editor
+                \item All use pre-trained models
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Business Applications:}
+            \begin{itemize}
+                \item Customer service: 80\% automated\footnotemark
+                \item Document analysis
+                \item Email classification
+                \item Resume screening
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Key Models:}
+            \begin{itemize}
+                \item BERT: 110M-340M parameters
+                \item GPT-2: 1.5B parameters
+                \item RoBERTa: Better BERT training
+                \item T5: Unified text-to-text
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            2024: You never train from scratch - always start from pre-trained
+        }
+    }
+    \end{center}
+    
+    \footnotetext[1]{Google blog: "Understanding searches better than ever before"}
+    \footnotetext[2]{Gartner report on AI automation}
+\end{frame}
+
+% Learning objectives
+\begin{frame}[t]{Week 6: What You'll Master}
+    \textbf{By the end of this week, you will:}
+    \begin{itemize}
+        \item \textbf{Understand} why pre-training changes everything
+        \item \textbf{Master} BERT's bidirectional approach
+        \item \textbf{Implement} masked language modeling
+        \item \textbf{Compare} BERT vs GPT architectures
+        \item \textbf{Fine-tune} models for your own tasks
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            \textbf{Core Insight:} Language understanding is a reusable skill
+        }
+    }
+    \end{center}
+\end{frame}
+
+% The pre-training concept
+\begin{frame}[t]{Pre-training: Learning from Raw Text}
+    \textbf{Traditional supervised learning:}
+    \begin{itemize}
+        \item Need: Labeled data (expensive!)
+        \item Example: 100K sentiment labels
+        \item Problem: Starts from random weights
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Self-supervised pre-training:}
+    \begin{itemize}
+        \item Need: Just text (free and abundant!)
+        \item Example: All of Wikipedia (6B tokens)
+        \item Advantage: Learns language before task
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{The clever trick - Create labels from text itself:}
+    \begin{enumerate}
+        \item Take: "The cat sat on the [?]"
+        \item Model predicts: "mat"
+        \item No human labeling needed!
+        \item Can use internet-scale data
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{yellow!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            Pre-training = Teaching models to read before teaching them tasks
+        }
+    }
+    \end{center}
+\end{frame}
+
+% BERT's approach
+\begin{frame}[t]{BERT: Bidirectional Understanding}
+    \textbf{The limitation of GPT (left-to-right):}
+    
+    "The man went to the [MASK] to buy milk"
+    \begin{itemize}
+        \item GPT only sees: "The man went to the"
+        \item Can't use "to buy milk" as context!
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{BERT's innovation: Look both ways!}\footnotemark
+    \begin{itemize}
+        \item Sees entire sentence: "The man went to the [MASK] to buy milk"
+        \item Can use both left AND right context
+        \item Predicts: "store" (using "buy milk" as clue)
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Masked Language Model (MLM):}
+    \begin{enumerate}
+        \item Randomly mask 15\% of tokens
+        \item Predict masked tokens using all context
+        \item Learn deep bidirectional representations
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            BERT = Transformer encoder + Bidirectional context
+        }
+    }
+    \end{center}
+    
+    \footnotetext{Devlin et al. (2019). "BERT: Pre-training of Deep Bidirectional Transformers"}
+\end{frame}
+
+% BERT visualization
+\begin{frame}[t]{BERT's Training Process Visualized}
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figures/bert_training_process.pdf}
+    
+    \vspace{0.5em}
+    \textbf{Key insights:}
+    \begin{itemize}
+        \item Random masking prevents memorization
+        \item Bidirectional context captures full meaning
+        \item Also predicts if sentences follow each other (NSP)
+        \item Trained on BookCorpus (800M words) + Wikipedia (2.5B words)
+    \end{itemize}
+\end{frame}
+
+% GPT's approach
+\begin{frame}[t]{GPT: Generative Pre-training}
+    \textbf{Different philosophy: Predict the future}\footnotemark
+    
+    \vspace{0.5em}
+    Given: "The cat sat on the"
+    
+    Predict: "mat" (then "in", then "the", then "sun"...)
+    
+    \vspace{0.5em}
+    \textbf{Autoregressive training:}
+    \begin{enumerate}
+        \item Process text left-to-right
+        \item Predict next token at each step
+        \item Can generate coherent text!
+        \item Same objective as traditional LM
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \textbf{Key differences from BERT:}
+    \begin{itemize}
+        \item Unidirectional (left-to-right only)
+        \item Can generate text naturally
+        \item Simpler training (no masking tricks)
+        \item Transformer decoder architecture
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{yellow!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            GPT = Transformer decoder + Autoregressive training
+        }
+    }
+    \end{center}
+    
+    \footnotetext{Radford et al. (2018). "Improving Language Understanding by Generative Pre-Training"}
+\end{frame}
+
+% BERT implementation
+\begin{frame}[fragile]{Implementing BERT's Masked Language Model}
+    \begin{columns}[T]
+\column{0.55\textwidth}
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+import torch
+import torch.nn as nn
+import random
+
+class BERTMasking:
+    def __init__(self, vocab_size, mask_token_id, mask_prob=0.15):
+        """BERT-style masking for MLM"""
+        self.vocab_size = vocab_size
+        self.mask_token_id = mask_token_id
+        self.mask_prob = mask_prob
+        
+    def mask_tokens(self, inputs, special_tokens_mask=None):
+        """Mask tokens for BERT training"""
+        labels = inputs.clone()
+        
+        # Create probability matrix
+        probability_matrix = torch.full(labels.shape, self.mask_prob)
+        if special_tokens_mask is not None:
+            probability_matrix.masked_fill_(special_tokens_mask, value=0.0)
+            
+        masked_indices = torch.bernoulli(probability_matrix).bool()
+        labels[~masked_indices] = -100  # Only compute loss on masked
+        
+        # 80% of time, replace with [MASK]
+        indices_replaced = torch.bernoulli(
+            torch.full(labels.shape, 0.8)).bool() & masked_indices
+        inputs[indices_replaced] = self.mask_token_id
+        
+        # 10% of time, replace with random word
+        indices_random = torch.bernoulli(
+            torch.full(labels.shape, 0.5)).bool() & masked_indices & ~indices_replaced
+        random_words = torch.randint(self.vocab_size, labels.shape, dtype=torch.long)
+        inputs[indices_random] = random_words[indices_random]
+        
+        # 10% of time, keep original (for robustness)
+        return inputs, labels
+\end{lstlisting}
+  \column{0.43\textwidth}
+        \codeexplanation{
+            \textbf{BERT's 80-10-10 Rule:}
+            \begin{itemize}
+                \item 80\%: Replace with [MASK]
+                \item 10\%: Replace with random token
+                \item 10\%: Keep original token
+            \end{itemize}
+            
+            \vspace{0.3em}
+            \textbf{Why this complexity?}
+            \begin{itemize}
+                \item [MASK] never seen in fine-tuning
+                \item Random replacement adds noise
+                \item Original tokens prevent mismatch
+            \end{itemize}
+            
+            \vspace{0.3em}
+            \textbf{Design validates through:}
+            \begin{itemize}
+                \item Ablation studies in paper
+                \item 15\% masking is optimal
+                \item Too much masking hurts learning
+            \end{itemize}
+        }
+    \end{columns}
+\end{frame}
+
+% Complete BERT model
+\begin{frame}[fragile]{BERT Model Architecture}
+    \begin{columns}[T]
+                \column{0.55\textwidth}
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+class BERTModel(nn.Module):
+    def __init__(self, vocab_size, hidden_size=768, num_layers=12, 
+                 num_heads=12, max_length=512, dropout=0.1):
+        """BERT model for masked language modeling"""
+        super().__init__()
+        
+        # Token embeddings + position + segment
+        self.token_embeddings = nn.Embedding(vocab_size, hidden_size)
+        self.position_embeddings = nn.Embedding(max_length, hidden_size)
+        self.segment_embeddings = nn.Embedding(2, hidden_size)
+        
+        self.layer_norm = nn.LayerNorm(hidden_size)
+        self.dropout = nn.Dropout(dropout)
+        
+        # Transformer encoder layers
+        encoder_layer = nn.TransformerEncoderLayer(
+            hidden_size, num_heads, dim_feedforward=4*hidden_size,
+            dropout=dropout, activation='gelu'
+        )
+        self.transformer = nn.TransformerEncoder(encoder_layer, num_layers)
+        
+        # MLM head
+        self.mlm_head = nn.Sequential(
+            nn.Linear(hidden_size, hidden_size),
+            nn.GELU(),
+            nn.LayerNorm(hidden_size),
+            nn.Linear(hidden_size, vocab_size)
+        )
+        
+    def forward(self, input_ids, segment_ids=None, attention_mask=None):
+        """Forward pass for MLM"""
+        seq_length = input_ids.size(1)
+        position_ids = torch.arange(seq_length, device=input_ids.device)
+        
+        # Combine embeddings
+        token_embeds = self.token_embeddings(input_ids)
+        position_embeds = self.position_embeddings(position_ids)
+        segment_embeds = self.segment_embeddings(segment_ids) if segment_ids is not None else 0
+        
+        embeddings = token_embeds + position_embeds + segment_embeds
+        embeddings = self.layer_norm(embeddings)
+        embeddings = self.dropout(embeddings)
+        
+        # Transformer encoding
+        hidden_states = self.transformer(embeddings.transpose(0, 1))
+        
+        # MLM predictions
+        predictions = self.mlm_head(hidden_states.transpose(0, 1))
+        
+        return predictions
+\end{lstlisting}
+                \column{0.43\textwidth}
+
+        \codeexplanation{
+            \textbf{BERT Sizes:}
+            \begin{itemize}
+                \item BASE: 12 layers, 768 hidden, 110M params\footnotemark
+                \item LARGE: 24 layers, 1024 hidden, 340M params
+            \end{itemize}
+            
+            \vspace{0.3em}
+            \textbf{Key Components:}
+            \begin{itemize}
+                \item Segment embeddings for sentence pairs
+                \item GELU activation (smoother than ReLU)
+                \item Layer norm before attention
+            \end{itemize}
+            
+            \footnotetext{Most applications use BERT-BASE}
+        }
+    \end{columns}
+\end{frame}
+
+% Fine-tuning process
+\begin{frame}[t]{Fine-tuning: From General to Specific}
+    \textbf{The fine-tuning recipe:}
+    
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item Start with pre-trained BERT/GPT
+        \item Add task-specific head (1-2 layers)
+        \item Train on your labeled data
+        \item 100x less data needed!
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \centering
+    \includegraphics[width=0.8\textwidth]{../figures/fine_tuning_process.pdf}
+\end{frame}
+
+% Results comparison
+\resultslide{Pre-training Impact: BERT Dominates Every Task}{
+    \centering
+    \includegraphics[width=0.85\textwidth]{../figures/bert_results_glue.pdf}
+}{
+    \begin{itemize}
+        \item GLUE benchmark: 9 language understanding tasks
+        \item BERT improved SOTA on ALL tasks simultaneously
+        \item Average score: 82.1 (previous best: 75.1)
+        \item Some tasks: 10+ point improvements
+        \item Started the "BERT era" of NLP
+    \end{itemize}
+}
+
+% Transfer learning power
+\begin{frame}[t]{The Power of Transfer Learning}
+    \centering
+    \includegraphics[width=0.55\textwidth]{../figures/transfer_learning_efficiency.pdf}
+    
+    \vspace{0.5em}
+    \textbf{Key insights:}
+    \begin{itemize}
+        \item With 100 examples: BERT matches 10K from-scratch training
+        \item Especially powerful for low-resource languages
+        \item Works across very different tasks
+        \item The more diverse pre-training, the better transfer
+    \end{itemize}
+\end{frame}
+
+% Model zoo
+\begin{frame}[t]{The Pre-trained Model Zoo (2024)}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{General Purpose:}
+            \begin{itemize}
+                \item BERT: Understanding tasks
+                \item GPT-2/3: Generation tasks
+                \item T5: Any text-to-text task
+                \item ELECTRA: Efficient BERT alternative
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Domain Specific:}
+            \begin{itemize}
+                \item BioBERT: Biomedical text
+                \item SciBERT: Scientific papers
+                \item FinBERT: Financial documents
+                \item CodeBERT: Programming code
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Multilingual:}
+            \begin{itemize}
+                \item mBERT: 104 languages
+                \item XLM-R: 100 languages
+                \item mT5: Text-to-text multilingual
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Where to find:}
+            \begin{itemize}
+                \item Hugging Face: 500K+ models\footnotemark
+                \item Google TF Hub
+                \item PyTorch Hub
+                \item Company model hubs
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{yellow!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            2024 Reality: Never train from scratch - there's a model for that!
+        }
+    }
+    \end{center}
+    
+    \footnotetext{Hugging Face hosts majority of open models}
+\end{frame}
+
+% Common pitfalls
+\begin{frame}[t]{Pre-trained Model Pitfalls}
+    \textbf{1. Domain Mismatch}
+    \begin{itemize}
+        \item Problem: BERT trained on books/wiki, you have tweets
+        \item Solution: Domain-adaptive pre-training
+        \item Continue pre-training on your domain
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{2. Catastrophic Forgetting}
+    \begin{itemize}
+        \item Problem: Fine-tuning destroys pre-trained knowledge
+        \item Solution: Lower learning rates (2e-5), gradual unfreezing
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{3. Overfitting on Small Data}
+    \begin{itemize}
+        \item Problem: Large model, small dataset
+        \item Solution: Freeze lower layers, only train top layers
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Real Example - Customer Service Bot:}
+    \begin{itemize}
+        \item Started with BERT: 72\% accuracy
+        \item Continued pre-training on support tickets: 85\%
+        \item Fine-tuned with careful LR: 94\%
+    \end{itemize}
+\end{frame}
+
+% Exercise
+\begin{frame}[t]{Week 6 Exercise: Fine-tune Your Own BERT}
+    \textbf{Your Mission:} Take pre-trained BERT and make it expert at your task
+    
+    \vspace{0.5em}
+    \textbf{Part 1: Understand Pre-training}
+    \begin{itemize}
+        \item Load pre-trained BERT from Hugging Face
+        \item Examine what it already knows (probe tasks)
+        \item Visualize attention patterns
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Part 2: Fine-tune for Classification}
+    \begin{itemize}
+        \item Choose: Sentiment, spam, or topic classification
+        \item Add classification head to BERT
+        \item Compare: 100 vs 1000 vs 10000 examples
+        \item Track how quickly it learns
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Part 3: Advanced Experiments}
+    \begin{itemize}
+        \item Try different learning rates
+        \item Freeze vs unfreeze layers
+        \item Compare BERT vs training from scratch
+        \item Measure training time savings
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{You'll discover:} Why no one trains from scratch anymore!
+\end{frame}
+
+% Summary
+\begin{frame}[t]{Key Takeaways: The Pre-training Revolution}
+    \textbf{What we learned:}
+    \begin{itemize}
+        \item Training from scratch wastes resources
+        \item Pre-training learns reusable language understanding
+        \item BERT: Bidirectional with masking
+        \item GPT: Autoregressive generation
+        \item Fine-tuning needs 100x less data
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{The paradigm shift:}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            Task-specific training → Pre-train then fine-tune
+        }
+    }
+    \end{center}
+    
+    \vspace{0.5em}
+    \textbf{Why it matters:}
+    \begin{itemize}
+        \item Democratized NLP (anyone can use BERT)
+        \item Enabled rapid prototyping
+        \item Made NLP practical for businesses
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Next week: Advanced Transformers}
+    
+    How do we scale to GPT-3's 175B parameters and beyond?
+\end{frame}
+
+% References
+\begin{frame}[t]{References and Further Reading}
+    \textbf{Foundational Papers:}
+    \begin{itemize}
+        \item Devlin et al. (2019). "BERT: Pre-training of Deep Bidirectional Transformers"
+        \item Radford et al. (2018). "Improving Language Understanding by Generative Pre-Training"
+        \item Liu et al. (2019). "RoBERTa: A Robustly Optimized BERT"
+    \end{itemize}
+    
+    \textbf{Practical Resources:}
+    \begin{itemize}
+        \item Hugging Face Transformers library
+        \item "The Illustrated BERT" by Jay Alammar
+        \item Google's BERT GitHub repository
+    \end{itemize}
+    
+    \textbf{Recent Advances:}
+    \begin{itemize}
+        \item ELECTRA: More efficient pre-training
+        \item DeBERTa: Disentangled attention
+        \item Transfer learning survey (Qiu et al., 2020)
+    \end{itemize}
+\end{frame}
+
+\end{document}

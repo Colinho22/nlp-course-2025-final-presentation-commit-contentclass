@@ -1,0 +1,730 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+
+% Nature Professional Color Palette
+\definecolor{ForestGreen}{RGB}{20,83,45}      % Primary
+\definecolor{Teal}{RGB}{13,148,136}           % Secondary
+\definecolor{Amber}{RGB}{245,158,11}          % Accent
+\definecolor{Slate}{RGB}{71,85,105}           % Support
+\definecolor{MintCream}{RGB}{240,253,244}     % Background
+\definecolor{LightGreen}{RGB}{134,239,172}    % Light accent
+\definecolor{DarkTeal}{RGB}{15,118,110}       % Dark variant
+
+% Apply Nature Professional theme
+\setbeamercolor{structure}{fg=ForestGreen}
+\setbeamercolor{title}{fg=ForestGreen,bg=MintCream}
+\setbeamercolor{subtitle}{fg=Teal}
+\setbeamercolor{frametitle}{bg=LightGreen!20,fg=ForestGreen}
+\setbeamercolor{normal text}{fg=ForestGreen,bg=white}
+\setbeamercolor{background canvas}{bg=MintCream}
+
+% Blocks
+\setbeamercolor{block title}{bg=Teal,fg=white}
+\setbeamercolor{block body}{bg=MintCream,fg=ForestGreen}
+\setbeamercolor{block title alerted}{bg=Amber,fg=white}
+\setbeamercolor{block body alerted}{bg=Amber!10,fg=ForestGreen}
+\setbeamercolor{block title example}{bg=ForestGreen,fg=white}
+\setbeamercolor{block body example}{bg=LightGreen!20,fg=ForestGreen}
+
+% Items
+\setbeamercolor{item}{fg=Amber}
+\setbeamercolor{subitem}{fg=Teal}
+\setbeamercolor{itemize item}{fg=Amber}
+\setbeamercolor{enumerate item}{fg=Amber}
+
+% Navigation
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333\paperwidth,ht=2.5ex,dp=1ex,left]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\hspace{3mm}\textcolor{ForestGreen}{Week 4: Seq2Seq}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333\paperwidth,ht=2.5ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\textcolor{Teal}{NLP Course 2025}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333\paperwidth,ht=2.5ex,dp=1ex,right]{page number in head/foot}%
+    \usebeamerfont{date in head/foot}\textcolor{Amber}{\insertframenumber{} / \inserttotalframenumber}\hspace{3mm}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{algorithm2e}
+\usepackage{listings}
+
+% Math commands
+\newcommand{\given}{\mid}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\softmax}{softmax}
+
+% Custom commands with Nature colors
+\newcommand{\highlight}[1]{\textcolor{Amber}{\textbf{#1}}}
+\newcommand{\concept}[1]{\textcolor{ForestGreen}{\textbf{#1}}}
+\newcommand{\subpoint}[1]{\textcolor{Teal}{#1}}
+
+\title{\textcolor{ForestGreen}{\textbf{Sequence-to-Sequence Models}}}
+\subtitle{\textcolor{Teal}{Encoder-Decoder Architecture \& Attention Mechanisms}}
+\author{\textcolor{Slate}{Natural Language Processing - Week 4}}
+\date{\textcolor{Amber}{2025}}
+
+\begin{document}
+
+% Title Slide
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+% Table of Contents
+\begin{frame}{Overview}
+\tableofcontents
+\end{frame}
+
+% Section 1: Introduction
+\section{Introduction}
+\begin{frame}{The Variable-Length Challenge}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\concept{Why Sequence-to-Sequence?}
+
+Previous models' limitations:
+\begin{itemize}
+    \item \highlight{Fixed-size} input/output
+    \item \subpoint{Cannot handle} variable lengths
+    \item Loss of \highlight{sequential information}
+\end{itemize}
+
+\vspace{5mm}
+\begin{block}{Key Innovation}
+Map variable-length input to variable-length output
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\concept{Applications}
+\begin{itemize}
+    \item \textcolor{Teal}{Machine Translation}
+    \begin{itemize}
+        \item English $\rightarrow$ French
+        \item Variable sentence lengths
+    \end{itemize}
+    \item \textcolor{Teal}{Text Summarization}
+    \begin{itemize}
+        \item Long article $\rightarrow$ Brief summary
+    \end{itemize}
+    \item \textcolor{Teal}{Dialogue Systems}
+    \begin{itemize}
+        \item Question $\rightarrow$ Answer
+    \end{itemize}
+\end{itemize}
+\end{column}
+\end{columns}
+
+\vspace{\fill}
+\small\textcolor{Slate}{Sutskever et al., 2014 - Revolutionary approach to sequence modeling}
+\end{frame}
+
+% Section 2: Architecture
+\section{Encoder-Decoder Architecture}
+\begin{frame}{The Core Architecture}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\concept{Encoder}
+\begin{itemize}
+    \item Processes \highlight{input sequence}
+    \item Creates \subpoint{context vector} $c$
+    \item \textcolor{DarkTeal}{Hidden states}: $h_1, h_2, ..., h_T$
+\end{itemize}
+
+\vspace{3mm}
+\begin{exampleblock}{Encoder Equations}
+\begin{align}
+h_t &= \text{RNN}_{\text{enc}}(x_t, h_{t-1}) \\
+c &= h_T
+\end{align}
+\end{exampleblock}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\concept{Decoder}
+\begin{itemize}
+    \item Generates \highlight{output sequence}
+    \item Uses context vector $c$
+    \item \textcolor{DarkTeal}{Autoregressive} generation
+\end{itemize}
+
+\vspace{3mm}
+\begin{block}{Decoder Equations}
+\begin{align}
+s_t &= \text{RNN}_{\text{dec}}(y_{t-1}, s_{t-1}, c) \\
+p(y_t \given y_{<t}, x) &= \softmax(W_s s_t)
+\end{align}
+\end{block}
+\end{column}
+\end{columns}
+
+\vspace{\fill}
+\small\textcolor{Slate}{The context vector $c$ is the information bottleneck}
+\end{frame}
+
+\begin{frame}{Visual Architecture}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/week4_seq2seq_architecture_minimalist.pdf}
+\end{center}
+\vspace{-3mm}
+\begin{center}
+\textcolor{Slate}{\small Encoder compresses input, Decoder expands to output}
+\end{center}
+\end{frame}
+
+% Section 3: Training
+\section{Training Process}
+\begin{frame}{Teacher Forcing vs Inference}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\concept{Training: Teacher Forcing}
+
+\begin{itemize}
+    \item Use \highlight{ground truth} as input
+    \item Faster convergence
+    \item \subpoint{Exposure bias} problem
+\end{itemize}
+
+\begin{alertblock}{Training Process}
+At each step $t$:
+\begin{enumerate}
+    \item Input: true $y_{t-1}$
+    \item Predict: $\hat{y}_t$
+    \item Loss: $\mathcal{L}(y_t, \hat{y}_t)$
+\end{enumerate}
+\end{alertblock}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\concept{Inference: Autoregressive}
+
+\begin{itemize}
+    \item Use \highlight{own predictions}
+    \item Error accumulation
+    \item \subpoint{Beam search} helps
+\end{itemize}
+
+\begin{exampleblock}{Inference Process}
+At each step $t$:
+\begin{enumerate}
+    \item Input: predicted $\hat{y}_{t-1}$
+    \item Predict: $\hat{y}_t$
+    \item Continue until <EOS>
+\end{enumerate}
+\end{exampleblock}
+\end{column}
+\end{columns}
+
+\vspace{\fill}
+\small\textcolor{Slate}{Teacher forcing creates a mismatch between training and inference}
+\end{frame}
+
+% Section 4: Attention Mechanism
+\section{Attention Revolution}
+\begin{frame}{The Attention Solution}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\concept{Motivation}
+
+\begin{itemize}
+    \item \highlight{Bottleneck} in fixed-size $c$
+    \item Long sequences lose information
+    \item Need \subpoint{dynamic context}
+\end{itemize}
+
+\vspace{3mm}
+\concept{Key Idea}
+
+Different decoder steps attend to different encoder positions
+
+\vspace{3mm}
+\begin{block}{Attention Benefits}
+\begin{itemize}
+    \item Solves long-range dependencies
+    \item Provides alignment
+    \item Improves gradient flow
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\concept{Attention Computation}
+
+\begin{exampleblock}{Mathematical Formulation}
+\begin{align}
+e_{tj} &= a(s_{t-1}, h_j) \\
+\alpha_{tj} &= \frac{\exp(e_{tj})}{\sum_{k=1}^T \exp(e_{tk})} \\
+c_t &= \sum_{j=1}^T \alpha_{tj} h_j
+\end{align}
+\end{exampleblock}
+
+Where:
+\begin{itemize}
+    \item $e_{tj}$: \subpoint{alignment score}
+    \item $\alpha_{tj}$: \highlight{attention weight}
+    \item $c_t$: \subpoint{dynamic context}
+\end{itemize}
+\end{column}
+\end{columns}
+
+\vspace{\fill}
+\small\textcolor{Slate}{Bahdanau et al., 2015 - Neural Machine Translation by Jointly Learning to Align and Translate}
+\end{frame}
+
+\begin{frame}{Attention Visualization}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/week4_attention_heatmap_nature.pdf}
+\end{center}
+\vspace{-3mm}
+\begin{center}
+\textcolor{Slate}{\small Attention weights reveal word alignments between languages}
+\end{center}
+\end{frame}
+
+% Section 5: Beam Search
+\section{Decoding Strategies}
+\begin{frame}{Beam Search Decoding}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\concept{Why Not Greedy?}
+
+\begin{itemize}
+    \item Greedy: \highlight{locally optimal}
+    \item May miss \subpoint{better sequences}
+    \item No backtracking possible
+\end{itemize}
+
+\vspace{3mm}
+\concept{Beam Search Solution}
+
+\begin{itemize}
+    \item Keep \highlight{$k$ best} hypotheses
+    \item Explore multiple paths
+    \item Balance \subpoint{quality vs speed}
+\end{itemize}
+
+\begin{block}{Beam Width Trade-off}
+\begin{itemize}
+    \item $k=1$: Greedy (fast, lower quality)
+    \item $k=5-10$: Typical (balanced)
+    \item $k=\infty$: Exhaustive (slow, optimal)
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\concept{Algorithm}
+
+\begin{exampleblock}{Beam Search Steps}
+\begin{enumerate}
+    \item Initialize beam with <START>
+    \item For each time step:
+    \begin{itemize}
+        \item Expand all hypotheses
+        \item Score all candidates
+        \item Keep top-$k$ sequences
+    \end{itemize}
+    \item Stop when:
+    \begin{itemize}
+        \item All beams end with <EOS>
+        \item Maximum length reached
+    \end{itemize}
+    \item Return highest scoring sequence
+\end{enumerate}
+\end{exampleblock}
+\end{column}
+\end{columns}
+
+\vspace{\fill}
+\small\textcolor{Slate}{Beam search significantly improves translation quality}
+\end{frame}
+
+\begin{frame}{Beam Search Tree}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{../figures/week4_beam_search_nature.pdf}
+\end{center}
+\vspace{-3mm}
+\begin{center}
+\textcolor{Slate}{\small Beam width $k=3$: Exploring multiple translation hypotheses}
+\end{center}
+\end{frame}
+
+% Section 6: Performance
+\section{Performance Analysis}
+\begin{frame}{Model Comparison}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/week4_model_complexity_nature.pdf}
+\end{center}
+\vspace{-3mm}
+\begin{center}
+\textcolor{Slate}{\small Evolution from RNN to Transformer: complexity vs performance trade-offs}
+\end{center}
+\end{frame}
+
+\begin{frame}{Training Dynamics}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/week4_training_dynamics_nature.pdf}
+\end{center}
+\vspace{-3mm}
+\begin{center}
+\textcolor{Slate}{\small Comprehensive view of training metrics over time}
+\end{center}
+\end{frame}
+
+% Section 7: Implementation
+\section{Implementation Details}
+\begin{frame}[fragile]{PyTorch Implementation}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\concept{Encoder}
+\begin{lstlisting}[language=Python, basicstyle=\tiny, keywordstyle=\color{ForestGreen}]
+class Encoder(nn.Module):
+    def __init__(self, input_dim,
+                 emb_dim, hid_dim,
+                 n_layers, dropout):
+        super().__init__()
+        self.embedding = nn.Embedding(
+            input_dim, emb_dim)
+        self.rnn = nn.LSTM(emb_dim,
+            hid_dim, n_layers,
+            dropout=dropout)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, src):
+        embedded = self.dropout(
+            self.embedding(src))
+        outputs, (hidden, cell) = \
+            self.rnn(embedded)
+        return hidden, cell
+\end{lstlisting}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\concept{Decoder with Attention}
+\begin{lstlisting}[language=Python, basicstyle=\tiny, keywordstyle=\color{ForestGreen}]
+class Decoder(nn.Module):
+    def __init__(self, output_dim,
+                 emb_dim, hid_dim,
+                 n_layers, dropout):
+        super().__init__()
+        self.embedding = nn.Embedding(
+            output_dim, emb_dim)
+        self.rnn = nn.LSTM(emb_dim + hid_dim,
+            hid_dim, n_layers,
+            dropout=dropout)
+        self.attention = Attention(hid_dim)
+        self.fc = nn.Linear(
+            hid_dim * 2, output_dim)
+
+    def forward(self, input, hidden,
+                cell, encoder_outputs):
+        embedded = self.embedding(input)
+        a = self.attention(hidden[-1],
+            encoder_outputs)
+        weighted = torch.bmm(a.unsqueeze(1),
+            encoder_outputs).squeeze(1)
+        rnn_input = torch.cat(
+            (embedded, weighted), dim=1)
+        output, (hidden, cell) = \
+            self.rnn(rnn_input.unsqueeze(0),
+                    (hidden, cell))
+        prediction = self.fc(torch.cat(
+            (output.squeeze(0), weighted),
+            dim=1))
+        return prediction, hidden, cell
+\end{lstlisting}
+\end{column}
+\end{columns}
+
+\vspace{\fill}
+\small\textcolor{Slate}{Complete implementation available in course repository}
+\end{frame}
+
+% Section 8: Practical Tips
+\section{Practical Considerations}
+\begin{frame}{Training Tips \& Tricks}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\concept{Optimization}
+
+\begin{itemize}
+    \item \highlight{Gradient clipping} essential
+    \item Learning rate \subpoint{scheduling}
+    \item \textcolor{DarkTeal}{Dropout} in RNN layers
+\end{itemize}
+
+\vspace{3mm}
+\begin{block}{Hyperparameters}
+\begin{itemize}
+    \item Hidden size: 256-512
+    \item Layers: 2-4
+    \item Dropout: 0.2-0.3
+    \item Beam width: 5-10
+\end{itemize}
+\end{block}
+
+\vspace{3mm}
+\concept{Data Preprocessing}
+
+\begin{itemize}
+    \item \highlight{Tokenization} consistency
+    \item Vocabulary size limits
+    \item Handle \subpoint{rare words}
+\end{itemize}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\concept{Common Issues}
+
+\begin{alertblock}{Exposure Bias}
+\begin{itemize}
+    \item Problem: Train/test mismatch
+    \item Solution: Scheduled sampling
+\end{itemize}
+\end{alertblock}
+
+\begin{alertblock}{Long Sequences}
+\begin{itemize}
+    \item Problem: Gradient vanishing
+    \item Solution: Attention mechanism
+\end{itemize}
+\end{alertblock}
+
+\begin{alertblock}{Rare Words}
+\begin{itemize}
+    \item Problem: UNK tokens
+    \item Solution: Copy mechanism
+\end{itemize}
+\end{alertblock}
+
+\vspace{3mm}
+\concept{Evaluation Metrics}
+\begin{itemize}
+    \item \highlight{BLEU}: n-gram precision
+    \item \subpoint{ROUGE}: recall-oriented
+    \item \subpoint{METEOR}: semantic similarity
+\end{itemize}
+\end{column}
+\end{columns}
+
+\vspace{\fill}
+\small\textcolor{Slate}{Practical experience is key to mastering seq2seq models}
+\end{frame}
+
+% Section 9: Evolution
+\section{Historical Evolution}
+\begin{frame}{From Seq2Seq to Transformers}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/week4_evolution_timeline_nature.pdf}
+\end{center}
+\vspace{-3mm}
+\begin{center}
+\textcolor{Slate}{\small The path from basic seq2seq to modern transformer architectures}
+\end{center}
+\end{frame}
+
+% Section 10: Exercise
+\section{Hands-on Exercise}
+\begin{frame}[fragile]{Exercise: Simple Translation}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\concept{Task}
+
+Implement a basic seq2seq model for number translation:
+\begin{itemize}
+    \item Input: "one two three"
+    \item Output: "1 2 3"
+\end{itemize}
+
+\vspace{3mm}
+\concept{Starter Code}
+\begin{lstlisting}[language=Python, basicstyle=\tiny, keywordstyle=\color{ForestGreen}]
+# Define vocabularies
+source_vocab = {
+    'one': 1, 'two': 2,
+    'three': 3, 'four': 4,
+    'five': 5, '<sos>': 0,
+    '<eos>': 6, '<pad>': 7
+}
+target_vocab = {
+    '1': 1, '2': 2, '3': 3,
+    '4': 4, '5': 5,
+    '<sos>': 0, '<eos>': 6,
+    '<pad>': 7
+}
+
+# Training data
+train_data = [
+    ('one two', '1 2'),
+    ('three four five', '3 4 5'),
+    # Add more examples
+]
+\end{lstlisting}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\concept{Implementation Steps}
+
+\begin{exampleblock}{Step 1: Data Processing}
+\begin{itemize}
+    \item Tokenize sequences
+    \item Convert to indices
+    \item Pad to same length
+\end{itemize}
+\end{exampleblock}
+
+\begin{exampleblock}{Step 2: Model Building}
+\begin{itemize}
+    \item Create Encoder class
+    \item Create Decoder class
+    \item Combine into Seq2Seq
+\end{itemize}
+\end{exampleblock}
+
+\begin{exampleblock}{Step 3: Training Loop}
+\begin{itemize}
+    \item Teacher forcing
+    \item Calculate loss
+    \item Backpropagation
+\end{itemize}
+\end{exampleblock}
+
+\begin{exampleblock}{Step 4: Evaluation}
+\begin{itemize}
+    \item Implement inference
+    \item Test on new examples
+    \item Calculate accuracy
+\end{itemize}
+\end{exampleblock}
+\end{column}
+\end{columns}
+
+\vspace{\fill}
+\small\textcolor{Slate}{Complete solution available in lab notebook}
+\end{frame}
+
+% Summary
+\section{Summary}
+\begin{frame}{Key Takeaways}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\concept{What We Learned}
+
+\begin{enumerate}
+    \item \highlight{Encoder-Decoder} architecture
+    \begin{itemize}
+        \item Variable length handling
+        \item Context vector bottleneck
+    \end{itemize}
+
+    \item \highlight{Attention Mechanism}
+    \begin{itemize}
+        \item Dynamic context
+        \item Alignment visualization
+    \end{itemize}
+
+    \item \highlight{Training Techniques}
+    \begin{itemize}
+        \item Teacher forcing
+        \item Beam search decoding
+    \end{itemize}
+\end{enumerate}
+
+\vspace{3mm}
+\begin{block}{Core Insight}
+Attention solves the information bottleneck problem
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\concept{Practical Applications}
+
+\begin{itemize}
+    \item \textcolor{Teal}{Machine Translation}
+    \item \textcolor{Teal}{Text Summarization}
+    \item \textcolor{Teal}{Question Answering}
+    \item \textcolor{Teal}{Image Captioning}
+    \item \textcolor{Teal}{Speech Recognition}
+\end{itemize}
+
+\vspace{3mm}
+\concept{Next Week Preview}
+
+\begin{alertblock}{Week 5: Transformers}
+\begin{itemize}
+    \item Self-attention mechanism
+    \item Parallel processing
+    \item Positional encoding
+    \item Multi-head attention
+\end{itemize}
+\end{alertblock}
+\end{column}
+\end{columns}
+
+\vspace{\fill}
+\small\textcolor{Slate}{Seq2seq models laid the foundation for modern NLP architectures}
+\end{frame}
+
+% References
+\begin{frame}{References}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\concept{Essential Papers}
+
+\begin{itemize}
+    \item \textcolor{Teal}{Sutskever et al. (2014)}\\
+    \small Sequence to Sequence Learning with Neural Networks
+
+    \item \textcolor{Teal}{Bahdanau et al. (2015)}\\
+    \small Neural Machine Translation by Jointly Learning to Align and Translate
+
+    \item \textcolor{Teal}{Luong et al. (2015)}\\
+    \small Effective Approaches to Attention-based Neural Machine Translation
+\end{itemize}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\concept{Additional Resources}
+
+\begin{itemize}
+    \item \textcolor{Amber}{Course Repository}\\
+    \small github.com/course/week4-seq2seq
+
+    \item \textcolor{Amber}{Lab Notebook}\\
+    \small week04\_seq2seq\_lab.ipynb
+
+    \item \textcolor{Amber}{PyTorch Tutorial}\\
+    \small pytorch.org/tutorials/seq2seq
+\end{itemize}
+
+\vspace{3mm}
+\begin{exampleblock}{Office Hours}
+Tuesday 2-4 PM\\
+Thursday 10-12 AM
+\end{exampleblock}
+\end{column}
+\end{columns}
+
+\vspace{\fill}
+\small\textcolor{Slate}{Questions? Please post on the course forum or attend office hours}
+\end{frame}
+
+% Thank You
+\begin{frame}[plain]
+\vspace{3cm}
+\begin{center}
+{\Huge\textcolor{ForestGreen}{Thank You!}}\\[1cm]
+{\Large\textcolor{Teal}{See you next week for Transformers}}\\[2cm]
+{\normalsize\textcolor{Amber}{Remember to complete the lab exercise}}
+\end{center}
+\end{frame}
+
+\end{document}
