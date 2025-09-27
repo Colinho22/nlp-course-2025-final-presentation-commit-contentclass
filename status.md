@@ -100,7 +100,17 @@
 - **README.md**: Student-facing quick start and course overview
 - **INSTALLATION.md**: Detailed setup guide with troubleshooting
 - **COURSE_INDEX.md**: Complete week-by-week navigation
-- **test_notebooks.py**: Automated testing script for all 15 labs
+- **test_notebooks.py**: Automated testing script for all labs
+- **verify_installation.py**: 30-second quick verification script
+
+### First-Day Materials ✅ (2025-09-27)
+- **Week 0 Lecture**: First-day introduction presentation (20 slides, 102KB PDF)
+  - Course motivation and real-world applications
+  - 12-week journey visualization
+  - Getting started guide and installation walkthrough
+  - Prerequisites self-check
+  - Assessment overview and example projects
+  - Success strategies and resources
 
 ### Supplementary Modules ✅
 - **Neural Network Primer**: Complete foundational module (2025-09-27)
