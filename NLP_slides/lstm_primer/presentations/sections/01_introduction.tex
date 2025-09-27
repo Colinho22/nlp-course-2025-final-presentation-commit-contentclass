@@ -1,0 +1,332 @@
+% Section 1: Introduction and Motivation
+
+\begin{frame}[t]{The Autocomplete Challenge}
+\begin{center}
+\textbf{The Problem: Predicting What Comes Next}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/autocomplete_screenshot.pdf}
+
+\vspace{3mm}
+\textbf{What You See:}
+\begin{itemize}
+\item You type on your phone
+\item Suggestions appear instantly
+\item Suggestions change with context
+\item Often surprisingly accurate
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Real Examples:}
+\begin{itemize}
+\item ``See you \_\_\_'' $\rightarrow$ soon, tomorrow, later
+\item ``I love \_\_\_'' $\rightarrow$ you, this, chocolate
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Challenge:}
+\begin{itemize}
+\item Context can be very long
+\item Meaning changes with history
+\item Grammar rules complex
+\item Need to be fast (milliseconds)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Hard Example:}
+
+\textit{``I grew up in Paris. I went to school there. I learned to speak fluent \_\_\_''}
+
+\begin{itemize}
+\item Need to remember ``Paris'' (18 words back!)
+\item Ignore recent irrelevant words
+\item Connect city to language
+\item Answer: French
+\end{itemize}
+
+\vspace{3mm}
+\textbf{This is sequence modeling:} Predict next element based on all previous elements.
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Humans do this effortlessly. How can we teach machines?}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{The LSTM Revolution (2015-2018)}
+\begin{center}
+\textbf{LSTMs Changed How We Interact with Technology}
+\end{center}
+\vspace{5mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Google Translate (2016):}
+\begin{itemize}
+\item Switched from phrase-based to LSTM
+\item Translation errors dropped 60\%
+\item First human-quality translations
+\item 100+ languages supported
+\item Newspaper headline: ``AI achieved breakthrough''
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Speech Recognition:}
+\begin{itemize}
+\item Siri, Alexa, Google Assistant
+\item Word error rate halved
+\item Real-time transcription enabled
+\item Accent-independent understanding
+\item Made voice interfaces practical
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Text Prediction:}
+\begin{itemize}
+\item Gmail Smart Compose
+\item Phone keyboard autocomplete
+\item Code completion (early versions)
+\item Billions of users daily
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why It Was Revolutionary:}
+
+\vspace{3mm}
+\textbf{Memory Breakthrough:}
+\begin{itemize}
+\item \textbf{Before LSTMs:} 5-10 word memory
+\item \textbf{After LSTMs:} 50-100+ word memory
+\item \textbf{10x improvement} in context length
+\item First practical long-range modeling
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Key Capabilities Unlocked:}
+\begin{itemize}
+\item Understand full sentences
+\item Connect distant information
+\item Capture linguistic structure
+\item Handle complex grammar
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Industry Transformation:}
+\begin{itemize}
+\item Translation industry disrupted
+\item Voice interface revolution
+\item New products possible
+\item Billions in economic value
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This was the first architecture that truly worked for sequences}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Scientific Breakthroughs and Innovations}
+\begin{center}
+\textbf{Why LSTMs Matter for Research}
+\end{center}
+\vspace{5mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Scientific Impact:}
+
+\vspace{3mm}
+\begin{itemize}
+\item \textbf{50,000+ papers}: Citing LSTM architecture
+\item \textbf{Hochreiter \& Schmidhuber (1997)}: Original breakthrough
+\item \textbf{Breakthrough}: Solved vanishing gradient problem
+\item \textbf{Foundation}: Enabled Transformers, BERT, GPT
+\item \textbf{Legacy}: Changed how we think about sequences
+\item \textbf{Recognition}: Nobel/Turing Award worthy
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Conceptual Innovations:}
+
+\vspace{3mm}
+\begin{itemize}
+\item \textbf{Gating mechanisms}
+  \begin{itemize}
+  \item Learned information control
+  \item Forget, input, output gates
+  \item Neural decision-making
+  \end{itemize}
+\item \textbf{Memory highway}
+  \begin{itemize}
+  \item Direct gradient path via addition
+  \item No vanishing gradients
+  \item 100+ step memory possible
+  \end{itemize}
+\item \textbf{Modular design}
+  \begin{itemize}
+  \item Stackable layers
+  \item Hierarchical features
+  \item Inspired modern architectures
+  \end{itemize}
+\item \textbf{Attention precursor}
+  \begin{itemize}
+  \item Output gate = selective focus
+  \item Led to attention mechanisms
+  \item Foundation for Transformers
+  \end{itemize}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why Study LSTMs in 2025:}
+
+\vspace{3mm}
+\textbf{Educational Value:}
+\begin{itemize}
+\item Perfect introduction to sequence models
+\item Intuitive gate mechanisms
+\item Clear mathematical structure
+\item Understand attention/Transformers better
+\item Foundation for all modern architectures
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Practical Relevance:}
+\begin{itemize}
+\item Still state-of-the-art for time series
+\item Mobile/edge deployment (efficient)
+\item Streaming/real-time processing
+\item Understanding gradient flow
+\item Debugging modern models
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Historical Context:}
+
+\begin{itemize}
+\item \textbf{1997}: LSTM invented
+\item \textbf{2015-2018}: LSTM revolution
+  \begin{itemize}
+  \item Google Translate breakthrough
+  \item Speech recognition leap
+  \item Dominated NLP
+  \end{itemize}
+\item \textbf{2017+}: Transformers rise
+  \begin{itemize}
+  \item Built on LSTM concepts
+  \item Self-attention = advanced gating
+  \item Parallel training advantage
+  \end{itemize}
+\item \textbf{2025}: LSTMs still relevant
+  \begin{itemize}
+  \item Time series forecasting
+  \item Resource-constrained deployment
+  \end{itemize}
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Understanding LSTMs is key to understanding modern NLP}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Course Roadmap and Learning Path}
+\begin{center}
+\textbf{What We'll Cover in This Course}
+\end{center}
+\vspace{5mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Part 1: The Problem (3 slides)}
+
+\vspace{3mm}
+\begin{itemize}
+\item \textbf{Why autocomplete is hard}
+  \begin{itemize}
+  \item Need long context
+  \item Example: ``I grew up in Paris \ldots speak fluent \_\_\_''
+  \end{itemize}
+\item \textbf{N-gram baseline}
+  \begin{itemize}
+  \item Count-based approach
+  \item Fixed 1-2 word window
+  \end{itemize}
+\item \textbf{Why N-grams fail}
+  \begin{itemize}
+  \item Can't see beyond 2 words
+  \item Combinatorial explosion
+  \item No generalization
+  \end{itemize}
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Part 2: First Attempts (3 slides)}
+
+\vspace{3mm}
+\begin{itemize}
+\item \textbf{Recurrent Neural Networks}
+  \begin{itemize}
+  \item Hidden state as memory
+  \item Can theoretically remember everything
+  \end{itemize}
+\item \textbf{Vanishing gradient problem}
+  \begin{itemize}
+  \item Gradients: $0.5^{50} \approx 10^{-15}$
+  \item Memory limited to 5-10 words
+  \end{itemize}
+\item \textbf{Concrete example}
+  \begin{itemize}
+  \item Step-by-step computation
+  \item Why RNNs forget
+  \end{itemize}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Part 3: The LSTM Solution (7 slides)}
+
+\vspace{3mm}
+\begin{itemize}
+\item \textbf{Architecture overview}
+  \begin{itemize}
+  \item Three gates + cell state
+  \item Memory highway concept
+  \end{itemize}
+\item \textbf{Gate mechanisms}
+  \begin{itemize}
+  \item Forget gate: What to remove
+  \item Input gate: What to add
+  \item Output gate: What to reveal
+  \end{itemize}
+\item \textbf{Mathematics}
+  \begin{itemize}
+  \item All six equations
+  \item Concrete numerical examples
+  \item Gradient flow analysis
+  \end{itemize}
+\item \textbf{Why it works}
+  \begin{itemize}
+  \item Addition preserves gradients
+  \item 50-100+ step memory
+  \end{itemize}
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Part 4: Training \& Applications (7 slides)}
+
+\vspace{3mm}
+\begin{itemize}
+\item \textbf{Training}: BPTT, gradient clipping, tips
+\item \textbf{Variants}: GRU, Bidirectional, Stacked
+\item \textbf{Attention}: Bridge to Transformers
+\item \textbf{Applications}: NLP, speech, time series
+\item \textbf{Implementation}: PyTorch code
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}20 total slides covering LSTMs from zero to implementation}
+
+\end{columns}
+\end{frame}

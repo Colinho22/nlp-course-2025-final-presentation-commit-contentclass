@@ -1,0 +1,312 @@
+% Appendix A: Advanced Topics
+\begin{frame}{Appendix A: Advanced Topics}
+\begin{center}
+{\Large \textbf{Deep Dives for the Curious}}
+\end{center}
+\vspace{10mm}
+
+\textbf{This section contains advanced material that goes beyond the core BSc curriculum.}
+
+\vspace{5mm}
+Topics covered:
+\begin{itemize}
+\item The Lottery Ticket Hypothesis
+\item Inductive Biases in Neural Architectures
+\item Scaling Laws and Performance Prediction
+\item Deep vs Wide Network Architectures
+\item Emergent Abilities at Scale
+\item Advanced Optimization Algorithms
+\end{itemize}
+
+\vspace{5mm}
+\textit{These topics are valuable for understanding state-of-the-art research but not essential for getting started with neural networks.}
+\end{frame}
+
+% THE LOTTERY TICKET HYPOTHESIS
+\begin{frame}{2019: The Lottery Ticket Hypothesis}
+\begin{center}
+\textbf{Most Network Weights Don't Matter!}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Discovery:}
+\begin{itemize}
+\item Networks contain "winning tickets"
+\item Subnetworks that train well alone
+\item 90-95\% of weights can be removed
+\item Performance stays the same!
+\end{itemize}
+
+\textbf{The Hypothesis:}
+"Dense networks succeed because they contain sparse subnetworks that are capable of training effectively"
+
+\column{0.48\textwidth}
+\textbf{Implications:}
+\begin{itemize}
+\item We massively overparameterize
+\item Training finds the needle in haystack
+\item Future: Train small from start?
+\item Mobile deployment possible
+\end{itemize}
+
+\textbf{Why It Matters:}
+\begin{itemize}
+\item Explains why big networks train better
+\item Pruning after training works
+\item Efficiency revolution starting
+\item Changes how we think about learning
+\end{itemize}
+\end{columns}
+\bottomnote{ A 1 billion parameter model might only need 50 million}
+\end{frame}
+
+% INDUCTIVE BIASES
+\begin{frame}{Inductive Biases: Building in Assumptions}
+\begin{center}
+\textbf{The Right Architecture for the Right Problem}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{What Are Inductive Biases?}
+\begin{itemize}
+\item Assumptions built into architecture
+\item Guide learning toward solutions
+\item Trade flexibility for efficiency
+\item "Priors" about the problem
+\end{itemize}
+
+\textbf{Examples:}
+\begin{itemize}
+\item \textbf{CNN:} Spatial locality matters
+\item \textbf{RNN:} Order/time matters
+\item \textbf{GNN:} Graph structure matters
+\item \textbf{Transformer:} All positions can interact
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why They Matter:}
+\begin{itemize}
+\item Reduce search space
+\item Faster convergence
+\item Better generalization
+\item Less data needed
+\end{itemize}
+
+\textbf{The Tradeoff:}
+\begin{itemize}
+\item Right bias = 10x better
+\item Wrong bias = 10x worse
+\item General architectures = safe but slow
+\item Specialized = fast but limited
+\end{itemize}
+\end{columns}
+\bottomnote{ Choosing the right inductive bias is still an art}
+\end{frame}
+
+% SCALING LAWS
+\begin{frame}{Scaling Laws: How Performance Grows with Data}
+\begin{center}
+\textbf{The Predictable Relationship Between Data, Model Size, and Performance}
+\end{center}
+\vspace{2mm}
+\begin{columns}
+\column{0.55\textwidth}
+\includegraphics[width=0.82\textwidth]{../figures/data_scaling_laws.pdf}
+
+\textbf{The Chinchilla Law (2022):}
+\begin{itemize}
+\item Optimal ratio: 20 tokens per parameter
+\item 10B model needs 200B tokens
+\item Most models are undertrained
+\item Data quality matters more than quantity
+\end{itemize}
+
+\textbf{Power Law Scaling:}
+$$\text{Loss} = A \cdot N^{-\alpha} + B \cdot D^{-\beta} + C$$
+\begin{itemize}
+\item $N$ = model parameters
+\item $D$ = dataset size
+\item $\alpha \approx 0.07$, $\beta \approx 0.10$
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{Practical Implications:}
+\begin{itemize}
+\item 10x data $\rightarrow$ 2x performance
+\item 10x parameters $\rightarrow$ 1.7x performance
+\item 10x compute $\rightarrow$ 3x performance
+\item Diminishing returns always
+\end{itemize}
+
+\textbf{Data Efficiency Tricks:}
+\begin{itemize}
+\item Data augmentation
+\item Synthetic data generation
+\item Active learning
+\item Curriculum learning
+\item Multi-task training
+\end{itemize}
+
+\whymatters{These laws predict costs before training}
+
+\textbf{Current Limits:}
+\begin{itemize}
+\item Internet has ~10T tokens
+\item Already using most of it
+\item Quality > Quantity now
+\end{itemize}
+\end{columns}
+\bottomnote{ These laws let us predict performance before training - saving millions in compute}
+\end{frame}
+
+% DEEP VS WIDE
+\begin{frame}{Architecture Choices: Deep vs Wide Networks}
+\begin{center}
+\textbf{The Fundamental Tradeoff in Neural Architecture}
+\end{center}
+\vspace{2mm}
+\begin{columns}
+\column{0.55\textwidth}
+\includegraphics[width=0.9\textwidth]{../figures/depth_width_comparison.pdf}
+
+\textbf{Deep Networks (Many Layers):}
+\begin{itemize}
+\item Complex hierarchical features
+\item Exponential expressiveness growth
+\item Harder to train (vanishing gradients)
+\item Better for vision, NLP
+\end{itemize}
+
+\textbf{Wide Networks (Many Neurons):}
+\begin{itemize}
+\item More parallel processing
+\item Easier optimization landscape
+\item Linear expressiveness growth
+\item Better for tabular data
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{The Sweet Spot:}
+\begin{itemize}
+\item Vision: Deep (100+ layers)
+\item Language: Very deep (24-96 layers)
+\item Tabular: Wide and shallow (2-4 layers)
+\item Time series: Moderate (5-10 layers)
+\end{itemize}
+
+\textbf{Modern Insights:}
+\begin{itemize}
+\item Depth beats width for same parameters
+\item Skip connections enable extreme depth
+\item Width helps with memorization
+\item Depth helps with generalization
+\end{itemize}
+
+\textbf{Scaling Laws:}
+\begin{itemize}
+\item Performance $\propto$ depth$^{0.8}$
+\item Performance $\propto$ width$^{0.5}$
+\end{itemize}
+\end{columns}
+\bottomnote{ The depth revolution (2012-2016) showed that deep beats wide for most problems}
+\end{frame}
+
+% EMERGENT ABILITIES
+\begin{frame}{Emergent Abilities: When Scale Creates Intelligence}
+\begin{center}
+\textbf{Capabilities That Appear Suddenly with Scale}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Phenomenon:}
+\begin{itemize}
+\item Small models: Can't do task at all
+\item Medium models: Still can't
+\item Large models: Suddenly can!
+\item No gradual improvement
+\end{itemize}
+
+\textbf{Examples:}
+\begin{itemize}
+\item 3-digit arithmetic (>10B params)
+\item Chain-of-thought reasoning (>50B)
+\item Code generation (>20B)
+\item Multilingual translation (>100B)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why It Happens:}
+\begin{itemize}
+\item Complex patterns need capacity
+\item Phase transitions in learning
+\item Composition of simpler abilities
+\item "Grokking" - sudden understanding
+\end{itemize}
+
+\textbf{Implications:}
+\begin{itemize}
+\item We can't predict what's next
+\item Scaling might unlock AGI
+\item Or hit fundamental limits
+\item Active area of research
+\end{itemize}
+\end{columns}
+\bottomnote{ GPT-3 showed abilities nobody expected or programmed}
+\end{frame}
+
+% OPTIMIZATION ALGORITHMS
+\begin{frame}{Optimization Algorithms: How Networks Learn}
+\begin{center}
+\textbf{The Evolution of Gradient Descent}
+\end{center}
+\vspace{2mm}
+\begin{columns}
+\column{0.55\textwidth}
+\includegraphics[width=0.82\textwidth]{../figures/optimizer_comparison.pdf}
+
+\textbf{SGD (1951):}
+\begin{itemize}
+\item Basic gradient descent
+\item Learning rate: Fixed
+\item Slow but reliable
+\item Still used for fine-tuning
+\end{itemize}
+
+\textbf{Momentum (1964):}
+\begin{itemize}
+\item Remember past gradients
+\item Accelerate in consistent directions
+\item Escape shallow local minima
+\item $v_t = \beta v_{t-1} + (1-\beta) g_t$
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{Adam (2014):}
+\begin{itemize}
+\item Adaptive learning rates per parameter
+\item Combines momentum + RMSprop
+\item De facto standard
+\item Works out-of-the-box
+\end{itemize}
+
+\textbf{Modern Variants:}
+\begin{itemize}
+\item \textbf{AdamW:} Decoupled weight decay
+\item \textbf{RAdam:} Rectified Adam
+\item \textbf{LAMB:} Large batch training
+\item \textbf{Sophia:} 2nd-order approximation
+\end{itemize}
+
+\textbf{Choosing an Optimizer:}
+\begin{itemize}
+\item Start with Adam (lr=3e-4)
+\item Large batch: LAMB
+\item Fine-tuning: SGD with momentum
+\item Transformers: AdamW
+\end{itemize}
+\end{columns}
+\bottomnote{ Adam works 90\% of the time - but that last 10\% matters for SOTA results}
+\end{frame}

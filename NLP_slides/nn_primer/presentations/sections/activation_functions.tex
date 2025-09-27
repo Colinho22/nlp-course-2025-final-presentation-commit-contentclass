@@ -1,0 +1,82 @@
+% Activation Functions and Visualization
+\begin{frame}{Why Linear Doesn't Work: Activation Functions}
+\begin{center}
+\textbf{The Need for Non-Linearity}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Problem with Linear:}
+\begin{itemize}
+\item Stack of linear layers = still linear!
+\item $f(g(x)) = (wx + b_1)w' + b_2 = w'wx + ...$
+\item Can't learn complex patterns
+\end{itemize}
+
+\textbf{Solution: Activation Functions}
+\begin{itemize}
+\item Add non-linearity after each layer
+\item Allows learning complex boundaries
+\item Different functions for different needs
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Common Activation Functions:}
+\begin{itemize}
+\item \textbf{Sigmoid:} $\sigma(x) = \frac{1}{1 + e^{-x}}$
+  \begin{itemize}
+  \item Smooth, outputs 0-1
+  \item Good for probabilities
+  \end{itemize}
+  \plainmath{Squashes any input to range 0-1. Large positive becomes 1, large negative becomes 0}
+\item \textbf{ReLU:} $f(x) = \max(0, x)$
+  \begin{itemize}
+  \item Simple, fast
+  \item Solves vanishing gradient
+  \end{itemize}
+\item \textbf{Tanh:} $\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$
+  \begin{itemize}
+  \item Outputs -1 to 1
+  \item Zero-centered
+  \end{itemize}
+\end{itemize}
+\end{columns}
+\bottomnote{ ReLU's simplicity revolutionized deep learning in 2011}
+\end{frame}
+
+% Simple 2D Example
+\begin{frame}{Visualizing Learning: 2D Classification}
+\begin{center}
+\textbf{Teaching a Network to Separate Red from Blue Points}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Setup:}
+\begin{itemize}
+\item Input: (x, y) coordinates
+\item Output: Red or Blue class
+\item Network: 2 $\rightarrow$ 4 $\rightarrow$ 2 neurons
+\end{itemize}
+
+\textbf{Training Process:}
+\begin{enumerate}
+\item Epoch 1: Random boundary
+\item Epoch 10: Rough separation
+\item Epoch 50: Good boundary
+\item Epoch 100: Perfect fit
+\end{enumerate}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/2d_classification_evolution.pdf}
+\end{center}
+\textbf{What Each Layer Learns:}
+\begin{itemize}
+\item Layer 1: Simple boundaries
+\item Hidden: Combine boundaries
+\item Output: Final decision
+\end{itemize}
+\end{columns}
+\bottomnote{ This same principle scales to millions of parameters}
+\end{frame}

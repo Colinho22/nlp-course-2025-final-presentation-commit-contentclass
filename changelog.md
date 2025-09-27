@@ -1,5 +1,62 @@
 # NLP Course 2025 - Changelog
 
+## 2025-09-27
+### MAJOR MILESTONE: Supplementary Modules Complete ✅
+- **LSTM Primer Module** - Comprehensive standalone module
+  - Created 11 presentation versions (10-32 slides)
+  - Modular architecture with 9 section files in sections/ subdirectory
+  - Generated 20 custom figures (architecture diagrams, gate visualizations, training progression)
+  - BSc-level checkpoint pedagogy with quiz slides and answers
+  - Complete coverage: autocomplete challenge, RNN baseline, vanishing gradients, LSTM architecture, BPTT, applications
+  - Reference example for modular presentation structure
+  - Location: NLP_slides/lstm_primer/
+
+- **Neural Network Primer Module** - Foundational zero-knowledge module
+  - 3 comprehensive presentation versions (48+ pages)
+  - Discovery-based handouts: classification (6 pages) and function approximation (9 pages)
+  - Generated 8 custom figures (party analogy, neuron computation, XOR solution, sigmoid parameters)
+  - Concrete-to-abstract pedagogy: party decisions to neural networks
+  - Topics: perceptrons, activation functions, backpropagation, Universal Approximation Theorem
+  - Location: NLP_slides/nn_primer/
+
+### Repository Status
+- **All 12 core weeks**: Complete with presentations, labs, and handouts
+- **Supplementary modules**: 2/2 complete (NN Primer, LSTM Primer)
+- **Lab notebooks**: 12/12 (including Week 7 advanced transformers lab)
+- **Documentation**: Updated status.md and CLAUDE.md
+
+### Pending Commit
+- 125 legacy file deletions (cleanup of standalone presentations directory)
+- New untracked modules: lstm_primer/, nn_primer/, addendum/, handouts/
+- New presentation PDFs: Week 5 comprehensive, Week 10, Week 12 optimal versions
+- New figures: 6 new visualization PDFs in figures/ directory
+
+## 2025-09-23
+### Completed and Tested
+- **Fixed LaTeX compilation issues** for all week 8-12 presentations
+  - Escaped ampersands in titles (Tokenization \& Vocabulary, etc.)
+  - Successfully compiled Week 8 presentation as validation
+  - Cleaned auxiliary files to temp/ directories
+- **Generated all figures** for weeks 8-12 using Python scripts
+- **Repository organization** completed
+  - Committed 479 files in major reorganization
+  - Migrated from standalone presentations to week-based structure
+  - Added common templates and shared infrastructure
+
+### Documentation Updates
+- **Enhanced CLAUDE.md** with:
+  - Full course generation script documentation
+  - Directory naming patterns clarification
+  - Important files and utilities section
+  - Shared infrastructure details (master_template.tex, chart_utils.py)
+- **Updated status.md** to reflect completion of weeks 8-12
+- **Updated changelog.md** with recent changes
+
+### Verified
+- All 12 weeks now have complete materials (presentations, labs, handouts)
+- Lab notebooks exist for weeks 2-12 (Week 1 excluded as introductory)
+- All figure generation scripts have been executed successfully
+
 ## 2025-09-22
 ### MAJOR COMPLETION MILESTONE 🎯
 - **ALL 12 WEEKS NOW COMPLETE**

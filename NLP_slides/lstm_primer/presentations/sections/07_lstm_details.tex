@@ -1,0 +1,485 @@
+% Section 7: LSTM Mathematical Details
+
+\begin{frame}[t]{The Forget Gate: Clearing Old Information}
+\begin{center}
+\textbf{{\color{forgetRed}Forget Gate:} What Should We Remove?}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{The Equation:}
+$$f_t = \sigma(W_f [h_{t-1}, x_t] + b_f)$$
+
+Where:
+\begin{itemize}
+\item $f_t$ = forget gate activations (0 to 1)
+\item $h_{t-1}$ = previous hidden state
+\item $x_t$ = current input word
+\item $\sigma$ = sigmoid function
+\item $[h_{t-1}, x_t]$ = concatenation
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What Sigmoid Does:}
+$$\sigma(z) = \frac{1}{1 + e^{-z}}$$
+
+\begin{itemize}
+\item Maps any number to (0,1)
+\item $z \rightarrow -\infty$: $\sigma(z) \rightarrow 0$ (forget)
+\item $z \rightarrow +\infty$: $\sigma(z) \rightarrow 1$ (keep)
+\item $z = 0$: $\sigma(z) = 0.5$ (partial)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{How It's Applied:}
+$$C_t = f_t \odot C_{t-1} + \ldots$$
+
+Element-wise multiplication: Each memory cell independently controlled
+
+\column{0.48\textwidth}
+\textbf{Concrete Example:}
+
+Input sequence: ``I love chocolate. But I prefer''
+
+\vspace{3mm}
+\textbf{At word ``chocolate'':}
+\begin{itemize}
+\item $f_t = [0.95, 0.92, 0.88, \ldots]$
+\item Keep most information
+\item Normal sentence continuation
+\end{itemize}
+
+\vspace{3mm}
+\textbf{At word ``.'' (period):}
+\begin{itemize}
+\item $f_t = [0.1, 0.2, 0.15, \ldots]$
+\item Forget most of previous sentence!
+\item Topic might change
+\item New sentence starting
+\end{itemize}
+
+\vspace{3mm}
+\textbf{At word ``But'':}
+\begin{itemize}
+\item $f_t = [0.3, 0.4, 0.25, \ldots]$
+\item Contrast coming
+\item Remember some context
+\item But prepare for reversal
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What It Learns:}
+\begin{itemize}
+\item Punctuation $\rightarrow$ low forget gate
+\item Continuing words $\rightarrow$ high forget gate
+\item Topic shifts $\rightarrow$ low forget gate
+\item Contrasts (``but'') $\rightarrow$ medium values
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Network learns these patterns from training data}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{The Input Gate: Adding New Information}
+\begin{center}
+\textbf{{\color{inputGreen}Input Gate:} What Should We Store?}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Two Equations:}
+
+\vspace{3mm}
+\textbf{Input Gate:}
+$$i_t = \sigma(W_i [h_{t-1}, x_t] + b_i)$$
+
+Controls \textit{how much} to add (0 to 1)
+
+\vspace{3mm}
+\textbf{Candidate Memory:}
+$$\tilde{C}_t = \tanh(W_C [h_{t-1}, x_t] + b_C)$$
+
+What content to potentially add (-1 to 1)
+
+\vspace{3mm}
+\textbf{Combined Update:}
+$$C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$$
+
+\begin{itemize}
+\item First term: What to keep from past
+\item Second term: What to add from present
+\item Element-wise operations
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Why Two Components?}
+
+\begin{itemize}
+\item $\tilde{C}_t$: What information (content)
+\item $i_t$: How important (weight)
+\item Separate control for flexibility
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Concrete Example:}
+
+Input: ``I grew up in Paris''
+
+\vspace{3mm}
+\textbf{At word ``I'':}
+\begin{itemize}
+\item $i_t = [0.3, 0.2, 0.1, \ldots]$ (low)
+\item Common word, not much info
+\item $\tilde{C}_t = [0.5, -0.2, 0.1, \ldots]$
+\item Minimal storage
+\end{itemize}
+
+\vspace{3mm}
+\textbf{At word ``Paris'':}
+\begin{itemize}
+\item $i_t = [0.95, 0.92, 0.88, \ldots]$ (high!)
+\item Important location word
+\item $\tilde{C}_t = [0.8, 0.7, -0.3, \ldots]$
+\item Strong encoding of ``Paris''
+\item Will be useful later
+\end{itemize}
+
+\vspace{3mm}
+\textbf{At word ``grew'':}
+\begin{itemize}
+\item $i_t = [0.5, 0.4, 0.6, \ldots]$ (medium)
+\item Action word, some importance
+\item $\tilde{C}_t = [0.3, -0.5, 0.2, \ldots]$
+\item Context about past
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What Gets Stored:}
+\begin{itemize}
+\item Named entities (high $i_t$)
+\item Key verbs (medium $i_t$)
+\item Function words (low $i_t$)
+\item Network learns importance
+\end{itemize}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{The Output Gate: Revealing Memory}
+\begin{center}
+\textbf{{\color{outputBlue}Output Gate:} What Should We Use Now?}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{The Equations:}
+
+\vspace{3mm}
+\textbf{Output Gate:}
+$$o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)$$
+
+Controls how much memory to expose (0 to 1)
+
+\vspace{3mm}
+\textbf{Hidden State (Output):}
+$$h_t = o_t \odot \tanh(C_t)$$
+
+\begin{itemize}
+\item $\tanh(C_t)$: Squash cell state to (-1, 1)
+\item $o_t \odot$: Filter what's revealed
+\item $h_t$: Working memory for prediction
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Final Prediction:}
+$$y_t = \text{softmax}(W_y h_t + b_y)$$
+
+Probability distribution over vocabulary
+
+\vspace{3mm}
+\textbf{Key Insight:}
+\begin{itemize}
+\item Cell state $C_t$ = long-term storage
+\item Hidden state $h_t$ = current focus
+\item Output gate decides focus
+\item Not all memory needed always
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Concrete Example:}
+
+Sequence: ``I grew up in Paris. I learned to speak fluent \_\_\_''
+
+\vspace{3mm}
+\textbf{At word ``learned'':}
+\begin{itemize}
+\item $o_t = [0.3, 0.4, 0.2, \ldots]$ (low)
+\item Not predicting yet
+\item Don't need full memory
+\item Just process the word
+\end{itemize}
+
+\vspace{3mm}
+\textbf{At word ``fluent'':}
+\begin{itemize}
+\item $o_t = [0.9, 0.85, 0.92, \ldots]$ (high!)
+\item About to predict language
+\item Need location information
+\item Recall ``Paris'' from $C_t$
+\item $h_t$ contains relevant context
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Prediction Process:}
+\begin{itemize}
+\item Cell $C_t$ stored ``Paris'' (20 steps ago)
+\item Output gate opens at ``fluent''
+\item $h_t$ receives ``Paris'' information
+\item Softmax predicts: ``French'' (0.85)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What It Controls:}
+\begin{itemize}
+\item When to use memory
+\item When to ignore it
+\item Task-dependent revealing
+\item Learned from objective
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This is how LSTMs do selective attention}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Cell State: The Memory Highway}
+\begin{center}
+\textbf{{\color{cellYellow}Cell State} $C_t$: The Key Innovation}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{The Complete Update:}
+
+$$C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$$
+
+\vspace{3mm}
+\textbf{What Makes This Special:}
+
+\vspace{3mm}
+\textbf{RNN Update:}
+$$h_t = \tanh(W_h h_{t-1} + W_x x_t)$$
+\begin{itemize}
+\item Matrix multiplication by $W_h$
+\item Nonlinear $\tanh$
+\item Information transformed
+\item Gradient must flow through both
+\end{itemize}
+
+\vspace{3mm}
+\textbf{LSTM Cell State:}
+$$C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$$
+\begin{itemize}
+\item Element-wise operations only
+\item Direct addition path
+\item Information preserved
+\item Gradient flows unchanged!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Gradient Flow:}
+$$\frac{\partial C_t}{\partial C_{t-1}} = f_t$$
+
+\begin{itemize}
+\item If $f_t \approx 1$: Gradient preserved
+\item No repeated matrix multiplication
+\item No vanishing problem
+\item Can backpropagate 100+ steps
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Highway Analogy:}
+
+\vspace{3mm}
+\textbf{RNN (Local Roads):}
+\begin{itemize}
+\item Information stops at every step
+\item Gets transformed each time
+\item Slow, lossy transmission
+\item Limited range
+\end{itemize}
+
+\vspace{3mm}
+\textbf{LSTM (Highway):}
+\begin{itemize}
+\item Direct express lane ($C_t$)
+\item Minimal transformation
+\item Fast, lossless transmission
+\item Long-range connectivity
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Numerical Comparison:}
+
+Remembering information from 50 steps back:
+
+\vspace{2mm}
+\textbf{RNN:}
+\begin{itemize}
+\item Signal: $0.5^{50} \approx 10^{-15}$
+\item Gradient: $0.5^{50} \approx 10^{-15}$
+\item Effectively zero
+\end{itemize}
+
+\vspace{2mm}
+\textbf{LSTM (with $f_t = 0.95$):}
+\begin{itemize}
+\item Signal: $0.95^{50} \approx 0.08$
+\item Gradient: $0.95^{50} \approx 0.08$
+\item Still usable!
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This 10 billion factor difference is revolutionary}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Gate Activation Patterns: Real LSTM Behavior}
+\begin{center}
+\textbf{Visualizing How Gates Actually Work}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/gate_activation_heatmap.pdf}
+
+\vspace{3mm}
+\textbf{What We're Looking At:}
+\begin{itemize}
+\item Real gate values over a sentence
+\item Darker = higher activation (close to 1)
+\item Lighter = lower activation (close to 0)
+\item Trained LSTM on language modeling
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{Key Observations:}
+
+\vspace{3mm}
+\textbf{Forget Gate (Top):}
+\begin{itemize}
+\item High throughout sentence (0.7-0.9)
+\item Drops dramatically at period (0.1)
+\item Memory cleared at sentence boundary
+\item Learned pattern: punctuation triggers forgetting
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Input Gate (Middle):}
+\begin{itemize}
+\item Peaks on content words (0.9-0.95)
+\item ``love'', ``chocolate'', ``prefer'', ``vanilla''
+\item Low on function words (0.2-0.3)
+\item Selective storage of important information
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Output Gate (Bottom):}
+\begin{itemize}
+\item Rises when prediction needed (0.7-0.8)
+\item Especially high after ``prefer''
+\item Lower during processing (0.3-0.5)
+\item Task-dependent memory access
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Amazing Insight:}
+\begin{itemize}
+\item Network learned these patterns automatically
+\item No explicit programming
+\item Emerges from training objective
+\item Linguistically meaningful behavior
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This is why LSTMs are interpretable compared to other architectures}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile,t]{Complete Forward Pass: Step-by-Step}
+\begin{center}
+\textbf{Full LSTM Computation with Numbers}
+\end{center}
+\vspace{2mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{All Equations:}
+
+\vspace{2mm}
+\begin{align*}
+f_t &= \sigma(W_f [h_{t-1}, x_t] + b_f) \\
+i_t &= \sigma(W_i [h_{t-1}, x_t] + b_i) \\
+\tilde{C}_t &= \tanh(W_C [h_{t-1}, x_t] + b_C) \\
+C_t &= f_t \odot C_{t-1} + i_t \odot \tilde{C}_t \\
+o_t &= \sigma(W_o [h_{t-1}, x_t] + b_o) \\
+h_t &= o_t \odot \tanh(C_t)
+\end{align*}
+
+\vspace{2mm}
+\textbf{Dimensions (example):}
+\begin{itemize}
+\item Vocabulary: 10,000 words
+\item Embedding: 100 dims
+\item Hidden/Cell: 256 dims
+\item $W_f, W_i, W_C, W_o$: $256 \times 356$
+\item $[h_{t-1}, x_t]$: $356$ dims (256+100)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Concrete Numbers:}
+
+Input: ``love'' (word embedding)
+
+\vspace{2mm}
+\textbf{Step 1:} Forget gate
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+f_t = sigmoid([0.5, -0.2, 0.8, ...])
+    = [0.62, 0.45, 0.69, ...]
+\end{lstlisting}
+
+\textbf{Step 2:} Input gate \& candidate
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+i_t = sigmoid([1.2, 0.8, -0.5, ...])
+    = [0.77, 0.69, 0.38, ...]
+C_tilde = tanh([0.6, -0.3, 0.9, ...])
+        = [0.54, -0.29, 0.72, ...]
+\end{lstlisting}
+
+\textbf{Step 3:} Update cell state
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+C_t = [0.62*0.5, 0.45*0.3, ...]
+    + [0.77*0.54, 0.69*(-0.29), ...]
+    = [0.73, 0.14, ...]
+\end{lstlisting}
+
+\textbf{Step 4:} Output \& hidden
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+o_t = sigmoid([0.9, 1.1, -0.2, ...])
+    = [0.71, 0.75, 0.45, ...]
+h_t = [0.71*tanh(0.73), ...]
+    = [0.44, ...]
+\end{lstlisting}
+
+\end{columns}
+\end{frame}

@@ -1,0 +1,629 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Custom commands
+\newcommand{\highlight}[1]{\textbf{#1}}
+
+% Boxes
+\newtcolorbox{keypoint}[1][]{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=Key Point,
+    fonttitle=\bfseries,
+    left=3pt, right=3pt, top=3pt, bottom=3pt
+}
+
+\newtcolorbox{exercise}[1][]{
+    colback=orange!5!white,
+    colframe=orange!75!black,
+    title=#1,
+    fonttitle=\bfseries,
+    left=3pt, right=3pt, top=3pt, bottom=3pt
+}
+
+\newtcolorbox{insight}[1][]{
+    colback=green!5!white,
+    colframe=green!75!black,
+    title=Key Insight,
+    fonttitle=\bfseries,
+    left=3pt, right=3pt, top=3pt, bottom=3pt
+}
+
+% Compact spacing
+\setlist{nosep, leftmargin=*, after=\vspace{-2pt}}
+
+% Code listing style
+\lstset{
+    basicstyle=\small\ttfamily,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+% Compact header
+\begin{center}
+\textbf{\Large Neural Networks: Complete Summary}\\[2pt]
+\textit{From Zero to Understanding in 10 Pages}\\[2pt]
+\small Comprehensive Reference | All Essential Concepts
+\end{center}
+\vspace{-2mm}
+\hrule
+\vspace{3mm}
+
+\section*{1. The Problem That Started Everything}
+
+\textbf{Why Traditional Programming Fails:}
+
+Traditional programs work with explicit rules: IF temperature > 30 THEN hot ELSE cold. But how do you write rules for:
+\begin{itemize}
+\item Recognizing handwritten digits (millions of variations)
+\item Detecting spam emails (constantly evolving patterns)
+\item Playing chess at grandmaster level (10\textsuperscript{120} possible games)
+\end{itemize}
+
+\textbf{The 1959 Mail Sorting Crisis:} The U.S. Postal Service faced an insurmountable challenge - sorting millions of handwritten ZIP codes daily. Traditional OCR (optical character recognition) failed because:
+\begin{itemize}
+\item Every person writes differently
+\item Writing styles vary by region, age, education
+\item Characters overlap, slant, have variable stroke widths
+\end{itemize}
+
+\textbf{The Paradigm Shift:} Instead of programming rules, what if computers could \textit{learn patterns from examples}?
+
+\begin{insight}
+\textbf{Pattern Recognition vs Computation:} Neural networks excel at tasks where patterns exist but rules are unclear. They learn by example, not by instruction.
+\end{insight}
+
+\textbf{Historical Timeline:}
+\begin{itemize}
+\item \textbf{1943}: McCulloch-Pitts artificial neuron (binary threshold)
+\item \textbf{1958}: Perceptron (Rosenblatt) - first learning algorithm
+\item \textbf{1969}: Minsky/Papert prove single-layer limitations (AI Winter)
+\item \textbf{1986}: Backpropagation rediscovered (Rumelhart et al.)
+\item \textbf{1998}: LeNet-5 reads checks (LeCun) - first commercial success
+\item \textbf{2012}: AlexNet wins ImageNet - deep learning revolution begins
+\end{itemize}
+
+\section*{2. The Neuron: Fundamental Building Block}
+
+\textbf{Mathematical Definition:} A neuron computes a weighted sum plus bias:
+\[
+z = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b = \sum_{i=1}^n w_ix_i + b
+\]
+
+\textbf{Components:}
+\begin{itemize}
+\item $x_i$ = \textbf{inputs} (features, data)
+\item $w_i$ = \textbf{weights} (importance of each input)
+\item $b$ = \textbf{bias} (baseline preference)
+\item $z$ = \textbf{output} (decision score)
+\end{itemize}
+
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/handout/neuron_schematic_simple.pdf}
+\end{center}
+
+\textbf{Concrete Example: Party Decision}
+
+Alex decides whether to go to a party based on distance and friends:
+\[
+\text{Score} = (-2 \times \text{Distance}) + (3 \times \text{Friends}) - 5
+\]
+
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/handout/party_decision_scatter.pdf}
+\end{center}
+
+\textbf{Geometric Interpretation:} The decision boundary is the line where Score = 0:
+\[
+-2d + 3f - 5 = 0 \quad \Rightarrow \quad f = \frac{2d + 5}{3}
+\]
+
+This line perfectly separates GO from STAY decisions.
+
+\begin{keypoint}
+A single neuron creates a \textbf{linear decision boundary} - always a straight line (or hyperplane in higher dimensions). This is powerful but limited.
+\end{keypoint}
+
+\newpage
+
+\section*{3. Activation Functions: The Secret to Power}
+
+\textbf{The Linearity Problem:} Without activation functions, multiple neurons just create another linear function:
+\[
+z_2 = w_1(w_2x + b_2) + b_1 = (w_1w_2)x + (w_1b_2 + b_1) = W_{\text{new}}x + b_{\text{new}}
+\]
+
+\textbf{Solution:} Add \textit{non-linear} activation functions after each neuron:
+\[
+a = f(z) = f\left(\sum_i w_ix_i + b\right)
+\]
+
+\textbf{Common Activation Functions:}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/activation_functions_comparison.pdf}
+\end{center}
+
+\begin{multicols}{2}
+\textbf{1. Sigmoid:}
+\[
+\sigma(z) = \frac{1}{1+e^{-z}}
+\]
+\textit{Range: (0, 1)}\\
+\textit{Use: Binary classification, probabilities}
+
+\textbf{2. ReLU (Rectified Linear):}
+\[
+\text{ReLU}(z) = \max(0, z)
+\]
+\textit{Range: [0, $\infty$)}\\
+\textit{Use: Modern standard (fast, effective)}
+
+\textbf{3. Tanh (Hyperbolic Tangent):}
+\[
+\tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}}
+\]
+\textit{Range: (-1, 1)}\\
+\textit{Use: When negative outputs needed}
+
+\textbf{4. Leaky ReLU:}
+\[
+\text{LReLU}(z) = \begin{cases} z & z > 0 \\ 0.01z & z \leq 0 \end{cases}
+\]
+\textit{Range: ($-\infty$, $\infty$)}\\
+\textit{Use: Prevents dying neurons}
+\end{multicols}
+
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/handout/neuron_without_with_activation.pdf}
+\end{center}
+
+\begin{insight}
+\textbf{Why activation functions matter:} They allow networks to approximate \textit{any} function, not just linear ones. Without them, a 100-layer network is no more powerful than a single neuron!
+\end{insight}
+
+\newpage
+
+\section*{4. The XOR Crisis: Why Single Neurons Fail}
+
+\textbf{The XOR Problem:} Output 1 if inputs are different, 0 if same.
+
+\begin{center}
+\begin{minipage}{0.3\textwidth}
+\centering
+\textbf{Truth Table:}\\[2mm]
+\begin{tabular}{|c|c||c|}
+\hline
+$x_1$ & $x_2$ & Output \\
+\hline\hline
+0 & 0 & 0 \\
+\hline
+0 & 1 & 1 \\
+\hline
+1 & 0 & 1 \\
+\hline
+1 & 1 & 0 \\
+\hline
+\end{tabular}
+\end{minipage}
+\hfill
+\begin{minipage}{0.65\textwidth}
+\textbf{Challenge:} Try drawing ONE straight line that separates 1's from 0's. \textit{Impossible!}
+\end{minipage}
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/xor_solution_3panel.pdf}
+\end{center}
+
+\textbf{Historical Impact (1969):}
+Marvin Minsky and Seymour Papert published ``Perceptrons,'' mathematically proving that single-layer networks cannot solve XOR. This triggered the \textit{first AI winter} - funding dried up for decades.
+
+\textbf{Geometric Proof:} For a linear boundary $w_1x_1 + w_2x_2 + b = 0$:
+\begin{itemize}
+\item Points (0,1) and (1,0) must be on one side (output 1)
+\item Points (0,0) and (1,1) must be on the other side (output 0)
+\item No straight line can separate opposite corners of a square!
+\end{itemize}
+
+\begin{keypoint}
+\textbf{The Fundamental Limitation:} Single neurons can only solve \textit{linearly separable} problems. XOR is the simplest non-linearly separable problem.
+\end{keypoint}
+
+\newpage
+
+\section*{5. Hidden Layers: The Breakthrough Solution}
+
+\textbf{The Solution:} Use \textit{two} neurons in a hidden layer, then combine their outputs!
+
+\begin{center}
+\includegraphics[width=0.6\textwidth]{../figures/handout/two_neurons_combining.pdf}
+\end{center}
+
+\textbf{Architecture:}
+\begin{itemize}
+\item \textbf{Input layer:} 2 neurons ($x_1$, $x_2$)
+\item \textbf{Hidden layer:} 2 neurons (create two decision boundaries)
+\item \textbf{Output layer:} 1 neuron (combines the boundaries)
+\end{itemize}
+
+\textbf{Geometric Intuition:}
+\begin{itemize}
+\item Hidden neuron 1 creates boundary separating (0,0) from (0,1), (1,0), (1,1)
+\item Hidden neuron 2 creates boundary separating (1,1) from (0,1), (1,0), (0,0)
+\item Output neuron finds the \textit{intersection} - only (0,1) and (1,0) satisfy both!
+\end{itemize}
+
+\textbf{Forward Pass Calculation Example:}
+
+Given weights:
+\begin{itemize}
+\item Hidden 1: $w = [1.0, 1.0]$, $b = -0.5$
+\item Hidden 2: $w = [1.0, 1.0]$, $b = -1.5$
+\item Output: $w = [1.0, -1.0]$, $b = 0.0$
+\end{itemize}
+
+For input $(x_1=1, x_2=0)$:
+\begin{align*}
+h_1 &= \sigma(1.0 \times 1 + 1.0 \times 0 - 0.5) = \sigma(0.5) \approx 0.62 \\
+h_2 &= \sigma(1.0 \times 1 + 1.0 \times 0 - 1.5) = \sigma(-0.5) \approx 0.38 \\
+y &= \sigma(1.0 \times 0.62 - 1.0 \times 0.38 + 0.0) = \sigma(0.24) \approx 0.56 \quad \text{(close to 1)}
+\end{align*}
+
+\begin{insight}
+\textbf{Why hidden layers work:} Each hidden neuron learns a different feature. The output layer combines these features. With enough neurons, this can represent \textit{any} decision boundary!
+\end{insight}
+
+\section*{6. Backpropagation: How Networks Learn}
+
+\textbf{The Credit Assignment Problem:} Given an error at the output, how do we know which weights to adjust and by how much?
+
+\textbf{The Algorithm (4 steps):}
+
+\textbf{1. Forward Pass:} Compute output from inputs
+\[
+z^{[l]} = W^{[l]}a^{[l-1]} + b^{[l]}, \quad a^{[l]} = f(z^{[l]})
+\]
+
+\textbf{2. Compute Error:} Compare output to target
+\[
+L = \frac{1}{2}(y_{\text{pred}} - y_{\text{true}})^2
+\]
+
+\textbf{3. Backward Pass:} Propagate error back using chain rule
+\[
+\frac{\partial L}{\partial w_{ij}^{[l]}} = \frac{\partial L}{\partial a^{[l]}} \cdot \frac{\partial a^{[l]}}{\partial z^{[l]}} \cdot \frac{\partial z^{[l]}}{\partial w_{ij}^{[l]}}
+\]
+
+\textbf{4. Update Weights:} Adjust in direction that reduces error
+\[
+w_{ij}^{[l]} \leftarrow w_{ij}^{[l]} - \eta \frac{\partial L}{\partial w_{ij}^{[l]}}
+\]
+
+where $\eta$ is the \textbf{learning rate} (step size).
+
+\textbf{Gradient Descent Intuition:} Imagine you're hiking in fog and want to reach the valley (minimum error). You:
+\begin{enumerate}
+\item Feel the slope under your feet (compute gradient)
+\item Take a step downhill (update weights)
+\item Repeat until you can't go lower (convergence)
+\end{enumerate}
+
+\begin{keypoint}
+\textbf{The Backpropagation Insight:} By using calculus (chain rule), we can efficiently compute how much each weight contributed to the error, even in networks with millions of parameters!
+\end{keypoint}
+
+\textbf{Historical Note:} Backpropagation was invented in the 1970s but gained fame in 1986 (Rumelhart, Hinton, Williams). It remains the foundation of modern deep learning.
+
+\newpage
+
+\section*{7. Universal Approximation: The Theoretical Foundation}
+
+\textbf{Cybenko's Theorem (1989):} A neural network with:
+\begin{itemize}
+\item One hidden layer
+\item Finite number of neurons
+\item Sigmoid activation
+\end{itemize}
+can approximate \textit{any} continuous function on a compact domain to \textit{any} desired accuracy.
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/universal_approximation_sine.pdf}
+\end{center}
+
+\textbf{Progressive Approximation:}
+\begin{itemize}
+\item 1 neuron: Rough S-curve (high error)
+\item 5 neurons: Captures basic oscillation
+\item 10 neurons: Close fit to sine wave
+\item 20 neurons: Nearly perfect approximation
+\end{itemize}
+
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/handout/error_vs_neuron_count.pdf}
+\end{center}
+
+\textbf{How It Works:} Each sigmoid neuron creates a smooth step function. By positioning these steps at different locations and heights, you can build up any smooth curve:
+\[
+f(x) \approx \sum_{i=1}^n a_i \sigma(w_ix + b_i)
+\]
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/multiple_function_examples.pdf}
+\end{center}
+
+\begin{insight}
+\textbf{Practical Implication:} If your task involves finding patterns in data, a neural network \textit{theoretically} can learn it. The challenge shifts from ``Can it be done?'' to ``How much data and compute do we need?''
+\end{insight}
+
+\textbf{Important Caveats:}
+\begin{itemize}
+\item Theorem guarantees \textit{existence}, not efficient learning algorithm
+\item May require exponentially many neurons for complex functions
+\item Deep networks (many layers) often learn more efficiently than wide ones
+\end{itemize}
+
+\newpage
+
+\section*{8. From Theory to Modern Practice}
+
+\textbf{Key Breakthroughs Timeline:}
+
+\begin{itemize}
+\item \textbf{1998 - LeNet-5 (Yann LeCun):} First successful CNN, read handwritten checks for banks
+\item \textbf{2006 - Deep Belief Networks (Hinton):} Pre-training strategy revived deep learning
+\item \textbf{2012 - AlexNet (Krizhevsky et al.):} Won ImageNet, reduced error from 26\% to 16\%
+\item \textbf{2014 - VGG \& GoogLeNet:} Proved deeper networks work better
+\item \textbf{2015 - ResNet (He et al.):} Skip connections enabled 152-layer networks
+\item \textbf{2017 - Transformers (Vaswani et al.):} Attention mechanism revolutionized NLP
+\item \textbf{2020 - GPT-3 (OpenAI):} 175B parameters, few-shot learning
+\item \textbf{2022 - ChatGPT:} Large language models go mainstream
+\end{itemize}
+
+\textbf{Why 2012 Was Different:}
+
+\begin{enumerate}
+\item \textbf{ReLU Activation:} Replaced sigmoid, solved vanishing gradient problem
+\[
+\text{ReLU}(z) = \max(0, z) \quad \text{vs} \quad \sigma(z) = \frac{1}{1+e^{-z}}
+\]
+
+\item \textbf{Dropout (Hinton 2012):} Randomly drop neurons during training to prevent overfitting
+\[
+a_i^{[l]} = \begin{cases} a_i^{[l]} / p & \text{with probability } p \\ 0 & \text{otherwise} \end{cases}
+\]
+
+\item \textbf{GPUs:} Parallel computation made training 50x faster
+
+\item \textbf{Big Data:} ImageNet (14M images), billion-word language corpora
+
+\item \textbf{Batch Normalization (2015):} Normalize activations between layers
+\[
+\hat{x} = \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}}
+\]
+\end{enumerate}
+
+\textbf{Modern Architectures:}
+
+\begin{itemize}
+\item \textbf{CNNs (Convolutional):} Images (ResNet, EfficientNet)
+\item \textbf{RNNs (Recurrent):} Sequences (LSTM, GRU)
+\item \textbf{Transformers:} Language, vision, everything (BERT, GPT, ViT)
+\end{itemize}
+
+\textbf{Real-World Applications Today:}
+\begin{multicols}{2}
+\begin{itemize}
+\item Medical diagnosis (detect cancer from X-rays)
+\item Autonomous vehicles (Tesla, Waymo)
+\item Drug discovery (AlphaFold protein folding)
+\item Language translation (Google Translate)
+\item Code generation (GitHub Copilot)
+\item Art generation (DALL-E, Midjourney)
+\item Speech recognition (Siri, Alexa)
+\item Recommendation systems (Netflix, YouTube)
+\end{itemize}
+\end{multicols}
+
+\newpage
+
+\section*{9. Building Your First Neural Network}
+
+\textbf{Step-by-Step Guide:}
+
+\textbf{1. Define the Problem:}
+\begin{itemize}
+\item Classification (cat vs dog) or Regression (predict price)?
+\item How many inputs/outputs?
+\item What accuracy is needed?
+\end{itemize}
+
+\textbf{2. Prepare Data:}
+\begin{itemize}
+\item Split: 70\% train, 15\% validation, 15\% test
+\item Normalize: Scale inputs to [0,1] or mean=0, std=1
+\item Augment: Flip, rotate images; paraphrase text
+\end{itemize}
+
+\textbf{3. Design Architecture:}
+\begin{itemize}
+\item Start simple: 1-2 hidden layers with 32-128 neurons
+\item Choose activation: ReLU for hidden, sigmoid/softmax for output
+\item Add regularization: Dropout (0.2-0.5), L2 weight decay
+\end{itemize}
+
+\textbf{4. Choose Hyperparameters:}
+\begin{itemize}
+\item Learning rate: Start with 0.001 (most critical!)
+\item Batch size: 32-256 (larger = faster but less stable)
+\item Optimizer: Adam (best default choice)
+\item Loss function: CrossEntropy (classification), MSE (regression)
+\end{itemize}
+
+\textbf{5. Train:}
+\begin{lstlisting}[language=Python]
+for epoch in range(num_epochs):
+    for batch in train_data:
+        # Forward pass
+        predictions = model(batch.inputs)
+        loss = loss_function(predictions, batch.targets)
+
+        # Backward pass
+        loss.backward()
+
+        # Update weights
+        optimizer.step()
+        optimizer.zero_grad()
+
+    # Validate
+    val_loss = evaluate(model, val_data)
+    print(f"Epoch {epoch}: val_loss={val_loss:.4f}")
+\end{lstlisting}
+
+\textbf{6. Debug Common Issues:}
+
+\begin{center}
+\small
+\begin{tabular}{|p{3cm}|p{4cm}|p{5cm}|}
+\hline
+\textbf{Symptom} & \textbf{Cause} & \textbf{Solution} \\
+\hline\hline
+Loss not decreasing & Learning rate too high/low & Try 10x higher/lower \\
+\hline
+Train good, val bad & Overfitting & Add dropout, more data \\
+\hline
+Loss = NaN & Exploding gradients & Lower learning rate, clip gradients \\
+\hline
+Very slow training & Too large network & Reduce neurons/layers, use GPU \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{7. Evaluate:}
+\begin{itemize}
+\item Never look at test set until final evaluation!
+\item Use multiple metrics: Accuracy, F1, Precision, Recall
+\item Visualize: Confusion matrix, learning curves
+\end{itemize}
+
+\textbf{Best Practices:}
+\begin{itemize}
+\item Start simple, add complexity only if needed
+\item Log everything: losses, learning rates, sample predictions
+\item Version control: Save model checkpoints
+\item Monitor training: Use TensorBoard or Weights \& Biases
+\end{itemize}
+
+\newpage
+
+\section*{10. Summary: The Complete Picture}
+
+\textbf{Essential Formulas:}
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Concept} & \textbf{Formula} \\
+\hline\hline
+Neuron output & $z = \sum_i w_ix_i + b$ \\
+\hline
+Sigmoid activation & $\sigma(z) = 1/(1+e^{-z})$ \\
+\hline
+ReLU activation & $\text{ReLU}(z) = \max(0,z)$ \\
+\hline
+Forward pass (layer l) & $a^{[l]} = f(W^{[l]}a^{[l-1]} + b^{[l]})$ \\
+\hline
+Loss (MSE) & $L = \frac{1}{n}\sum_i (y_i^{\text{pred}} - y_i^{\text{true}})^2$ \\
+\hline
+Gradient descent & $w \leftarrow w - \eta \frac{\partial L}{\partial w}$ \\
+\hline
+Chain rule (backprop) & $\frac{\partial L}{\partial w} = \frac{\partial L}{\partial a} \cdot \frac{\partial a}{\partial z} \cdot \frac{\partial z}{\partial w}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Key Concepts Checklist:}
+
+\begin{multicols}{2}
+\begin{itemize}
+\item[$\square$] Neuron = weighted sum + bias
+\item[$\square$] Weights control importance
+\item[$\square$] Activation functions add non-linearity
+\item[$\square$] Single neurons = linear boundaries
+\item[$\square$] Hidden layers = solve non-linear problems
+\item[$\square$] XOR impossible for single neuron
+\item[$\square$] Backpropagation assigns credit
+\item[$\square$] Gradient descent finds minimum
+\item[$\square$] Universal approximation theorem
+\item[$\square$] Deep networks learn hierarchically
+\item[$\square$] ReLU > sigmoid for hidden layers
+\item[$\square$] Dropout prevents overfitting
+\item[$\square$] Learning rate most critical
+\item[$\square$] Batch normalization stabilizes
+\item[$\square$] Train/val/test split essential
+\item[$\square$] Start simple, add complexity
+\end{itemize}
+\end{multicols}
+
+\textbf{Concept Flow Map:}
+
+\begin{center}
+\small
+Problem (pattern recognition) \\
+$\downarrow$ \\
+Single Neuron (linear model) \\
+$\downarrow$ \\
+Limitation (only linear boundaries) \\
+$\downarrow$ \\
+Add Activation Function (non-linearity) \\
+$\downarrow$ \\
+Still Limited (XOR crisis) \\
+$\downarrow$ \\
+Hidden Layers (multiple boundaries) \\
+$\downarrow$ \\
+Learning Algorithm (backpropagation) \\
+$\downarrow$ \\
+Theory (universal approximation) \\
+$\downarrow$ \\
+Practice (modern architectures) \\
+$\downarrow$ \\
+Real Applications (2025 and beyond)
+\end{center}
+
+\textbf{What Next?}
+
+\begin{itemize}
+\item \textbf{Implement:} Code a network from scratch (NumPy only)
+\item \textbf{Learn Frameworks:} PyTorch or TensorFlow
+\item \textbf{Take Courses:} Fast.ai, Stanford CS231n, Coursera Deep Learning
+\item \textbf{Read Papers:} Start with classics (LeNet, AlexNet, ResNet, Attention)
+\item \textbf{Join Community:} r/MachineLearning, Papers With Code, Hugging Face
+\item \textbf{Build Projects:} Image classifier, text generator, game AI
+\end{itemize}
+
+\textbf{Recommended Resources:}
+\begin{itemize}
+\item \textbf{Book:} ``Deep Learning'' by Goodfellow, Bengio, Courville
+\item \textbf{Course:} Fast.ai Practical Deep Learning
+\item \textbf{Visualization:} playground.tensorflow.org
+\item \textbf{Papers:} arxiv-sanity.com
+\item \textbf{Code:} github.com/pytorch/examples
+\end{itemize}
+
+\vspace{3mm}
+\hrule
+\vspace{1mm}
+\noindent\textit{\small You now understand the fundamental concepts that power modern AI. The rest is practice!}
+
+\end{document}

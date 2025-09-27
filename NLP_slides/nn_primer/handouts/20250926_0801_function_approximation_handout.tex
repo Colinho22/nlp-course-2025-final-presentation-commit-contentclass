@@ -1,0 +1,377 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{multicol}
+
+% Custom commands
+\newcommand{\highlight}[1]{\textbf{#1}}
+
+% Box for exercises
+\newtcolorbox{exercise}[1][]{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=#1,
+    fonttitle=\bfseries,
+    left=3pt, right=3pt, top=3pt, bottom=3pt
+}
+
+\newtcolorbox{keytakeaway}[1][]{
+    colback=green!5!white,
+    colframe=green!75!black,
+    title=Key Takeaway,
+    fonttitle=\bfseries,
+    left=3pt, right=3pt, top=3pt, bottom=3pt
+}
+
+% Compact spacing
+\setlist{nosep, leftmargin=*, after=\vspace{-2pt}}
+
+\begin{document}
+
+% Compact header instead of maketitle
+\begin{center}
+\textbf{\Large How Neural Networks Learn to Draw Any Curve}\\[2pt]
+\textit{Function Approximation Discovery}\\[2pt]
+\small Pre-Class Discovery Handout | Time: 40-45 minutes
+\end{center}
+\vspace{-2mm}
+\hrule
+\vspace{3mm}
+
+\noindent\textbf{Objective:} Discover how neurons combine to approximate any smooth function through hands-on exploration. Focus on \textbf{continuous curves}, not decision boundaries.
+
+\section*{Part 0: Can Computers Learn to Draw Curves? (10 minutes)}
+
+\subsection*{The Temperature Prediction Challenge}
+
+\begin{exercise}[Real-World Problem]
+You want to predict temperature at \textit{any time} during the day, but you only have a few measurements:
+
+\vspace{2mm}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Time} & \textbf{Temperature} \\
+\hline\hline
+12am (0h) & 8°C \\
+\hline
+6am & 10°C \\
+\hline
+12pm (12h) & 22°C \\
+\hline
+6pm (18h) & 18°C \\
+\hline
+12am (24h) & 8°C \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{2mm}
+\textbf{Your Challenge:} What is the temperature at 9am? At 3pm? At 9pm?
+
+\vspace{1mm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/handout/temperature_challenge_scatter.pdf}
+\end{center}
+
+\textbf{Questions:}
+\begin{enumerate}
+\item Could you connect the dots with \textit{straight lines}? \rule{2cm}{0.4pt} (Yes/No)
+\item Would straight lines give good predictions? \rule{2cm}{0.4pt} (Yes/No)
+\item What do you need instead? \rule{5cm}{0.4pt} (smooth curves / straight lines)
+\end{enumerate}
+\end{exercise}
+
+\begin{keytakeaway}
+\textbf{Function Approximation} means finding a smooth mathematical formula that fits data points. Neural networks can learn these formulas automatically!
+
+\textbf{Key difference from classification:}
+\begin{itemize}
+\item Classification: "Is this A or B?" (discrete categories)
+\item Function approximation: "What is the exact value?" (continuous numbers)
+\end{itemize}
+\end{keytakeaway}
+
+\newpage
+
+\section*{Part 1: One Neuron Makes an S-Curve (8 minutes)}
+
+\subsection*{The Sigmoid Function}
+
+Remember from the first handout: A neuron uses a sigmoid function:
+\[
+\sigma(x) = \frac{1}{1 + e^{-x}}
+\]
+
+But now we can \textbf{control its shape} with three parameters:
+\[
+\text{Output} = a \times \sigma(w \times (x - b))
+\]
+
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/single_sigmoid_parameters.pdf}
+\end{center}
+
+\begin{exercise}[Understanding Parameters]
+\textbf{Parameter roles:}
+\begin{itemize}
+\item \textbf{w} (weight): Controls \rule{3cm}{0.4pt} (steepness / position / height)
+\item \textbf{b} (bias): Shifts curve \rule{3cm}{0.4pt} (up-down / left-right / steeper)
+\item \textbf{a} (amplitude): Controls \rule{3cm}{0.4pt} (maximum height / steepness / color)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Hand Calculation:} Use this approximation table for sigmoid:
+
+\begin{center}
+\small
+\begin{tabular}{|c|c||c|c|}
+\hline
+\textbf{Input} & \textbf{$\sigma$(input)} & \textbf{Input} & \textbf{$\sigma$(input)} \\
+\hline\hline
+-3 & 0.05 & 0 & 0.50 \\
+\hline
+-2 & 0.12 & 1 & 0.73 \\
+\hline
+-1 & 0.27 & 2 & 0.88 \\
+\hline
+& & 3 & 0.95 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{2mm}
+\textbf{Calculate:} $y = 20 \times \sigma(0.5 \times (x - 12))$ for different times:
+
+\vspace{1mm}
+\begin{center}
+\small
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Time (x)} & \textbf{Calculation} & \textbf{Temperature (y)} \\
+\hline\hline
+6am (x=6) & $0.5 \times (6-12) = -3$, so $\sigma(-3) = 0.05$, thus $y = 20 \times 0.05 =$ \rule{1.5cm}{0.4pt} & \\
+\hline
+12pm (x=12) & $0.5 \times (12-12) = 0$, so $\sigma(0) =$ \rule{1cm}{0.4pt}, thus $y =$ \rule{1.5cm}{0.4pt} & \\
+\hline
+6pm (x=18) & $0.5 \times (18-12) =$ \rule{1cm}{0.4pt}, so $\sigma($\rule{1cm}{0.4pt}$) =$ \rule{1cm}{0.4pt}, thus $y =$ \rule{1.5cm}{0.4pt} & \\
+\hline
+\end{tabular}
+\end{center}
+\end{exercise}
+
+\subsection*{The Problem: S-Curves Can't Do Everything}
+
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/handout/temperature_single_sigmoid_fit.pdf}
+\end{center}
+
+\textbf{Discovery:} A single neuron can only create curves that go UP (or only go DOWN). Real temperature goes up in the morning AND down in the evening!
+
+\section*{Part 2: Two Neurons Make a Bump (10 minutes)}
+
+\subsection*{The Subtraction Trick}
+
+\textbf{Key Insight:} If we \textit{subtract} two sigmoids, we get a localized ``bump''!
+
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/two_sigmoid_subtraction.pdf}
+\end{center}
+
+\begin{exercise}[Building a Bump]
+\textbf{Given two neurons:}
+\begin{itemize}
+\item Neuron 1: $\sigma_1 = \sigma(0.8 \times (x - 10))$ (rises at x=10)
+\item Neuron 2: $\sigma_2 = \sigma(0.8 \times (x - 14))$ (rises at x=14)
+\end{itemize}
+
+\textbf{Output:} $y = 10 \times (\sigma_1 - \sigma_2)$
+
+\vspace{2mm}
+\textbf{Calculate for different times:}
+
+\vspace{1mm}
+\begin{center}
+\small
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Time (x)} & \textbf{$\sigma_1$} & \textbf{$\sigma_2$} & \textbf{$y = 10 \times (\sigma_1 - \sigma_2)$} \\
+\hline\hline
+x=10 & 0.50 & 0.05 & $10 \times (0.50 - 0.05) =$ \rule{2cm}{0.4pt} \\
+\hline
+x=12 & 0.88 & 0.27 & $10 \times (0.88 - 0.27) =$ \rule{2cm}{0.4pt} \\
+\hline
+x=14 & 0.95 & 0.50 & \rule{4cm}{0.4pt} \\
+\hline
+x=16 & 0.95 & 0.88 & \rule{4cm}{0.4pt} \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{2mm}
+\textbf{Observations:}
+\begin{enumerate}
+\item At x=10: $\sigma_1$ is rising, $\sigma_2$ is still low $\rightarrow$ \rule{2cm}{0.4pt} difference
+\item At x=12: Both rising, but $\sigma_1$ ahead $\rightarrow$ \rule{2cm}{0.4pt} (large/small) difference
+\item At x=16: Both high (near 1) $\rightarrow$ \rule{2cm}{0.4pt} difference
+\item This creates a \rule{2cm}{0.4pt} (straight line / bump / step) shape!
+\end{enumerate}
+\end{exercise}
+
+\subsection*{Application: Modeling Daily Temperature}
+
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/handout/bump_temperature_application.pdf}
+\end{center}
+
+\textbf{Discovery:} Two neurons working together can model the \textit{rise and fall} of temperature throughout the day!
+
+\newpage
+
+\section*{Part 3: Three Neurons Capture Complex Patterns (10 minutes)}
+
+\subsection*{Approximating a Parabola (Peak Function)}
+
+Let's try to approximate a function with a clear peak: $y = -(x - 12)^2 / 10 + 20$
+
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/three_neuron_parabola.pdf}
+\end{center}
+
+\begin{exercise}[Hand Calculation with 3 Neurons]
+\textbf{The 3-neuron network:}
+\begin{itemize}
+\item Baseline: $y_0 = 10$
+\item Neuron 1: $y_1 = 15 \times \sigma(1.5 \times (x - 8))$ (handles left rise)
+\item Neuron 2: $y_2 = 10 \times \sigma(2.0 \times (x - 12))$ (boosts peak)
+\item Neuron 3: $y_3 = -15 \times \sigma(1.5 \times (x - 16))$ (handles right fall)
+\end{itemize}
+
+\textbf{Total output:} $y = y_0 + y_1 + y_2 + y_3$
+
+\vspace{2mm}
+\textbf{Calculate at the peak (x=12):}
+
+\vspace{1mm}
+\begin{enumerate}[label=\alph*)]
+\item Neuron 1: $1.5 \times (12-8) = 6 \rightarrow \sigma(6) \approx 1.0$, so $y_1 = 15 \times 1.0 =$ \rule{2cm}{0.4pt}
+\item Neuron 2: $2.0 \times (12-12) = 0 \rightarrow \sigma(0) =$ \rule{1cm}{0.4pt}, so $y_2 = 10 \times$ \rule{1cm}{0.4pt} $=$ \rule{2cm}{0.4pt}
+\item Neuron 3: $1.5 \times (12-16) = -6 \rightarrow \sigma(-6) \approx 0.0$, so $y_3 = -15 \times 0.0 =$ \rule{2cm}{0.4pt}
+\item \textbf{Total:} $y = 10 +$ \rule{1cm}{0.4pt} $+$ \rule{1cm}{0.4pt} $+$ \rule{1cm}{0.4pt} $=$ \rule{2cm}{0.4pt}
+\end{enumerate}
+
+\vspace{2mm}
+\textbf{Compare to target:} $y = -(12-12)^2/10 + 20 = 20$ \\
+How close is your answer? \rule{3cm}{0.4pt}
+\end{exercise}
+
+\subsection*{Each Neuron Has a Job}
+
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/handout/neuron_contributions.pdf}
+\end{center}
+
+\textbf{Pattern:} More complex functions need more neurons, but each neuron handles a \textit{specific part} of the curve!
+
+\section*{Part 4: Many Neurons = Universal Approximation (7 minutes)}
+
+\subsection*{The Big Picture: Any Function, Any Accuracy}
+
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/universal_approximation_sine.pdf}
+\end{center}
+
+\begin{exercise}[Observing the Pattern]
+\textbf{Looking at the 4 panels above:}
+
+\begin{enumerate}
+\item With 1 neuron: Error (MSE) is \rule{2cm}{0.4pt} (high / low)
+\item With 5 neurons: The fit is \rule{2cm}{0.4pt} (worse / better) than 1 neuron
+\item With 20 neurons: The approximation is \rule{2cm}{0.4pt} (poor / nearly perfect)
+\item \textbf{Pattern:} More neurons $\rightarrow$ \rule{2cm}{0.4pt} (higher / lower) error
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{The Universal Approximation Theorem (Cybenko, 1989):}
+
+\textit{``A neural network with enough hidden neurons can approximate ANY continuous function to ANY desired accuracy.''}
+
+\vspace{2mm}
+\textbf{What this means:}
+\begin{itemize}
+\item \textbf{Universal:} Works for \textit{any} smooth pattern (not just one type)
+\item \textbf{Guaranteed:} This is mathematically proven, not just hopeful
+\item \textbf{Practical:} Just add more neurons until fit is good enough
+\end{itemize}
+\end{exercise}
+
+\subsection*{Error Decreases with More Neurons}
+
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/handout/error_vs_neuron_count.pdf}
+\end{center}
+
+\textbf{Observation:} After about 10-20 neurons, adding more gives \textit{diminishing returns} (improvement slows down).
+
+\subsection*{Many Different Function Types}
+
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/multiple_function_examples.pdf}
+\end{center}
+
+\textbf{Discovery:} The same sigmoid-based neurons can approximate steps, waves, peaks, decays, triangles, and bumps!
+
+\section*{Part 5: Summary \& What's Next (5 minutes)}
+
+\textbf{Fill in the blanks to consolidate your learning:}
+
+\begin{enumerate}
+\item A sigmoid function creates an \rule{3cm}{0.4pt}-shaped curve (S / U / straight).
+\item Subtracting two sigmoids creates a \rule{3cm}{0.4pt} shape (line / bump / circle).
+\item To approximate complex functions, we need \rule{3cm}{0.4pt} (one / many) neurons.
+\item More neurons means \rule{3cm}{0.4pt} error (higher / lower).
+\item The Universal Approximation Theorem guarantees that neural networks can fit \rule{4cm}{0.4pt} (only linear / any continuous) function(s).
+\item Each neuron in a network typically handles a \rule{4cm}{0.4pt} (random / specific) part of the function.
+\end{enumerate}
+
+\vspace{3mm}
+\begin{keytakeaway}
+\textbf{Key Insights from This Handout:}
+
+\begin{itemize}
+\item \textbf{Function approximation} = fitting smooth curves to data
+\item \textbf{Sigmoids are building blocks}: One sigmoid = S-curve, Multiple sigmoids = any shape
+\item \textbf{Parameters matter}: Weight (steepness), bias (position), amplitude (height)
+\item \textbf{Combination is key}: Neurons work together, each handling part of the function
+\item \textbf{Universal power}: With enough neurons, can approximate ANY smooth function
+\end{itemize}
+\end{keytakeaway}
+
+\vspace{3mm}
+\noindent\textbf{Before Class - Think About:}
+\begin{itemize}
+\item How do we \textit{automatically find} the right weights and biases for each neuron? (Hint: training/learning)
+\item What if we have \textit{multiple inputs} (not just time)? Like temperature AND humidity?
+\item What's the downside of using 100 neurons when 10 would work? (Hint: computation, overfitting)
+\end{itemize}
+
+\vspace{2mm}
+\hrule
+\vspace{1mm}
+\noindent\textit{\small This handout complements the first handout (classification/decision boundaries). Together, they show neural networks can solve both discrete and continuous problems!}
+
+\end{document}

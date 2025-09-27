@@ -1,0 +1,477 @@
+% Modern Neural Network Architectures
+\begin{frame}{Neural Network Architectures: Right Tool for Right Job}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Feedforward Networks:}
+\begin{itemize}
+\item Information flows forward only
+\item Fixed-size input and output
+\item Good for: Classification, regression
+\end{itemize}
+
+\textbf{Convolutional (CNN):}
+\begin{itemize}
+\item Spatial feature detection
+\item Translation invariance
+\item Good for: Images, video
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Recurrent (RNN):}
+\begin{itemize}
+\item Process sequences
+\item Maintain memory/state
+\item Good for: Text, time-series
+\end{itemize}
+
+\textbf{Transformer:}
+\begin{itemize}
+\item Attention mechanism
+\item Parallel processing
+\item Good for: Language, everything else
+\end{itemize}
+\end{columns}
+\bottomnote{ Each architecture encodes different assumptions about the data}
+\end{frame}
+
+% Modern Training Techniques
+\begin{frame}{Modern Training: Standing on Shoulders of Giants}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Transfer Learning:}
+\begin{itemize}
+\item Start with pre-trained network
+\item Fine-tune on your task
+\item 100x less data needed
+\item Days $\rightarrow$ Hours training
+\end{itemize}
+
+\textbf{Data Augmentation:}
+\begin{itemize}
+\item Create variations of training data
+\item Rotations, crops, color shifts
+\item Prevents overfitting
+\item Free performance boost
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Advanced Optimizers:}
+\begin{itemize}
+\item \textbf{SGD:} Basic gradient descent
+\item \textbf{Momentum:} Remember past gradients
+\item \textbf{Adam:} Adaptive learning rates
+\item \textbf{AdamW:} With weight decay
+\end{itemize}
+
+\textbf{Mixed Precision:}
+\begin{itemize}
+\item Use 16-bit floats where possible
+\item Keep 32-bit for critical ops
+\item 2-3x speedup
+\item Same accuracy
+\end{itemize}
+\end{columns}
+\bottomnote{ These techniques make deep learning practical for everyone}
+\end{frame}
+
+% NEW: Common Mental Models That Are WRONG
+\begin{frame}{Common Mental Models That Are WRONG}
+\begin{center}
+\textbf{\warning{Misconceptions That Will Confuse You}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{WRONG: "Neurons are like brain neurons"}
+\begin{itemize}
+\item \warning{Brain neurons:} Complex, chemical, adaptive
+\item \success{Artificial neurons:} Simple math functions
+\item Just multiply and add!
+\item No biology involved
+\end{itemize}
+
+\vspace{3mm}
+\textbf{WRONG: "Networks understand concepts"}
+\begin{itemize}
+\item \warning{What you think:} "It knows what a cat is"
+\item \success{Reality:} It found statistical patterns
+\item No understanding, just correlation
+\item Can be fooled by tiny changes
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{WRONG: "More layers = always better"}
+\begin{itemize}
+\item \warning{Too deep:} Vanishing gradients
+\item \warning{Too deep:} Overfitting
+\item \success{Right depth:} Depends on problem complexity
+\item Simple problems need shallow networks
+\end{itemize}
+
+\vspace{3mm}
+\textbf{WRONG: "It learns like humans"}
+\begin{itemize}
+\item \warning{Humans:} Learn from few examples
+\item \warning{Humans:} Transfer knowledge easily
+\item \success{Networks:} Need thousands of examples
+\item \success{Networks:} Struggle with new situations
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{mlorange!20}{\parbox{0.8\textwidth}{
+\centering
+\textbf{Remember:} Neural networks are just fancy pattern matchers.\\
+They don't think, understand, or reason - they find correlations in data.
+}}
+\end{center}
+\bottomnote{ Understanding these limits helps you use neural networks effectively}
+\end{frame}
+
+% Why Now?
+\begin{frame}{Why Deep Learning Exploded Now: The Perfect Storm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{1. Data Explosion:}
+\begin{itemize}
+\item Internet = infinite training data
+\item ImageNet: 14M labeled images
+\item Common Crawl: 300TB of text
+\item YouTube: 500 hours/minute
+\end{itemize}
+
+\textbf{2. Hardware Revolution:}
+\begin{itemize}
+\item GPUs: 100x faster than CPUs
+\item TPUs: Built for neural nets
+\item Cloud computing: Rent supercomputers
+\item Mobile chips with NPUs
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{3. Algorithm Breakthroughs:}
+\begin{itemize}
+\item ReLU activation (2011)
+\item Batch normalization (2015)
+\item Skip connections (2015)
+\item Attention mechanism (2017)
+\end{itemize}
+
+\textbf{4. Open Source Culture:}
+\begin{itemize}
+\item TensorFlow, PyTorch free
+\item Pre-trained models shared
+\item Papers with code
+\item Collaborative research
+\end{itemize}
+\end{columns}
+\bottomnote{ The same ideas from 1980s finally had the resources to work}
+\end{frame}
+
+% Understanding Scale
+\begin{frame}{Understanding Scale: From Perceptron to GPT-4}
+\begin{center}
+\textbf{The Exponential Growth of Neural Networks}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Parameter Growth:}
+\begin{itemize}
+\item 1957 Perceptron: 20 weights
+\item 1987 NetTalk: 18,000
+\item 1998 LeNet: 60,000
+\item 2012 AlexNet: 60 million
+\item 2018 BERT: 340 million
+\item 2020 GPT-3: 175 billion
+\item 2023 GPT-4: ~1.8 trillion
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/scale_growth_chart.pdf}
+\end{center}
+\textbf{What Scale Brings:}
+\begin{itemize}
+\item Emergent abilities
+\item Zero-shot learning
+\item Multi-task capability
+\item Common sense reasoning
+\end{itemize}
+\end{columns}
+\bottomnote{ Each 10x increase unlocks new capabilities}
+\end{frame}
+
+% Practical Implementation
+\begin{frame}[fragile]{From Theory to Practice: Your First Network}
+\begin{center}
+\textbf{Building a Digit Classifier in 10 Lines}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.58\textwidth}
+\textbf{PyTorch Implementation:}
+\begin{lstlisting}[language=Python,basicstyle=\tiny]
+import torch
+import torch.nn as nn
+
+class SimpleNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(784, 128)
+        self.fc2 = nn.Linear(128, 10)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        return self.fc2(x)
+
+# Train
+model = SimpleNet()
+optimizer = torch.optim.Adam(model.parameters())
+criterion = nn.CrossEntropyLoss()
+\end{lstlisting}
+
+\column{0.38\textwidth}
+\textbf{What This Does:}
+\begin{itemize}
+\item Input: 28$\times$28 pixel image
+\item Hidden: 128 neurons
+\item Output: 10 digit classes
+\item Activation: ReLU
+\item Training: Adam optimizer
+\end{itemize}
+
+\textbf{Training Loop:}
+\begin{itemize}
+\item Forward pass
+\item Calculate loss
+\item Backward pass
+\item Update weights
+\item Repeat
+\end{itemize}
+\end{columns}
+\bottomnote{ This simple network achieves 97\% accuracy on MNIST}
+\end{frame}
+
+% NEW: Advanced Debugging Techniques
+\begin{frame}{Debugging Neural Networks: Detective Work}
+\begin{center}
+\textbf{When Things Go Wrong (They Always Do)}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Gradient Issues:}
+\begin{itemize}
+\item \textbf{Exploding:} Gradients $\rightarrow$ infinity
+  \begin{itemize}
+  \item Solution: Gradient clipping
+  \end{itemize}
+\item \textbf{Vanishing:} Gradients $\rightarrow$ 0
+  \begin{itemize}
+  \item Solution: Better initialization, ReLU
+  \end{itemize}
+\item \textbf{Dead ReLU:} Neurons never activate
+  \begin{itemize}
+  \item Solution: LeakyReLU, smaller learning rate
+  \end{itemize}
+\end{itemize}
+
+\textbf{Debugging Tools:}
+\begin{itemize}
+\item TensorBoard: Visualize training
+\item Gradient histograms
+\item Activation distributions
+\item Weight evolution plots
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Common Failure Modes:}
+\begin{itemize}
+\item Loss not decreasing: Learning rate
+\item Loss NaN: Numerical instability
+\item Oscillating loss: LR too high
+\item Plateau: Local minimum or LR too small
+\end{itemize}
+
+\textbf{Sanity Checks:}
+\begin{enumerate}
+\item Overfit single batch first
+\item Check gradient flow
+\item Visualize first layer filters
+\item Plot loss curves
+\item Test on toy problem
+\end{enumerate}
+\end{columns}
+\bottomnote{ "If it's not working, it's always the learning rate" - Andrej Karpathy}
+\end{frame}
+
+% NEW: Debugging Checklist
+\begin{frame}{Your Debugging Checklist: When Things Go Wrong}
+\begin{center}
+\textbf{\checkpoint{Systematic Debugging Saves Hours}}
+\end{center}
+\vspace{5mm}
+\tryit{Save this checklist - you'll need it for every project!}
+\vspace{3mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Step 1: Sanity Checks}
+\begin{itemize}
+\item [$\square$] Can you overfit a single batch?
+\item [$\square$] Are inputs normalized?
+\item [$\square$] Is output layer correct?
+\item [$\square$] Loss function matches task?
+\end{itemize}
+
+\textbf{Step 2: Data Checks}
+\begin{itemize}
+\item [$\square$] Plot sample inputs
+\item [$\square$] Check label distribution
+\item [$\square$] Verify train/val split
+\item [$\square$] Look for data leakage
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Step 3: Training Checks}
+\begin{itemize}
+\item [$\square$] Plot loss curves
+\item [$\square$] Check gradient norms
+\item [$\square$] Monitor weight updates
+\item [$\square$] Try different learning rates
+\end{itemize}
+
+\textbf{Step 4: Architecture}
+\begin{itemize}
+\item [$\square$] Start with known working model
+\item [$\square$] Add complexity gradually
+\item [$\square$] Check activation distributions
+\item [$\square$] Verify dimensions match
+\end{itemize}
+
+\confusion{90\% of bugs are in data preprocessing, not the model!}
+\end{columns}
+\bottomnote{ Print this slide and keep it handy}
+\end{frame}
+
+% Common Pitfalls
+\begin{frame}{Common Pitfalls: Learn from Others' Mistakes}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Data Problems:}
+\begin{itemize}
+\item Not enough data
+\item Unbalanced classes
+\item Data leakage
+\item No validation set
+\end{itemize}
+
+\textbf{Architecture Issues:}
+\begin{itemize}
+\item Too deep without skip connections
+\item Wrong activation functions
+\item Incorrect output layer
+\item Bad initialization
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Training Mistakes:}
+\begin{itemize}
+\item Learning rate too high/low
+\item No normalization
+\item Overfitting ignored
+\item Wrong loss function
+\end{itemize}
+
+\textbf{Debugging Tips:}
+\begin{itemize}
+\item Start simple, add complexity
+\item Overfit single batch first
+\item Monitor gradients
+\item Visualize predictions
+\end{itemize}
+\end{columns}
+\bottomnote{ "It's not working" usually means one of these issues}
+\end{frame}
+
+% The Future
+\begin{frame}{The Future: What's Next?}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Current Frontiers:}
+\begin{itemize}
+\item Multimodal models (text+image+audio)
+\item Efficient models for phones
+\item Neuromorphic hardware
+\item Quantum neural networks
+\end{itemize}
+
+\textbf{Unsolved Problems:}
+\begin{itemize}
+\item True reasoning ability
+\item Learning from few examples
+\item Explaining decisions
+\item Energy efficiency
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Next Breakthroughs?}
+\begin{itemize}
+\item Models that update continuously
+\item Networks that program themselves
+\item Biological-digital hybrids
+\item AGI (Artificial General Intelligence)?
+\end{itemize}
+
+\textbf{Your Role:}
+\begin{itemize}
+\item This field is 70 years young
+\item Major breakthroughs every 2-3 years
+\item Anyone can contribute
+\item The best is yet to come
+\end{itemize}
+\end{columns}
+\bottomnote{ "We're still in the steam engine era of AI" - Geoffrey Hinton}
+\end{frame}
+
+% NEW: Final Understanding Check
+\begin{frame}{Final Check: Can You Explain These to a Friend?}
+\begin{center}
+\textbf{\checkpoint{Test Your Understanding}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Core Concepts:}
+\begin{enumerate}
+\item Why do we need activation functions?
+\item What's backpropagation in one sentence?
+\item Why did deep learning explode after 2012?
+\item What's the vanishing gradient problem?
+\item Why do CNNs work for images?
+\end{enumerate}
+
+\tryit{Write one-sentence answers for each. Compare with a classmate!}
+
+\column{0.48\textwidth}
+\textbf{Key Answers:}
+\begin{itemize}
+\item Without them, stacked layers = still linear
+\item Distributing error backwards through network
+\item GPUs + Big Data + ReLU converged
+\item Gradients shrink through many layers
+\item They detect features regardless of position
+\end{itemize}
+
+\textbf{If You're Stuck:}
+\begin{itemize}
+\item Review activation functions slide
+\item Re-read backprop section
+\item Check AlexNet breakthrough
+\item Look at gradient flow diagram
+\item Study convolution hierarchy
+\end{itemize}
+\end{columns}
+\bottomnote{ Understanding these concepts prepares you for everything that follows}
+\end{frame}

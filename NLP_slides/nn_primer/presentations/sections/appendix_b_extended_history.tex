@@ -1,0 +1,118 @@
+% Appendix B: Extended History
+\begin{frame}{Appendix B: Extended Historical Details}
+\begin{center}
+{\Large \textbf{The Full Story: Historical Deep Dives}}
+\end{center}
+\vspace{10mm}
+
+\textbf{This section contains fascinating historical details that enrich the narrative but aren't essential for understanding the technical concepts.}
+
+\vspace{5mm}
+Topics covered:
+\begin{itemize}
+\item The Mark I Perceptron: Physical Hardware
+\item NetTalk: Networks Learn to Speak (1987)
+\item Batch Normalization: Keeping Networks Stable
+\end{itemize}
+
+\vspace{5mm}
+\textit{These stories show how each breakthrough built on previous work and overcame specific limitations.}
+\end{frame}
+
+% MARK I PERCEPTRON
+\begin{frame}{The Mark I Perceptron: A Physical Learning Machine}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/perceptron_hardware.pdf}
+\end{center}
+\bottomnote{ The first neural network wasn't software---it was a room-sized machine with motors and photocells}
+\end{frame}
+
+% NETTALK
+\begin{frame}{1987: NetTalk - Networks Learn to Speak}
+\begin{center}
+\textbf{Sejnowski \& Rosenberg: The First Viral NN Demo}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Challenge:}
+\begin{itemize}
+\item Convert written text to speech
+\item English is irregular (tough, though, through)
+\item Rule-based systems had 1000s of exceptions
+\end{itemize}
+
+\textbf{The Network:}
+\begin{itemize}
+\item 7$\times$29 input (7-letter window)
+\item 80 hidden neurons
+\item 26 output phonemes
+\item Trained overnight on DEC workstation
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Magic:}
+\begin{itemize}
+\item Started: Random babbling
+\item Hour 1: Vowel-consonant patterns
+\item Hour 5: Recognizable words
+\item Hour 10: 95\% accuracy!
+\end{itemize}
+
+\textbf{Hidden Neurons Learned:}
+\begin{itemize}
+\item Vowel detectors
+\item Consonant clusters
+\item Word boundaries
+\item \highlight{Nobody programmed these!}
+\end{itemize}
+
+\confusion{The network discovered linguistic concepts on its own - features linguists took centuries to identify!}
+\end{columns}
+\bottomnote{ Media sensation: "Computer teaches itself to read aloud overnight"}
+\end{frame}
+
+% BATCH NORMALIZATION
+\begin{frame}{Batch Normalization: Keeping Networks Stable}
+\begin{center}
+\textbf{The Internal Covariate Shift Problem}
+\end{center}
+\vspace{2mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Issue:}
+\begin{itemize}
+\item Each layer's input distribution changes
+\item As previous layers update
+\item Makes learning unstable
+\item Requires tiny learning rates
+\end{itemize}
+
+\textbf{The Solution:}
+\begin{itemize}
+\item Normalize inputs to each layer
+\item Mean = 0, Variance = 1
+\item Learn scale and shift parameters
+\item Apply during training and testing
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{BatchNorm Algorithm:}
+\begin{align*}
+\mu_B &= \frac{1}{m} \sum_{i=1}^{m} x_i \\
+\sigma_B^2 &= \frac{1}{m} \sum_{i=1}^{m} (x_i - \mu_B)^2 \\
+\hat{x}_i &= \frac{x_i - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}} \\
+y_i &= \gamma \hat{x}_i + \beta
+\end{align*}
+\plainmath{1) Find average, 2) Find spread, 3) Normalize to standard range, 4) Scale and shift as needed}
+
+\textbf{Benefits:}
+\begin{itemize}
+\item 10x faster training
+\item Higher learning rates OK
+\item Less sensitive to initialization
+\item Acts as regularization
+\end{itemize}
+\end{columns}
+\bottomnote{ Now standard in every deep network}
+\end{frame}

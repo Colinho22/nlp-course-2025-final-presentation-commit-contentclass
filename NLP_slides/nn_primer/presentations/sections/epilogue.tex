@@ -1,0 +1,171 @@
+% Epilogue: Key Takeaways and Practical Implementation
+% Key Takeaways
+\begin{frame}{Key Takeaways: From Mail Sorting to ChatGPT}
+\begin{center}
+{\Large \textbf{The Journey So Far}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Core Concepts:}
+\begin{enumerate}
+\item \textbf{Neurons:} $y = f(\sum w_i x_i + b)$
+\item \textbf{Learning:} Adjust weights to minimize error
+\item \textbf{Depth:} Each layer adds abstraction
+\item \textbf{Backpropagation:} Distribute error backwards
+\item \textbf{Non-linearity:} Enables complex functions
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{Historical Lessons:}
+\begin{enumerate}
+\item Every limitation spawned innovation
+\item Simple ideas + scale = revolution
+\item Biology inspires but doesn't limit
+\item Persistence through AI winters
+\item Theory + engineering = breakthroughs
+\end{enumerate}
+\end{columns}
+\bottomnote{ You now understand the fundamentals that power all modern AI}
+\end{frame}
+
+% NEW: Your First Neural Network
+\begin{frame}[fragile]{Epilogue: Your First Neural Network in 5 Minutes}
+\begin{center}
+\textbf{\checkpoint{Let's Build Something Real!}}
+\end{center}
+\vspace{1mm}
+\begin{columns}
+\column{0.55\textwidth}
+\textbf{Complete MNIST Classifier:}
+\begin{lstlisting}[language=Python,basicstyle=\tiny]
+import torch
+import torch.nn as nn
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+
+# 1. Define Network
+class Net(nn.Module):
+    def __init__(self):
+        super(Net, self).__init__()
+        self.fc1 = nn.Linear(784, 128)
+        self.fc2 = nn.Linear(128, 64)
+        self.fc3 = nn.Linear(64, 10)
+
+    def forward(self, x):
+        x = x.view(-1, 784)  # Flatten
+        x = torch.relu(self.fc1(x))
+        x = torch.relu(self.fc2(x))
+        return self.fc3(x)
+
+# 2. Load Data
+transform = transforms.ToTensor()
+train_data = datasets.MNIST('.', train=True,
+                           download=True,
+                           transform=transform)
+train_loader = DataLoader(train_data,
+                         batch_size=64,
+                         shuffle=True)
+
+# 3. Setup Training
+model = Net()
+optimizer = torch.optim.Adam(model.parameters())
+criterion = nn.CrossEntropyLoss()
+\end{lstlisting}
+
+\column{0.42\textwidth}
+\begin{lstlisting}[language=Python,basicstyle=\tiny]
+# 4. Training Loop
+for epoch in range(3):
+    for batch_idx, (data, target) in
+                enumerate(train_loader):
+        # Forward pass
+        output = model(data)
+        loss = criterion(output, target)
+
+        # Backward pass
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        # Print progress
+        if batch_idx % 100 == 0:
+            print(f'Epoch {epoch}: {loss:.4f}')
+
+# 5. Test One Example
+model.eval()
+test_image = train_data[0][0]
+prediction = model(test_image.unsqueeze(0))
+print(f"Predicted: {prediction.argmax()}")
+\end{lstlisting}
+
+\vspace{1mm}
+\textbf{What You Just Built:}
+\begin{itemize}
+\item 3-layer neural network
+\item 60K training images
+\item 97\% accuracy in 3 epochs
+\item Runs in 2 minutes on laptop
+\end{itemize}
+
+\tryit{Copy this code and run it now!}
+\end{columns}
+\bottomnote{ Congratulations - you've just trained your first neural network!}
+\end{frame}
+
+% Where to Go Next
+\begin{frame}{Where to Go Next: Your Learning Path}
+\begin{center}
+\textbf{Continue Your Neural Network Journey}
+\end{center}
+\vspace{2mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Next Topics to Learn:}
+\begin{enumerate}
+\item \textbf{CNNs:} Computer vision
+\item \textbf{RNNs/LSTMs:} Sequences
+\item \textbf{Transformers:} Modern NLP
+\item \textbf{GANs:} Generation
+\item \textbf{RL:} Decision making
+\end{enumerate}
+
+\textbf{Practical Projects:}
+\begin{itemize}
+\item Image classifier for your photos
+\item Sentiment analysis of tweets
+\item Chatbot for customer service
+\item Style transfer for art
+\item Game-playing agent
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Resources:}
+\begin{itemize}
+\item \textbf{Fast.ai:} Practical deep learning
+\item \textbf{PyTorch Tutorials:} Official guides
+\item \textbf{Papers with Code:} Latest research
+\item \textbf{Kaggle:} Competitions and datasets
+\item \textbf{3Blue1Brown:} Visual explanations
+\end{itemize}
+
+\textbf{Remember:}
+\begin{itemize}
+\item Start simple, build up
+\item Theory + practice together
+\item Join communities
+\item Build projects you care about
+\item Share what you learn
+\end{itemize}
+\end{columns}
+
+\vspace{2mm}
+\begin{center}
+\colorbox{mlgreen!10}{\parbox{0.8\textwidth}{
+\centering
+\textbf{You've learned how humanity taught machines to think.\\
+Now it's your turn to push the boundaries!}
+}}
+\end{center}
+\bottomnote{ The future of AI is being written now - be part of it!}
+\end{frame}

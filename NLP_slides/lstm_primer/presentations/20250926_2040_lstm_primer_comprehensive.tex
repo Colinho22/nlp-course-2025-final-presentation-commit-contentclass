@@ -1,0 +1,1567 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\definecolor{mainGray}{RGB}{64,64,64}
+\definecolor{annotGray}{RGB}{180,180,180}
+\definecolor{backGray}{RGB}{240,240,240}
+
+\definecolor{forgetRed}{RGB}{231,76,60}
+\definecolor{inputGreen}{RGB}{46,204,113}
+\definecolor{outputBlue}{RGB}{52,152,219}
+\definecolor{cellYellow}{RGB}{241,196,15}
+
+\newcommand{\given}{\mid}
+
+\title{LSTM Primer: Next Word Prediction}
+\subtitle{A Comprehensive Introduction to Long Short-Term Memory Networks}
+\author{BSc Level - No Prerequisites Required}
+\date{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{Course Overview}
+\begin{center}
+\textbf{From Autocomplete to Modern Language Models}
+\end{center}
+\vspace{5mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Part 1: The Problem}
+\begin{itemize}
+\item 1. Introduction: The Autocomplete Challenge
+\item 2. N-gram Baseline Models
+\item 3. Why N-grams Fail
+\item 4. The Memory Problem
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Part 2: First Attempts}
+\begin{itemize}
+\item 5. Recurrent Neural Networks (RNN)
+\item 6. How RNNs Process Sequences
+\item 7. The Vanishing Gradient Problem
+\item 8. Why RNNs Forget
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Part 3: The LSTM Solution}
+\begin{itemize}
+\item 9. LSTM Architecture Overview
+\item 10-12. The Three Gates (Forget, Input, Output)
+\item 13. Cell State: The Memory Highway
+\item 14. Complete Forward Pass Example
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Part 4: Training \& Applications}
+\begin{itemize}
+\item 15. Training LSTMs
+\item 16. Why LSTMs Work
+\item 17. Variants \& Extensions
+\item 18. Real-World Applications
+\item 19. Implementation \& Summary
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\begin{frame}{The Autocomplete Challenge}
+\begin{center}
+\textbf{The Problem: Predicting What Comes Next}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/autocomplete_screenshot.pdf}
+
+\vspace{3mm}
+\textbf{What You See:}
+\begin{itemize}
+\item You type on your phone
+\item Suggestions appear instantly
+\item Suggestions change with context
+\item Often surprisingly accurate
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Real Examples:}
+\begin{itemize}
+\item ``See you \_\_\_'' $\rightarrow$ soon, tomorrow, later
+\item ``I love \_\_\_'' $\rightarrow$ you, this, chocolate
+\item ``The weather is \_\_\_'' $\rightarrow$ nice, terrible, perfect
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Challenge:}
+\begin{itemize}
+\item Context can be very long
+\item Meaning changes with history
+\item Grammar rules are complex
+\item Need to be fast (milliseconds)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Hard Example:}
+
+\textit{``I grew up in Paris. I went to school there. I learned to speak fluent \_\_\_''}
+
+\begin{itemize}
+\item Need to remember ``Paris'' (18 words back!)
+\item Ignore recent irrelevant words
+\item Connect city to language
+\item Answer: French
+\end{itemize}
+
+\vspace{3mm}
+\textbf{This is sequence modeling:} Predict next element based on all previous elements.
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Humans do this effortlessly. How can we teach machines?}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{N-gram Models: The Baseline}
+\begin{center}
+\textbf{Simple Idea: Count What Usually Comes Next}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{How It Works:}
+
+\vspace{3mm}
+\textbf{Step 1:} Look at training data
+\begin{itemize}
+\item Count every word pair (bigram)
+\item Count every word triple (trigram)
+\item Store frequency tables
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Step 2:} Make predictions
+\begin{itemize}
+\item Look at last 1-2 words
+\item Find in frequency table
+\item Pick most common next word
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Example Training Data:}
+
+\textit{``I love chocolate. I love pizza. I love ice cream.''}
+
+\vspace{2mm}
+\textbf{Bigram Counts:}
+\begin{itemize}
+\item ``I love'' $\rightarrow$ 3 times
+\item ``love chocolate'' $\rightarrow$ 1 time
+\item ``love pizza'' $\rightarrow$ 1 time
+\item ``love ice'' $\rightarrow$ 1 time
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Prediction Process:}
+
+Input: ``I''
+\begin{itemize}
+\item Check bigram table
+\item ``I love'' appears 3 times
+\item Predict: ``love''
+\end{itemize}
+
+\vspace{3mm}
+Input: ``I love''
+\begin{itemize}
+\item Check trigram table
+\item Three options (1 count each)
+\item Pick randomly or use context
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Math:}
+$$P(\text{word}_t \given \text{word}_{t-1}, \text{word}_{t-2}) = \frac{\text{count}(w_{t-2}, w_{t-1}, w_t)}{\text{count}(w_{t-2}, w_{t-1})}$$
+
+\vspace{3mm}
+\textbf{Why It's Popular:}
+\begin{itemize}
+\item Extremely simple
+\item Fast to compute
+\item No training needed
+\item Works for short contexts
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Used in early autocomplete systems (1990s-2000s)}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Why N-grams Fail: The Context Window Problem}
+\begin{center}
+\textbf{Fatal Limitation: Can Only See 1-2 Words Back}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/context_window_comparison.pdf}
+
+\vspace{3mm}
+\textbf{The Window Problem:}
+
+\textit{``I grew up in Paris. I went to school there for 12 years. I learned to speak fluent \_\_\_''}
+
+\begin{itemize}
+\item \textbf{Trigram sees:} ``speak fluent \_\_\_''
+\item \textbf{Needs to see:} ``Paris'' (18 words back)
+\item \textbf{Result:} Can't make connection
+\item \textbf{Prediction:} Random guess
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{Three Fatal Flaws:}
+
+\vspace{3mm}
+\textbf{1. Limited Context:}
+\begin{itemize}
+\item Only 1-2 words visible
+\item Long-range dependencies impossible
+\item Miss crucial information
+\end{itemize}
+
+\vspace{3mm}
+\textbf{2. Combinatorial Explosion:}
+\begin{itemize}
+\item 10,000 word vocabulary
+\item $10,000^3$ = 1 trillion trigrams
+\item Most never appear in training
+\item Sparse data problem
+\end{itemize}
+
+\vspace{3mm}
+\textbf{3. No Generalization:}
+\begin{itemize}
+\item Can't handle novel combinations
+\item No understanding of meaning
+\item Pure memorization
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What We Need:}
+\begin{itemize}
+\item Variable-length context
+\item Selective memory
+\item Semantic understanding
+\item Generalizable patterns
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This led to the development of neural approaches}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{The Memory Problem: What Should We Remember?}
+\begin{center}
+\textbf{Insight from Human Reading}
+\end{center}
+\vspace{5mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Imagine Reading a Novel:}
+
+\vspace{3mm}
+\textit{Chapter 1: ``Alice was born in London in 1985. She had a happy childhood.''}
+
+\textit{Chapter 3: ``After graduating from university, Alice moved to New York.''}
+
+\textit{Chapter 7: ``Now 38 years old, Alice reflected on her life in \_\_\_''}
+
+\vspace{3mm}
+\textbf{What You Remember:}
+\begin{itemize}
+\item Alice (main character)
+\item Born in London
+\item Moved to New York
+\item Currently 38 years old
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What You Forgot:}
+\begin{itemize}
+\item ``had a happy childhood''
+\item ``graduating from university''
+\item Exact wording
+\item Minor details
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Key Insight:} Memory is \textbf{selective}
+
+\vspace{5mm}
+\textbf{Human Memory Strategy:}
+\begin{enumerate}
+\item \textbf{Decide} what's important
+\item \textbf{Keep} relevant information
+\item \textbf{Forget} irrelevant details
+\item \textbf{Update} as story progresses
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{What We Need in AI:}
+
+\vspace{3mm}
+\textbf{Forget Gate:}
+\begin{itemize}
+\item Remove outdated information
+\item Clear memory when topic changes
+\item Example: Forget ``chocolate'' after period
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Input Gate:}
+\begin{itemize}
+\item Decide what to store
+\item Remember important words
+\item Example: Store ``Paris'' strongly
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Output Gate:}
+\begin{itemize}
+\item Control what to reveal
+\item Use memory when needed
+\item Example: Recall ``Paris'' when predicting language
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This is exactly what LSTMs do!}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Recurrent Neural Networks (RNN): First Attempt}
+\begin{center}
+\textbf{Idea: Maintain a ``Hidden State'' as Memory}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The RNN Concept:}
+
+\vspace{3mm}
+\begin{itemize}
+\item \textbf{Hidden state} $h_t$ = memory
+\item Update memory at each word
+\item Use memory to make predictions
+\item Memory flows through time
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Math:}
+\begin{align*}
+h_t &= \tanh(W_h h_{t-1} + W_x x_t + b) \\
+y_t &= \text{softmax}(W_y h_t + b_y)
+\end{align*}
+
+Where:
+\begin{itemize}
+\item $h_t$ = hidden state (memory) at time $t$
+\item $h_{t-1}$ = previous memory
+\item $x_t$ = current word embedding
+\item $y_t$ = prediction probabilities
+\item $W_h, W_x, W_y$ = learned weight matrices
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Key Properties:}
+\begin{itemize}
+\item Same weights reused at each step
+\item Memory compressed into fixed-size vector
+\item Can theoretically remember infinite context
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{How It Processes Sequences:}
+
+\vspace{3mm}
+Input: ``I love chocolate''
+
+\vspace{3mm}
+\textbf{Step 1:} Process ``I''
+\begin{itemize}
+\item $h_0 = [0, 0, 0, \ldots]$ (initial state)
+\item $h_1 = \tanh(W_h h_0 + W_x [\text{embed}(\text{``I''})]+b)$
+\item Predict next word from $h_1$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Step 2:} Process ``love''
+\begin{itemize}
+\item Use $h_1$ from previous step
+\item $h_2 = \tanh(W_h h_1 + W_x [\text{embed}(\text{``love''})]+b)$
+\item Now $h_2$ contains info about ``I love''
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Step 3:} Process ``chocolate''
+\begin{itemize}
+\item $h_3 = \tanh(W_h h_2 + W_x [\text{embed}(\text{``chocolate''})]+b)$
+\item $h_3$ should remember full sequence
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Advantages over N-grams:}
+\begin{itemize}
+\item No fixed window size
+\item Learns patterns, not just counts
+\item Generalizes to unseen sequences
+\item Continuous representation
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Sounds perfect! But there's a critical problem\ldots}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{The Vanishing Gradient Problem}
+\begin{center}
+\textbf{Why RNNs Can't Learn Long-Term Dependencies}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Training Neural Networks:}
+
+\vspace{3mm}
+\textbf{Forward Pass:}
+\begin{itemize}
+\item Input $\rightarrow$ Hidden layers $\rightarrow$ Output
+\item Compute prediction
+\item Calculate loss (error)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Backward Pass (Backpropagation):}
+\begin{itemize}
+\item Compute gradient of loss w.r.t. weights
+\item Flow gradient backward through network
+\item Update weights to reduce error
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Problem in RNNs:}
+
+Gradient at step $t$ depends on all previous steps:
+$$\frac{\partial L}{\partial W_h} = \sum_{t=1}^T \frac{\partial L_t}{\partial W_h}$$
+
+Each term involves a product:
+$$\frac{\partial h_t}{\partial h_{t-1}} = \tanh'(...) \cdot W_h$$
+
+After $n$ steps:
+$$\frac{\partial h_t}{\partial h_{t-n}} = \prod_{i=1}^n \frac{\partial h_{t-i+1}}{\partial h_{t-i}}$$
+
+\column{0.48\textwidth}
+\textbf{Why It Vanishes:}
+
+\vspace{3mm}
+Typical values:
+\begin{itemize}
+\item $\tanh'(x) \leq 1$ (often $\approx 0.5$)
+\item If $||W_h|| < 1$, products shrink
+\item After $n$ steps: $\approx 0.5^n \cdot ||W_h||^n$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Numbers:}
+
+\begin{center}
+\begin{tabular}{ccc}
+\textbf{Steps} & \textbf{Gradient} & \textbf{\% Remaining} \\
+\hline
+1 & 0.90 & 90\% \\
+5 & 0.59 & 59\% \\
+10 & 0.35 & 35\% \\
+20 & 0.12 & 12\% \\
+50 & 0.005 & 0.5\% \\
+100 & 0.000027 & 0.0027\% \\
+\end{tabular}
+\end{center}
+
+\vspace{3mm}
+\textbf{The Impact:}
+\begin{itemize}
+\item Gradient becomes infinitesimally small
+\item Weights barely update
+\item Network can't learn from distant past
+\item Effective memory: 5-10 steps only
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This is identical to the n-gram problem!}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Why RNNs Forget: A Concrete Example}
+\begin{center}
+\textbf{The Paris Example Revisited}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Sentence:}
+
+\textit{``I grew up in Paris. I went to school there. I learned to speak fluent \_\_\_''}
+
+\vspace{3mm}
+\textbf{What Happens in RNN:}
+
+\vspace{3mm}
+\textbf{Word 1-5:} ``I grew up in Paris''
+\begin{itemize}
+\item $h_5$ encodes this information
+\item ``Paris'' stored in hidden state
+\item Looks promising!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Word 6-15:} ``I went to school there''
+\begin{itemize}
+\item $h_{15}$ updates with new words
+\item Previous $h_5$ gets multiplied by $W_h$ ten times
+\item Information about ``Paris'' weakens
+\item $h_{15} \approx$ mostly recent words
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Word 16-21:} ``I learned to speak fluent''
+\begin{itemize}
+\item $h_{21}$ needs ``Paris'' to predict ``French''
+\item But ``Paris'' signal extremely weak
+\item RNN effectively guesses randomly
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Math Behind the Forgetting:}
+
+\vspace{3mm}
+Hidden state update:
+$$h_t = \tanh(W_h h_{t-1} + W_x x_t)$$
+
+After $n$ steps, contribution from $h_0$:
+$$h_n \approx (W_h)^n h_0 + \text{recent terms}$$
+
+\vspace{3mm}
+If largest eigenvalue of $W_h$ is $\lambda$:
+\begin{itemize}
+\item $\lambda < 1$: Exponential decay
+\item $\lambda = 0.9$ typical
+\item After 20 steps: $0.9^{20} = 0.12$
+\item Information multiplied by 0.12
+\end{itemize}
+
+\vspace{3mm}
+\textbf{During Training (Backpropagation):}
+
+Gradient from step 21 to step 5:
+$$\frac{\partial L_{21}}{\partial h_5} = \frac{\partial L_{21}}{\partial h_{21}} \prod_{t=6}^{21} \frac{\partial h_t}{\partial h_{t-1}}$$
+
+\begin{itemize}
+\item Product of 16 terms
+\item Each term $\approx 0.5$
+\item Total: $0.5^{16} \approx 0.000015$
+\item Weight update negligible
+\item Can't learn connection!
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}We need a way to preserve gradients across time}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{LSTM Architecture: The Solution}
+\begin{center}
+\textbf{Long Short-Term Memory: Gated Memory Cells}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/lstm_architecture.pdf}
+
+\vspace{3mm}
+\textbf{Key Innovation: Separate Memory Path}
+
+\begin{itemize}
+\item \textbf{Cell state} $C_t$: Long-term memory highway
+\item \textbf{Hidden state} $h_t$: Short-term working memory
+\item \textbf{Three gates}: Control information flow
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{The Three Gates:}
+
+\vspace{3mm}
+{\color{forgetRed}\textbf{Forget Gate}} ($f_t$):
+\begin{itemize}
+\item What to remove from memory
+\item 0 = completely forget
+\item 1 = keep everything
+\item Example: 0.9 at period
+\end{itemize}
+
+\vspace{3mm}
+{\color{inputGreen}\textbf{Input Gate}} ($i_t$):
+\begin{itemize}
+\item What to add to memory
+\item 0 = ignore new information
+\item 1 = fully store
+\item Example: 0.95 on ``Paris''
+\end{itemize}
+
+\vspace{3mm}
+{\color{outputBlue}\textbf{Output Gate}} ($o_t$):
+\begin{itemize}
+\item What to reveal from memory
+\item 0 = hide everything
+\item 1 = expose all
+\item Example: 0.8 when predicting
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Why It Works:}
+\begin{itemize}
+\item Cell state uses \textbf{addition}, not multiplication
+\item Gradients flow directly backward
+\item Can remember 50-100+ steps
+\item Learns what to remember/forget
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Gates are learned automatically from data}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{The Forget Gate: Clearing Old Information}
+\begin{center}
+\textbf{{\color{forgetRed}Forget Gate:} What Should We Remove?}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Equation:}
+$$f_t = \sigma(W_f [h_{t-1}, x_t] + b_f)$$
+
+Where:
+\begin{itemize}
+\item $f_t$ = forget gate activations (0 to 1)
+\item $h_{t-1}$ = previous hidden state
+\item $x_t$ = current input word
+\item $\sigma$ = sigmoid function
+\item $[h_{t-1}, x_t]$ = concatenation
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What Sigmoid Does:}
+$$\sigma(z) = \frac{1}{1 + e^{-z}}$$
+
+\begin{itemize}
+\item Maps any number to (0,1)
+\item $z \rightarrow -\infty$: $\sigma(z) \rightarrow 0$ (forget)
+\item $z \rightarrow +\infty$: $\sigma(z) \rightarrow 1$ (keep)
+\item $z = 0$: $\sigma(z) = 0.5$ (partial)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{How It's Applied:}
+$$C_t = f_t \odot C_{t-1} + \ldots$$
+
+Element-wise multiplication: Each memory cell independently forgotten
+
+\column{0.48\textwidth}
+\textbf{Concrete Example:}
+
+Input sequence: ``I love chocolate. But I prefer''
+
+\vspace{3mm}
+\textbf{At word ``chocolate'':}
+\begin{itemize}
+\item $f_t = [0.95, 0.92, 0.88, \ldots]$
+\item Keep most information
+\item Normal sentence continuation
+\end{itemize}
+
+\vspace{3mm}
+\textbf{At word ``.'' (period):}
+\begin{itemize}
+\item $f_t = [0.1, 0.2, 0.15, \ldots]$
+\item Forget most of previous sentence!
+\item Topic might change
+\item New sentence starting
+\end{itemize}
+
+\vspace{3mm}
+\textbf{At word ``But'':}
+\begin{itemize}
+\item $f_t = [0.3, 0.4, 0.25, \ldots]$
+\item Contrast coming
+\item Remember some context
+\item But prepare for reversal
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What It Learns:}
+\begin{itemize}
+\item Punctuation $\rightarrow$ low forget gate
+\item Continuing words $\rightarrow$ high forget gate
+\item Topic shifts $\rightarrow$ low forget gate
+\item Contrasts (``but'') $\rightarrow$ medium values
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}The network learns these patterns from training data}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{The Input Gate: Adding New Information}
+\begin{center}
+\textbf{{\color{inputGreen}Input Gate:} What Should We Store?}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Two Equations:}
+
+\vspace{3mm}
+\textbf{Input Gate:}
+$$i_t = \sigma(W_i [h_{t-1}, x_t] + b_i)$$
+
+Controls \textit{how much} to add (0 to 1)
+
+\vspace{3mm}
+\textbf{Candidate Memory:}
+$$\tilde{C}_t = \tanh(W_C [h_{t-1}, x_t] + b_C)$$
+
+What content to potentially add (-1 to 1)
+
+\vspace{3mm}
+\textbf{Combined Update:}
+$$C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$$
+
+\begin{itemize}
+\item First term: What to keep from past
+\item Second term: What to add from present
+\item Element-wise operations
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Why Two Components?}
+
+\begin{itemize}
+\item $\tilde{C}_t$: What information (content)
+\item $i_t$: How important (weight)
+\item Separate control for flexibility
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Concrete Example:}
+
+Input: ``I grew up in Paris''
+
+\vspace{3mm}
+\textbf{At word ``I'':}
+\begin{itemize}
+\item $i_t = [0.3, 0.2, 0.1, \ldots]$ (low)
+\item Common word, not much info
+\item $\tilde{C}_t = [0.5, -0.2, 0.1, \ldots]$
+\item Minimal storage
+\end{itemize}
+
+\vspace{3mm}
+\textbf{At word ``Paris'':}
+\begin{itemize}
+\item $i_t = [0.95, 0.92, 0.88, \ldots]$ (high!)
+\item Important location word
+\item $\tilde{C}_t = [0.8, 0.7, -0.3, \ldots]$
+\item Strong encoding of ``Paris''
+\item Will be useful later
+\end{itemize}
+
+\vspace{3mm}
+\textbf{At word ``grew'':}
+\begin{itemize}
+\item $i_t = [0.5, 0.4, 0.6, \ldots]$ (medium)
+\item Action word, some importance
+\item $\tilde{C}_t = [0.3, -0.5, 0.2, \ldots]$
+\item Context about past
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What Gets Stored:}
+\begin{itemize}
+\item Named entities (high $i_t$)
+\item Key verbs (medium $i_t$)
+\item Function words (low $i_t$)
+\item Network learns importance
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Pattern recognition from training examples}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{The Output Gate: Revealing Memory}
+\begin{center}
+\textbf{{\color{outputBlue}Output Gate:} What Should We Use Now?}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Equations:}
+
+\vspace{3mm}
+\textbf{Output Gate:}
+$$o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)$$
+
+Controls how much memory to expose (0 to 1)
+
+\vspace{3mm}
+\textbf{Hidden State (Output):}
+$$h_t = o_t \odot \tanh(C_t)$$
+
+\begin{itemize}
+\item $\tanh(C_t)$: Squash cell state to (-1, 1)
+\item $o_t \odot$: Filter what's revealed
+\item $h_t$: Working memory for prediction
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Final Prediction:}
+$$y_t = \text{softmax}(W_y h_t + b_y)$$
+
+Probability distribution over vocabulary
+
+\vspace{3mm}
+\textbf{Key Insight:}
+\begin{itemize}
+\item Cell state $C_t$ = long-term storage
+\item Hidden state $h_t$ = current focus
+\item Output gate decides focus
+\item Not all memory needed always
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Concrete Example:}
+
+Sequence: ``I grew up in Paris. I learned to speak fluent \_\_\_''
+
+\vspace{3mm}
+\textbf{At word ``learned'':}
+\begin{itemize}
+\item $o_t = [0.3, 0.4, 0.2, \ldots]$ (low)
+\item Not predicting yet
+\item Don't need full memory
+\item Just process the word
+\end{itemize}
+
+\vspace{3mm}
+\textbf{At word ``fluent'':}
+\begin{itemize}
+\item $o_t = [0.9, 0.85, 0.92, \ldots]$ (high!)
+\item About to predict language
+\item Need location information
+\item Recall ``Paris'' from $C_t$
+\item $h_t$ contains relevant context
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Prediction Process:}
+\begin{itemize}
+\item Cell $C_t$ stored ``Paris'' (20 steps ago)
+\item Output gate opens at ``fluent''
+\item $h_t$ receives ``Paris'' information
+\item Softmax predicts: ``French'' (0.85)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What It Controls:}
+\begin{itemize}
+\item When to use memory
+\item When to ignore it
+\item Task-dependent revealing
+\item Learned from objective
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This is how LSTMs do selective attention}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Cell State: The Memory Highway}
+\begin{center}
+\textbf{{\color{cellYellow}Cell State} $C_t$: The Key Innovation}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Complete Update:}
+
+$$C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$$
+
+\vspace{3mm}
+\textbf{What Makes This Special:}
+
+\vspace{3mm}
+\textbf{RNN Update:}
+$$h_t = \tanh(W_h h_{t-1} + W_x x_t)$$
+\begin{itemize}
+\item Matrix multiplication by $W_h$
+\item Nonlinear $\tanh$
+\item Information transformed
+\item Gradient must flow through both
+\end{itemize}
+
+\vspace{3mm}
+\textbf{LSTM Cell State:}
+$$C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$$
+\begin{itemize}
+\item Element-wise operations only
+\item Direct addition path
+\item Information preserved
+\item Gradient flows unchanged!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Gradient Flow:}
+$$\frac{\partial C_t}{\partial C_{t-1}} = f_t$$
+
+\begin{itemize}
+\item If $f_t \approx 1$: Gradient preserved
+\item No repeated matrix multiplication
+\item No vanishing problem
+\item Can backpropagate 100+ steps
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Highway Analogy:}
+
+\vspace{3mm}
+\textbf{RNN (Local Roads):}
+\begin{itemize}
+\item Information stops at every step
+\item Gets transformed each time
+\item Slow, lossy transmission
+\item Limited range
+\end{itemize}
+
+\vspace{3mm}
+\textbf{LSTM (Highway):}
+\begin{itemize}
+\item Direct express lane ($C_t$)
+\item Minimal transformation
+\item Fast, lossless transmission
+\item Long-range connectivity
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Numerical Comparison:}
+
+Remembering information from 50 steps back:
+
+\vspace{2mm}
+\textbf{RNN:}
+\begin{itemize}
+\item Signal: $0.5^{50} \approx 10^{-15}$
+\item Gradient: $0.5^{50} \approx 10^{-15}$
+\item Effectively zero
+\end{itemize}
+
+\vspace{2mm}
+\textbf{LSTM (with $f_t = 0.95$):}
+\begin{itemize}
+\item Signal: $0.95^{50} \approx 0.08$
+\item Gradient: $0.95^{50} \approx 0.08$
+\item Still usable!
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This 10 billion factor difference is revolutionary}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Complete Forward Pass: Step-by-Step Example}
+\begin{center}
+\textbf{Full LSTM Computation}
+\end{center}
+\vspace{2mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{All Four Equations:}
+
+\vspace{2mm}
+\begin{align*}
+f_t &= \sigma(W_f [h_{t-1}, x_t] + b_f) \\
+i_t &= \sigma(W_i [h_{t-1}, x_t] + b_i) \\
+\tilde{C}_t &= \tanh(W_C [h_{t-1}, x_t] + b_C) \\
+C_t &= f_t \odot C_{t-1} + i_t \odot \tilde{C}_t \\
+o_t &= \sigma(W_o [h_{t-1}, x_t] + b_o) \\
+h_t &= o_t \odot \tanh(C_t)
+\end{align*}
+
+\vspace{2mm}
+\textbf{Dimensions (example):}
+\begin{itemize}
+\item Vocabulary: 10,000 words
+\item Embedding: 100 dims
+\item Hidden/Cell: 256 dims
+\item $W_f, W_i, W_C, W_o$: $256 \times 356$
+\item $[h_{t-1}, x_t]$: $356$ dims (256+100)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Concrete Numbers:}
+
+Input: ``love'' (word embedding)
+
+\vspace{2mm}
+\textbf{Step 1:} Forget gate
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+f_t = sigmoid([0.5, -0.2, 0.8, ...])
+    = [0.62, 0.45, 0.69, ...]
+\end{lstlisting}
+
+\textbf{Step 2:} Input gate \& candidate
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+i_t = sigmoid([1.2, 0.8, -0.5, ...])
+    = [0.77, 0.69, 0.38, ...]
+C_tilde = tanh([0.6, -0.3, 0.9, ...])
+        = [0.54, -0.29, 0.72, ...]
+\end{lstlisting}
+
+\textbf{Step 3:} Update cell state
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+C_t = [0.62*0.5, 0.45*0.3, ...]
+    + [0.77*0.54, 0.69*(-0.29), ...]
+    = [0.73, 0.14, ...]
+\end{lstlisting}
+
+\textbf{Step 4:} Output gate \& hidden
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+o_t = sigmoid([0.9, 1.1, -0.2, ...])
+    = [0.71, 0.75, 0.45, ...]
+h_t = [0.71*tanh(0.73), ...]
+    = [0.44, ...]
+\end{lstlisting}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Training LSTMs: Backpropagation Through Time}
+\begin{center}
+\textbf{How LSTMs Learn from Data}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Training Process:}
+
+\vspace{3mm}
+\textbf{1. Forward Pass:}
+\begin{itemize}
+\item Process entire sequence
+\item Compute predictions at each step
+\item Calculate loss (cross-entropy)
+\end{itemize}
+
+$$L = -\sum_{t=1}^T \log P(w_t \given w_1, \ldots, w_{t-1})$$
+
+\vspace{3mm}
+\textbf{2. Backward Pass:}
+\begin{itemize}
+\item Compute gradients of loss
+\item Flow backward through time
+\item Update all weight matrices
+\end{itemize}
+
+\vspace{3mm}
+\textbf{3. Weight Update:}
+$$W \leftarrow W - \eta \frac{\partial L}{\partial W}$$
+
+\begin{itemize}
+\item $\eta$ = learning rate (e.g., 0.001)
+\item Typically use Adam optimizer
+\item Updates: $W_f, W_i, W_C, W_o, W_y$
+\item Plus all biases: $b_f, b_i, b_C, b_o, b_y$
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why LSTM Gradient Flow Works:}
+
+\vspace{3mm}
+\textbf{Key Gradient:}
+$$\frac{\partial C_t}{\partial C_{t-1}} = f_t$$
+
+\begin{itemize}
+\item Simple element-wise multiplication
+\item No matrix multiplication
+\item If $f_t \approx 1$: Perfect transmission
+\item Gradient preserved across time
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Training Challenges:}
+
+\begin{itemize}
+\item \textbf{Sequence length}: Longer = more memory
+\item \textbf{Batch size}: Typically 32-128 sequences
+\item \textbf{Learning rate}: Must be carefully tuned
+\item \textbf{Gradient clipping}: Prevent explosions
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Hyperparameters:}
+
+\begin{itemize}
+\item Hidden size: 128-1024
+\item Num layers: 1-4 stacked LSTMs
+\item Dropout: 0.2-0.5 (regularization)
+\item Learning rate: 0.001-0.01
+\item Batch size: 32-128
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Training a 2-layer 256-dim LSTM: ~5M parameters}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Why LSTMs Work: Gradient Highway}
+\begin{center}
+\textbf{Direct Comparison: RNN vs LSTM}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/gradient_flow_comparison.pdf}
+
+\vspace{3mm}
+\textbf{Numerical Evidence:}
+
+Gradient after $n$ steps:
+
+\begin{center}
+\small
+\begin{tabular}{ccc}
+\textbf{Steps} & \textbf{RNN} & \textbf{LSTM} \\
+\hline
+10 & 0.35 & 0.90 \\
+20 & 0.12 & 0.82 \\
+50 & 0.005 & 0.61 \\
+100 & 0.000027 & 0.37 \\
+\end{tabular}
+\end{center}
+
+\vspace{2mm}
+LSTM maintains 10,000x stronger gradient!
+
+\column{0.42\textwidth}
+\textbf{Why It Works:}
+
+\vspace{3mm}
+\textbf{Additive Updates:}
+$$C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$$
+
+\begin{itemize}
+\item Addition creates direct path
+\item No repeated transformations
+\item Information preserved
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Gradient Path:}
+$$\frac{\partial C_T}{\partial C_0} = \prod_{t=1}^T f_t$$
+
+If forget gates $\approx 1$:
+\begin{itemize}
+\item Product stays close to 1
+\item No vanishing
+\item Can learn long dependencies
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Empirical Results:}
+
+\begin{itemize}
+\item RNN: Max 5-10 steps memory
+\item LSTM: 50-100+ steps memory
+\item Critical for language, time series
+\item Foundation for modern NLP
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This enabled the deep learning NLP revolution (2015-2017)}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{LSTM Variants and Extensions}
+\begin{center}
+\textbf{Improvements and Modifications}
+\end{center}
+\vspace{5mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{1. GRU (Gated Recurrent Unit):}
+
+\vspace{3mm}
+Simpler architecture:
+\begin{itemize}
+\item Only 2 gates (vs 3 in LSTM)
+\item No separate cell state
+\item Faster to train
+\item Often comparable performance
+\end{itemize}
+
+Equations:
+\begin{align*}
+z_t &= \sigma(W_z [h_{t-1}, x_t]) \quad \text{(update)} \\
+r_t &= \sigma(W_r [h_{t-1}, x_t]) \quad \text{(reset)} \\
+h_t &= (1-z_t) \odot h_{t-1} + z_t \odot \tilde{h}_t
+\end{align*}
+
+\vspace{3mm}
+\textbf{2. Bidirectional LSTM:}
+
+\begin{itemize}
+\item Two LSTMs: forward \& backward
+\item See future context too
+\item Better for classification
+\item Not for generation
+\end{itemize}
+
+$$h_t = [\overrightarrow{h}_t; \overleftarrow{h}_t]$$
+
+\column{0.48\textwidth}
+\textbf{3. Stacked/Deep LSTMs:}
+
+\begin{itemize}
+\item Multiple LSTM layers
+\item Layer 1 output $\rightarrow$ Layer 2 input
+\item Hierarchical representations
+\item 2-4 layers typical
+\end{itemize}
+
+\vspace{3mm}
+\textbf{4. Attention Mechanism:}
+
+\begin{itemize}
+\item Weight each hidden state
+\item Focus on relevant parts
+\item Improved context use
+\item Led to Transformers
+\end{itemize}
+
+\vspace{3mm}
+\textbf{5. Peephole Connections:}
+
+\begin{itemize}
+\item Gates see cell state directly
+\item $f_t = \sigma(W_f [h_{t-1}, x_t, C_{t-1}])$
+\item Slightly better timing
+\item Rarely used in practice
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Modern Trends:}
+
+\begin{itemize}
+\item \textbf{Transformers} dominate NLP (2017+)
+\item LSTMs still used for time series
+\item Mobile deployment (small models)
+\item Hybrid architectures emerging
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}LSTMs pioneered the concepts behind modern architectures}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Real-World Applications}
+\begin{center}
+\textbf{Where LSTMs Made Impact}
+\end{center}
+\vspace{5mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{1. Natural Language Processing:}
+
+\begin{itemize}
+\item \textbf{Machine Translation}: Google Translate (2016-2019)
+\item \textbf{Text Generation}: Story writing, code completion
+\item \textbf{Sentiment Analysis}: Product reviews, social media
+\item \textbf{Named Entity Recognition}: Extract names, places
+\item \textbf{Question Answering}: Early chatbots
+\end{itemize}
+
+\vspace{3mm}
+\textbf{2. Speech \& Audio:}
+
+\begin{itemize}
+\item \textbf{Speech Recognition}: Siri, Alexa, Google Assistant
+\item \textbf{Speech Synthesis}: Text-to-speech systems
+\item \textbf{Music Generation}: Compose melodies
+\item \textbf{Audio Classification}: Sound event detection
+\end{itemize}
+
+\vspace{3mm}
+\textbf{3. Computer Vision:}
+
+\begin{itemize}
+\item \textbf{Video Captioning}: Describe video content
+\item \textbf{Action Recognition}: Identify activities
+\item \textbf{Video Prediction}: Forecast future frames
+\item \textbf{Image Captioning}: Combined CNN+LSTM
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{4. Time Series:}
+
+\begin{itemize}
+\item \textbf{Stock Prediction}: Financial forecasting
+\item \textbf{Weather Forecasting}: Temperature, rain
+\item \textbf{Energy Consumption}: Load prediction
+\item \textbf{Traffic Prediction}: Route optimization
+\end{itemize}
+
+\vspace{3mm}
+\textbf{5. Healthcare:}
+
+\begin{itemize}
+\item \textbf{Patient Monitoring}: ICU time series
+\item \textbf{Disease Progression}: Model trajectories
+\item \textbf{Drug Discovery}: Molecular sequences
+\item \textbf{ECG Analysis}: Heart rhythm detection
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Impact Statistics (2015-2020):}
+
+\begin{itemize}
+\item Google Translate: 2016 LSTM reduced errors 60\%
+\item Speech recognition: Word error rate halved
+\item Citations: 50,000+ research papers
+\item Industry adoption: Billions of users
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Current Status (2025):}
+
+\begin{itemize}
+\item NLP: Mostly replaced by Transformers
+\item Speech: Hybrid LSTM+Transformer
+\item Time Series: Still dominant
+\item Mobile: Preferred for efficiency
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}LSTMs enabled the AI applications we use daily}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Implementation \& Practical Tips}
+\begin{center}
+\textbf{Building LSTM Models in PyTorch}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Basic PyTorch Implementation:}
+
+\begin{lstlisting}[language=Python,basicstyle=\tiny\ttfamily]
+import torch
+import torch.nn as nn
+
+class LSTMModel(nn.Module):
+    def __init__(self, vocab_size,
+                 embed_dim, hidden_dim):
+        super().__init__()
+        self.embedding = nn.Embedding(
+            vocab_size, embed_dim)
+        self.lstm = nn.LSTM(
+            embed_dim, hidden_dim,
+            num_layers=2, dropout=0.3,
+            batch_first=True)
+        self.fc = nn.Linear(
+            hidden_dim, vocab_size)
+
+    def forward(self, x):
+        embed = self.embedding(x)
+        lstm_out, (h_n, c_n) =
+            self.lstm(embed)
+        output = self.fc(lstm_out)
+        return output
+
+model = LSTMModel(10000, 100, 256)
+\end{lstlisting}
+
+\column{0.48\textwidth}
+\textbf{Training Loop:}
+
+\begin{lstlisting}[language=Python,basicstyle=\tiny\ttfamily]
+optimizer = torch.optim.Adam(
+    model.parameters(), lr=0.001)
+criterion = nn.CrossEntropyLoss()
+
+for epoch in range(num_epochs):
+    for batch in dataloader:
+        input_seq, target_seq = batch
+
+        # Forward pass
+        output = model(input_seq)
+        loss = criterion(
+            output.view(-1, vocab_size),
+            target_seq.view(-1))
+
+        # Backward pass
+        optimizer.zero_grad()
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(
+            model.parameters(), 1.0)
+        optimizer.step()
+\end{lstlisting}
+
+\vspace{3mm}
+\textbf{Key Hyperparameters:}
+
+\begin{itemize}
+\item \textbf{Hidden dim}: 128-512
+\item \textbf{Layers}: 2-3
+\item \textbf{Dropout}: 0.2-0.5
+\item \textbf{Learning rate}: 0.001
+\item \textbf{Batch size}: 32-128
+\item \textbf{Gradient clipping}: 1.0-5.0
+\end{itemize}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Summary \& Key Takeaways}
+\begin{center}
+\textbf{What We've Learned}
+\end{center}
+\vspace{5mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Problem:}
+
+\begin{itemize}
+\item Next word prediction needs long context
+\item N-grams: Fixed window (1-2 words)
+\item RNNs: Vanishing gradients (5-10 words)
+\item Need selective, long-term memory
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The LSTM Solution:}
+
+\begin{itemize}
+\item Three gates control information flow
+\item Cell state = memory highway
+\item Additive updates preserve gradients
+\item Can remember 50-100+ steps
+\end{itemize}
+
+\vspace{3mm}
+\textbf{How It Works:}
+
+\begin{itemize}
+\item {\color{forgetRed}Forget gate}: Remove old info
+\item {\color{inputGreen}Input gate}: Add new info
+\item {\color{outputBlue}Output gate}: Reveal info
+\item {\color{cellYellow}Cell state}: Long-term storage
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why It Matters:}
+
+\begin{itemize}
+\item Breakthrough in NLP (2015-2018)
+\item Enabled modern language models
+\item Foundation for Transformers
+\item Still used for time series
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Key Innovations:}
+
+\begin{itemize}
+\item Separate memory path (cell state)
+\item Gating mechanisms (learned control)
+\item Gradient highway (no vanishing)
+\item Modular design (stackable)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Next Steps:}
+
+\begin{itemize}
+\item Practice implementation
+\item Study Transformers (2017+)
+\item Learn attention mechanisms
+\item Explore modern architectures
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Resources:}
+
+\begin{itemize}
+\item Colah's blog on LSTMs
+\item PyTorch LSTM tutorial
+\item ``Understanding LSTM Networks''
+\item Stanford CS224n lectures
+\end{itemize}
+
+\end{columns}
+\end{frame}
+
+\end{document}

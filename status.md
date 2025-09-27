@@ -1,12 +1,13 @@
 # NLP Course 2025 - Project Status
 
-## Last Updated: 2025-09-22
+## Last Updated: 2025-09-27
 
 ## Overall Progress
 - **Total Weeks**: 12
 - **Complete Presentations**: 12/12 ✅
-- **Lab Notebooks**: 11/12 (Week 1 introductory, no lab needed)
+- **Lab Notebooks**: 12/12 (Weeks 2-12, plus Week 7 completed) ✅
 - **Handout Materials**: 12/12 ✅
+- **Supplementary Modules**: 2/2 (Neural Network Primer, LSTM Primer) ✅
 
 ## Week-by-Week Status
 
@@ -47,39 +48,43 @@
   - Figure generation scripts
   - Missing handouts
 
-### Recently Updated
-- **Week 7: Advanced Transformers** 🆕
+- **Week 7: Advanced Transformers** ✅
   - Main presentation created (20250921_1729_week07_optimal_template.tex/pdf)
   - All figures generated (10 custom visualizations)
   - Topics: T5, GPT-3, MoE, scaling laws, emergent abilities
-  - Lab notebook pending
-  - Handouts pending
+  - Lab notebook created (week07_advanced_transformers_lab.ipynb)
+  - Handouts created
 
-### Weeks Needing Completion (8-12)
-- **Week 8: Tokenization & Vocabulary** ⚠️
-  - Has enhanced.tex template
-  - Has figure generation script
-  - Needs: main presentation, lab, handouts
+### Recently Completed (Weeks 8-12)
+- **Week 8: Tokenization & Vocabulary** ✅
+  - Main presentation created (20250923_2110_week08_tokenization_optimal.tex/pdf)
+  - Lab notebook created (week08_tokenization_lab.ipynb)
+  - Handouts created (student and instructor versions)
+  - All figures generated
 
-- **Week 9: Decoding Strategies** ⚠️
-  - Has enhanced.tex template
-  - Has figure generation script
-  - Needs: main presentation, lab, handouts
+- **Week 9: Decoding Strategies** ✅
+  - Main presentation created (20250923_2110_week09_decoding_optimal.tex/pdf)
+  - Lab notebook created (week09_decoding_lab.ipynb)
+  - Handouts created (student and instructor versions)
+  - All figures generated
 
-- **Week 10: Fine-tuning & Prompt Engineering** ⚠️
-  - Has enhanced.tex template
-  - Has figure generation script
-  - Needs: main presentation, lab, handouts
+- **Week 10: Fine-tuning & Prompt Engineering** ✅
+  - Main presentation created (20250923_2110_week10_finetuning_optimal.tex/pdf)
+  - Lab notebook created (week10_finetuning_lab.ipynb)
+  - Handouts created (student and instructor versions)
+  - All figures generated
 
-- **Week 11: Efficiency & Optimization** ⚠️
-  - Has enhanced.tex template
-  - Has figure generation script
-  - Needs: main presentation, lab, handouts
+- **Week 11: Efficiency & Optimization** ✅
+  - Main presentation created (20250923_2110_week11_efficiency_optimal.tex/pdf)
+  - Lab notebook created (week11_efficiency_lab.ipynb)
+  - Handouts created (student and instructor versions)
+  - All figures generated
 
-- **Week 12: Ethics & Fairness** ⚠️
-  - Has enhanced.tex template
-  - Has figure generation script
-  - Needs: main presentation, lab, handouts
+- **Week 12: Ethics & Fairness** ✅
+  - Main presentation created (20250923_2110_week12_ethics_optimal.tex/pdf)
+  - Lab notebook created (week12_ethics_lab.ipynb)
+  - Handouts created (student and instructor versions)
+  - All figures generated
 
 ## Infrastructure Components
 ### Common Resources ✅
@@ -88,18 +93,37 @@
 - Shared figure generation scripts
 - Color schemes and styling
 
-### Additional Modules ✅
-- **Embeddings module**: Standalone with own build system
+### Supplementary Modules ✅
+- **Neural Network Primer**: Complete foundational module (2025-09-27)
+  - Location: `NLP_slides/nn_primer/`
+  - 3 presentation versions (comprehensive 48+ pages)
+  - Discovery-based handouts (classification and function approximation)
+  - 8 custom-generated figures (party analogy, neurons, XOR, sigmoid parameters)
+  - Zero pre-knowledge approach with concrete analogies
+  - Topics: Perceptrons, activation functions, Universal Approximation Theorem
+
+- **LSTM Primer**: Comprehensive standalone module (2025-09-27)
+  - Location: `NLP_slides/lstm_primer/`
+  - 11 presentation versions (10-32 slides, various formats)
+  - Modular architecture with 9 section files
+  - 20 custom-generated figures (architecture, gates, training progression)
+  - BSc-level checkpoint pedagogy with quiz slides
+  - Comprehensive coverage: RNN baseline, vanishing gradients, LSTM architecture, BPTT
+  - Reference example for modular presentation structure
+
+- **Embeddings module**: Standalone with own build system (PowerShell + Make)
 - **Exercise notebooks**: Shakespeare sonnets, Alice n-grams
 - **Visualization series**: 8 progressive notebooks
 
 ## Next Priority Actions
-1. ~~Complete Week 7 presentation~~ ✅
-2. Create Week 7 lab notebook (T5, GPT-3 experiments)
-3. Generate Week 7 handout materials
-4. Complete Week 8-12 main presentations
-5. Create missing lab notebooks (Weeks 1, 7-12)
-6. Generate all missing handout materials
+1. ~~Complete all 12 weeks with presentations, labs, and handouts~~ ✅
+2. ~~Create Neural Network Primer module~~ ✅
+3. ~~Create LSTM Primer module~~ ✅
+4. Commit repository reorganization (125 legacy file deletions + new modules)
+5. Create master course index/syllabus document
+6. Generate course overview presentation (meta-lecture)
+7. Test all Jupyter notebooks for execution
+8. Create student-facing course website/navigation
 
 ## Build Commands Reference
 ```bash

@@ -1,0 +1,236 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{array}
+\usepackage{multirow}
+
+% Custom commands
+\newcommand{\highlight}[1]{\textbf{#1}}
+
+% Box for exercises
+\newtcolorbox{exercise}[1][]{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=#1,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{hint}[1][]{
+    colback=yellow!10!white,
+    colframe=orange!75!black,
+    title=Hint,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{keytakeaway}[1][]{
+    colback=green!5!white,
+    colframe=green!75!black,
+    title=Key Takeaway,
+    fonttitle=\bfseries
+}
+
+\title{\textbf{Neural Networks Discovery}\\
+\large Understanding How Neurons Build Intelligence\\
+\large Pre-Class Discovery Handout}
+\author{Neural Networks Primer - Student Version}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Time:} 30-40 minutes\\
+\textbf{Objective:} Discover how simple neurons combine to solve complex problems through hands-on exploration.
+
+\section*{Part 1: The Single Neuron - A Line Drawer (10 minutes)}
+
+\begin{exercise}[Understanding Linear Boundaries]
+Look at the figure below showing a single neuron with weights $w_1=0.5$, $w_2=0.8$, and bias $b=-2$.
+
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/handout/single_neuron_linear_example.pdf}
+\end{center}
+
+\textbf{Questions:}
+\begin{enumerate}
+    \item The neuron's decision boundary follows the equation: $0.5x_1 + 0.8x_2 - 2 = 0$.
+
+    This is a \rule{3cm}{0.4pt} (line/curve/circle).
+
+    \item Can this neuron separate data arranged in a circular pattern (inner circle vs outer circle)?
+
+    \begin{itemize}
+        \item[$\square$] Yes
+        \item[$\square$] No
+    \end{itemize}
+
+    \item What's the fundamental limitation of a neuron without activation?
+
+    \vspace{1.5cm}
+\end{enumerate}
+\end{exercise}
+
+\begin{keytakeaway}
+\textbf{Without activation functions:} A single neuron can only draw \rule{2cm}{0.4pt} lines. It cannot create curved boundaries!
+\end{keytakeaway}
+
+\section*{Part 2: Adding the Magic - Activation Functions (10 minutes)}
+
+\begin{exercise}[From Lines to Curves]
+Activation functions transform the neuron's output, enabling curved decision boundaries.
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/neuron_without_with_activation.pdf}
+\end{center}
+
+\textbf{Fill in the comparison table:}
+
+\begin{center}
+\begin{tabular}{|l||c|c|}
+\hline
+\textbf{Property} & \textbf{Without Activation} & \textbf{With Activation} \\
+\hline\hline
+Boundary shape & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} \\
+\hline
+Can make curves? & Yes / No & Yes / No \\
+\hline
+Can separate circles? & Yes / No & Yes / No \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{3mm}
+\textbf{Common Activation Functions:}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/activation_functions_comparison.pdf}
+\end{center}
+
+\textbf{Question:} Which activation function outputs values between 0 and 1? \rule{3cm}{0.4pt}
+\end{exercise}
+
+\newpage
+
+\section*{Part 3: Two Neurons, More Power - The XOR Challenge (15 minutes)}
+
+\begin{exercise}[Why One Neuron Isn't Enough]
+The XOR (exclusive OR) problem is a classic challenge that reveals why we need multiple neurons.
+
+\textbf{XOR Truth Table:}
+\begin{center}
+\begin{tabular}{|c|c||c|}
+\hline
+$x_1$ & $x_2$ & Output \\
+\hline\hline
+0 & 0 & 0 (X) \\
+0 & 1 & 1 (checkmark) \\
+1 & 0 & 1 (checkmark) \\
+1 & 1 & 0 (X) \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Task:} Below is a 2D plot of the XOR problem. Try drawing ONE straight line that separates the checkmarks from the X's.
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/xor_solution_3panel.pdf}
+\end{center}
+
+\textbf{Questions:}
+\begin{enumerate}
+    \item Can you draw a single straight line to solve XOR? \rule{2cm}{0.4pt}
+
+    \item Look at panels 1 and 2. Neuron 1 creates a \rule{2cm}{0.4pt} boundary, and Neuron 2 creates another \rule{2cm}{0.4pt} boundary.
+
+    \item In panel 3, both neurons work together. The solution region is where both neurons are \rule{2cm}{0.4pt} (active/inactive).
+
+    \item This demonstrates that \rule{1cm}{0.4pt} neurons can solve problems that \rule{1cm}{0.4pt} neuron cannot!
+\end{enumerate}
+\end{exercise}
+
+\begin{hint}
+\textbf{Geometric Intuition:} Two neurons create two half-spaces. Their \textit{intersection} creates a region that can solve XOR!
+\end{hint}
+
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/handout/two_neurons_combining.pdf}
+\end{center}
+
+\textbf{Trace Through a Calculation:} Given the XOR input $x_1=1, x_2=0$, let's calculate step-by-step:
+
+\textit{(Assume: Hidden Neuron 1 has weights [1.0, 1.0], bias=-0.5; Hidden Neuron 2 has weights [1.0, 1.0], bias=-1.5)}
+
+\begin{enumerate}[label=\alph*)]
+    \item Hidden Neuron 1: $z_1 = 1.0 \times 1 + 1.0 \times 0 - 0.5 = $ \rule{2cm}{0.4pt}
+    \item After sigmoid: $h_1 = \sigma(z_1) \approx $ \rule{2cm}{0.4pt} (use 0.62 if $z_1=0.5$)
+    \item Hidden Neuron 2: $z_2 = 1.0 \times 1 + 1.0 \times 0 - 1.5 = $ \rule{2cm}{0.4pt}
+    \item After sigmoid: $h_2 = \sigma(z_2) \approx $ \rule{2cm}{0.4pt} (use 0.27 if $z_2=-0.5$)
+\end{enumerate}
+
+\newpage
+
+\section*{Part 4: Many Neurons = Any Function! (5 minutes)}
+
+\begin{exercise}[The Universal Approximation Theorem]
+As we add more neurons, we can approximate \textit{any} smooth function!
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/function_approximation_progression.pdf}
+\end{center}
+
+\textbf{Observations:}
+\begin{enumerate}
+    \item With 1 neuron, the approximation is \rule{3cm}{0.4pt} (poor/excellent).
+
+    \item With 3 neurons, the fit is \rule{3cm}{0.4pt} (worse/better).
+
+    \item With 10 neurons, the approximation is \rule{3cm}{0.4pt} (poor/nearly perfect).
+
+    \item \textbf{Pattern:} More neurons = \rule{3cm}{0.4pt} approximation.
+\end{enumerate}
+
+\textbf{True or False:}
+\begin{itemize}
+    \item[$\square$] Neural networks with enough neurons can approximate any continuous function. (T/F)
+    \item[$\square$] One neuron is always enough to solve any problem. (T/F)
+    \item[$\square$] Activation functions are optional. (T/F)
+    \item[$\square$] Deep networks build features hierarchically (simple to complex). (T/F)
+\end{itemize}
+\end{exercise}
+
+\begin{keytakeaway}
+\textbf{Universal Approximation Theorem (Cybenko, 1989):} A neural network with enough hidden neurons can approximate \textit{any} continuous function to \textit{any} desired accuracy. This is why neural networks are so powerful!
+\end{keytakeaway}
+
+\section*{Summary: What You Discovered Today}
+
+Fill in the blanks to consolidate your learning:
+
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{Without activation:} Neurons can only make \rule{3cm}{0.4pt} boundaries.
+
+    \item \textbf{With activation:} Neurons can make \rule{3cm}{0.4pt} shapes (lines/curves/any shape).
+
+    \item \textbf{Multiple neurons:} Can solve problems like \rule{3cm}{0.4pt} that single neurons cannot.
+
+    \item \textbf{Many neurons:} Can approximate \rule{3cm}{0.4pt} function(s) (one specific/any smooth).
+
+    \item \textbf{Key insight:} Neural networks build complex functions by \rule{4cm}{0.4pt}.
+\end{enumerate}
+
+\vspace{5mm}
+\noindent\textbf{Before Class:} Think about these questions:
+\begin{itemize}
+    \item How do we actually \textit{learn} the right weights for neurons?
+    \item What happens if we stack many layers of neurons?
+    \item Can neural networks learn \textit{any} pattern, or are there limitations?
+\end{itemize}
+
+\vspace{3mm}
+\hrule
+\vspace{2mm}
+\textit{Answers will be revealed in class! Bring your questions.}
+
+\end{document}

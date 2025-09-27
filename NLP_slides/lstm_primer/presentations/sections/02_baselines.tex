@@ -1,0 +1,139 @@
+% Section 2: Baseline Approaches and Their Limitations
+
+\begin{frame}[t]{N-gram Models: The Baseline}
+\begin{center}
+\textbf{Simple Idea: Count What Usually Comes Next}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{How It Works:}
+
+\vspace{3mm}
+\textbf{Step 1:} Look at training data
+\begin{itemize}
+\item Count every word pair (bigram)
+\item Count every word triple (trigram)
+\item Store frequency tables
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Step 2:} Make predictions
+\begin{itemize}
+\item Look at last 1-2 words
+\item Find in frequency table
+\item Pick most common next word
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Example Training Data:}
+
+\textit{``I love chocolate. I love pizza. I love ice cream.''}
+
+\vspace{2mm}
+\textbf{Bigram Counts:}
+\begin{itemize}
+\item ``I love'' $\rightarrow$ 3 times
+\item ``love chocolate'' $\rightarrow$ 1 time
+\item ``love pizza'' $\rightarrow$ 1 time
+\item ``love ice'' $\rightarrow$ 1 time
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Prediction Process:}
+
+Input: ``I''
+\begin{itemize}
+\item Check bigram table
+\item ``I love'' appears 3 times
+\item Predict: ``love''
+\end{itemize}
+
+\vspace{3mm}
+Input: ``I love''
+\begin{itemize}
+\item Check trigram table
+\item Three options (1 count each)
+\item Pick randomly or use context
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Math:}
+$$P(\text{word}_t \given \text{word}_{t-1}, \text{word}_{t-2}) = \frac{\text{count}(w_{t-2}, w_{t-1}, w_t)}{\text{count}(w_{t-2}, w_{t-1})}$$
+
+\vspace{3mm}
+\textbf{Why It's Popular:}
+\begin{itemize}
+\item Extremely simple
+\item Fast to compute
+\item No training needed
+\item Works for short contexts
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Used in early autocomplete systems (1990s-2000s)}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Why N-grams Fail: The Context Window Problem}
+\begin{center}
+\textbf{Fatal Limitation: Can Only See 1-2 Words Back}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/context_window_comparison.pdf}
+
+\vspace{3mm}
+\textbf{The Window Problem:}
+
+\textit{``I grew up in Paris. I went to school there for 12 years. I learned to speak fluent \_\_\_''}
+
+\begin{itemize}
+\item \textbf{Trigram sees:} ``speak fluent \_\_\_''
+\item \textbf{Needs to see:} ``Paris'' (18 words back)
+\item \textbf{Result:} Can't make connection
+\item \textbf{Prediction:} Random guess
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{Three Fatal Flaws:}
+
+\vspace{3mm}
+\textbf{1. Limited Context:}
+\begin{itemize}
+\item Only 1-2 words visible
+\item Long-range dependencies impossible
+\end{itemize}
+
+\vspace{3mm}
+\textbf{2. Combinatorial Explosion:}
+\begin{itemize}
+\item $10,000^3$ = 1 trillion possible trigrams
+\item Most never seen in training data
+\end{itemize}
+
+\vspace{3mm}
+\textbf{3. No Generalization:}
+\begin{itemize}
+\item Pure memorization, no understanding
+\item Can't handle novel word combinations
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What We Need Instead:}
+\begin{itemize}
+\item Variable-length context window
+\item Selective memory (forget/remember)
+\item Semantic understanding
+\item Generalizable learned patterns
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This led to the development of neural approaches}
+
+\end{columns}
+\end{frame}

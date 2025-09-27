@@ -1,0 +1,160 @@
+% Section 5: The Vanishing Gradient Problem
+
+\begin{frame}[t]{The Vanishing Gradient Problem}
+\begin{center}
+\textbf{Why RNNs Can't Learn Long-Term Dependencies}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Training Neural Networks:}
+
+\vspace{3mm}
+\textbf{Forward Pass:}
+\begin{itemize}
+\item Input $\rightarrow$ Hidden layers $\rightarrow$ Output
+\item Compute prediction
+\item Calculate loss (error)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Backward Pass (Backpropagation):}
+\begin{itemize}
+\item Compute gradient of loss w.r.t. weights
+\item Flow gradient backward through network
+\item Update weights to reduce error
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Problem in RNNs:}
+
+Gradient at step $t$ depends on all previous steps:
+$$\frac{\partial L}{\partial W_h} = \sum_{t=1}^T \frac{\partial L_t}{\partial W_h}$$
+
+Each term involves a product:
+$$\frac{\partial h_t}{\partial h_{t-1}} = \tanh'(...) \cdot W_h$$
+
+After $n$ steps:
+$$\frac{\partial h_t}{\partial h_{t-n}} = \prod_{i=1}^n \frac{\partial h_{t-i+1}}{\partial h_{t-i}}$$
+
+\column{0.48\textwidth}
+\textbf{Why It Vanishes:}
+
+\vspace{3mm}
+Typical values:
+\begin{itemize}
+\item $\tanh'(x) \leq 1$ (often $\approx 0.5$)
+\item If $||W_h|| < 1$, products shrink
+\item After $n$ steps: $\approx 0.5^n \cdot ||W_h||^n$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Numbers:}
+
+\begin{center}
+\begin{tabular}{ccc}
+\textbf{Steps} & \textbf{Gradient} & \textbf{\% Remaining} \\
+\hline
+1 & 0.90 & 90\% \\
+5 & 0.59 & 59\% \\
+10 & 0.35 & 35\% \\
+20 & 0.12 & 12\% \\
+50 & 0.005 & 0.5\% \\
+100 & 0.000027 & 0.0027\% \\
+\end{tabular}
+\end{center}
+
+\vspace{3mm}
+\textbf{The Impact:}
+\begin{itemize}
+\item Gradient becomes infinitesimally small
+\item Weights barely update
+\item Network can't learn from distant past
+\item Effective memory: 5-10 steps only
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This is identical to the n-gram problem!}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Why RNNs Forget: The Paris Example}
+\begin{center}
+\textbf{Concrete Example of Memory Decay}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{The Sentence:}
+
+\textit{``I grew up in Paris. I went to school there. I learned to speak fluent \_\_\_''}
+
+\vspace{3mm}
+\textbf{What Happens in RNN:}
+
+\vspace{3mm}
+\textbf{Word 1-5:} ``I grew up in Paris''
+\begin{itemize}
+\item $h_5$ encodes this information
+\item ``Paris'' stored in hidden state
+\item Looks promising!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Word 6-15:} ``I went to school there''
+\begin{itemize}
+\item $h_{15}$ updates with new words
+\item Previous $h_5$ gets multiplied by $W_h$ ten times
+\item Information about ``Paris'' weakens
+\item $h_{15} \approx$ mostly recent words
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Word 16-21:} ``I learned to speak fluent''
+\begin{itemize}
+\item $h_{21}$ needs ``Paris'' to predict ``French''
+\item But ``Paris'' signal extremely weak
+\item RNN effectively guesses randomly
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Math Behind Forgetting:}
+
+\vspace{3mm}
+Hidden state update:
+$$h_t = \tanh(W_h h_{t-1} + W_x x_t)$$
+
+After $n$ steps, contribution from $h_0$:
+$$h_n \approx (W_h)^n h_0 + \text{recent terms}$$
+
+\vspace{3mm}
+If largest eigenvalue of $W_h$ is $\lambda$:
+\begin{itemize}
+\item $\lambda < 1$: Exponential decay
+\item $\lambda = 0.9$ typical
+\item After 20 steps: $0.9^{20} = 0.12$
+\item Information multiplied by 0.12
+\end{itemize}
+
+\vspace{3mm}
+\textbf{During Training:}
+
+Gradient from step 21 to step 5:
+$$\frac{\partial L_{21}}{\partial h_5} = \frac{\partial L_{21}}{\partial h_{21}} \prod_{t=6}^{21} \frac{\partial h_t}{\partial h_{t-1}}$$
+
+\begin{itemize}
+\item Product of 16 terms
+\item Each term $\approx 0.5$
+\item Total: $0.5^{16} \approx 0.000015$
+\item Weight update negligible
+\item Can't learn connection!
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}We need a way to preserve gradients across time}
+
+\end{columns}
+\end{frame}

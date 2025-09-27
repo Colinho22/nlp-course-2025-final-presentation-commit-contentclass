@@ -1,0 +1,610 @@
+% Section 8: Training LSTMs
+
+\begin{frame}[t]{Training LSTMs: Backpropagation Through Time}
+\begin{center}
+\textbf{How LSTMs Learn from Data}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Training Process:}
+
+\vspace{3mm}
+\textbf{1. Forward Pass:}
+\begin{itemize}
+\item Process entire sequence
+\item Compute predictions at each step
+\item Calculate loss (cross-entropy)
+\end{itemize}
+
+$$L = -\sum_{t=1}^T \log P(w_t \given w_1, \ldots, w_{t-1})$$
+
+\vspace{3mm}
+\textbf{2. Backward Pass:}
+\begin{itemize}
+\item Compute gradients of loss
+\item Flow backward through time
+\item Update all weight matrices
+\end{itemize}
+
+\vspace{3mm}
+\textbf{3. Weight Update:}
+$$W \leftarrow W - \eta \frac{\partial L}{\partial W}$$
+
+\begin{itemize}
+\item $\eta$ = learning rate (e.g., 0.001)
+\item Typically use Adam optimizer
+\item Updates: $W_f, W_i, W_C, W_o, W_y$
+\item Plus all biases: $b_f, b_i, b_C, b_o, b_y$
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why LSTM Gradient Flow Works:}
+
+\vspace{3mm}
+\textbf{Key Gradient:}
+$$\frac{\partial C_t}{\partial C_{t-1}} = f_t$$
+
+\begin{itemize}
+\item Simple element-wise multiplication
+\item No matrix multiplication
+\item If $f_t \approx 1$: Perfect transmission
+\item Gradient preserved across time
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Training Challenges:}
+
+\begin{itemize}
+\item \textbf{Sequence length}: Longer = more memory
+\item \textbf{Batch size}: Typically 32-128 sequences
+\item \textbf{Learning rate}: Must be carefully tuned
+\item \textbf{Gradient clipping}: Prevent explosions
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Hyperparameters:}
+
+\begin{itemize}
+\item Hidden size: 128-1024
+\item Num layers: 1-4 stacked LSTMs
+\item Dropout: 0.2-0.5 (regularization)
+\item Learning rate: 0.001-0.01
+\item Batch size: 32-128
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Training a 2-layer 256-dim LSTM: ~5M parameters}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Training Progression: Watching the LSTM Learn}
+\begin{center}
+\textbf{How Performance Improves Over Time}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/training_progression.pdf}
+
+\vspace{3mm}
+\textbf{What This Shows:}
+\begin{itemize}
+\item Same sentence at different training stages
+\item Prediction quality vs. training time
+\item Loss decreases, coherence increases
+\item Gates learn their roles gradually
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{Epoch 1 (Random):}
+\begin{itemize}
+\item Loss: 8.5 (very high)
+\item Gates untrained, random values
+\item Predictions nonsensical
+\item No pattern recognition
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Epoch 10 (Bigrams):}
+\begin{itemize}
+\item Loss: 4.2 (improving)
+\item Learns immediate word pairs
+\item ``I'' $\rightarrow$ ``love'' pattern
+\item Still struggles with longer context
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Epoch 50 (Context):}
+\begin{itemize}
+\item Loss: 2.1 (good)
+\item Gates start functioning properly
+\item Remembers 5-10 words back
+\item Better predictions
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Epoch 200 (Mastery):}
+\begin{itemize}
+\item Loss: 0.8 (excellent)
+\item Gates fine-tuned
+\item Long-term dependencies learned
+\item Coherent, contextual predictions
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Training time: Hours to days depending on data size}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Why LSTMs Work: The Gradient Highway}
+\begin{center}
+\textbf{Direct Comparison: RNN vs LSTM}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/gradient_flow_comparison.pdf}
+
+\vspace{3mm}
+\textbf{Numerical Evidence:}
+
+Gradient after $n$ steps:
+
+\begin{center}
+\small
+\begin{tabular}{ccc}
+\textbf{Steps} & \textbf{RNN} & \textbf{LSTM} \\
+\hline
+10 & 0.35 & 0.90 \\
+20 & 0.12 & 0.82 \\
+50 & 0.005 & 0.61 \\
+100 & 0.000027 & 0.37 \\
+\end{tabular}
+\end{center}
+
+\vspace{2mm}
+LSTM maintains 10,000x stronger gradient!
+
+\column{0.42\textwidth}
+\textbf{Why It Works:}
+
+\vspace{3mm}
+\textbf{Additive Updates:}
+$$C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$$
+
+\begin{itemize}
+\item Addition creates direct path
+\item No repeated transformations
+\item Information preserved
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Gradient Path:}
+$$\frac{\partial C_T}{\partial C_0} = \prod_{t=1}^T f_t$$
+
+If forget gates $\approx 1$:
+\begin{itemize}
+\item Product stays close to 1
+\item No vanishing
+\item Can learn long dependencies
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Empirical Results:}
+
+\begin{itemize}
+\item RNN: Max 5-10 steps memory
+\item LSTM: 50-100+ steps memory
+\item Critical for language, time series
+\item Foundation for modern NLP
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This enabled the deep learning NLP revolution (2015-2017)}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Checkpoint: Why the Gradient Highway Works}
+\begin{center}
+\textbf{Test Your Understanding of LSTM Training}
+\end{center}
+\vspace{5mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Quick Quiz:}
+
+\vspace{3mm}
+\textbf{Question 1:} What causes vanishing gradients in RNNs?
+
+\begin{itemize}
+\item[A)] Too many parameters
+\item[B)] Repeated matrix multiplication
+\item[C)] Wrong learning rate
+\item[D)] Long sequences
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Question 2:} How does LSTM solve this?
+
+\begin{itemize}
+\item[A)] Larger matrices
+\item[B)] Addition instead of multiplication
+\item[C)] Better initialization
+\item[D)] More layers
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Question 3:} If forget gate $f_t = 1.0$ always, what happens?
+
+\begin{itemize}
+\item[A)] Network can't learn
+\item[B)] Perfect gradient flow
+\item[C)] Memory overflow
+\item[D)] Too much forgetting
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Answers:}
+
+\vspace{3mm}
+\textbf{Answer 1:} B - Repeated matrix multiplication
+
+\begin{itemize}
+\item Each step: gradient $\times W_h$
+\item After $n$ steps: $(W_h)^n$
+\item If $||W_h|| < 1$: Exponential decay
+\item This is the core problem
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Answer 2:} B - Addition for cell state
+
+\begin{itemize}
+\item $C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$
+\item Gradient: $\frac{\partial C_t}{\partial C_{t-1}} = f_t$
+\item Element-wise, no matrix
+\item Direct path preserved
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Answer 3:} B - Perfect gradient flow
+
+\begin{itemize}
+\item $f_t = 1 \Rightarrow$ gradient multiplied by 1
+\item No decay over time
+\item But: can't forget old information
+\item Network learns optimal $f_t$ values
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Key Insight:}
+
+The cell state highway is the \textbf{only} reason LSTMs work. Without it, they're just complicated RNNs with the same vanishing gradient problem!
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Hyperparameter Selection Guide}
+\begin{center}
+\textbf{Choosing the Right LSTM Configuration}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Hidden Size (Memory Capacity):}
+
+\vspace{3mm}
+\textbf{General Guidelines:}
+\begin{itemize}
+\item \textbf{Start with 256} (good default)
+\item \textbf{Small data (< 10MB)}: 128
+\item \textbf{Medium data (10-100MB)}: 256-512
+\item \textbf{Large data (> 100MB)}: 512-1024
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Trade-offs:}
+\begin{itemize}
+\item Larger = better memory, more capacity
+\item Larger = slower training, more overfitting risk
+\item Rule of thumb: Match to sequence complexity
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Number of Layers (Depth):}
+
+\vspace{3mm}
+\textbf{Recommendations:}
+\begin{itemize}
+\item \textbf{Start with 2 layers} (sweet spot)
+\item \textbf{1 layer}: Fast, may underfit
+\item \textbf{3-4 layers}: Better for complex tasks
+\item \textbf{5+ layers}: Diminishing returns, hard to train
+\end{itemize}
+
+\vspace{3mm}
+\textbf{When to use more layers:}
+\begin{itemize}
+\item Complex hierarchical patterns
+\item Large dataset available
+\item Computational resources available
+\item Performance plateau with 2 layers
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Learning Rate:}
+
+\vspace{3mm}
+\textbf{Safe Defaults:}
+\begin{itemize}
+\item \textbf{Adam optimizer}: 0.001 (standard)
+\item \textbf{SGD with momentum}: 0.01-0.1
+\item \textbf{RMSprop}: 0.001
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Troubleshooting:}
+\begin{itemize}
+\item \textbf{Loss oscillates}: Reduce by 10x
+\item \textbf{Slow convergence}: Increase by 3x
+\item \textbf{NaN loss}: Too high, reduce significantly
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Learning Rate Schedules:}
+\begin{itemize}
+\item Reduce by 0.5x every 10 epochs
+\item Or use ReduceLROnPlateau
+\item Cosine annealing for fine-tuning
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Batch Size:}
+
+\vspace{3mm}
+\begin{itemize}
+\item \textbf{Start with 32} (balanced)
+\item \textbf{64-128}: Stabler, slower convergence
+\item \textbf{16}: Noisier, faster updates, more regularization
+\item \textbf{GPU memory limit}: Primary constraint
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Batch size effects:}
+\begin{itemize}
+\item Larger: More stable gradients
+\item Smaller: Better generalization
+\item Trade batch size for hidden size if GPU-limited
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Start with defaults, tune based on validation performance}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Regularization and Stability Techniques}
+\begin{center}
+\textbf{Preventing Overfitting and Training Instability}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Dropout (Essential):}
+
+\vspace{3mm}
+\textbf{How to Apply:}
+\begin{itemize}
+\item \textbf{Between LSTM layers}: 0.2-0.5
+\item \textbf{NOT within LSTM cell} (breaks gradient flow)
+\item \textbf{After each LSTM layer} (except last)
+\item \textbf{Higher for small datasets} (0.4-0.5)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Effects:}
+\begin{itemize}
+\item Prevents co-adaptation
+\item Forces redundant representations
+\item Typical improvement: 2-5\% accuracy
+\item Critical for < 100K examples
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Gradient Clipping (Critical):}
+
+\vspace{3mm}
+\textbf{Why Needed:}
+\begin{itemize}
+\item LSTMs can still have exploding gradients
+\item Especially with long sequences
+\item Causes NaN loss, training collapse
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Implementation:}
+\begin{itemize}
+\item Clip gradient norm to 1.0-5.0
+\item PyTorch: \texttt{torch.nn.utils.clip\_grad\_norm\_}
+\item Apply BEFORE optimizer step
+\item Monitor gradient norms during training
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Sequence Length Management:}
+
+\vspace{3mm}
+\textbf{Recommendations:}
+\begin{itemize}
+\item \textbf{Start with 50-100 tokens}
+\item \textbf{Truncate longer sequences} (BPTT)
+\item \textbf{Pad shorter sequences} to batch
+\item \textbf{Sort by length}, batch similar lengths
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Trade-offs:}
+\begin{itemize}
+\item Longer = better context, more memory/time
+\item Shorter = faster, worse long-term dependencies
+\item Use Truncated BPTT for very long sequences
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Training Time and Monitoring:}
+
+\vspace{3mm}
+\textbf{Expect:}
+\begin{itemize}
+\item \textbf{10-100 epochs} typical
+\item \textbf{Hours to days} depending on size
+\item \textbf{Early stopping}: Patience 5-10 epochs
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Monitor:}
+\begin{itemize}
+\item \textbf{Loss}: Training and validation
+\item \textbf{Perplexity}: $\\exp(\\text{loss})$ for LM
+\item \textbf{Accuracy}: Task-specific metric
+\item \textbf{Gradient norms}: Check for explosions
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Best Practices:}
+\begin{itemize}
+\item Save checkpoint every epoch
+\item Keep best validation model
+\item Log all hyperparameters
+\item Use Weights \& Biases or TensorBoard
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Proper regularization is the difference between 85\% and 92\% accuracy}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Common Pitfalls and Debugging}
+\begin{center}
+\textbf{What Can Go Wrong and How to Fix It}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Problem 1: Loss Not Decreasing}
+
+\vspace{3mm}
+\textbf{Symptoms:}
+\begin{itemize}
+\item Loss stays constant
+\item Or decreases very slowly
+\item Predictions remain random
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Possible Causes \& Fixes:}
+\begin{itemize}
+\item \textbf{Learning rate too low}
+  \begin{itemize}
+  \item Try: 10x higher (0.01 instead of 0.001)
+  \end{itemize}
+\item \textbf{Vanishing gradients} (still possible!)
+  \begin{itemize}
+  \item Check gradient norms
+  \item Reduce sequence length
+  \item Initialize forget gate bias to 1.0
+  \end{itemize}
+\item \textbf{Bug in data pipeline}
+  \begin{itemize}
+  \item Verify labels match inputs
+  \item Check for shuffling errors
+  \end{itemize}
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Problem 2: Exploding Gradients}
+
+\vspace{3mm}
+\textbf{Symptoms:}
+\begin{itemize}
+\item Loss becomes NaN
+\item Weights explode to infinity
+\item Crash during training
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Fixes:}
+\begin{itemize}
+\item \textbf{Gradient clipping} (essential!)
+\item Lower learning rate
+\item Check for bugs in loss calculation
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Problem 3: Overfitting}
+
+\vspace{3mm}
+\textbf{Symptoms:}
+\begin{itemize}
+\item Train loss low, val loss high
+\item Perfect on training data
+\item Poor on validation/test
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Fixes:}
+\begin{itemize}
+\item Increase dropout (0.3 $\rightarrow$ 0.5)
+\item Reduce model size
+\item Get more training data
+\item Early stopping
+\item L2 regularization
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Problem 4: Predictions Uniform}
+
+\vspace{3mm}
+\textbf{Symptoms:}
+\begin{itemize}
+\item Model predicts same word always
+\item Or uniform distribution
+\item Loss decreases but predictions bad
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Fixes:}
+\begin{itemize}
+\item Check class imbalance
+\item Verify softmax temperature
+\item Inspect output gate activations
+\item May need more training
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Debugging Checklist:}
+\begin{enumerate}
+\item Print gradient norms each step
+\item Visualize gate activations
+\item Overfit on tiny dataset first
+\item Check predictions on training examples
+\item Monitor all hyperparameters
+\end{enumerate}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}When in doubt: reduce complexity and verify basics first}
+
+\end{columns}
+\end{frame}

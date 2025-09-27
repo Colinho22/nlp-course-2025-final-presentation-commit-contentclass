@@ -1,0 +1,84 @@
+% Neural Networks Primer: Teaching Machines to See Patterns
+% BSc-Enhanced Version with Template Layout from template_beamer_final.tex
+% Based on the excellent original with targeted accessibility enhancements
+
+% Additional packages for template compatibility
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+
+% ML Theme Color definitions from template
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255, 127, 14}
+\definecolor{mlgreen}{RGB}{44, 160, 44}
+\definecolor{mlred}{RGB}{214, 39, 40}
+\definecolor{mlgray}{RGB}{127, 127, 127}
+
+% Additional colors for template compatibility
+\definecolor{lightgray}{RGB}{240, 240, 240}
+\definecolor{midgray}{RGB}{180, 180, 180}
+
+% Keep checkpointBlue for backward compatibility
+\definecolor{checkpointBlue}{RGB}{70,130,180}
+
+% Apply custom colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in toc}{fg=mlblue}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{block title}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{block body}{bg=mllavender4,fg=black}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% Clean itemize/enumerate
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+
+% Reduce margins for more content space
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% Commands with updated colors
+\newcommand{\highlight}[1]{{\color{mlpurple}#1}}
+\newcommand{\secondary}[1]{{\color{mllavender2}#1}}
+\newcommand{\warning}[1]{{\color{mlorange}#1}}
+\newcommand{\success}[1]{{\color{mlgreen}#1}}
+\newcommand{\checkpoint}[1]{{\color{checkpointBlue}#1}}
+
+% Command for bottom annotation (Madrid-style) from template
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+% Box commands for special content with updated colors
+\newcommand{\plainmath}[1]{\fbox{\parbox{0.9\textwidth}{\small\textit{In plain words: #1}}}}
+\newcommand{\confusion}[1]{\colorbox{mlorange!20}{\parbox{0.9\textwidth}{\small\warning{Common Confusion:} #1}}}
+\newcommand{\whymatters}[1]{\colorbox{mlgreen!10}{\parbox{0.3\textwidth}{\tiny\success{Why it matters:} #1}}}
+\newcommand{\tryit}[1]{\colorbox{checkpointBlue!15}{\parbox{0.9\textwidth}{\small\textbf{Try It Yourself:} #1}}}
+
+\title{Teaching Machines to See Patterns}
+\subtitle{A Neural Networks Primer: Why We Needed Each Piece of the Puzzle}
+\author{NLP Course 2025}
+\date{}

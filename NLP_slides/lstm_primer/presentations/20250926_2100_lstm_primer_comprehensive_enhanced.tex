@@ -1,0 +1,131 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\definecolor{mainGray}{RGB}{64,64,64}
+\definecolor{annotGray}{RGB}{180,180,180}
+\definecolor{backGray}{RGB}{240,240,240}
+
+\definecolor{forgetRed}{RGB}{231,76,60}
+\definecolor{inputGreen}{RGB}{46,204,113}
+\definecolor{outputBlue}{RGB}{52,152,219}
+\definecolor{cellYellow}{RGB}{241,196,15}
+
+\newcommand{\given}{\mid}
+
+\title{LSTM Primer: Next Word Prediction}
+\subtitle{A Comprehensive Introduction to Long Short-Term Memory Networks}
+\author{BSc Level - No Prerequisites Required}
+\date{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}[t]{Course Overview}
+\begin{center}
+\textbf{From Autocomplete to Modern Language Models}
+\end{center}
+\vspace{5mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Part 1: The Problem (9 slides)}
+\begin{itemize}
+\item 1. Introduction: The Autocomplete Challenge
+\item 2. The LSTM Revolution (2015-2018)
+\item 3. Scientific Breakthroughs \& Innovations
+\item 4. Course Roadmap \& Learning Path
+\item 5. N-gram Baseline Models
+\item 6. Why N-grams Fail
+\item 7. The Memory Problem
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Part 2: First Attempts (5 slides)}
+\begin{itemize}
+\item 8. Recurrent Neural Networks (RNN)
+\item 9. RNN Concrete Example
+\item 10. The Vanishing Gradient Problem
+\item 11. Why RNNs Forget (Paris Example)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Part 3: The LSTM Solution (14 slides)}
+\begin{itemize}
+\item 12. LSTM Architecture Overview
+\item 13. Checkpoint: Understanding Architecture
+\item 14-16. The Three Gates (Forget, Input, Output)
+\item 17. Cell State: The Memory Highway
+\item 18. Gate Activation Patterns
+\item 19. Complete Forward Pass
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Part 4: Training (8 slides)}
+\begin{itemize}
+\item 20. Training LSTMs (BPTT)
+\item 21. Training Progression Visualization
+\item 22. Why LSTMs Work (Gradient Highway)
+\item 23. Checkpoint: Gradient Highway
+\item 24. Hyperparameter Selection Guide
+\item 25. Regularization \& Stability Techniques
+\item 26. Common Pitfalls \& Debugging
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Part 5: Variants \& Applications (12 slides)}
+\begin{itemize}
+\item 27. GRU: Simplified LSTM Alternative
+\item 28. Bidirectional LSTM
+\item 29. Architectural Extensions (Stacked, Attention, Peephole)
+\item 30. Modern Context: Where LSTMs Fit (2020-2025)
+\item 31. Model Comparison Table
+\item 32. Attention Mechanism (Bridge to Transformers)
+\item 33. NLP Applications
+\item 34. Speech, Audio \& Vision Applications
+\item 35. Time Series Forecasting
+\item 36. Healthcare \& LSTM Impact
+\item 37. PyTorch Implementation
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Part 6: Wrap-Up (4 slides)}
+\begin{itemize}
+\item 38-39. Summary (Problem \& Solution, Impact \& Guidance)
+\item 40. Essential Reading \& Theory
+\item 41. Practical Resources \& Implementation
+\end{itemize}
+\end{columns}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Total: 43 slides - comprehensive LSTM primer with optimal density}
+\end{frame}
+
+% Part 1: The Problem
+\input{sections/01_introduction.tex}
+\input{sections/02_baselines.tex}
+\input{sections/03_memory_problem.tex}
+
+% Part 2: First Attempts (RNN)
+\input{sections/04_rnn.tex}
+\input{sections/05_vanishing_gradient.tex}
+
+% Part 3: The LSTM Solution
+\input{sections/06_lstm_architecture.tex}
+\input{sections/07_lstm_details.tex}
+
+% Part 4: Training & Applications
+\input{sections/08_training.tex}
+\input{sections/09_applications.tex}
+
+\end{document}

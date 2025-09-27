@@ -1,0 +1,426 @@
+% Act II: The Struggles and Solutions
+% 1969: The Crisis
+\begin{frame}{1969: The Crisis - XOR Problem}
+\begin{center}
+\textbf{Minsky \& Papert's Devastating Discovery}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{XOR (Exclusive OR):}
+\begin{center}
+\begin{tabular}{cc|c}
+$x_1$ & $x_2$ & Output \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\end{tabular}
+\end{center}
+
+\textbf{The Problem:}
+\begin{itemize}
+\item Can't draw a single line to separate
+\item Perceptron only learns linear boundaries
+\item Real-world problems are non-linear!
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/xor_visualization.pdf}
+\end{center}
+\textbf{Impact:}
+\begin{itemize}
+\item Funding dried up
+\item "AI Winter" begins
+\item Neural networks abandoned
+\end{itemize}
+\end{columns}
+\bottomnote{ The field would be dormant for over a decade...}
+\end{frame}
+
+% NEW: When One Line Isn't Enough
+\begin{frame}{When One Line Isn't Enough: Real Problems Need More}
+\begin{center}
+\textbf{\checkpoint{Let's See Why We Need Hidden Layers}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Problem 1: Spam Detection (Easy)}
+\begin{itemize}
+\item Has many spam words? $\rightarrow$ SPAM
+\item Has few spam words? $\rightarrow$ NOT SPAM
+\item \success{One line (threshold) works!}
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Problem 2: Cat or Dog Photo (Hard)}
+\begin{itemize}
+\item Small + fluffy? Could be either!
+\item Large + smooth? Could be either!
+\item Pointy ears + whiskers? $\rightarrow$ Cat
+\item Floppy ears + wet nose? $\rightarrow$ Dog
+\item \warning{Need multiple feature detectors!}
+\end{itemize}
+
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/linear_to_nonlinear_bridge.pdf}
+
+\textbf{The Solution:}
+\begin{enumerate}
+\item First layer: Multiple detectors
+  \begin{itemize}
+  \item Detector 1: "Has cat features?"
+  \item Detector 2: "Has dog features?"
+  \end{itemize}
+\item Second layer: Combine detections
+  \begin{itemize}
+  \item If cat features > dog features $\rightarrow$ Cat
+  \end{itemize}
+\end{enumerate}
+\end{columns}
+\bottomnote{ This is why deep learning works: each layer builds more complex detectors from simpler ones}
+\end{frame}
+
+% NEW: Visual Bridge - From Linear to Non-linear
+\begin{frame}{Visual Bridge: Why XOR Needs Hidden Layers}
+\begin{center}
+\textbf{From Simple Lines to Complex Boundaries}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/linear_to_nonlinear_bridge.pdf}
+
+\textbf{Single Perceptron = One Line:}
+\begin{itemize}
+\item Can only draw straight boundaries
+\item Works for OR, AND
+\item Fails for XOR, real problems
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Hidden Layers = Multiple Lines:}
+\begin{itemize}
+\item Each hidden neuron draws a line
+\item Output combines these lines
+\item Can create any shape!
+\end{itemize}
+
+\confusion{Hidden layers don't "hide" anything - they're called hidden because we don't directly set their values. They learn what features to detect!}
+\end{columns}
+\bottomnote{ This insight took 13 years to discover and implement properly}
+\end{frame}
+
+% Act II: The Journey
+\begin{frame}{Act II: The Journey Back}
+\begin{center}
+{\Large \textbf{1980s: The Hidden Layer Revolution}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Insight:}
+\begin{itemize}
+\item Stack multiple layers!
+\item First layer: detect simple features
+\item Hidden layer: combine features
+\item Output layer: final decision
+\end{itemize}
+
+\textbf{Solving XOR:}
+\begin{itemize}
+\item Hidden neuron 1: Is it (0,1)?
+\item Hidden neuron 2: Is it (1,0)?
+\item Output: OR of hidden neurons
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/multilayer_network.pdf}
+\end{center}
+\textbf{New Architecture:}
+\begin{itemize}
+\item Input layer: raw data
+\item Hidden layer(s): feature extraction
+\item Output layer: final classification
+\end{itemize}
+\end{columns}
+\bottomnote{ But how do we train multiple layers?}
+\end{frame}
+
+% NEW: Forward Pass Playground
+\begin{frame}{Forward Pass Playground: Let's Calculate Through a Network!}
+\begin{center}
+\textbf{\checkpoint{Follow the Numbers Step by Step}}
+\end{center}
+\vspace{3mm}
+\begin{columns}
+\column{0.55\textwidth}
+\textbf{Simple 2-Layer Network:}
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+% Input nodes
+\node[circle,draw,minimum size=0.8cm] (x1) at (0,2) {$x_1=1$};
+\node[circle,draw,minimum size=0.8cm] (x2) at (0,0) {$x_2=0$};
+% Hidden nodes
+\node[circle,draw,fill=lightgray,minimum size=0.8cm] (h1) at (3,2.5) {$h_1$};
+\node[circle,draw,fill=lightgray,minimum size=0.8cm] (h2) at (3,0.5) {$h_2$};
+% Output node
+\node[circle,draw,fill=checkpointBlue!20,minimum size=0.8cm] (y) at (6,1.5) {$y$};
+% Connections with weights
+\draw[->] (x1) -- node[above,sloped,font=\tiny] {$w_{11}=0.5$} (h1);
+\draw[->] (x1) -- node[below,sloped,font=\tiny] {$w_{12}=1.0$} (h2);
+\draw[->] (x2) -- node[above,sloped,font=\tiny] {$w_{21}=2.0$} (h1);
+\draw[->] (x2) -- node[below,sloped,font=\tiny] {$w_{22}=-1$} (h2);
+\draw[->] (h1) -- node[above,sloped,font=\tiny] {$v_1=1.5$} (y);
+\draw[->] (h2) -- node[below,sloped,font=\tiny] {$v_2=1.0$} (y);
+% Bias labels
+\node[font=\tiny] at (3,3.2) {$b_1=-0.5$};
+\node[font=\tiny] at (3,-0.2) {$b_2=0.5$};
+\node[font=\tiny] at (6,2.2) {$b_y=0$};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Your Task:} Calculate the output!
+
+\tryit{Fill in the blanks as we go:}
+\begin{itemize}
+\item $h_1 = ?$
+\item $h_2 = ?$
+\item $y = ?$
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{Step 1: Calculate Hidden Neurons}
+\begin{align*}
+h_1 &= \text{ReLU}(1 \cdot 0.5 + 0 \cdot 2.0 - 0.5) \\
+    &= \text{ReLU}(0.5 + 0 - 0.5) \\
+    &= \text{ReLU}(0) = \highlight{0}
+\end{align*}
+
+\begin{align*}
+h_2 &= \text{ReLU}(1 \cdot 1.0 + 0 \cdot (-1) + 0.5) \\
+    &= \text{ReLU}(1.0 + 0 + 0.5) \\
+    &= \text{ReLU}(1.5) = \highlight{1.5}
+\end{align*}
+
+\textbf{Step 2: Calculate Output}
+\begin{align*}
+y &= 0 \cdot 1.5 + 1.5 \cdot 1.0 + 0 \\
+  &= 0 + 1.5 + 0 = \highlight{1.5}
+\end{align*}
+
+\success{The network output is 1.5!}
+\end{columns}
+\bottomnote{ This is exactly what happens millions of times per second in deep learning}
+\end{frame}
+
+% NEW: XOR Solution Step-by-Step
+\begin{frame}{Solving XOR: Step-by-Step with Hidden Layers}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/xor_solution_steps.pdf}
+\end{center}
+\bottomnote{ Two neurons working together can solve what one couldn't}
+\end{frame}
+
+% NEW: Weight Evolution
+\begin{frame}{Learning in Action: Weight Evolution}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/weight_evolution.pdf}
+\end{center}
+\bottomnote{ Watching networks learn is like watching a sculptor gradually reveal a statue}
+\end{frame}
+
+% 1986: Backpropagation
+\begin{frame}{1986: Backpropagation - Teaching Networks to Learn}
+\begin{center}
+\textbf{Rumelhart, Hinton, Williams: The Learning Algorithm}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Problem:}
+\begin{itemize}
+\item Perceptron learning only works for 1 layer
+\item How to adjust hidden layer weights?
+\item No direct error signal for hidden neurons
+\end{itemize}
+
+\textbf{The Solution:}
+\begin{itemize}
+\item Propagate error backwards!
+\item Each layer gets blame for output error
+\item Use calculus (chain rule) to distribute blame
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Algorithm:}
+\begin{enumerate}
+\item Forward: Calculate output
+\item Compare: Find error
+\item Backward: Distribute blame
+\item Update: Adjust all weights
+\end{enumerate}
+
+\plainmath{Like a teacher marking an essay: finds the final error, then traces back to see which paragraphs, sentences, and words caused it}
+
+\textbf{Impact:}
+\begin{itemize}
+\item Finally could train deep networks!
+\item Neural networks reborn
+\item Foundation of all modern AI
+\end{itemize}
+\end{columns}
+\bottomnote{ This algorithm runs billions of times to train ChatGPT}
+\end{frame}
+
+% NEW: NetTalk
+\begin{frame}{1987: NetTalk - Networks Learn to Speak}
+\begin{center}
+\textbf{Sejnowski \& Rosenberg: The First Viral NN Demo}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Challenge:}
+\begin{itemize}
+\item Convert written text to speech
+\item English is irregular (tough, though, through)
+\item Rule-based systems had 1000s of exceptions
+\end{itemize}
+
+\textbf{The Network:}
+\begin{itemize}
+\item 7$\times$29 input (7-letter window)
+\item 80 hidden neurons
+\item 26 output phonemes
+\item Trained overnight on DEC workstation
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Magic:}
+\begin{itemize}
+\item Started: Random babbling
+\item Hour 1: Vowel-consonant patterns
+\item Hour 5: Recognizable words
+\item Hour 10: 95\% accuracy!
+\end{itemize}
+
+\textbf{Hidden Neurons Learned:}
+\begin{itemize}
+\item Vowel detectors
+\item Consonant clusters
+\item Word boundaries
+\item \highlight{Nobody programmed these!}
+\end{itemize}
+
+\confusion{The network discovered linguistic concepts on its own - features linguists took centuries to identify!}
+\end{columns}
+\bottomnote{ Media sensation: "Computer teaches itself to read aloud overnight"}
+\end{frame}
+
+% NEW: Universal Approximation
+\begin{frame}{1989: Universal Approximation - The Mathematical Foundation}
+\begin{center}
+\textbf{Cybenko, Hornik: The Ultimate Proof}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Theorem:}
+\colorbox{checkpointBlue!20}{\parbox{0.95\columnwidth}{
+\small
+A feedforward network with:
+\begin{itemize}
+\item One hidden layer
+\item Enough neurons
+\item Non-linear activation
+\end{itemize}
+Can approximate ANY continuous function to arbitrary accuracy!
+}}
+
+\textbf{What This Means:}
+\begin{itemize}
+\item Neural networks are universal computers
+\item No function is too complex
+\item Just need enough neurons and data
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Real-World Analogy:}
+
+\textit{LEGO blocks can build anything:}
+\begin{itemize}
+\item Few blocks = rough shape
+\item Many blocks = detailed model
+\item Infinite blocks = perfect replica
+\end{itemize}
+
+\textit{Same with neurons:}
+\begin{itemize}
+\item Few neurons = rough approximation
+\item Many neurons = good function
+\item Infinite neurons = exact function
+\end{itemize}
+
+\tryit{Think of any pattern or function. This theorem guarantees a neural network can learn it!}
+\end{columns}
+\bottomnote{ This gave theoretical backing to the neural network revolution}
+\end{frame}
+
+% The Vanishing Gradient Problem
+\begin{frame}{The Vanishing Gradient Problem: Why Deep Was Hard}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/vanishing_gradient.pdf}
+\end{center}
+\bottomnote{ This problem would limit networks to 2-3 layers for 20 years}
+\end{frame}
+
+% Try It Yourself
+\begin{frame}{Try It Yourself: Understanding Backpropagation}
+\begin{center}
+\textbf{\checkpoint{A Simple Example You Can Calculate}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Tiny Network:}
+\begin{itemize}
+\item Input: $x = 1$
+\item Weight: $w = 2$
+\item Output: $y = w \times x = 2$
+\item Target: $t = 3$
+\item Error: $E = (y - t)^2 = (2 - 3)^2 = 1$
+\end{itemize}
+
+\textbf{Question:} How should we change $w$?
+
+\textbf{Gradient Calculation:}
+\begin{align*}
+\frac{\partial E}{\partial w} &= \frac{\partial}{\partial w}(w \cdot x - t)^2 \\
+&= 2(w \cdot x - t) \cdot x \\
+&= 2(2 - 3) \cdot 1 = -2
+\end{align*}
+
+\column{0.48\textwidth}
+\textbf{Weight Update:}
+\begin{itemize}
+\item Gradient = $-2$ (negative means increase $w$)
+\item Learning rate = $0.1$
+\item New weight = $w - 0.1 \times (-2) = 2.2$
+\end{itemize}
+
+\textbf{Check Our Work:}
+\begin{itemize}
+\item New output = $2.2 \times 1 = 2.2$
+\item New error = $(2.2 - 3)^2 = 0.64$
+\item \success{Error decreased from 1 to 0.64!}
+\end{itemize}
+
+\tryit{What would happen if we used learning rate = 1? Calculate the new weight and error. What goes wrong?}
+\end{columns}
+\bottomnote{ This simple calculation, repeated millions of times, trains all neural networks}
+\end{frame}

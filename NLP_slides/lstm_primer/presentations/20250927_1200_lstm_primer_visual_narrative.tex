@@ -1,0 +1,760 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{forgetRed}{RGB}{231,76,60}
+\definecolor{inputGreen}{RGB}{46,204,113}
+\definecolor{outputBlue}{RGB}{52,152,219}
+\definecolor{cellYellow}{RGB}{241,196,15}
+\definecolor{checkpointBlue}{RGB}{70,130,180}
+\definecolor{glossaryPurple}{RGB}{142,68,173}
+\definecolor{backGray}{RGB}{240,240,240}
+\definecolor{successGreen}{RGB}{34,139,34}
+\definecolor{mainGray}{RGB}{64,64,64}
+
+\newcommand{\given}{\mid}
+\newcommand{\plainenglish}[1]{\colorbox{yellow!20}{\parbox{0.9\textwidth}{\textbf{In Plain English:} #1}}}
+\newcommand{\termbox}[2]{\colorbox{glossaryPurple!15}{\parbox{0.45\textwidth}{\footnotesize\textbf{#1:} #2}}}
+
+\title{LSTM Networks: A Visual Journey}
+\subtitle{Understanding Long Short-Term Memory Through Charts}
+\author{Neural Language Processing}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\section{ACT 1: THE PROBLEM}
+
+\begin{frame}[t]{The Challenge: Long-Distance Dependencies}
+\begin{columns}[t]
+\column{0.58\textwidth}
+\includegraphics[width=\textwidth]{../figures/autocomplete_screenshot.pdf}
+
+\column{0.40\textwidth}
+\vspace{5mm}
+\textbf{The Problem:}
+\begin{itemize}
+\item User types: ``I grew up in Paris...''
+\item 18 words later: ``I speak fluent \_\_\_''
+\item Autocomplete suggests: ``English''
+\item Should suggest: ``French''
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Why it fails:}\\
+Memory doesn't reach back 18 words
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{N-grams Can't See Far Enough}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/context_window_comparison.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{N-grams use a fixed window of 1-3 words. Information beyond this window is completely invisible. Paris is 18 words back - impossible to access!}
+\end{frame}
+
+\begin{frame}[t]{What Humans Remember vs What N-grams Remember}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Human Memory:}
+\begin{itemize}
+\item[+] Remembers Paris mentioned earlier
+\item[+] Connects Paris $\rightarrow$ French
+\item[+] Forgets irrelevant details
+\item[+] Updates memory with new info
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Key Insight:}\\
+Humans have \textbf{selective memory}:\\
+- Keep important info\\
+- Forget irrelevant details\\
+- Update with new context
+
+\column{0.48\textwidth}
+\textbf{N-gram Memory:}
+\begin{itemize}
+\item[-] Only sees last 1-3 words
+\item[-] No connection to Paris
+\item[-] Can't distinguish important from irrelevant
+\item[-] Fixed window, can't adapt
+\end{itemize}
+
+\vspace{5mm}
+\textbf{What We Need:}\\
+A memory system with:\\
+1. Forget unimportant info\\
+2. Store new important info\\
+3. Retrieve when needed
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Three Mechanisms We Need}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/memory_mechanisms_diagram.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{Like traffic lights controlling information flow: Forget Gate = RED (stop old info), Input Gate = GREEN (accept new info), Output Gate = BLUE (release stored info)}
+\end{frame}
+
+\begin{frame}[t]{Why Simple RNNs Fail}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/rnn_gradient_vanishing.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{RNN gradients multiply by 0.5 at each step backward. After 50 steps: $0.5^{50} = 0.0000000000000009$ - effectively ZERO! The network can't learn from distant past.}
+\end{frame}
+
+\begin{frame}[t]{Checkpoint 1: Understanding the Problem}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Q1:} Why can't N-grams solve the Paris problem?
+
+\vspace{2mm}
+A) Too slow\\
+B) Fixed 1-3 word window\\
+C) Too much memory\\
+D) Don't understand French
+}}
+
+\vspace{5mm}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Q2:} What causes RNN gradient vanishing?
+
+\vspace{2mm}
+A) Too many layers\\
+B) Exponential decay over time\\
+C) Learning rate too high\\
+D) Wrong activation function
+}}
+
+\column{0.48\textwidth}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{A1: B - Fixed window}
+
+N-grams use fixed 1-3 word context. Paris is 18 words back - completely invisible!
+}}
+
+\vspace{5mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{A2: B - Exponential decay}
+
+Gradients multiply by $<$1 at each step. $0.5^{50}$ becomes vanishingly small!
+}}
+
+\vspace{5mm}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Q3:} How many gate mechanisms does LSTM need?
+
+\vspace{2mm}
+A) 1: Memory\\
+B) 2: Input + Output\\
+C) 3: Forget + Input + Output\\
+D) 4: All gates + Cell
+}}
+
+\vspace{5mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{A3: C - Three gates}
+
+Forget (remove), Input (add), Output (reveal)
+}}
+\end{columns}
+\end{frame}
+
+\section{ACT 2: THE LSTM SOLUTION}
+
+\begin{frame}[t]{LSTM Architecture: The Complete Picture}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/lstm_architecture.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{The LSTM has TWO information highways: Cell State $C_t$ (long-term memory) and Hidden State $h_t$ (short-term output). Three gates control information flow.}
+\end{frame}
+
+\begin{frame}[t]{Notation Guide: Understanding the Symbols}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{States and Inputs:}
+\begin{itemize}
+\item $x_t$ - Input at time $t$ (current word)
+\item $h_t$ - Hidden state (output) at time $t$
+\item $h_{t-1}$ - Previous hidden state
+\item $C_t$ - Cell state (memory) at time $t$
+\item $C_{t-1}$ - Previous cell state
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Gates (all 0 to 1):}
+\begin{itemize}
+\item $f_t$ - Forget gate (what to erase)
+\item $i_t$ - Input gate (what to store)
+\item $o_t$ - Output gate (what to reveal)
+\item $\tilde{C}_t$ - Candidate memory (-1 to 1)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Operations:}
+\begin{itemize}
+\item $\sigma$ - Sigmoid (0 to 1) for gates
+\item $\tanh$ - Tanh (-1 to 1) for memory
+\item $\odot$ - Element-wise multiplication
+\item $[a, b]$ - Concatenation (stick together)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Learned Parameters:}
+\begin{itemize}
+\item $W_f, W_i, W_o, W_C$ - Weight matrices
+\item $b_f, b_i, b_o, b_C$ - Bias vectors
+\end{itemize}
+
+\vspace{3mm}
+\termbox{Time step $t$}{Current position in sequence}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Forget Gate: Deciding What to Erase}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/forget_gate_flow.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{Forget gate looks at previous state $h_{t-1}$ and current input $x_t$. Outputs values 0-1 for each memory position. 0 = erase completely, 1 = keep fully, 0.5 = keep half.}
+\end{frame}
+
+\begin{frame}[t]{Input Gate: Deciding What to Store}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/input_gate_flow.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{TWO steps: (1) Input gate $i_t$ decides how much to store (0-1), (2) Tanh creates new candidate memory $\tilde{C}_t$ (-1 to 1). Multiply them: controlled new memory.}
+\end{frame}
+
+\begin{frame}[t]{Output Gate: Deciding What to Reveal}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/output_gate_flow.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{Output gate $o_t$ controls what to reveal from cell state. First apply tanh to cell state (normalize), then multiply by gate. Result becomes hidden state $h_t$.}
+\end{frame}
+
+\begin{frame}[t]{Cell State Update: The Memory Highway}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/cell_state_sequence.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{Old memory $C_{t-1}$ flows through: (1) Forget gate filters it, (2) Input gate adds new info, (3) Result is updated memory $C_t$. This is the ADDITIVE update that prevents gradient vanishing!}
+\end{frame}
+
+\begin{frame}[t]{Gate Activations: Real Numbers in Action}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/gate_activation_heatmap.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{Watch gates work on real sentence! Bright = gate open (1.0), Dark = gate closed (0.0). Notice how forget gate closes when encountering ``Paris'' (stores important info).}
+\end{frame}
+
+\begin{frame}[t]{Why LSTM Solves Gradient Vanishing}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/gradient_flow_comparison.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{RNN: Gradients MULTIPLY through time ($\times 0.5$ each step = exponential decay). LSTM: Gradients ADD through cell state ($+ f_t \odot$ = linear flow). Addition preserves gradients!}
+\end{frame}
+
+\begin{frame}[t]{Checkpoint 2: Understanding Gates and Cell State}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Q1:} What does $f_t = 0.2$ mean?
+
+\vspace{2mm}
+A) Keep 20\% of old memory\\
+B) Erase 20\% of old memory\\
+C) Add 20\% new memory\\
+D) Output 20\%
+}}
+
+\vspace{5mm}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Q2:} Why does LSTM have TWO highways ($C_t$ and $h_t$)?
+
+\vspace{2mm}
+A) Redundancy\\
+B) Speed\\
+C) $C_t$ = long-term memory,\\
+\hspace{5mm} $h_t$ = short-term output\\
+D) Prevent overfitting
+}}
+
+\column{0.48\textwidth}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{A1: A - Keep 20\%}
+
+Forget gate $f_t$ controls what to KEEP, not erase. $f_t = 0.2$ means keep 20\%, erase 80\%.
+}}
+
+\vspace{5mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{A2: C - Different roles}
+
+$C_t$ stores unfiltered long-term memory (highway). $h_t$ is filtered output for predictions.
+}}
+
+\vspace{5mm}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Q3:} What's the key operation that prevents vanishing gradients?
+
+\vspace{2mm}
+A) Sigmoid activation\\
+B) Additive cell state update\\
+C) Element-wise multiplication\\
+D) Tanh normalization
+}}
+
+\vspace{5mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{A3: B - Addition}
+
+$C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$ uses addition, creating gradient highway!
+}}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Complete Forward Pass: All 6 Equations as Flowchart}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/forward_pass_flowchart.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{Data flows top to bottom: (1-3) Compute three gates + candidate, (4) Update cell state, (5-6) Compute output gate + final hidden state. Cell state update (step 4) is the heart of LSTM!}
+\end{frame}
+
+\section{ACT 3: THE MATH}
+
+\begin{frame}[t]{Sigmoid Function: Gate Control Mechanism}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/sigmoid_curve.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{Sigmoid squashes ANY number to 0-1 range. Large negative $\rightarrow$ 0 (close gate), Large positive $\rightarrow$ 1 (open gate), Zero $\rightarrow$ 0.5 (half open). Perfect for gates!}
+\end{frame}
+
+\begin{frame}[t]{Tanh Function: Memory Content Normalization}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/tanh_curve.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{Tanh squashes to -1 to +1 range. Negative values = negative evidence, Positive = positive evidence, Zero = neutral. Used for memory content $\tilde{C}_t$ and final output normalization.}
+\end{frame}
+
+\begin{frame}[t]{Element-wise Multiplication: How Gates Control Memory}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/elementwise_operations.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{Element-wise multiplication $\odot$ multiplies corresponding positions: $[a_1, a_2] \odot [b_1, b_2] = [a_1 \times b_1, a_2 \times b_2]$. This is how gates (0-1) filter memory values!}
+\end{frame}
+
+\begin{frame}[t]{Equation Anatomy: Reading LSTM Formulas}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/equation_anatomy.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{All gate equations follow same pattern: (1) Concatenate inputs $[h_{t-1}, x_t]$, (2) Multiply by weights $W$, (3) Add bias $b$, (4) Apply activation $\sigma$. That's it!}
+\end{frame}
+
+\begin{frame}[t]{Numerical Walkthrough: Real Numbers Through LSTM}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Step 1: Inputs}
+\begin{itemize}
+\item $h_{t-1} = [0.8, 0.6]$
+\item $x_t = [1.0, 0.2]$
+\item $C_{t-1} = [0.9, 0.7]$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Step 2: Compute Gates}\\
+(Assume weights trained)
+\begin{itemize}
+\item $f_t = \sigma([1.2, -0.5]) = [0.77, 0.38]$
+\item $i_t = \sigma([1.5, -0.2]) = [0.82, 0.45]$
+\item $o_t = \sigma([2.0, 0.5]) = [0.88, 0.62]$
+\item $\tilde{C}_t = \tanh([2.0, -0.3]) = [0.96, -0.29]$
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Step 3: Update Cell State}
+\begin{align*}
+C_t &= f_t \odot C_{t-1} + i_t \odot \tilde{C}_t\\
+&= [0.77, 0.38] \odot [0.9, 0.7]\\
+&\quad + [0.82, 0.45] \odot [0.96, -0.29]\\
+&= [0.69, 0.27] + [0.79, -0.13]\\
+&= [1.48, 0.14]
+\end{align*}
+
+\vspace{3mm}
+\textbf{Step 4: Compute Output}
+\begin{align*}
+h_t &= o_t \odot \tanh(C_t)\\
+&= [0.88, 0.62] \odot \tanh([1.48, 0.14])\\
+&= [0.88, 0.62] \odot [0.90, 0.14]\\
+&= [0.79, 0.09]
+\end{align*}
+\end{columns}
+
+\vspace{3mm}
+\plainenglish{Watch numbers flow: Forget gate keeps 77\% of first memory value, Input gate adds strong new info (0.79), Output gate reveals 88\% of normalized cell state to output.}
+\end{frame}
+
+\begin{frame}[t]{Checkpoint 3: Understanding the Math}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Q1:} What does $\sigma(-3)$ output?
+
+\vspace{2mm}
+A) -3\\
+B) Close to 0\\
+C) 0.5\\
+D) Close to 1
+}}
+
+\vspace{5mm}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Q2:} What is $[0.5, 0.8] \odot [2.0, 3.0]$?
+
+\vspace{2mm}
+A) $[2.5, 3.8]$\\
+B) $[1.0, 2.4]$\\
+C) $[1.5, 2.2]$\\
+D) $[0.25, 0.27]$
+}}
+
+\column{0.48\textwidth}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{A1: B - Close to 0}
+
+$\sigma(-3) = 0.047 \approx 0$. Large negative input $\rightarrow$ gate closed!
+}}
+
+\vspace{5mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{A2: B - [1.0, 2.4]}
+
+Element-wise: $[0.5 \times 2.0, 0.8 \times 3.0] = [1.0, 2.4]$
+}}
+
+\vspace{5mm}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Q3:} Why use Tanh for $\tilde{C}_t$ but Sigmoid for gates?
+
+\vspace{2mm}
+A) Tanh faster\\
+B) Tanh allows negative values,\\
+\hspace{5mm} Sigmoid for 0-1 control\\
+C) Historical reasons\\
+D) Random choice
+}}
+
+\vspace{5mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{A3: B - Different purposes}
+
+Gates need 0-1 (off/on). Memory needs positive AND negative evidence (-1 to +1).
+}}
+\end{columns}
+\end{frame}
+
+\section{ACT 4: TRAINING \& USE}
+
+\begin{frame}[t]{Training Progression: Watching LSTM Learn}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/training_progression.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{Loss decreases from 4.2 to 0.8 over 4 epochs as LSTM learns patterns. Early: random predictions. Middle: captures frequent patterns. Late: masters long-distance dependencies!}
+\end{frame}
+
+\begin{frame}[t]{Training Recipe: Step-by-Step LSTM Training}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{1. Data Preparation}
+\begin{itemize}
+\item Tokenize text into sequences
+\item Create input-target pairs
+\item Batch sequences of same length
+\item Pad if needed
+\end{itemize}
+
+\vspace{3mm}
+\textbf{2. Model Setup}
+\begin{itemize}
+\item Initialize weight matrices $W_f, W_i, W_o, W_C$
+\item Initialize bias vectors $b_f, b_i, b_o, b_C$
+\item Choose hidden size (e.g., 128, 256, 512)
+\item Choose number of layers (1-3 typical)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{3. Forward Pass}
+\begin{itemize}
+\item Process sequence word by word
+\item Update cell state $C_t$ at each step
+\item Collect outputs $h_t$ for predictions
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{4. Loss Computation}
+\begin{itemize}
+\item Compare predictions to targets
+\item Use cross-entropy loss
+\item Average over sequence
+\end{itemize}
+
+\vspace{3mm}
+\textbf{5. Backward Pass (BPTT)}
+\begin{itemize}
+\item Compute gradients backward through time
+\item Cell state acts as gradient highway
+\item No vanishing gradient problem!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{6. Weight Update}
+\begin{itemize}
+\item Apply optimizer (Adam recommended)
+\item Learning rate: $10^{-3}$ to $10^{-4}$
+\item Gradient clipping: max norm 5.0
+\end{itemize}
+
+\vspace{3mm}
+\textbf{7. Iterate}
+\begin{itemize}
+\item Repeat for multiple epochs (10-50)
+\item Monitor validation loss
+\item Early stopping when no improvement
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{BPTT: Backpropagation Through Time}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/bptt_visualization.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{Forward pass (blue): Compute outputs left to right. Backward pass (red): Gradients flow right to left. LSTM's additive cell state update creates gradient highway - prevents vanishing!}
+\end{frame}
+
+\begin{frame}[t]{Model Comparison: When to Use LSTM}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/model_comparison_table.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{Use LSTM when: (1) Long-distance dependencies matter, (2) Sequential order important, (3) Variable-length sequences. Avoid when: (1) Short context sufficient (use simpler RNN), (2) Parallel processing needed (use Transformer).}
+\end{frame}
+
+\begin{frame}[t]{Applications: Where LSTMs Excel}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Natural Language Processing:}
+\begin{itemize}
+\item Machine translation
+\item Text generation
+\item Sentiment analysis
+\item Named entity recognition
+\item Question answering
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Time Series:}
+\begin{itemize}
+\item Stock price prediction
+\item Weather forecasting
+\item Energy demand prediction
+\item Anomaly detection
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Speech and Audio:}
+\begin{itemize}
+\item Speech recognition
+\item Music generation
+\item Voice synthesis
+\item Audio classification
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Video Analysis:}
+\begin{itemize}
+\item Action recognition
+\item Video captioning
+\item Motion prediction
+\item Event detection
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Key Advantage:}\\
+LSTM excels when \textbf{context from distant past} matters for current prediction!
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Checkpoint 4: Training and Applications}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Q1:} What is BPTT?
+
+\vspace{2mm}
+A) Backward Pass Through Training\\
+B) Backpropagation Through Time\\
+C) Batch Processing Training Technique\\
+D) Bi-directional Processing Through Time
+}}
+
+\vspace{5mm}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Q2:} Why use gradient clipping in LSTM training?
+
+\vspace{2mm}
+A) Speed up training\\
+B) Prevent exploding gradients\\
+C) Reduce memory usage\\
+D) Improve accuracy
+}}
+
+\column{0.48\textwidth}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{A1: B - Backpropagation Through Time}
+
+BPTT unrolls sequence through time and backpropagates errors from future to past.
+}}
+
+\vspace{5mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{A2: B - Prevent explosion}
+
+While LSTM solves vanishing, gradients can still explode. Clipping caps maximum gradient norm.
+}}
+
+\vspace{5mm}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Q3:} When should you NOT use LSTM?
+
+\vspace{2mm}
+A) Machine translation\\
+B) Short 2-3 word context\\
+C) Speech recognition\\
+D) Time series prediction
+}}
+
+\vspace{5mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{A3: B - Short context}
+
+For 2-3 word context, simpler models (N-gram, simple RNN) are faster and sufficient.
+}}
+\end{columns}
+\end{frame}
+
+\section{ACT 5: SUMMARY}
+
+\begin{frame}[t]{Complete LSTM Flow: Visual Summary}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/lstm_summary_flow.pdf}
+\end{center}
+
+\vspace{3mm}
+\plainenglish{One picture tells it all: Inputs flow through three gates (forget, input, output), cell state updates additively, final output combines gate-filtered cell state. This architecture solves vanishing gradients!}
+\end{frame}
+
+\begin{frame}[t]{Quick Reference: Essential LSTM Equations}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{The Six Core Equations:}
+
+\vspace{3mm}
+\colorbox{forgetRed!15}{\parbox{0.45\textwidth}{
+1. Forget Gate:\\
+$f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)$
+}}
+
+\vspace{2mm}
+\colorbox{inputGreen!15}{\parbox{0.45\textwidth}{
+2. Input Gate:\\
+$i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i)$
+}}
+
+\vspace{2mm}
+\colorbox{cellYellow!15}{\parbox{0.45\textwidth}{
+3. Candidate Memory:\\
+$\tilde{C}_t = \tanh(W_C \cdot [h_{t-1}, x_t] + b_C)$
+}}
+
+\vspace{2mm}
+\colorbox{cellYellow!25}{\parbox{0.45\textwidth}{
+4. \textbf{Cell State Update:}\\
+$C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$
+}}
+
+\vspace{2mm}
+\colorbox{outputBlue!15}{\parbox{0.45\textwidth}{
+5. Output Gate:\\
+$o_t = \sigma(W_o \cdot [h_{t-1}, x_t] + b_o)$
+}}
+
+\vspace{2mm}
+\colorbox{successGreen!15}{\parbox{0.45\textwidth}{
+6. Hidden State:\\
+$h_t = o_t \odot \tanh(C_t)$
+}}
+
+\column{0.48\textwidth}
+\textbf{Key Takeaways:}
+
+\begin{enumerate}
+\item \textbf{Problem:} N-grams limited window, RNNs vanishing gradient
+\item \textbf{Solution:} Three gates + cell state highway
+\item \textbf{Forget gate:} Decides what to erase (0-1)
+\item \textbf{Input gate:} Decides what to store (0-1)
+\item \textbf{Output gate:} Decides what to reveal (0-1)
+\item \textbf{Cell state:} Long-term memory highway (additive update)
+\item \textbf{Hidden state:} Short-term filtered output
+\item \textbf{Why it works:} Addition in $C_t$ update creates gradient highway
+\item \textbf{Use when:} Long-distance dependencies matter
+\item \textbf{Avoid when:} Short context or parallel processing needed
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Remember:} Cell state is the \textbf{memory highway}, gates control the \textbf{traffic}!
+\end{columns}
+\end{frame}
+
+\end{document}

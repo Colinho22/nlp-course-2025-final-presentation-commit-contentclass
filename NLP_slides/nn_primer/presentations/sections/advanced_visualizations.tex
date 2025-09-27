@@ -1,0 +1,122 @@
+% Advanced Visualizations - NEW SLIDES
+
+\begin{frame}{The Neuron as a 3D Function}
+\begin{center}
+\textbf{Visualizing How Activation Functions Transform the Output Space}
+\end{center}
+\vspace{2mm}
+
+\includegraphics[width=0.8\textwidth]{../figures/neuron_3d_visualization.pdf}
+
+\bottomnote{ Left: Linear (just a plane), Right: With activation (curved surface) - this non-linearity is what makes learning possible!}
+\end{frame}
+
+\begin{frame}{From Simple to Complex: Network Depth Creates Complexity}
+\begin{center}
+\textbf{How More Neurons Enable More Complex Decision Boundaries}
+\end{center}
+\vspace{2mm}
+
+\includegraphics[width=0.8\textwidth]{../figures/network_complexity_visualization.pdf}
+
+\bottomnote{ Each neuron adds a new "dimension" to what the network can learn}
+\end{frame}
+
+\begin{frame}{The Learning Process: Frame by Frame}
+\begin{center}
+\textbf{Watching Decision Boundaries Evolve During Training}
+\end{center}
+\vspace{2mm}
+
+\includegraphics[width=0.8\textwidth]{../figures/decision_boundary_evolution.pdf}
+
+\tryit{Notice how the boundary starts random and gradually fits the data pattern!}
+\bottomnote{ This is what "learning" looks like - not magic, just systematic improvement}
+\end{frame}
+
+\begin{frame}{XOR Problem Solved Visually}
+\begin{center}
+\textbf{Why We Need Hidden Layers: The XOR Solution}
+\end{center}
+\vspace{2mm}
+
+\includegraphics[width=0.8\textwidth]{../figures/xor_solution_visualization.pdf}
+
+\bottomnote{ Two hidden neurons working together can solve what one neuron cannot}
+\end{frame}
+
+\begin{frame}{Forward Pass: Signal Propagation Step-by-Step}
+\begin{center}
+\textbf{Following Data as it Flows Through the Network}
+\end{center}
+\vspace{2mm}
+
+\includegraphics[width=0.8\textwidth]{../figures/forward_pass_frames.pdf}
+
+\bottomnote{ Each frame shows one step: computing weighted sums, applying activations, passing to next layer}
+\end{frame}
+
+\begin{frame}{Detailed Computation: Inside One Neuron}
+\begin{center}
+\textbf{The Math Behind a Single Neuron's Calculation}
+\end{center}
+\vspace{2mm}
+
+\includegraphics[width=0.8\textwidth]{../figures/neuron_computation_detail.pdf}
+
+\tryit{Follow along: multiply each input by its weight, add them up, add bias, apply activation!}
+\bottomnote{ This calculation happens millions of times per second in modern networks}
+\end{frame}
+
+\begin{frame}{The Optimization Landscape}
+\begin{center}
+\textbf{Gradient Descent: Finding the Valley in 3D Space}
+\end{center}
+\vspace{2mm}
+
+\includegraphics[width=0.8\textwidth]{../figures/gradient_landscape_3d.pdf}
+
+\bottomnote{ Training a neural network = rolling a ball down this landscape to find the lowest point}
+\end{frame}
+
+\begin{frame}{Comparing Optimization Algorithms}
+\begin{center}
+\textbf{Why Adam Outperforms Simple Gradient Descent}
+\end{center}
+\includegraphics[width=0.68\textwidth]{../figures/optimizer_paths_comparison.pdf}
+
+\bottomnote{ Different optimizers take different paths - some are much more efficient}
+\end{frame}
+
+\begin{frame}{Architecture Evolution Over Time}
+\begin{center}
+\textbf{From 20 Parameters to 1.8 Trillion: The Growth of Neural Networks}
+\end{center}
+\vspace{2mm}
+
+\includegraphics[width=0.8\textwidth]{../figures/architecture_size_comparison.pdf}
+
+\bottomnote{ Each 10x increase in size unlocked new capabilities}
+\end{frame}
+
+\begin{frame}{Architecture Types Comparison}
+\begin{center}
+\textbf{Different Architectures for Different Problems}
+\end{center}
+\vspace{2mm}
+
+\includegraphics[width=0.8\textwidth]{../figures/architecture_type_comparison.pdf}
+
+\bottomnote{ Each architecture encodes different assumptions about the data structure}
+\end{frame}
+
+\begin{frame}{Gradient Flow: Healthy vs Vanishing}
+\begin{center}
+\textbf{Why Deep Networks Were Hard Before ReLU}
+\end{center}
+\vspace{2mm}
+
+\includegraphics[width=0.8\textwidth]{../figures/gradient_flow_visualization.pdf}
+
+\bottomnote{ Left: Healthy gradient flow, Right: Vanishing gradients - this problem limited networks to 2-3 layers for decades}
+\end{frame}
