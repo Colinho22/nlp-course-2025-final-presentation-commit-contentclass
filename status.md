@@ -94,6 +94,14 @@
 - Shared figure generation scripts
 - Color schemes and styling
 
+### Deliverability Infrastructure ✅ (2025-09-27)
+- **requirements.txt**: Comprehensive Python dependencies (30+ packages)
+- **environment.yml**: Conda environment specification
+- **README.md**: Student-facing quick start and course overview
+- **INSTALLATION.md**: Detailed setup guide with troubleshooting
+- **COURSE_INDEX.md**: Complete week-by-week navigation
+- **test_notebooks.py**: Automated testing script for all 15 labs
+
 ### Supplementary Modules ✅
 - **Neural Network Primer**: Complete foundational module (2025-09-27)
   - Location: `NLP_slides/nn_primer/`
@@ -120,11 +128,12 @@
 1. ~~Complete all 12 weeks with presentations, labs, and handouts~~ ✅
 2. ~~Create Neural Network Primer module~~ ✅
 3. ~~Create LSTM Primer module~~ ✅
-4. Commit repository reorganization (125 legacy file deletions + new modules)
-5. Create master course index/syllabus document
-6. Generate course overview presentation (meta-lecture)
-7. Test all Jupyter notebooks for execution
+4. ~~Create master course index document~~ ✅
+5. ~~Create deliverability infrastructure (dependencies, README, installation guide)~~ ✅
+6. Generate course overview presentation (Week 0 intro lecture)
+7. Test all 15 Jupyter notebooks for execution
 8. Create student-facing course website/navigation
+9. Create master syllabus with timeline
 
 ## Build Commands Reference
 ```bash

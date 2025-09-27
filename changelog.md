@@ -1,6 +1,47 @@
 # NLP Course 2025 - Changelog
 
 ## 2025-09-27
+### Phase 1: Deliverability Infrastructure Complete ✅
+- **Created requirements.txt** - Comprehensive dependency specification
+  - 30+ packages with version constraints
+  - PyTorch 2.0+ with GPU support options
+  - Transformers, datasets, tokenizers for NLP
+  - Jupyter, matplotlib, seaborn for labs
+  - Optional development tools (pytest, black, flake8)
+
+- **Created environment.yml** - Conda environment specification
+  - Python 3.10 base environment
+  - CUDA 11.8 support (removable for CPU-only)
+  - Identical package set to requirements.txt
+  - Cross-platform compatibility
+
+- **Created README.md** - Student-facing course overview
+  - 3-step quick start guide
+  - Week-by-week highlights table
+  - Learning milestones and prerequisites
+  - Project structure documentation
+  - Course delivery options (12-week, 8-week, self-paced)
+  - MIT license and citation information
+
+- **Created INSTALLATION.md** - Comprehensive setup guide
+  - System requirements by week
+  - Step-by-step installation (pip and conda)
+  - GPU setup instructions (CUDA 11.8 and 12.1)
+  - Platform-specific troubleshooting (Windows, macOS, Linux)
+  - Verification scripts and testing procedures
+  - Common issues and solutions
+  - Installation checklist
+
+- **Created test_notebooks.py** - Automated lab testing
+  - Tests all 15 lab notebooks for execution
+  - Measures execution time per notebook
+  - Generates JSON and Markdown reports
+  - Identifies broken imports or errors
+  - 600-second timeout per notebook
+  - Detailed error reporting
+
+**Status:** Course is now fully deliverable - students can clone and start in under 10 minutes
+
 ### Week 5-6 Handouts Verified ✅
 - **Week 5 Transformers Handouts** - Comprehensive pre/post materials confirmed
   - Prepost handout (629 lines, 13 pages): Discovery-based pre-class + technical post-class
