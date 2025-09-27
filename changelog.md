@@ -1,6 +1,24 @@
 # NLP Course 2025 - Changelog
 
 ## 2025-09-27
+### Week 5-6 Handouts Verified ✅
+- **Week 5 Transformers Handouts** - Comprehensive pre/post materials confirmed
+  - Prepost handout (629 lines, 13 pages): Discovery-based pre-class + technical post-class
+  - Student, instructor, and BSc versions all present
+  - Covers: Speed problem, attention mechanism, positional encoding, implementation
+  - PDFs compiled and verified (238-258 KB each)
+
+- **Week 6 Pre-trained Models Handouts** - Transfer learning materials confirmed
+  - Prepost handout: Pre-class discovery + technical fine-tuning
+  - Student and instructor versions present
+  - Covers: Transfer learning intuition, BERT vs GPT, fine-tuning strategies
+  - PDF compiled and verified (237 KB)
+
+- **Status Update**: All 12 weeks now have complete handout materials
+  - Weeks 1-4: Previously complete
+  - Weeks 5-6: Verified existing materials (already excellent quality)
+  - Weeks 7-12: Completed in previous commits
+
 ### MAJOR MILESTONE: Supplementary Modules Complete ✅
 - **LSTM Primer Module** - Comprehensive standalone module
   - Created 11 presentation versions (10-32 slides)

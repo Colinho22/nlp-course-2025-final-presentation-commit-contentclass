@@ -38,15 +38,16 @@
 
 - **Week 5: Transformers & Attention** ✅
   - Main presentation (week05_transformers_bsc_restructured_final.pdf)
+  - Comprehensive presentation (20250924_1540_week05_transformers_comprehensive.pdf)
   - Lab notebook (week05_transformer_lab.ipynb)
   - Multiple figure generation scripts
-  - Missing handouts
+  - Handouts complete (prepost, student, instructor, BSc versions)
 
 - **Week 6: Pre-trained Models (BERT, GPT)** ✅
   - Main presentation (week06_pretrained_bsc.pdf)
   - Lab notebook (week06_bert_finetuning.ipynb)
   - Figure generation scripts
-  - Missing handouts
+  - Handouts complete (prepost, student, instructor versions)
 
 - **Week 7: Advanced Transformers** ✅
   - Main presentation created (20250921_1729_week07_optimal_template.tex/pdf)
