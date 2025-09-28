@@ -7,3 +7,7 @@ CLAUDE.md
 *.toc
 *.vrb
 temp/
+archive/
+texput.log
+nul
+.ipynb_checkpoints/

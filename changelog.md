@@ -1,5 +1,32 @@
 # NLP Course 2025 - Changelog
 
+## 2025-09-28
+### Content Quality Review: Week 2-3
+- **Week 2 Optimization** - Removed "Applications Across Industries" slide
+  - Reduced from 23 to 22 pages (352KB from 395KB)
+  - Improved lecture flow and timing
+  - Compiled new version: 20250928_1338_week02_optimal.pdf
+
+- **Week 3 Critical Analysis** - Comprehensive content review
+  - Identified redundancy: 15 slides of NN foundations duplicate NN Primer module
+  - Found RNN equation duplication (appears twice in "with_foundations" version)
+  - **Recommendation**: Switch from 34-slide "with_foundations" to 19-slide "optimal" version
+  - Optimal version (20250922_1242_week03_rnn_optimal.pdf) is pedagogically superior
+  - Rationale: By Week 3, students should have NN foundations from prerequisite modules
+  - All 24 figures exist and are correctly referenced
+  - Mathematical notation verified correct (LSTM equations, gradient flow)
+  - Lab notebooks and handouts confirmed present
+
+**Quality Assessment**:
+- Content quality: HIGH (excellent analogies, clear progression, good code examples)
+- Module architecture: NEEDS IMPROVEMENT (redundancy between Week 3 and NN Primer)
+- Version clarity: NEEDS IMPROVEMENT (4 versions, unclear canonical choice)
+
+**Action Items**:
+1. Designate 19-slide optimal version as canonical Week 3 presentation
+2. Add prerequisite documentation (NN Primer required before Week 3)
+3. Reference LSTM Primer for deep LSTM coverage (don't re-teach in Week 3)
+
 ## 2025-09-27
 ### Phase 2A: First Impressions Complete ✅
 - **Created Week 0 First-Day Lecture** - Professional course introduction

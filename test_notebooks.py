@@ -32,22 +32,22 @@ def test_notebook(notebook_path):
         execution_time = time.time() - start_time
 
         if result.returncode == 0:
-            print(f"  ✓ PASS ({execution_time:.1f}s)")
+            print(f"  PASS ({execution_time:.1f}s)")
             return True, execution_time, None
         else:
             error_msg = result.stderr[-500:] if result.stderr else "Unknown error"
-            print(f"  ✗ FAIL ({execution_time:.1f}s)")
+            print(f"  FAIL ({execution_time:.1f}s)")
             print(f"  Error: {error_msg[:200]}")
             return False, execution_time, error_msg
 
     except subprocess.TimeoutExpired:
         execution_time = time.time() - start_time
-        print(f"  ⏱ TIMEOUT (>{execution_time:.1f}s)")
+        print(f"  TIMEOUT (>{execution_time:.1f}s)")
         return False, execution_time, "Execution timeout (>10 minutes)"
 
     except Exception as e:
         execution_time = time.time() - start_time
-        print(f"  ✗ ERROR ({execution_time:.1f}s)")
+        print(f"  ERROR ({execution_time:.1f}s)")
         print(f"  Error: {str(e)}")
         return False, execution_time, str(e)
 
