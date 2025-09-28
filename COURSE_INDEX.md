@@ -21,11 +21,13 @@ Comprehensive 12-week Natural Language Processing course covering statistical fo
 
 ### Week 3: RNN/LSTM/GRU
 **Location:** `NLP_slides/week03_rnn/`
-- **Main Presentation:** Previous versions in `presentations/previous/`
+- **Main Presentation:** `presentations/20250922_1242_week03_rnn_optimal.pdf` (19 slides, CANONICAL)
 - **Topics:** Sequential models, vanishing gradients, gating mechanisms, BPTT
 - **Lab:** `lab/week03_rnn_lab.ipynb` - RNN and LSTM implementation
-- **Prerequisites:** Understanding of backpropagation, basic neural networks
-- **Recommended:** Complete LSTM Primer first (see Supplementary Modules)
+- **PREREQUISITES (REQUIRED):**
+  - **Must complete Neural Network Primer** (`nn_primer/`) OR have equivalent knowledge
+  - Required topics: neurons, activation functions, backpropagation, gradient descent, matrix operations
+- **Optional Deep Dive:** LSTM Primer (32 slides) for detailed gate mechanics
 
 ### Week 4: Sequence-to-Sequence Models
 **Location:** `NLP_slides/week04_seq2seq/`
