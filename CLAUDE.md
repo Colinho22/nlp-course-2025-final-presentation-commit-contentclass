@@ -356,6 +356,25 @@ y_approx = sum(a * sigmoid(w * x + b) for w, a, b in neurons)
 - PowerShell for embeddings build script
 - Move auxiliary files to temp folder after compilation to avoid clutter
 
+### Jupyter Notebook Testing Issues
+**Problem**: `test_notebooks.py` may show failures due to nbconvert output issues (not actual execution failures)
+
+**Known Issues**:
+1. **Unicode output errors**: Notebooks with emoji (checkmarks, etc.) fail on Windows console with `UnicodeEncodeError`
+2. **Long-running notebooks**: Week 6-7 notebooks may timeout (>10 minutes) due to model downloads or training
+3. **Output writing errors**: nbconvert writer errors don't indicate execution failure
+
+**Manual Testing Preferred**:
+```bash
+# Test individual notebook manually
+jupyter nbconvert --to notebook --execute notebook.ipynb --output test_output.ipynb
+
+# Or run interactively
+jupyter lab notebook.ipynb
+```
+
+**Note**: Notebooks are designed for interactive exploration, not automated testing. Focus on manual validation of key learning objectives.
+
 ## Course Week Topics Reference
 1. **Foundations & Statistical Language Models** - N-grams, Markov models, basic probability
 2. **Neural Language Models & Word Embeddings** - Word2Vec, GloVe, neural architectures
