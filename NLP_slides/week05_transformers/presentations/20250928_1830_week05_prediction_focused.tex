@@ -1,0 +1,395 @@
+% Week 5: Transformers - Next Word Prediction Theory (BSc Level)
+% NLP Course 2025
+% Created: 2025-09-28 18:30
+% Focus on predicting the next word, not speed
+
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+% Academic color scheme
+\definecolor{rnnred}{RGB}{231,76,60}
+\definecolor{transformergreen}{RGB}{39,174,96}
+\definecolor{neutralgray}{RGB}{52,73,94}
+\definecolor{accentblue}{RGB}{52,152,219}
+\definecolor{lightgray}{RGB}{236,240,241}
+
+% Apply colors
+\setbeamercolor{palette primary}{bg=lightgray,fg=neutralgray}
+\setbeamercolor{palette secondary}{bg=accentblue!20,fg=neutralgray}
+\setbeamercolor{palette tertiary}{bg=accentblue!40,fg=white}
+\setbeamercolor{palette quaternary}{bg=accentblue,fg=white}
+\setbeamercolor{structure}{fg=accentblue!80!black}
+\setbeamercolor{frametitle}{fg=white,bg=neutralgray}
+
+% Custom commands
+\newcommand{\predbox}[1]{%
+\vspace{3mm}
+\begin{center}
+\colorbox{yellow!20}{\parbox{0.8\textwidth}{\centering\small\textbf{#1}}}
+\end{center}
+}
+
+% Math and code support
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+
+\title{Natural Language Processing}
+\subtitle{Week 5: Transformers - Predicting the Next Word}
+\author{Understanding How Transformers Excel at Language Prediction}
+\date{NLP Course 2025}
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+\titlepage
+\end{frame}
+
+% Overview slide
+\begin{frame}{Predicting the Next Word: The Core Challenge}
+\textbf{Why is next word prediction important?}
+
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Problem}
+\begin{itemize}
+\item Language models predict: P(next word | context)
+\item RNNs struggle with long contexts
+\item Order matters for meaning
+\item Dependencies span many words
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Solution}
+\begin{itemize}
+\item Transformers use attention mechanism
+\item Access all context equally
+\item Multiple prediction hypotheses
+\item Position-aware predictions
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{yellow!20}{\parbox{0.7\textwidth}{\centering\textbf{Goal: Better next word predictions = Better language understanding}}}
+\end{center}
+\end{frame}
+
+% ============================================
+% ACT 1: THE PREDICTION PROBLEM
+% ============================================
+
+\section{The Prediction Problem}
+
+% Act 1 Title Slide
+\begin{frame}
+\vfill
+\centering
+\Huge\textcolor{neutralgray}{\textbf{Part 1: The Prediction Problem}}
+\vfill
+\Large\textit{What makes next word prediction challenging?}
+\vfill
+\end{frame}
+
+% Chart 1: Probability Distribution
+\begin{frame}{Chart 1: Next Word Probability Distribution}
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/pred_01_probability_distribution.pdf}
+
+\predbox{Language models output probabilities for each possible next word. The challenge is getting the right word to have the highest probability.}
+\end{frame}
+
+% Chart 2: Context Window
+\begin{frame}{Chart 2: Context Window for Prediction}
+\centering
+\includegraphics[width=0.8\textwidth]{../figures/pred_02_context_window.pdf}
+
+\predbox{RNNs have fading memory - recent words dominate. Transformers give equal access to all context words for better predictions.}
+\end{frame}
+
+% Chart 3: Accuracy vs Context
+\begin{frame}{Chart 3: How Context Length Affects Predictions}
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/pred_03_accuracy_vs_context.pdf}
+
+\predbox{Longer context should help predictions, but RNNs degrade. Transformers maintain high accuracy even with 20+ word contexts.}
+\end{frame}
+
+% ============================================
+% ACT 2: WHY RNN PREDICTIONS FAIL
+% ============================================
+
+\section{Why RNN Predictions Fail}
+
+% Act 2 Title Slide
+\begin{frame}
+\vfill
+\centering
+\Huge\textcolor{rnnred}{\textbf{Part 2: Why RNN Predictions Fail}}
+\vfill
+\Large\textit{Three fundamental problems with sequential processing}
+\vfill
+\end{frame}
+
+% Chart 4: Forgetting Words
+\begin{frame}{Chart 4: RNNs Forget Important Words}
+\centering
+\includegraphics[width=0.9\textwidth]{../figures/pred_04_forgetting_words.pdf}
+
+\predbox{The subject "cat" is critical for predicting the next word, but RNNs forget it by the end of the sentence.}
+\end{frame}
+
+% Chart 5: Order Confusion
+\begin{frame}{Chart 5: Word Order Confusion}
+\centering
+\includegraphics[width=0.95\textwidth]{../figures/pred_05_order_confusion.pdf}
+
+\predbox{Same words, different order = different meaning. RNNs struggle to maintain order information for correct predictions.}
+\end{frame}
+
+% Chart 6: Long-Range Dependencies
+\begin{frame}{Chart 6: Long-Range Dependency Problem}
+\centering
+\includegraphics[width=0.95\textwidth]{../figures/pred_06_long_range_dependency.pdf}
+
+\predbox{When subject and verb are far apart, RNNs forget the subject's number (singular/plural) leading to wrong predictions.}
+\end{frame}
+
+% ============================================
+% ACT 3: HOW TRANSFORMERS PREDICT BETTER
+% ============================================
+
+\section{How Transformers Predict Better}
+
+% Act 3 Title Slide
+\begin{frame}
+\vfill
+\centering
+\Huge\textcolor{transformergreen}{\textbf{Part 3: Transformer Solutions}}
+\vfill
+\Large\textit{Three innovations for better predictions}
+\vfill
+\end{frame}
+
+% Chart 7: Attention Weights
+\begin{frame}{Chart 7: Attention to Relevant Words}
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/pred_07_attention_weights.pdf}
+
+\predbox{Attention mechanism identifies which previous words are most relevant for predicting the next word.}
+\end{frame}
+
+% Chart 8: Multi-Head Attention
+\begin{frame}{Chart 8: Multiple Prediction Perspectives}
+\centering
+\includegraphics[width=0.95\textwidth]{../figures/pred_08_multihead_attention.pdf}
+
+\predbox{Different attention heads focus on grammar, meaning, and position - combining perspectives improves predictions.}
+\end{frame}
+
+% Chart 9: Position Awareness
+\begin{frame}{Chart 9: Position-Aware Predictions}
+\centering
+\includegraphics[width=0.95\textwidth]{../figures/pred_09_position_aware.pdf}
+
+\predbox{Position encoding helps disambiguate: same word "bank" predicts different next words based on position and context.}
+\end{frame}
+
+% ============================================
+% ACT 4: PREDICTION QUALITY
+% ============================================
+
+\section{Prediction Quality}
+
+% Act 4 Title Slide
+\begin{frame}
+\vfill
+\centering
+\Huge\textcolor{accentblue}{\textbf{Part 4: Measuring Prediction Quality}}
+\vfill
+\Large\textit{How much better are transformer predictions?}
+\vfill
+\end{frame}
+
+% Chart 10: Perplexity
+\begin{frame}{Chart 10: Prediction Uncertainty (Perplexity)}
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/pred_10_perplexity.pdf}
+
+\predbox{Lower perplexity = more confident predictions. Transformers reduce uncertainty from 50 words to just 10 choices.}
+\end{frame}
+
+% Chart 11: Top-5 Accuracy
+\begin{frame}{Chart 11: Prediction Accuracy}
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/pred_11_top5_accuracy.pdf}
+
+\predbox{Transformers get the correct word in their top 5 predictions 95\% of the time vs 60\% for RNNs.}
+\end{frame}
+
+% Chart 12: Context Length
+\begin{frame}{Chart 12: Effective Context Usage}
+\centering
+\includegraphics[width=0.9\textwidth]{../figures/pred_12_context_length.pdf}
+
+\predbox{RNNs effectively use only 5-10 words of context. Transformers can leverage 100+ words for better predictions.}
+\end{frame}
+
+% Summary Slide
+\begin{frame}{Summary: Why Transformers Predict Better}
+\textbf{The Next Word Prediction Revolution}
+
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{RNN Problems}
+\begin{itemize}
+\item Forgets important words
+\item Loses word order
+\item Can't handle long dependencies
+\item Limited to recent context
+\item High prediction uncertainty
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Transformer Solutions}
+\begin{itemize}
+\item Attention remembers all words
+\item Position encoding preserves order
+\item Direct connections span distance
+\item Uses full context equally
+\item Confident, accurate predictions
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{transformergreen!20}{\parbox{0.8\textwidth}{\centering\textbf{Result: From 60\% to 95\% prediction accuracy - enabling ChatGPT, Claude, and modern AI}}}
+\end{center}
+
+\vspace{3mm}
+\begin{center}
+\textit{Better predictions = Better language understanding = Better AI}
+\end{center}
+\end{frame}
+
+% ============================================
+% ADDITIONAL: MATHEMATICAL FOUNDATIONS
+% ============================================
+
+\section{Mathematical Foundations}
+
+% Mathematical Foundations Title Slide
+\begin{frame}
+\vfill
+\centering
+\Huge\textcolor{accentblue}{\textbf{Part 5: Mathematical Foundations}}
+\vfill
+\Large\textit{Understanding the Mathematics Behind Transformers}
+\vfill
+\end{frame}
+
+% Chart 13: Softmax Function
+\begin{frame}{Chart 13: From Scores to Probabilities - Softmax}
+\centering
+\includegraphics[width=0.9\textwidth]{../figures/math_13_softmax_function.pdf}
+
+\predbox{Softmax converts raw prediction scores (logits) into probabilities that sum to 1. Essential for next word prediction.}
+\end{frame}
+
+% Chart 14: Cross-Entropy Loss
+\begin{frame}{Chart 14: Training Objective - Cross-Entropy Loss}
+\centering
+\includegraphics[width=0.9\textwidth]{../figures/math_14_cross_entropy_loss.pdf}
+
+\predbox{Loss measures how wrong our predictions are. Lower loss = better predictions. Transformers achieve lower loss faster.}
+\end{frame}
+
+% Chart 15: Attention Calculation
+\begin{frame}{Chart 15: How Attention Actually Works}
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/math_15_attention_calculation.pdf}
+
+\predbox{Step-by-step attention: Query × Key → Scores → Softmax → Weights. This is the core mathematical operation.}
+\end{frame}
+
+% Chart 16: Embedding Space
+\begin{frame}{Chart 16: Words as Vectors in Space}
+\centering
+\includegraphics[width=0.8\textwidth]{../figures/math_16_embedding_space.pdf}
+
+\predbox{Words are represented as points in space. Similar words cluster together, enabling meaningful predictions.}
+\end{frame}
+
+% Chart 17: Gradient Flow
+\begin{frame}{Chart 17: Why Transformers Train Better}
+\centering
+\includegraphics[width=0.9\textwidth]{../figures/math_17_gradient_flow.pdf}
+
+\predbox{Stable gradient flow enables deep networks. RNNs suffer from vanishing gradients; Transformers maintain signal strength.}
+\end{frame}
+
+% Chart 18: Layer Normalization
+\begin{frame}{Chart 18: Stabilizing Training - Layer Normalization}
+\centering
+\includegraphics[width=0.9\textwidth]{../figures/math_18_layer_norm.pdf}
+
+\predbox{Layer normalization keeps values in a stable range (mean=0, variance=1), preventing training instabilities.}
+\end{frame}
+
+% Chart 19: Residual Connections
+\begin{frame}{Chart 19: Information Highways - Residual Connections}
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/math_19_residual_connections.pdf}
+
+\predbox{Residual connections preserve information by adding input directly to output. Prevents information loss in deep networks.}
+\end{frame}
+
+% Chart 20: Temperature Sampling
+\begin{frame}{Chart 20: Controlling Creativity - Temperature}
+\centering
+\includegraphics[width=0.95\textwidth]{../figures/math_20_temperature_sampling.pdf}
+
+\predbox{Temperature controls prediction diversity. Low = confident/repetitive, High = creative/random. Tune for your needs!}
+\end{frame}
+
+% Final Summary with Math
+\begin{frame}{Complete Picture: Theory + Mathematics}
+\textbf{What We've Learned}
+
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Conceptual Understanding}
+\begin{itemize}
+\item Next word prediction challenge
+\item Why RNNs fail (forgetting, order)
+\item How attention solves it
+\item Prediction quality metrics
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Mathematical Foundation}
+\begin{itemize}
+\item Softmax: scores → probabilities
+\item Cross-entropy: training objective
+\item Attention: $Q \cdot K^T$ mechanism
+\item Embeddings: semantic space
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{transformergreen!20}{\parbox{0.8\textwidth}{\centering\textbf{Theory + Math = Deep Understanding of Modern AI}}}
+\end{center}
+
+\vspace{3mm}
+\begin{center}
+\textit{Now you understand both WHY and HOW transformers revolutionized NLP!}
+\end{center}
+\end{frame}
+
+\end{document}

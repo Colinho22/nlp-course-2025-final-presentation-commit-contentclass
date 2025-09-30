@@ -1,0 +1,1580 @@
+% Week 3: Recurrent Neural Networks (RNNs)
+% Using Template Beamer Professional Layout
+% Created: 2025-09-29 10:27
+
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{algorithm2e}
+
+% Color definitions from template_beamer_final
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255, 127, 14}
+\definecolor{mlgreen}{RGB}{44, 160, 44}
+\definecolor{mlred}{RGB}{214, 39, 40}
+\definecolor{mlgray}{RGB}{127, 127, 127}
+\definecolor{lightgray}{RGB}{240, 240, 240}
+\definecolor{midgray}{RGB}{180, 180, 180}
+
+% Apply custom colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in toc}{fg=mlblue}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{block title}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{block body}{bg=mllavender4,fg=black}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% Custom commands
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+\newcommand{\highlight}[1]{\textcolor{mlblue}{\textbf{#1}}}
+\newcommand{\eqbox}[1]{\colorbox{mllavender4}{$\displaystyle #1$}}
+\newcommand{\given}{\mid}
+\newcommand{\prob}[1]{P(#1)}
+\newcommand{\argmax}{\mathrm{argmax}}
+\newcommand{\softmax}{\mathrm{softmax}}
+
+% Code listing settings
+\lstset{
+    backgroundcolor=\color{lightgray},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    commentstyle=\color{mlgreen},
+    keywordstyle=\color{mlblue},
+    stringstyle=\color{mlpurple},
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{midgray},
+    language=Python
+}
+
+\title{Recurrent Neural Networks}
+\subtitle{Week 3: Teaching Computers to Remember}
+\author{NLP Course 2025}
+\institute{Professional Template Edition}
+\date{\today}
+
+\begin{document}
+
+% ==================== TITLE SLIDE ====================
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+% ==================== TABLE OF CONTENTS ====================
+\begin{frame}[t]{Week 3: Journey Through Sequential Learning}
+\tableofcontents
+\vfill
+\footnotesize
+\textbf{Learning Path:} From feedforward to recurrent networks. Master how RNNs maintain memory through time, solve the vanishing gradient problem with LSTMs, and build powerful sequence models that power modern applications.
+\end{frame}
+
+% ==================== PART 1: MOTIVATION & FUNDAMENTALS ====================
+\section{Part 1: Motivation \& Fundamentals}
+
+% Section divider
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Part 1: Motivation \& Fundamentals\par
+\end{beamercolorbox}
+\vfill
+\textit{Why Sequential Processing Matters}
+\vfill
+\end{frame}
+
+% Real-world hook
+\begin{frame}[t]{Why Your Voice Assistant Sometimes Fails}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Conversation:}
+
+\vspace{3mm}
+\textcolor{mlblue}{\textbf{You:}} ``Set a timer for 10 minutes''
+
+\textcolor{mlgreen}{\textbf{Alexa:}} ``Timer set for 10 minutes''
+
+\textcolor{mlblue}{\textbf{You:}} ``Actually, make it 15''
+
+\textcolor{mlred}{\textbf{Alexa:}} ``I'm not sure what you want me to make''
+
+\vspace{5mm}
+\colorbox{mlred!20}{
+\parbox{\columnwidth}{
+\centering
+\textbf{The Problem:} Word embeddings alone don't remember context!
+}
+}
+
+\column{0.48\textwidth}
+\textbf{What Went Wrong?}
+
+\vspace{3mm}
+\begin{itemize}
+\item ``it'' refers to ``timer'' from 2 turns ago
+\item Static embeddings can't track conversation
+\item No memory of previous utterances
+\item Each word processed independently
+\end{itemize}
+
+\vspace{5mm}
+\textbf{The Solution:}
+
+Networks that maintain memory of past inputs - \highlight{Recurrent Neural Networks}
+\end{columns}
+
+\bottomnote{Key Insight: Language understanding requires memory - words depend on what came before}
+\end{frame}
+
+% Order matters visualization
+\begin{frame}[t]{Same Words, Different Order, Different Meaning}
+\centering
+\includegraphics[width=0.7\textwidth]{../figures/feedforward_vs_recurrent.pdf}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Example 1:}
+\begin{itemize}
+\item ``Dog bites man'' $\rightarrow$ Not news
+\item ``Man bites dog'' $\rightarrow$ Front page!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Word Embeddings See:}
+\{dog, bites, man\} - Same vectors!
+
+\column{0.48\textwidth}
+\textbf{Example 2:}
+\begin{itemize}
+\item ``not bad'' $\rightarrow$ Positive
+\item ``bad, not good'' $\rightarrow$ Negative
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Order Creates Meaning:}
+Sequential processing essential
+\end{columns}
+
+\bottomnote{Fundamental Challenge: Language is inherently sequential - we need models that process it that way}
+\end{frame}
+
+% Sequential processing intuition
+\begin{frame}[t]{How Humans Read: The Inspiration for RNNs}
+\textbf{Reading ``The movie was really...'' step by step:}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Human Process:}
+\begin{enumerate}
+\item Read ``The'' $\rightarrow$ remember it
+\item Read ``movie'' $\rightarrow$ remember ``The movie''
+\item Read ``was'' $\rightarrow$ remember ``The movie was''
+\item Read ``really'' $\rightarrow$ expect adjective next
+\end{enumerate}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{
+\parbox{\columnwidth}{
+\centering
+We naturally maintain a running memory!
+}
+}
+
+\column{0.48\textwidth}
+\textbf{RNN Process:}
+\begin{enumerate}
+\item Process one word at a time
+\item Maintain ``hidden state'' (memory)
+\item Update memory with each word
+\item Use memory to predict next
+\end{enumerate}
+
+\vspace{5mm}
+\colorbox{mlblue!20}{
+\parbox{\columnwidth}{
+\centering
+Hidden state = What the network remembers
+}
+}
+\end{columns}
+
+\bottomnote{Core Concept: RNNs process sequences like humans do - one step at a time with memory}
+\end{frame}
+
+% RNN unfolding visualization
+\begin{frame}[t]{Visualizing RNNs: Unfolding Through Time}
+\centering
+\includegraphics[width=0.75\textwidth]{../figures/rnn_unrolled.pdf}
+
+\vspace{5mm}
+\textbf{Key Insights:}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{itemize}
+\item Same weights $W$ used at every step
+\item Can handle any sequence length
+\item Memory flows forward in time
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{itemize}
+\item Each step sees current input + previous memory
+\item Output depends on entire history
+\item Training updates all time steps
+\end{itemize}
+\end{columns}
+
+\bottomnote{Unfolding Insight: One network becomes many - but all share the same parameters}
+\end{frame}
+
+% Interactive exercise 1
+\begin{frame}[t]{Interactive Exercise: Trace the Hidden State}
+\textbf{Task: Manually compute RNN hidden states for ``cat sat''}
+
+\vspace{3mm}
+Given: $h_t = \tanh(W_h h_{t-1} + W_x x_t)$ where $W_h = 0.5$, $W_x = 0.8$
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Step 1: Process ``cat''}
+\begin{itemize}
+\item $x_1 = 1.0$ (embedding for ``cat'')
+\item $h_0 = 0$ (initial state)
+\item $h_1 = \tanh(0.5 \cdot 0 + 0.8 \cdot 1.0)$
+\item $h_1 = \tanh(0.8) = ?$
+\end{itemize}
+
+\vspace{3mm}
+\colorbox{lightgray}{
+\parbox{\columnwidth}{
+Your answer: $h_1 = $ \underline{\hspace{2cm}}
+}
+}
+
+\column{0.48\textwidth}
+\textbf{Step 2: Process ``sat''}
+\begin{itemize}
+\item $x_2 = 0.5$ (embedding for ``sat'')
+\item $h_1 = 0.664$ (from step 1)
+\item $h_2 = \tanh(0.5 \cdot 0.664 + 0.8 \cdot 0.5)$
+\item $h_2 = \tanh(0.732) = ?$
+\end{itemize}
+
+\vspace{3mm}
+\colorbox{lightgray}{
+\parbox{\columnwidth}{
+Your answer: $h_2 = $ \underline{\hspace{2cm}}
+}
+}
+\end{columns}
+
+\bottomnote{Learning by Doing: Computing by hand builds intuition for how memory accumulates}
+\end{frame}
+
+% Part 1 Summary
+\begin{frame}[t]{Part 1 Summary: Why We Need RNNs}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What We Learned:}
+\begin{itemize}
+\item Language is fundamentally sequential
+\item Order changes meaning dramatically
+\item Static embeddings lack memory
+\item Context spans multiple time steps
+\item Humans read with running memory
+\end{itemize}
+
+\vspace{5mm}
+\textbf{RNN Solution:}
+\begin{itemize}
+\item Process sequences step-by-step
+\item Maintain hidden state (memory)
+\item Share weights across time
+\item Handle variable lengths
+\end{itemize}
+
+\column{0.48\textwidth}
+\centering
+\includegraphics[width=0.9\columnwidth]{../figures/hidden_state_evolution.pdf}
+
+\vspace{3mm}
+\colorbox{mlgreen!20}{
+\parbox{0.9\columnwidth}{
+\centering
+\textbf{Key Takeaway:}
+
+RNNs = Neural Networks + Memory
+}
+}
+\end{columns}
+
+\bottomnote{Next: Dive deep into the mathematics and architecture of RNNs}
+\end{frame}
+
+% ==================== PART 2: ARCHITECTURE & MATHEMATICS ====================
+\section{Part 2: Architecture \& Mathematics}
+
+% Section divider
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Part 2: Architecture \& Mathematics\par
+\end{beamercolorbox}
+\vfill
+\textit{The Elegant Mathematics of Memory}
+\vfill
+\end{frame}
+
+% Mathematical foundation
+\begin{frame}[t]{RNN Mathematics: Just Two Simple Equations}
+\textbf{The Complete RNN:}
+
+\vspace{5mm}
+\begin{center}
+\eqbox{
+\begin{aligned}
+h_t &= \tanh(W_{hh} h_{t-1} + W_{xh} x_t + b_h) \\
+y_t &= W_{hy} h_t + b_y
+\end{aligned}
+}
+\end{center}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Components:}
+\begin{itemize}
+\item $x_t$: Input at time $t$ (word embedding)
+\item $h_t$: Hidden state at time $t$ (memory)
+\item $y_t$: Output at time $t$ (predictions)
+\item $W_{hh}$: Hidden-to-hidden weights
+\item $W_{xh}$: Input-to-hidden weights
+\item $W_{hy}$: Hidden-to-output weights
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{In Plain English:}
+\begin{itemize}
+\item \textbf{Line 1:} Combine old memory with new input
+\item \textbf{tanh:} Squash to [-1, 1] range
+\item \textbf{Line 2:} Generate output from memory
+\item \textbf{Shared $W$:} Same transformation always
+\end{itemize}
+
+\vspace{3mm}
+\colorbox{mlblue!20}{
+\parbox{\columnwidth}{
+\centering
+New memory = f(old memory, new input)
+}
+}
+\end{columns}
+
+\bottomnote{Mathematical Elegance: Two equations capture the essence of sequential processing}
+\end{frame}
+
+% Forward pass with numbers
+\begin{frame}[t]{Forward Pass: Concrete Example with Real Numbers}
+\textbf{Processing ``I love NLP'' step by step:}
+
+\vspace{3mm}
+\centering
+\includegraphics[width=0.75\textwidth]{../figures/rnn_forward_pass.pdf}
+
+\vspace{3mm}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Time $t=1$ (``I''):}
+\footnotesize
+\begin{itemize}
+\item $x_1 = [0.2, 0.5]$
+\item $h_0 = [0, 0]$
+\item $h_1 = \tanh(W_{xh} x_1)$
+\item $h_1 = [0.3, -0.1]$
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Time $t=2$ (``love''):}
+\footnotesize
+\begin{itemize}
+\item $x_2 = [0.8, 0.3]$
+\item $h_1 = [0.3, -0.1]$
+\item $h_2 = [0.6, 0.4]$
+\item Memory builds!
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Time $t=3$ (``NLP''):}
+\footnotesize
+\begin{itemize}
+\item $x_3 = [0.9, 0.7]$
+\item $h_2 = [0.6, 0.4]$
+\item $h_3 = [0.8, 0.7]$
+\item Full context!
+\end{itemize}
+\end{columns}
+
+\bottomnote{Concrete Understanding: Watch how hidden state accumulates information over time}
+\end{frame}
+
+% Weight sharing concept
+\begin{frame}[t]{Weight Sharing: The Power and the Problem}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Why Share Weights?}
+\begin{itemize}
+\item \textbf{Generalization:} Learn patterns once
+\item \textbf{Efficiency:} Fewer parameters
+\item \textbf{Flexibility:} Any sequence length
+\item \textbf{Consistency:} Same processing always
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Example Benefits:}
+\begin{itemize}
+\item ``not good'' at position 1 or 10
+\item Learn ``ing'' ending anywhere
+\item Transfer learning across positions
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Dark Side:}
+\begin{itemize}
+\item \textbf{Gradient flow:} Through same $W$ repeatedly
+\item \textbf{Vanishing:} Gradients $\rightarrow$ 0
+\item \textbf{Exploding:} Gradients $\rightarrow$ $\infty$
+\item \textbf{Long-term memory:} Difficult
+\end{itemize}
+
+\vspace{5mm}
+\centering
+\includegraphics[width=0.9\columnwidth]{../figures/gradient_flow_comparison.pdf}
+\end{columns}
+
+\bottomnote{Trade-off: Weight sharing enables generalization but creates gradient challenges}
+\end{frame}
+
+% Python implementation
+\begin{frame}[fragile]{Complete RNN Implementation in PyTorch}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{lstlisting}[language=Python]
+import torch
+import torch.nn as nn
+
+class SimpleRNN(nn.Module):
+    def __init__(self, input_size,
+                 hidden_size, output_size):
+        super().__init__()
+        self.hidden_size = hidden_size
+
+        # Define layers
+        self.i2h = nn.Linear(
+            input_size + hidden_size,
+            hidden_size
+        )
+        self.h2o = nn.Linear(
+            hidden_size, output_size
+        )
+
+    def forward(self, input, hidden):
+        # Combine input and hidden
+        combined = torch.cat(
+            (input, hidden), 1
+        )
+
+        # Update hidden state
+        hidden = torch.tanh(
+            self.i2h(combined)
+        )
+
+        # Generate output
+        output = self.h2o(hidden)
+        return output, hidden
+\end{lstlisting}
+
+\column{0.42\textwidth}
+\textbf{Usage Example:}
+\begin{lstlisting}[language=Python]
+# Initialize
+rnn = SimpleRNN(
+    input_size=100,
+    hidden_size=256,
+    output_size=100
+)
+
+# Process sequence
+hidden = torch.zeros(1, 256)
+for word in sentence:
+    output, hidden = rnn(
+        word, hidden
+    )
+\end{lstlisting}
+
+\vspace{3mm}
+\textbf{Key Points:}
+\begin{itemize}
+\item Hidden size typically 128-512
+\item Input/output = vocabulary size
+\item Hidden state persists
+\item Same weights all steps
+\end{itemize}
+\end{columns}
+
+\bottomnote{Implementation Insight: RNNs are surprisingly simple - complexity comes from training}
+\end{frame}
+
+% Hands-on exercise
+\begin{frame}[t]{Hands-On: Debug This RNN Code}
+\textbf{Find and fix the 3 bugs in this RNN implementation:}
+
+\vspace{3mm}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{lstlisting}[language=Python]
+class BuggyRNN(nn.Module):
+    def __init__(self, vocab_size):
+        super().__init__()
+
+        # Bug 1: What's wrong here?
+        self.embedding = nn.Embedding(
+            vocab_size, vocab_size
+        )
+
+        # Bug 2: What's missing?
+        self.rnn = nn.RNN(
+            input_size=128,
+            hidden_size=256
+        )
+
+    def forward(self, x):
+        # Bug 3: What's the issue?
+        embedded = self.embedding(x)
+        output = self.rnn(embedded)
+        return output
+\end{lstlisting}
+
+\column{0.42\textwidth}
+\textbf{Your Fixes:}
+
+\vspace{3mm}
+\colorbox{lightgray}{
+\parbox{\columnwidth}{
+\footnotesize
+Bug 1: \underline{\hspace{3cm}}
+
+\vspace{2mm}
+Bug 2: \underline{\hspace{3cm}}
+
+\vspace{2mm}
+Bug 3: \underline{\hspace{3cm}}
+}
+}
+
+\vspace{5mm}
+\textbf{Hints:}
+\begin{itemize}
+\item Check dimensions
+\item RNN needs 2 outputs
+\item Embedding size $\neq$ vocab size
+\end{itemize}
+\end{columns}
+
+\bottomnote{Debugging Practice: Common RNN mistakes - dimension mismatches and missing components}
+\end{frame}
+
+% Quiz checkpoint
+\begin{frame}[t]{Checkpoint Quiz: Test Your Understanding}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Questions:}
+
+\vspace{3mm}
+\textbf{Q1:} Why do RNNs use tanh activation?
+\begin{enumerate}[a)]
+\item To make training faster
+\item To keep values in [-1, 1]
+\item To add non-linearity
+\item Both b and c
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Q2:} What makes RNNs different from feedforward networks?
+\begin{enumerate}[a)]
+\item More parameters
+\item Recurrent connections
+\item Deeper architecture
+\item Faster training
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Q3:} Hidden state size 256 means:
+\begin{enumerate}[a)]
+\item 256 words vocabulary
+\item 256-dimensional memory
+\item 256 time steps
+\item 256 layers
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{Answers:}
+
+\vspace{3mm}
+\textbf{A1:} \textcolor{mlgreen}{\textbf{d) Both b and c}}
+\begin{itemize}
+\item tanh bounds outputs
+\item Adds essential non-linearity
+\item Prevents value explosion
+\end{itemize}
+
+\vspace{5mm}
+\textbf{A2:} \textcolor{mlgreen}{\textbf{b) Recurrent connections}}
+\begin{itemize}
+\item Hidden state feeds back
+\item Creates memory mechanism
+\item Key architectural difference
+\end{itemize}
+
+\vspace{5mm}
+\textbf{A3:} \textcolor{mlgreen}{\textbf{b) 256-dimensional memory}}
+\begin{itemize}
+\item Size of $h_t$ vector
+\item Network's memory capacity
+\item Independent of vocab/length
+\end{itemize}
+\end{columns}
+
+\bottomnote{Self-Assessment: Understanding these fundamentals is crucial before tackling advanced topics}
+\end{frame}
+
+% Common misconceptions
+\begin{frame}[t]{Common Misconceptions About RNNs}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Misconception 1:}
+\colorbox{mlred!20}{``RNNs can remember everything''}
+
+\textbf{Reality:}
+\begin{itemize}
+\item Memory degrades over time
+\item Typically 5-10 steps effective
+\item Vanishing gradients limit range
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Misconception 2:}
+\colorbox{mlred!20}{``Bigger hidden state = better''}
+
+\textbf{Reality:}
+\begin{itemize}
+\item Overfitting risk increases
+\item Training becomes harder
+\item Sweet spot: 128-512
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Misconception 3:}
+\colorbox{mlred!20}{``RNNs process in parallel''}
+
+\textbf{Reality:}
+\begin{itemize}
+\item Strictly sequential
+\item Can't parallelize time steps
+\item This limits speed
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Misconception 4:}
+\colorbox{mlred!20}{``RNNs are obsolete''}
+
+\textbf{Reality:}
+\begin{itemize}
+\item Still best for some tasks
+\item Efficient for short sequences
+\item Active research area
+\end{itemize}
+\end{columns}
+
+\bottomnote{Clarity Check: Addressing these misconceptions prevents future confusion}
+\end{frame}
+
+% Part 2 Summary
+\begin{frame}[t]{Part 2 Summary: RNN Architecture Mastered}
+\centering
+\textbf{Key Equations to Remember:}
+
+\vspace{3mm}
+\eqbox{h_t = \tanh(W_{hh} h_{t-1} + W_{xh} x_t + b_h)}
+
+\vspace{3mm}
+\eqbox{y_t = W_{hy} h_t + b_y}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What We Covered:}
+\begin{itemize}
+\item Mathematical foundation
+\item Forward pass computation
+\item Weight sharing benefits/problems
+\item PyTorch implementation
+\item Common bugs and fixes
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Key Insights:}
+\begin{itemize}
+\item Simple equations, complex behavior
+\item Memory through recurrence
+\item Same weights everywhere
+\item Sequential processing only
+\item Foundation for LSTMs/GRUs
+\end{itemize}
+\end{columns}
+
+\bottomnote{Next: The critical problem that almost killed RNNs - vanishing gradients}
+\end{frame}
+
+% ==================== PART 3: VANISHING GRADIENT PROBLEM ====================
+\section{Part 3: The Vanishing Gradient Problem}
+
+% Section divider
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Part 3: The Vanishing Gradient Problem\par
+\end{beamercolorbox}
+\vfill
+\textit{Why RNNs Forget and How LSTMs Remember}
+\vfill
+\end{frame}
+
+% Telephone game analogy
+\begin{frame}[t]{The Telephone Game: Understanding Gradient Degradation}
+\centering
+\includegraphics[width=0.8\textwidth]{../figures/telephone_game_gradient.pdf}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Game:}
+\begin{itemize}
+\item Person 1: ``Buy milk and bread''
+\item Person 5: ``Buy milk and ???''
+\item Person 10: ``??? ??? ???''
+\item Information degrades each step
+\end{itemize}
+
+\vspace{3mm}
+\textbf{In RNNs:}
+\begin{itemize}
+\item Gradient = error signal
+\item Flows backward through time
+\item Multiplied by weights each step
+\item Degrades exponentially
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Mathematical Reality:}
+
+Gradient after $t$ steps:
+$$\frac{\partial L}{\partial h_0} = \prod_{i=1}^{t} W \cdot \text{tanh}'$$
+
+If $|W \cdot \text{tanh}'| < 1$:
+$$\text{gradient} \rightarrow 0$$
+
+If $|W \cdot \text{tanh}'| > 1$:
+$$\text{gradient} \rightarrow \infty$$
+\end{columns}
+
+\bottomnote{Intuition: Like telephone game, information (gradients) degrade with distance}
+\end{frame}
+
+% Mathematical explanation
+\begin{frame}[t]{The Mathematics of Vanishing Gradients}
+\textbf{Backpropagation Through Time (BPTT):}
+
+\vspace{3mm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/vanishing_gradient.pdf}
+\end{center}
+
+\vspace{3mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Gradient Flow:}
+$$\frac{\partial L_t}{\partial h_0} = \frac{\partial L_t}{\partial h_t} \prod_{k=1}^{t} \frac{\partial h_k}{\partial h_{k-1}}$$
+
+Where:
+$$\frac{\partial h_k}{\partial h_{k-1}} = W_{hh}^T \cdot \text{diag}(\tanh'(h_{k-1}))$$
+
+\column{0.48\textwidth}
+\textbf{The Problem:}
+\begin{itemize}
+\item $\tanh'(x) \in [0, 1]$
+\item Maximum at $x=0$: $\tanh'(0) = 1$
+\item Typical: $\tanh'(x) \approx 0.5$
+\item After 10 steps: $0.5^{10} = 0.001$
+\item After 20 steps: $0.5^{20} = 0.000001$
+\end{itemize}
+\end{columns}
+
+\bottomnote{Mathematical Reality: Exponential decay makes learning long-term dependencies impossible}
+\end{frame}
+
+% Vanishing vs exploding
+\begin{frame}[t]{Vanishing vs Exploding: Two Sides of the Same Coin}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Vanishing Gradients:}
+\centering
+\includegraphics[width=0.9\columnwidth]{../figures/gradient_flow_comparison.pdf}
+
+\begin{itemize}
+\item Weights $< 1$: Signal dies
+\item Can't learn long dependencies
+\item Network ``forgets'' early inputs
+\item Most common problem
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Exploding Gradients:}
+\centering
+\includegraphics[width=0.9\columnwidth]{../figures/week3_gradient_flow.pdf}
+
+\begin{itemize}
+\item Weights $> 1$: Signal explodes
+\item NaN values crash training
+\item Gradient clipping helps
+\item Easier to detect/fix
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\colorbox{mlred!20}{
+\parbox{0.9\textwidth}{
+\centering
+\textbf{Critical Issue:} Standard RNNs can effectively use only 5-10 steps of context
+}
+}
+
+\bottomnote{The Dilemma: Too small weights = vanishing, too large = exploding, just right = impossible}
+\end{frame}
+
+% LSTM solution introduction
+\begin{frame}[t]{LSTM: The Elegant Solution to Memory}
+\textbf{Long Short-Term Memory (LSTM) - Hochreiter \& Schmidhuber, 1997}
+
+\vspace{5mm}
+\centering
+\includegraphics[width=0.65\textwidth]{../figures/lstm_architecture.pdf}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Key Innovation: Gates}
+\begin{itemize}
+\item \textbf{Forget Gate:} What to discard
+\item \textbf{Input Gate:} What to store
+\item \textbf{Output Gate:} What to output
+\item \textbf{Cell State:} Long-term memory
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why It Works:}
+\begin{itemize}
+\item \textbf{Addition:} Instead of multiplication
+\item \textbf{Highway:} Direct gradient path
+\item \textbf{Selective:} Choose what to remember
+\item \textbf{Protected:} Cell state preserved
+\end{itemize}
+\end{columns}
+
+\bottomnote{Breakthrough: Gates create a gradient highway, enabling 100+ step dependencies}
+\end{frame}
+
+% LSTM architecture details
+\begin{frame}[t]{LSTM Architecture: Three Gates to Rule Them All}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\centering
+\includegraphics[width=\columnwidth]{../figures/week3_lstm_gates_flow.pdf}
+
+\vspace{3mm}
+\textbf{Gate Equations:}
+\footnotesize
+\begin{align}
+f_t &= \sigma(W_f \cdot [h_{t-1}, x_t] + b_f) \\
+i_t &= \sigma(W_i \cdot [h_{t-1}, x_t] + b_i) \\
+o_t &= \sigma(W_o \cdot [h_{t-1}, x_t] + b_o) \\
+\tilde{C}_t &= \tanh(W_C \cdot [h_{t-1}, x_t] + b_C) \\
+C_t &= f_t * C_{t-1} + i_t * \tilde{C}_t \\
+h_t &= o_t * \tanh(C_t)
+\end{align}
+
+\column{0.42\textwidth}
+\textbf{What Each Gate Does:}
+
+\vspace{3mm}
+\colorbox{mlred!20}{
+\parbox{\columnwidth}{
+\textbf{Forget Gate ($f_t$):}
+``Forget that we saw 'not' ''
+}
+}
+
+\vspace{3mm}
+\colorbox{mlgreen!20}{
+\parbox{\columnwidth}{
+\textbf{Input Gate ($i_t$):}
+``Store 'important' strongly''
+}
+}
+
+\vspace{3mm}
+\colorbox{mlblue!20}{
+\parbox{\columnwidth}{
+\textbf{Output Gate ($o_t$):}
+``Output positive sentiment''
+}
+}
+
+\vspace{5mm}
+\textbf{Key: Line 5}
+$$C_t = f_t * C_{t-1} + i_t * \tilde{C}_t$$
+Addition creates gradient highway!
+\end{columns}
+
+\bottomnote{Architecture Insight: Gates act as learned switches, controlling information flow}
+\end{frame}
+
+% GRU as simplified variant
+\begin{frame}[t]{GRU: LSTM's Streamlined Sibling}
+\centering
+\includegraphics[width=0.7\textwidth]{../figures/gru_architecture.pdf}
+
+\vspace{3mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{GRU (Gated Recurrent Unit):}
+\begin{itemize}
+\item Only 2 gates vs LSTM's 3
+\item \textbf{Update gate:} Forget + Input
+\item \textbf{Reset gate:} Control history
+\item No separate cell state
+\item 25\% fewer parameters
+\end{itemize}
+
+\vspace{3mm}
+\textbf{GRU Equations:}
+\footnotesize
+\begin{align}
+z_t &= \sigma(W_z \cdot [h_{t-1}, x_t]) \\
+r_t &= \sigma(W_r \cdot [h_{t-1}, x_t]) \\
+\tilde{h}_t &= \tanh(W \cdot [r_t * h_{t-1}, x_t]) \\
+h_t &= (1-z_t) * h_{t-1} + z_t * \tilde{h}_t
+\end{align}
+
+\column{0.48\textwidth}
+\textbf{LSTM vs GRU:}
+
+\vspace{3mm}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Aspect} & \textbf{LSTM} & \textbf{GRU} \\
+\midrule
+Gates & 3 & 2 \\
+Parameters & More & Less \\
+Memory & Separate & Combined \\
+Performance & Best & Similar \\
+Speed & Slower & Faster \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{
+\parbox{\columnwidth}{
+\centering
+\textbf{Rule of Thumb:}
+Try GRU first, LSTM if needed
+}
+}
+\end{columns}
+
+\bottomnote{Practical Choice: GRUs often match LSTM performance with less complexity}
+\end{frame}
+
+% Comparison visualization
+\begin{frame}[t]{RNN vs LSTM vs GRU: Head-to-Head Comparison}
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/week3_sequence_performance.pdf}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Vanilla RNN:}
+\begin{itemize}
+\item Simple, fast
+\item 5-10 step memory
+\item Vanishing gradients
+\item Use for short sequences
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{LSTM:}
+\begin{itemize}
+\item Complex, powerful
+\item 100+ step memory
+\item Gradient highway
+\item Use for long sequences
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{GRU:}
+\begin{itemize}
+\item Balanced design
+\item 50+ step memory
+\item Fewer parameters
+\item Use as default
+\end{itemize}
+\end{columns}
+
+\bottomnote{Performance Reality: LSTMs and GRUs dramatically outperform RNNs on long sequences}
+\end{frame}
+
+% Part 3 Summary
+\begin{frame}[t]{Part 3 Summary: From Problem to Solution}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Problem:}
+\begin{itemize}
+\item Gradients vanish exponentially
+\item Can't learn long dependencies
+\item Telephone game effect
+\item 5-10 step practical limit
+\item Made RNNs nearly useless
+\end{itemize}
+
+\vspace{5mm}
+\textbf{The Solution:}
+\begin{itemize}
+\item LSTM: Gated architecture
+\item Addition instead of multiplication
+\item Gradient highway preserved
+\item 100+ step dependencies
+\item Revolutionized sequence modeling
+\end{itemize}
+
+\column{0.48\textwidth}
+\centering
+\includegraphics[width=0.9\columnwidth]{../figures/evolution_to_transformers.pdf}
+
+\vspace{3mm}
+\colorbox{mlgreen!20}{
+\parbox{0.9\columnwidth}{
+\centering
+\textbf{Historical Impact:}
+
+LSTMs enabled modern NLP
+(1997-2017 dominance)
+}
+}
+\end{columns}
+
+\bottomnote{Next: Implement these concepts in code and explore real applications}
+\end{frame}
+
+% ==================== PART 4: IMPLEMENTATION & APPLICATIONS ====================
+\section{Part 4: Implementation \& Applications}
+
+% Section divider
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Part 4: Implementation \& Applications\par
+\end{beamercolorbox}
+\vfill
+\textit{From Theory to Practice}
+\vfill
+\end{frame}
+
+% Complete LSTM implementation
+\begin{frame}[fragile]{Complete LSTM Implementation in PyTorch}
+\begin{columns}[T]
+\column{0.58\textwidth}
+\begin{lstlisting}[language=Python]
+import torch
+import torch.nn as nn
+
+class TextGenerator(nn.Module):
+    def __init__(self, vocab_size,
+                 embed_size=128,
+                 hidden_size=256,
+                 num_layers=2):
+        super().__init__()
+
+        # Embedding layer
+        self.embed = nn.Embedding(
+            vocab_size, embed_size
+        )
+
+        # LSTM layers
+        self.lstm = nn.LSTM(
+            embed_size, hidden_size,
+            num_layers, batch_first=True,
+            dropout=0.2
+        )
+
+        # Output layer
+        self.linear = nn.Linear(
+            hidden_size, vocab_size
+        )
+
+    def forward(self, x, hidden=None):
+        # Embed input
+        embeds = self.embed(x)
+
+        # LSTM forward
+        lstm_out, hidden = self.lstm(
+            embeds, hidden
+        )
+
+        # Generate predictions
+        output = self.linear(lstm_out)
+        return output, hidden
+\end{lstlisting}
+
+\column{0.40\textwidth}
+\textbf{Training Loop:}
+\begin{lstlisting}[language=Python]
+model = TextGenerator(
+    vocab_size=10000
+)
+optimizer = torch.optim.Adam(
+    model.parameters()
+)
+criterion = nn.CrossEntropyLoss()
+
+for epoch in range(10):
+    hidden = None
+    for batch in dataloader:
+        # Forward pass
+        output, hidden = model(
+            batch, hidden
+        )
+
+        # Detach hidden
+        hidden = tuple(
+            h.detach()
+            for h in hidden
+        )
+
+        # Loss & backward
+        loss = criterion(
+            output, targets
+        )
+        loss.backward()
+
+        # Gradient clipping
+        torch.nn.utils.clip_grad_norm_(
+            model.parameters(), 1.0
+        )
+
+        optimizer.step()
+\end{lstlisting}
+\end{columns}
+
+\bottomnote{Production Code: Note the gradient clipping and hidden state detaching - crucial for stability}
+\end{frame}
+
+% Training progression
+\begin{frame}[t]{Training Progression: Watch the Network Learn}
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/sequence_analysis.pdf}
+
+\vspace{3mm}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Epoch 1-3:}
+\begin{itemize}
+\item Random outputs
+\item Learning basic patterns
+\item ``the the the the''
+\item Loss dropping fast
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Epoch 4-7:}
+\begin{itemize}
+\item Grammar emerges
+\item ``the cat is good''
+\item Coherent phrases
+\item Overfitting risk
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Epoch 8-10:}
+\begin{itemize}
+\item Creative outputs
+\item ``the cat sat gracefully''
+\item Long-range coherence
+\item Plateau in loss
+\end{itemize}
+\end{columns}
+
+\bottomnote{Training Insights: LSTMs learn progressively - structure first, then semantics}
+\end{frame}
+
+% Real applications 2024
+\begin{frame}[t]{RNNs in Production: 2024 Real-World Applications}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Still Dominant:}
+\begin{itemize}
+\item \textbf{Speech Recognition:}
+  \begin{itemize}
+  \item Google's RNN-T on phones
+  \item Apple's on-device Siri
+  \item 450MB models, real-time
+  \end{itemize}
+
+\item \textbf{Time Series:}
+  \begin{itemize}
+  \item Stock price prediction
+  \item Weather forecasting
+  \item Energy demand modeling
+  \end{itemize}
+
+\item \textbf{Music Generation:}
+  \begin{itemize}
+  \item MuseNet's LSTM backbone
+  \item Real-time synthesis
+  \item Latency-critical tasks
+  \end{itemize}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Hybrid Approaches:}
+\begin{itemize}
+\item \textbf{Transformer + LSTM:}
+  \begin{itemize}
+  \item Global + local context
+  \item Best of both worlds
+  \item State-of-the-art results
+  \end{itemize}
+
+\item \textbf{Efficient Models:}
+  \begin{itemize}
+  \item Mobile deployment
+  \item Edge computing
+  \item Battery-powered devices
+  \end{itemize}
+
+\item \textbf{Streaming Applications:}
+  \begin{itemize}
+  \item Live transcription
+  \item Real-time translation
+  \item Online learning systems
+  \end{itemize}
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{
+\parbox{0.9\textwidth}{
+\centering
+\textbf{Key Insight:} RNNs excel where sequential processing and low latency matter
+}
+}
+
+\bottomnote{Industry Reality: Despite transformers, RNNs remain crucial for specific use cases}
+\end{frame}
+
+% Lab preview
+\begin{frame}[t]{Lab Preview: Build Your Own Text Generator}
+\textbf{Week 3 Lab: Shakespeare Sonnet Generator with LSTM}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What You'll Build:}
+\begin{enumerate}
+\item Load Shakespeare sonnets
+\item Preprocess and tokenize
+\item Implement LSTM from scratch
+\item Train character-level model
+\item Generate new sonnets
+\item Visualize hidden states
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Sample Output:}
+\colorbox{lightgray}{
+\parbox{\columnwidth}{
+\footnotesize
+\textit{``Shall I compare thee to a summer's day?\\
+Thou art more lovely and more temperate:\\
+Rough winds do shake the darling buds...''}
+}
+}
+
+\column{0.48\textwidth}
+\textbf{Key Learning Objectives:}
+\begin{itemize}
+\item Understand sequence modeling
+\item Debug vanishing gradients
+\item Implement teacher forcing
+\item Use gradient clipping
+\item Tune hyperparameters
+\item Compare RNN vs LSTM
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Bonus Challenges:}
+\begin{itemize}
+\item Bidirectional LSTM
+\item Attention mechanism
+\item Beam search decoding
+\item Style transfer
+\end{itemize}
+\end{columns}
+
+\bottomnote{Hands-On Learning: Theory becomes practice - build what you've learned}
+\end{frame}
+
+% Interactive debugging
+\begin{frame}[t]{Interactive Exercise: Debug Training Problems}
+\textbf{Your LSTM is training poorly. Diagnose the issue:}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Symptoms:}
+\begin{itemize}
+\item Loss = NaN after epoch 2
+\item Gradients > 1000
+\item Outputs all same token
+\item Accuracy stuck at 10\%
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Your Diagnosis:}
+\colorbox{lightgray}{
+\parbox{\columnwidth}{
+\footnotesize
+Problem: \underline{\hspace{3cm}}
+
+\vspace{2mm}
+Solution: \underline{\hspace{3cm}}
+
+\vspace{2mm}
+Prevention: \underline{\hspace{3cm}}
+}
+}
+
+\column{0.48\textwidth}
+\textbf{Common Issues \& Fixes:}
+
+\vspace{3mm}
+\textbf{1. Exploding Gradients}
+\begin{itemize}
+\item Use gradient clipping
+\item Reduce learning rate
+\item Check weight initialization
+\end{itemize}
+
+\textbf{2. Poor Initialization}
+\begin{itemize}
+\item Use Xavier/He init
+\item Initialize forget gate bias to 1
+\end{itemize}
+
+\textbf{3. Wrong Loss Function}
+\begin{itemize}
+\item Use CrossEntropyLoss
+\item Check label dimensions
+\end{itemize}
+\end{columns}
+
+\bottomnote{Debugging Skills: Recognizing symptoms leads to faster fixes}
+\end{frame}
+
+% Performance comparison
+\begin{frame}[t]{Performance Shootout: When to Use What}
+\centering
+\includegraphics[width=0.8\textwidth]{../figures/week3_sequence_performance.pdf}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Use RNNs When:}
+\begin{itemize}
+\item Sequences < 20 tokens
+\item Real-time requirements
+\item Limited compute resources
+\item Online/streaming data
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Use LSTMs When:}
+\begin{itemize}
+\item Sequences 20-200 tokens
+\item Time series forecasting
+\item Speech recognition
+\item Need bidirectional context
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Use Transformers When:}
+\begin{itemize}
+\item Sequences > 200 tokens
+\item Parallel processing available
+\item Pre-training possible
+\item Accuracy is critical
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Hybrid Approach:}
+\begin{itemize}
+\item Transformer for encoding
+\item LSTM for decoding
+\item Best for translation
+\item Reduces latency
+\end{itemize}
+\end{columns}
+
+\bottomnote{Architecture Selection: Choose based on constraints, not just accuracy}
+\end{frame}
+
+% Course roadmap
+\begin{frame}[t]{Course Roadmap: Where RNNs Fit}
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/rnn_vs_transformer_timeline.pdf}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What We've Covered:}
+\begin{itemize}
+\item Week 1: Foundations
+\item Week 2: Word Embeddings
+\item \textbf{Week 3: RNNs/LSTMs} [DONE]
+\item Sequential processing
+\item Memory mechanisms
+\item Gradient problems \& solutions
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{What's Coming:}
+\begin{itemize}
+\item Week 4: Seq2Seq + Attention
+\item Week 5: Transformers
+\item Week 6: BERT/GPT
+\item Build on RNN concepts
+\item Attention = next evolution
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{
+\parbox{0.9\textwidth}{
+\centering
+\textbf{Key Connection:} Attention mechanism (Week 4) was invented to fix LSTM limitations!
+}
+}
+
+\bottomnote{Learning Path: Each week builds on the last - RNNs are the foundation}
+\end{frame}
+
+% Final summary
+\begin{frame}[t]{Week 3 Complete: You Now Understand Sequential Processing!}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Part 1: Motivation}
+\begin{itemize}
+\item Language is sequential
+\item Order creates meaning
+\item Need memory mechanisms
+\end{itemize}
+
+\textbf{Part 2: Architecture}
+\begin{itemize}
+\item Hidden state = memory
+\item Weight sharing across time
+\item Simple equations, complex behavior
+\end{itemize}
+
+\textbf{Part 3: Problems \& Solutions}
+\begin{itemize}
+\item Vanishing gradients limit RNNs
+\item LSTMs use gates for control
+\item Addition creates gradient highway
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Part 4: Implementation}
+\begin{itemize}
+\item PyTorch makes it easy
+\item Gradient clipping essential
+\item Still used in production
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Key Takeaways:}
+\colorbox{mlgreen!20}{
+\parbox{\columnwidth}{
+1. RNNs = Neural nets + Memory
+
+2. LSTMs solve vanishing gradients
+
+3. Gates control information flow
+
+4. Foundation for modern NLP
+}
+}
+\end{columns}
+
+\vspace{5mm}
+\centering
+\textbf{Next Week: Sequence-to-Sequence Models and the Attention Revolution!}
+
+\bottomnote{Congratulations: You've mastered the fundamentals of sequential neural networks!}
+\end{frame}
+
+\end{document}

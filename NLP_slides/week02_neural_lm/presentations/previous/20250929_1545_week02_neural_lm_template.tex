@@ -1,0 +1,894 @@
+% Week 2: Neural Language Models and Word Embeddings
+% Using Template Beamer Professional Layout
+% Created: 2025-09-29 15:45
+
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Color definitions from template_beamer_final
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255, 127, 14}
+\definecolor{mlgreen}{RGB}{44, 160, 44}
+\definecolor{mlred}{RGB}{214, 39, 40}
+\definecolor{mlgray}{RGB}{127, 127, 127}
+\definecolor{lightgray}{RGB}{240, 240, 240}
+\definecolor{midgray}{RGB}{180, 180, 180}
+
+% Apply custom colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in toc}{fg=mlblue}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{block title}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{block body}{bg=mllavender4,fg=black}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% Custom commands
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+\newcommand{\highlight}[1]{\textcolor{mlblue}{\textbf{#1}}}
+\newcommand{\eqbox}[1]{\colorbox{mllavender4}{$\displaystyle #1$}}
+\newcommand{\given}{\mid}
+\newcommand{\prob}[1]{P(#1)}
+\newcommand{\argmax}{\mathrm{argmax}}
+\newcommand{\softmax}{\mathrm{softmax}}
+
+% Code listing settings
+\lstset{
+    backgroundcolor=\color{lightgray},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    commentstyle=\color{mlgreen},
+    keywordstyle=\color{mlblue},
+    stringstyle=\color{mlpurple},
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{midgray},
+    language=Python
+}
+
+\title{Neural Language Models}
+\subtitle{Week 2: Word Embeddings and Word2Vec}
+\author{NLP Course 2025}
+\institute{Professional Template Edition}
+\date{\today}
+
+\begin{document}
+
+% ==================== TITLE SLIDE ====================
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+% ==================== TABLE OF CONTENTS ====================
+\begin{frame}[t]{Week 2: Journey Through Word Embeddings}
+\tableofcontents
+\vfill
+\footnotesize
+\textbf{Learning Path:} From discrete word IDs to continuous semantic vectors. Master how neural networks learn word meaning through context, leading to the Word2Vec revolution that powers modern NLP.
+\end{frame}
+
+% ==================== PART 1: INTRODUCTION & MOTIVATION ====================
+\section{Introduction \& Motivation}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Part 1: Introduction \& Motivation\par
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% Interactive Exercise
+\begin{frame}[t]{Interactive: Word Association Game}
+\textbf{Fill in the blank - What word naturally comes next?}
+
+\vspace{8mm}
+
+\begin{enumerate}
+\item The cat sat on the \underline{\hspace{3cm}}
+\pause
+\textcolor{mlgreen}{$\rightarrow$ mat, floor, chair} (physical objects)
+
+\vspace{5mm}
+\item I drink my coffee with milk and \underline{\hspace{3cm}}
+\pause
+\textcolor{mlgreen}{$\rightarrow$ sugar, cream, honey} (additives)
+
+\vspace{5mm}
+\item The capital of France is \underline{\hspace{3cm}}
+\pause
+\textcolor{mlgreen}{$\rightarrow$ Paris} (factual knowledge)
+
+\vspace{5mm}
+\item She was happy but also felt \underline{\hspace{3cm}}
+\pause
+\textcolor{mlgreen}{$\rightarrow$ sad, anxious, confused} (emotions)
+\end{enumerate}
+
+\vspace{5mm}
+\bottomnote{Humans predict words using semantic understanding - how can computers learn this?}
+\end{frame}
+
+% Evolution Timeline
+\begin{frame}[t]{The Evolution of Language Modeling}
+\centering
+\includegraphics[width=0.8\textwidth]{../figures/evolution_timeline.pdf}
+
+\vspace{5mm}
+\textbf{Four Major Eras in Next-Word Prediction:}
+\begin{itemize}
+\item \textbf{1980s-2000s:} Statistical N-grams - Count and predict
+\item \textbf{2003-2013:} Neural Language Models - First neural approaches
+\item \textbf{2013-2017:} \highlight{Word Embeddings Era} - Semantic understanding
+\item \textbf{2017-Present:} Transformer Revolution - Attention is all you need
+\end{itemize}
+
+\bottomnote{Word2Vec (2013) was the breakthrough that made words ``understand'' each other}
+\end{frame}
+
+% Problem Statement
+\begin{frame}[t]{The Fundamental Problem}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Traditional Approach: One-Hot Encoding}
+\begin{itemize}
+\item Words as discrete IDs
+\item Vocabulary size: 10,000 words
+\item ``cat'' = [0,0,1,0,...,0] (position 3)
+\item ``dog'' = [0,0,0,0,1,...,0] (position 5)
+\end{itemize}
+
+\vspace{5mm}
+\textcolor{mlred}{\textbf{Problems:}}
+\begin{itemize}
+\item No notion of similarity
+\item distance(cat, dog) = distance(cat, democracy)
+\item Can't generalize knowledge
+\item Huge, sparse vectors
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Solution: Dense Embeddings}
+\begin{itemize}
+\item Words as dense vectors
+\item Dimension: 100-300 (not 10,000!)
+\item ``cat'' = [0.2, -0.4, 0.7, ...]
+\item ``dog'' = [0.3, -0.3, 0.8, ...]
+\end{itemize}
+
+\vspace{5mm}
+\textcolor{mlgreen}{\textbf{Benefits:}}
+\begin{itemize}
+\item Similar words have similar vectors
+\item distance(cat, dog) < distance(cat, democracy)
+\item Knowledge transfers between similar words
+\item Compact, meaningful representation
+\end{itemize}
+\end{columns}
+
+\bottomnote{Key Insight: Learn representations where geometric distance = semantic distance}
+\end{frame}
+
+% Real-world Impact
+\begin{frame}[t]{Real-World Impact}
+\begin{columns}[T]
+\column{0.31\textwidth}
+\textbf{Search Engines}
+\begin{itemize}
+\item Semantic search
+\item Query understanding
+\item ``car'' finds ``automobile''
+\item Intent matching
+\end{itemize}
+
+Used by:
+\begin{itemize}
+\item Google Search
+\item Bing
+\item DuckDuckGo
+\end{itemize}
+
+\column{0.31\textwidth}
+\textbf{Recommendations}
+\begin{itemize}
+\item Content similarity
+\item User preferences
+\item Cross-lingual matching
+\item Cold-start solutions
+\end{itemize}
+
+Used by:
+\begin{itemize}
+\item Netflix
+\item Spotify
+\item Amazon
+\end{itemize}
+
+\column{0.31\textwidth}
+\textbf{Language AI}
+\begin{itemize}
+\item Machine translation
+\item Sentiment analysis
+\item Chatbots
+\item Foundation for LLMs
+\end{itemize}
+
+Used by:
+\begin{itemize}
+\item ChatGPT
+\item Google Translate
+\item Grammarly
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{mllavender4}{
+\parbox{0.8\textwidth}{
+\centering
+\textbf{Market Impact:} Word embeddings power \$100B+ in NLP applications worldwide
+}
+}
+\end{center}
+
+\bottomnote{Word2Vec papers cited 50,000+ times - one of the most influential ML innovations}
+\end{frame}
+
+% ==================== PART 2: CORE CONCEPTS ====================
+\section{Core Concepts}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Part 2: Core Concepts\par
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% Distributional Hypothesis
+\begin{frame}[t]{The Distributional Hypothesis}
+\begin{center}
+\Large
+``You shall know a word by the company it keeps''
+\end{center}
+\textit{- J.R. Firth (1957)}
+
+\vspace{10mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Example Context Windows:}
+\begin{itemize}
+\item The \textbf{cat} sat on the mat
+\item The \textbf{dog} sat on the floor
+\item A \textbf{cat} chased the mouse
+\item A \textbf{dog} chased the ball
+\end{itemize}
+
+\vspace{5mm}
+\textcolor{mlblue}{Shared contexts:}
+\begin{itemize}
+\item Both appear after ``The'' and ``A''
+\item Both appear before ``sat'', ``chased''
+\item Both are subjects of similar actions
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Mathematical Formulation:}
+
+Context window of size 2:
+\begin{align*}
+\text{context}(\text{cat}) &= \{\text{The, sat, on, the}\} \\
+\text{context}(\text{dog}) &= \{\text{The, sat, on, the}\}
+\end{align*}
+
+\vspace{5mm}
+\textbf{Key Insight:}
+\begin{itemize}
+\item Similar contexts $\Rightarrow$ Similar meanings
+\item Learn vectors to predict context
+\item Vectors capture semantic similarity
+\end{itemize}
+\end{columns}
+
+\bottomnote{This simple idea - words with similar contexts have similar meanings - drives all embeddings}
+\end{frame}
+
+% Word2Vec Architectures
+\begin{frame}[t]{Word2Vec: Two Revolutionary Architectures}
+\centering
+\includegraphics[width=0.75\textwidth]{../figures/word2vec_architectures.pdf}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{CBOW (Continuous Bag-of-Words)}
+\begin{itemize}
+\item Predict center word from context
+\item Input: [The, cat, on, the]
+\item Output: sat
+\item Faster training
+\item Better for frequent words
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Skip-gram}
+\begin{itemize}
+\item Predict context from center word
+\item Input: sat
+\item Output: [The, cat, on, the]
+\item Better quality vectors
+\item Better for rare words
+\end{itemize}
+\end{columns}
+
+\bottomnote{Skip-gram became the standard - predicting context from word creates richer representations}
+\end{frame}
+
+% Mathematical Deep Dive
+\begin{frame}[t]{The Mathematics of Word2Vec}
+\textbf{Skip-gram Objective Function:}
+
+\vspace{3mm}
+Maximize the probability of context words given center word:
+\[\eqbox{J(\theta) = \frac{1}{T} \sum_{t=1}^{T} \sum_{-c \leq j \leq c, j \neq 0} \log \prob{w_{t+j} \given w_t}}\]
+
+\vspace{5mm}
+\textbf{Probability Calculation using Softmax:}
+\[\prob{w_O \given w_I} = \frac{\exp(v_{w_O}^T \cdot v_{w_I})}{\sum_{w=1}^{V} \exp(v_w^T \cdot v_{w_I})}\]
+
+Where:
+\begin{itemize}
+\item $v_{w_I}$: Input vector for center word
+\item $v_{w_O}$: Output vector for context word
+\item $V$: Vocabulary size
+\item $c$: Context window size
+\end{itemize}
+
+\vspace{3mm}
+\textcolor{mlred}{\textbf{Problem:}} Denominator sums over entire vocabulary (expensive!)
+
+\bottomnote{Computing softmax over 50,000 words for every training example is computationally prohibitive}
+\end{frame}
+
+% Negative Sampling Solution
+\begin{frame}[t]{Negative Sampling: Making Training Feasible}
+\centering
+\includegraphics[width=0.7\textwidth]{../figures/negative_sampling.pdf}
+
+\vspace{5mm}
+\textbf{Convert to Binary Classification:}
+\begin{columns}[T]
+\column{0.48\textwidth}
+Instead of softmax over all words:
+\begin{itemize}
+\item Positive sample: (cat, sat) $\rightarrow$ 1
+\item Negative samples:
+  \begin{itemize}
+  \item (cat, democracy) $\rightarrow$ 0
+  \item (cat, quantum) $\rightarrow$ 0
+  \item (cat, purple) $\rightarrow$ 0
+  \end{itemize}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{New Objective:}
+\[\log \sigma(v_{w_O}^T \cdot v_{w_I}) + \sum_{k} \log \sigma(-v_{w_k}^T \cdot v_{w_I})\]
+
+Where $\sigma(x) = \frac{1}{1 + e^{-x}}$ (sigmoid)
+\end{columns}
+
+\bottomnote{Negative sampling reduces computation from O(V) to O(k), where k $\approx$ 5-20 $\ll$ V}
+\end{frame}
+
+% ==================== PART 3: TRAINING & SOLUTIONS ====================
+\section{Training \& Solutions}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Part 3: Training \& Solutions\par
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% Training Dynamics
+\begin{frame}[t]{Training Dynamics: How Embeddings Evolve}
+\centering
+\includegraphics[width=0.75\textwidth]{../figures/training_dynamics.pdf}
+
+\vspace{2mm}
+\begin{columns}[T]
+\column{0.31\textwidth}
+\footnotesize
+\textbf{Epoch 0 (Random)}
+\begin{itemize}
+\item Random init
+\item No structure
+\item High loss
+\end{itemize}
+
+\column{0.31\textwidth}
+\footnotesize
+\textbf{Epoch 10 (Clusters)}
+\begin{itemize}
+\item Clusters form
+\item Grammar emerges
+\item Loss decreasing
+\end{itemize}
+
+\column{0.31\textwidth}
+\footnotesize
+\textbf{Epoch 50 (Semantic)}
+\begin{itemize}
+\item Clear groups
+\item Analogies work
+\item Loss converged
+\end{itemize}
+\end{columns}
+
+\bottomnote{Training: 5-50 epochs depending on corpus}
+\end{frame}
+
+% Semantic Arithmetic
+\begin{frame}[t]{The Magic of Semantic Arithmetic}
+\centering
+\includegraphics[width=0.7\textwidth]{../figures/semantic_arithmetic.pdf}
+
+\vspace{2mm}
+\textbf{Famous Examples:}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\footnotesize
+\begin{itemize}
+\item king - man + woman = queen
+\item Paris - France + Italy = Rome
+\item bigger - big + small = smaller
+\end{itemize}
+
+\column{0.48\textwidth}
+\footnotesize
+\begin{itemize}
+\item walked - walk + run = ran
+\item sushi - Japan + Germany = bratwurst
+\item CEO - company + country = president
+\end{itemize}
+\end{columns}
+
+\bottomnote{Vectors encode relationships as directions in space}
+\end{frame}
+
+% Evaluation Methods
+\begin{frame}[t]{Evaluating Word Embeddings}
+\begin{columns}[T]
+\column{0.31\textwidth}
+\textbf{Intrinsic Evaluation}
+\begin{itemize}
+\item Word similarity tasks
+\item Analogy completion
+\item Clustering quality
+\end{itemize}
+
+\textbf{Benchmarks:}
+\begin{itemize}
+\item WordSim-353
+\item Google Analogy Test
+\item SimLex-999
+\end{itemize}
+
+\textbf{Metrics:}
+\begin{itemize}
+\item Spearman correlation
+\item Accuracy@1, @5
+\item Silhouette score
+\end{itemize}
+
+\column{0.31\textwidth}
+\textbf{Extrinsic Evaluation}
+\begin{itemize}
+\item Downstream task performance
+\item NER improvement
+\item Sentiment accuracy
+\end{itemize}
+
+\textbf{Tasks:}
+\begin{itemize}
+\item Text classification
+\item Machine translation
+\item Question answering
+\end{itemize}
+
+\textbf{Metrics:}
+\begin{itemize}
+\item F1 score improvement
+\item BLEU score gain
+\item Task-specific metrics
+\end{itemize}
+
+\column{0.31\textwidth}
+\textbf{Visualization}
+\begin{itemize}
+\item t-SNE projections
+\item PCA analysis
+\item Nearest neighbors
+\end{itemize}
+
+\textbf{Qualitative:}
+\begin{itemize}
+\item Semantic coherence
+\item Cluster separation
+\item Outlier detection
+\end{itemize}
+
+\textbf{Tools:}
+\begin{itemize}
+\item TensorBoard
+\item Embedding Projector
+\item Custom visualizations
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{mllavender4}{
+\parbox{0.8\textwidth}{
+\centering
+\textbf{Best Practice:} Combine all three - numbers alone don't tell the whole story
+}
+}
+\end{center}
+
+\bottomnote{Good embeddings show 0.6+ correlation on similarity tasks and 3-5\% improvement on downstream tasks}
+\end{frame}
+
+% Limitations and Solutions
+\begin{frame}[t]{Limitations and Advanced Solutions}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Fundamental Limitations:}
+\begin{itemize}
+\item \textcolor{mlred}{Out-of-vocabulary words} \\
+  $\rightarrow$ FastText with subword units
+\item \textcolor{mlred}{Single vector per word} \\
+  $\rightarrow$ Contextual embeddings (ELMo, BERT)
+\item \textcolor{mlred}{No word order information} \\
+  $\rightarrow$ Position encodings
+\item \textcolor{mlred}{Bias in training data} \\
+  $\rightarrow$ Debiasing techniques
+\item \textcolor{mlred}{Fixed after training} \\
+  $\rightarrow$ Fine-tunable embeddings
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Advanced Techniques:}
+\begin{itemize}
+\item \textbf{GloVe (2014):} \\
+  Combines global statistics + local context
+\item \textbf{FastText (2016):} \\
+  Character n-grams for OOV handling
+\item \textbf{ELMo (2018):} \\
+  Context-dependent embeddings
+\item \textbf{BERT (2018):} \\
+  Bidirectional contextual representations
+\item \textbf{GPT (2018+):} \\
+  Autoregressive language modeling
+\end{itemize}
+\end{columns}
+
+\bottomnote{Word2Vec's limitations led directly to the transformer revolution in NLP}
+\end{frame}
+
+% ==================== PART 4: APPLICATIONS & FUTURE ====================
+\section{Applications \& Future}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Part 4: Applications \& Future\par
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% 3D Embedding Space
+\begin{frame}[t]{Visualizing the Embedding Space}
+\centering
+\includegraphics[width=0.65\textwidth]{../figures/embedding_space_3d.pdf}
+
+\vspace{2mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Semantic Clusters:}
+\begin{itemize}
+\item \textcolor{mlblue}{Animals}: cat, dog, horse
+\item \textcolor{mlgreen}{Countries}: France, Italy
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Grammatical Patterns:}
+\begin{itemize}
+\item \textcolor{mlorange}{Verbs}: walk/walked
+\item \textcolor{mlpurple}{Professions}: doctor, nurse
+\end{itemize}
+\end{columns}
+
+\bottomnote{t-SNE visualization reveals semantic structure}
+\end{frame}
+
+% Applications Dashboard
+\begin{frame}[t]{Modern Applications Dashboard}
+\centering
+\includegraphics[width=0.75\textwidth]{../figures/applications_dashboard.pdf}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.24\textwidth}
+\textbf{Search}
+\begin{itemize}
+\item Query expansion
+\item Synonym matching
+\item Intent detection
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Translation}
+\begin{itemize}
+\item Alignment models
+\item Zero-shot transfer
+\item Multilingual NLP
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Analysis}
+\begin{itemize}
+\item Sentiment tracking
+\item Topic modeling
+\item Trend detection
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Generation}
+\begin{itemize}
+\item Text completion
+\item Style transfer
+\item Summarization
+\end{itemize}
+\end{columns}
+
+\bottomnote{Word embeddings are the foundation layer for virtually all modern NLP applications}
+\end{frame}
+
+% Code Example
+\begin{frame}[fragile,t]{Hands-On: Using Word2Vec in Practice}
+\begin{lstlisting}
+from gensim.models import Word2Vec
+import numpy as np
+
+# Train Word2Vec model
+sentences = [["the", "cat", "sat", "on", "the", "mat"],
+             ["the", "dog", "sat", "on", "the", "floor"]]
+
+model = Word2Vec(sentences, vector_size=100, window=5,
+                 min_count=1, sg=1)  # sg=1 for skip-gram
+
+# Get word vectors
+cat_vector = model.wv['cat']
+dog_vector = model.wv['dog']
+
+# Compute similarity
+similarity = model.wv.similarity('cat', 'dog')
+print(f"Similarity(cat, dog) = {similarity:.3f}")
+
+# Find similar words
+similar_words = model.wv.most_similar('cat', topn=3)
+print(f"Words similar to 'cat': {similar_words}")
+
+# Word arithmetic
+result = model.wv.most_similar(positive=['king', 'woman'],
+                                negative=['man'], topn=1)
+print(f"king - man + woman = {result[0][0]}")
+\end{lstlisting}
+
+\bottomnote{Gensim makes Word2Vec incredibly easy to use - training takes just minutes}
+\end{frame}
+
+% Future Directions
+\begin{frame}[t]{From Word2Vec to Modern Transformers}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/week2_neural_evolution.pdf}
+\end{center}
+
+\vspace{3mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Word2Vec's Legacy:}
+\begin{itemize}
+\item Proved semantic learning possible
+\item Established embedding paradigm
+\item Inspired attention mechanisms
+\item Foundation for all modern NLP
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Modern Evolution:}
+\begin{itemize}
+\item BERT: Contextual embeddings
+\item GPT: Generative pre-training
+\item T5: Text-to-text framework
+\item GPT-4: Multimodal understanding
+\end{itemize}
+\end{columns}
+
+\bottomnote{Word2Vec was the spark that ignited the deep learning revolution in NLP}
+\end{frame}
+
+% Summary Slide
+\begin{frame}[t]{Summary: The Word Embedding Revolution}
+\textbf{What We Learned:}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Key Concepts}
+\begin{itemize}
+\item Distributional hypothesis
+\item Dense vector representations
+\item Skip-gram vs CBOW
+\item Negative sampling optimization
+\item Semantic arithmetic
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Technical Skills}
+\begin{itemize}
+\item Training Word2Vec models
+\item Evaluating embedding quality
+\item Visualizing semantic spaces
+\item Applying to downstream tasks
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Practical Impact}
+\begin{itemize}
+\item Powers modern search engines
+\item Enables machine translation
+\item Foundation for ChatGPT/Claude
+\item \$100B+ market impact
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Historical Significance}
+\begin{itemize}
+\item 50,000+ citations
+\item Revolutionized NLP (2013)
+\item Led to transformer era
+\item Still widely used today
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\begin{center}
+\colorbox{mllavender2}{
+\parbox{0.85\textwidth}{
+\centering
+\Large
+\textbf{Core Insight: Words are not just symbols - they carry meaning in their geometry}
+}
+}
+\end{center}
+
+\bottomnote{Next Week: How RNNs use embeddings to understand sequences and generate text}
+\end{frame}
+
+% Quiz Slide
+\begin{frame}[t]{Quick Quiz: Test Your Understanding}
+\textbf{Answer these questions to check your understanding:}
+
+\vspace{5mm}
+\begin{enumerate}
+\item What is the key insight of the distributional hypothesis?
+\pause
+\textcolor{mlgreen}{$\rightarrow$ Words with similar contexts have similar meanings}
+
+\vspace{3mm}
+\item Why is negative sampling needed in Word2Vec?
+\pause
+\textcolor{mlgreen}{$\rightarrow$ To avoid expensive softmax over entire vocabulary}
+
+\vspace{3mm}
+\item What's the difference between Skip-gram and CBOW?
+\pause
+\textcolor{mlgreen}{$\rightarrow$ Skip-gram: word→context, CBOW: context→word}
+
+\vspace{3mm}
+\item Why does ``king - man + woman = queen'' work?
+\pause
+\textcolor{mlgreen}{$\rightarrow$ Relationships are encoded as vector directions}
+
+\vspace{3mm}
+\item What's the main limitation of Word2Vec?
+\pause
+\textcolor{mlgreen}{$\rightarrow$ Single vector per word (no context dependence)}
+\end{enumerate}
+
+\vspace{5mm}
+\bottomnote{If you can answer these, you understand the core of word embeddings!}
+\end{frame}
+
+% Resources Slide
+\begin{frame}[t]{Resources for Deep Dive}
+\begin{columns}[T]
+\column{0.31\textwidth}
+\textbf{Essential Papers}
+\begin{itemize}
+\item Mikolov et al. (2013a): Efficient Estimation
+\item Mikolov et al. (2013b): Distributed Representations
+\item Goldberg \& Levy (2014): word2vec Explained
+\item Pennington et al. (2014): GloVe
+\end{itemize}
+
+\column{0.31\textwidth}
+\textbf{Implementations}
+\begin{itemize}
+\item Gensim (Python)
+\item TensorFlow Embeddings
+\item PyTorch nn.Embedding
+\item FastText library
+\end{itemize}
+
+\column{0.31\textwidth}
+\textbf{Datasets \& Tools}
+\begin{itemize}
+\item Google News vectors
+\item GloVe pre-trained
+\item Embedding Projector
+\item Word2Vec demos
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\textbf{Lab Session Preview:}
+\begin{itemize}
+\item Train Word2Vec on real corpus
+\item Explore semantic relationships
+\item Build a similarity search engine
+\item Visualize your own embeddings
+\end{itemize}
+
+\bottomnote{Lab notebook: week02\_word\_embeddings\_lab.ipynb}
+\end{frame}
+
+\end{document}

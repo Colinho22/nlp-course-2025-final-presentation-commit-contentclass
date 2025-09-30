@@ -1,0 +1,337 @@
+% Week 5: Transformers - The Speed Revolution (Individual Chart Slides)
+% NLP Course 2025
+% Created: 2025-09-28 18:15
+% Each conceptual chart on its own slide with brief explanation
+
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+% Dynamic color scheme for each act
+\definecolor{act1red}{RGB}{214,39,40}
+\definecolor{act1orange}{RGB}{255,127,14}
+\definecolor{act2blue}{RGB}{31,119,180}
+\definecolor{act2gray}{RGB}{150,150,150}
+\definecolor{act3green}{RGB}{44,160,44}
+\definecolor{act3teal}{RGB}{23,190,207}
+\definecolor{act4gold}{RGB}{255,215,0}
+\definecolor{act4purple}{RGB}{148,0,211}
+
+% Apply Madrid theme customization
+\setbeamercolor{palette primary}{bg=act3teal!30,fg=black}
+\setbeamercolor{palette secondary}{bg=act3teal!20,fg=black}
+\setbeamercolor{palette tertiary}{bg=act3teal!40,fg=white}
+\setbeamercolor{palette quaternary}{bg=act3teal,fg=white}
+\setbeamercolor{structure}{fg=act3teal!80!black}
+\setbeamercolor{frametitle}{fg=white,bg=act3teal!80!black}
+
+% Custom commands
+\newcommand{\conceptnote}[1]{%
+\vspace{3mm}
+\begin{center}
+\colorbox{yellow!20}{\parbox{0.8\textwidth}{\centering\small\textbf{#1}}}
+\end{center}
+}
+
+% Math and code support
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+
+\title{Natural Language Processing}
+\subtitle{Week 5: The Speed Revolution - Conceptual Journey}
+\author{From Sequential Bottlenecks to Parallel Breakthroughs}
+\date{NLP Course 2025}
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+\titlepage
+\end{frame}
+
+% Overview slide
+\begin{frame}{Visual Journey Through the Transformer Revolution}
+\textbf{12 Conceptual Visualizations in 4 Acts}
+
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Act 1: The Waiting Game}
+\begin{itemize}
+\item Chart 1: Domino Effect
+\item Chart 2: Traffic Jam
+\item Chart 3: Assembly Line
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Act 2: The Disappointment}
+\begin{itemize}
+\item Chart 4: Memory Maze
+\item Chart 5: Broken Telegraph
+\item Chart 6: Computational Quicksand
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Act 3: The Breakthrough}
+\begin{itemize}
+\item Chart 7: Attention Theatre
+\item Chart 8: Circuit Board
+\item Chart 9: Parallel Universe
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Act 4: The Impact}
+\begin{itemize}
+\item Chart 10: Language Galaxy
+\item Chart 11: Evolution Tree
+\item Chart 12: Scaling Rocket
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% ============================================
+% ACT 1: THE WAITING GAME
+% ============================================
+
+\section{Act 1: The Waiting Game}
+
+% Act 1 Title Slide
+\begin{frame}
+\vfill
+\centering
+\Huge\textcolor{act1red}{\textbf{Act 1: The Waiting Game}}
+\vfill
+\Large\textit{When Sequential Processing Becomes the Bottleneck}
+\vfill
+\end{frame}
+
+% Chart 1: Domino Effect
+\begin{frame}{Chart 1: The Domino Effect}
+\centering
+\includegraphics[width=0.9\textwidth]{../figures/new_01_domino_effect.pdf}
+
+\conceptnote{RNNs process tokens like falling dominos - each must wait for the previous. Transformers process all tokens simultaneously, like dominos standing independently.}
+\end{frame}
+
+% Chart 2: Traffic Jam
+\begin{frame}{Chart 2: Traffic Jam Visualization}
+\centering
+\includegraphics[width=0.8\textwidth]{../figures/new_02_traffic_visualization.pdf}
+
+\conceptnote{RNNs = Single lane highway causing bottlenecks. Transformers = 8-lane highway with parallel flow. Processing speed increases from 1 token/cycle to 8 tokens/cycle!}
+\end{frame}
+
+% Chart 3: Assembly Line
+\begin{frame}{Chart 3: The Assembly Line Problem}
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/new_03_assembly_line.pdf}
+
+\conceptnote{Traditional assembly line (RNN) has one worker processing tokens sequentially. Modern parallel factory (Transformer) has multiple workers processing all tokens simultaneously.}
+\end{frame}
+
+% ============================================
+% ACT 2: THE DISAPPOINTMENT
+% ============================================
+
+\section{Act 2: The Disappointment}
+
+% Act 2 Title Slide
+\begin{frame}
+\vfill
+\centering
+\Huge\textcolor{act2blue}{\textbf{Act 2: The Disappointment}}
+\vfill
+\Large\textit{Why Sequential Models Fail at Scale}
+\vfill
+\end{frame}
+
+% Chart 4: Memory Maze
+\begin{frame}{Chart 4: The Memory Maze}
+\centering
+\includegraphics[width=0.75\textwidth]{../figures/new_04_memory_maze.pdf}
+
+\conceptnote{Information gets lost navigating through sequential layers. The longer the path, the more the signal degrades - a fundamental limitation of RNNs.}
+\end{frame}
+
+% Chart 5: Broken Telegraph
+\begin{frame}{Chart 5: The Broken Telegraph}
+\centering
+\includegraphics[width=0.9\textwidth]{../figures/new_05_broken_telegraph.pdf}
+
+\conceptnote{Like a game of telephone, sequential processing accumulates errors. "The quick brown fox" becomes noise after passing through multiple RNN layers.}
+\end{frame}
+
+% Chart 6: Computational Quicksand
+\begin{frame}{Chart 6: Computational Quicksand}
+\centering
+\includegraphics[width=0.7\textwidth]{../figures/new_06_computational_quicksand.pdf}
+
+\conceptnote{Vanishing gradients: The deeper you go, the weaker the signal. By layer 10, gradient magnitude drops to 0.007 - learning becomes impossible.}
+\end{frame}
+
+% ============================================
+% ACT 3: THE BREAKTHROUGH
+% ============================================
+
+\section{Act 3: The Breakthrough}
+
+% Act 3 Title Slide
+\begin{frame}
+\vfill
+\centering
+\Huge\textcolor{act3green}{\textbf{Act 3: The Breakthrough}}
+\vfill
+\Large\textit{Parallel Attention Changes Everything}
+\vfill
+\end{frame}
+
+% Chart 7: Attention Theatre
+\begin{frame}{Chart 7: The Attention Spotlight Theatre}
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/new_07_attention_theatre.pdf}
+
+\conceptnote{Multi-head attention is like multiple spotlights on a stage. Each head focuses on different relationships - subject, verb, object - all simultaneously.}
+\end{frame}
+
+% Chart 8: Circuit Board
+\begin{frame}{Chart 8: The Neural Network Circuit Board}
+\centering
+\includegraphics[width=0.9\textwidth]{../figures/new_08_circuit_board.pdf}
+
+\conceptnote{RNNs = Serial circuit with sequential resistance. Transformers = Parallel circuit with direct connections. Information flows without bottlenecks.}
+\end{frame}
+
+% Chart 9: Parallel Universe
+\begin{frame}{Chart 9: The Parallel Universe Portal}
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/new_09_parallel_universe.pdf}
+
+\conceptnote{Time dilation effect: Sequential processing in O(n) time vs parallel processing in O(1). What takes 8 seconds sequentially happens instantly in parallel!}
+\end{frame}
+
+% ============================================
+% ACT 4: THE IMPACT
+% ============================================
+
+\section{Act 4: The Impact}
+
+% Act 4 Title Slide
+\begin{frame}
+\vfill
+\centering
+\Huge\textcolor{act4gold}{\textbf{Act 4: The Impact}}
+\vfill
+\Large\textit{How Transformers Changed Everything}
+\vfill
+\end{frame}
+
+% Chart 10: Language Galaxy
+\begin{frame}{Chart 10: The Language Galaxy}
+\centering
+\includegraphics[width=0.75\textwidth]{../figures/new_10_language_galaxy.pdf}
+
+\conceptnote{Transformers create universal bridges between all languages. Attention mechanisms connect distant language "star systems" enabling unprecedented multilingual understanding.}
+\end{frame}
+
+% Chart 11: Evolution Tree
+\begin{frame}{Chart 11: The AI Evolution Tree}
+\centering
+\includegraphics[width=0.8\textwidth]{../figures/new_11_evolution_tree.pdf}
+
+\conceptnote{From the Transformer trunk (2017), an entire ecosystem emerged: BERT, GPT, T5, PaLM. Each branch represents billions of parameters and new capabilities.}
+\end{frame}
+
+% Chart 12: Scaling Rocket
+\begin{frame}{Chart 12: The Scaling Rocket}
+\centering
+\includegraphics[width=0.75\textwidth]{../figures/new_12_scaling_rocket.pdf}
+
+\conceptnote{Exponential growth trajectory: 65M (2017) → 340M (2018) → 1.5B (2019) → 175B (2020) → 1.7T (2023). The rocket keeps accelerating!}
+\end{frame}
+
+% Summary Slide
+\begin{frame}{The Speed Revolution: Summary}
+\textbf{From Sequential Bottlenecks to Parallel Breakthroughs}
+
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Problem (Acts 1-2)}
+\begin{itemize}
+\item Sequential processing = waiting game
+\item Single lane bottlenecks
+\item Information degradation
+\item Vanishing gradients
+\item O(n) complexity
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Solution (Acts 3-4)}
+\begin{itemize}
+\item Parallel attention = instant processing
+\item Multi-lane information highways
+\item Direct connections preserve signal
+\item Stable gradient flow
+\item O(1) complexity
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{act3green!20}{\parbox{0.8\textwidth}{\centering\textbf{Result: 100x speedup enabled ChatGPT, Claude, and modern AI}}}
+\end{center}
+\end{frame}
+
+% Technical Details Slide
+\begin{frame}{Want the Technical Details?}
+\textbf{Key Transformer Innovations}
+
+\vspace{3mm}
+\begin{enumerate}
+\item \textbf{Self-Attention Mechanism}
+   \begin{itemize}
+   \item Query, Key, Value matrices
+   \item Attention scores: $\text{Attention}(Q,K,V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$
+   \end{itemize}
+
+\item \textbf{Multi-Head Attention}
+   \begin{itemize}
+   \item 8 parallel attention operations
+   \item Different representation subspaces
+   \end{itemize}
+
+\item \textbf{Positional Encoding}
+   \begin{itemize}
+   \item Sine/cosine waves: $PE_{(pos,2i)} = \sin(pos/10000^{2i/d})$
+   \item Adds position information to embeddings
+   \end{itemize}
+
+\item \textbf{Parallelization}
+   \begin{itemize}
+   \item All positions processed simultaneously
+   \item GPU utilization: 2\% → 92\%
+   \end{itemize}
+\end{enumerate}
+
+\vspace{3mm}
+\centering
+\textit{But the conceptual understanding comes first!}
+\end{frame}
+
+% Final Slide
+\begin{frame}
+\centering
+\vfill
+\Huge\textbf{Questions?}
+\vfill
+\Large\textit{The revolution wasn't just technical -\\it was conceptual}
+\vfill
+\normalsize
+These visualizations demonstrate how thinking differently\\
+about the problem led to a 100x speedup
+\vfill
+\end{frame}
+
+\end{document}

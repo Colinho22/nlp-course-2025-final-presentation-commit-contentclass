@@ -1,6 +1,6 @@
 # NLP Course 2025 - Project Status
 
-## Last Updated: 2025-09-27
+## Last Updated: 2025-09-28
 
 ## Overall Progress
 - **Total Weeks**: 12
@@ -30,15 +30,24 @@
   - Python figure generation scripts
   - Handout materials available
 
-- **Week 4: Sequence-to-Sequence Models** ✅
-  - Multiple presentation versions (enhanced, BSc, nature professional)
+- **Week 4: Sequence-to-Sequence Models** ✅ **[PEDAGOGICALLY EXCELLENT]**
+  - **CANONICAL**: 20250928_1510_week04_seq2seq_journey_complete.tex (28 slides, 286KB)
+  - Substantially restructured with didactic framework (2025-09-28)
+  - Four-act dramatic structure: hope → disappointment → breakthrough
+  - Zero pre-knowledge approach (every term built from first principles)
+  - Complete pedagogical arc with all 8 critical beats
   - Lab notebook (week04_seq2seq_lab.ipynb)
   - Enhanced lab version available
   - Complete handout materials
 
-- **Week 5: Transformers & Attention** ✅
-  - Main presentation (week05_transformers_bsc_restructured_final.pdf)
-  - Comprehensive presentation (20250924_1540_week05_transformers_comprehensive.pdf)
+- **Week 5: Transformers & Attention** ✅ **[PEDAGOGICALLY EXCELLENT]**
+  - **CANONICAL**: 20250928_1648_week05_transformers_speed_revolution.tex (28 slides, 199KB)
+  - Substantially restructured with didactic framework (2025-09-28)
+  - Four-act dramatic structure: speed crisis → false solution → breakthrough → modern AI
+  - Zero pre-knowledge approach (GPU wastage → parallelization solution)
+  - Complete pedagogical arc with all 8 critical beats
+  - "Speed Revolution" narrative: 90 days → 1 day training (100x speedup)
+  - Comprehensive README.md with teaching recommendations
   - Lab notebook (week05_transformer_lab.ipynb)
   - Multiple figure generation scripts
   - Handouts complete (prepost, student, instructor, BSc versions)
@@ -76,7 +85,8 @@
   - All figures generated
 
 - **Week 11: Efficiency & Optimization** ✅
-  - Main presentation created (20250923_2110_week11_efficiency_optimal.tex/pdf)
+  - Main presentation created (20250923_2110_week11_efficiency_optimal.tex)
+  - PDF compiled (20250928, 5 pages, 47KB)
   - Lab notebook created (week11_efficiency_lab.ipynb)
   - Handouts created (student and instructor versions)
   - All figures generated
@@ -93,6 +103,18 @@
 - Slide layout macros
 - Shared figure generation scripts
 - Color schemes and styling
+
+### Didactic Framework ✅ (2025-09-28)
+- **DIDACTIC_PRESENTATION_FRAMEWORK.md**: Comprehensive reusable framework (1180 lines)
+  - Extracted from Week 4 "Compression Journey" success
+  - Four-act structure template applicable to any technical content
+  - Zero pre-knowledge principle with 6-step pattern
+  - 8 critical pedagogical beats with rationale
+  - Slide-level design patterns and language style rules
+  - Complete quality assurance checklist
+  - Examples: Binary Search Trees, Transformers
+  - Available in both Markdown and HTML (43KB styled version)
+  - Distributed to 3 course repositories (NLP, ML Design Thinking, AI in Finance)
 
 ### Deliverability Infrastructure ✅ (2025-09-27)
 - **requirements.txt**: Comprehensive Python dependencies (30+ packages)
@@ -134,16 +156,28 @@
 - **Exercise notebooks**: Shakespeare sonnets, Alice n-grams
 - **Visualization series**: 8 progressive notebooks
 
-## Next Priority Actions
+## Recent Achievements (2025-09-28)
 1. ~~Complete all 12 weeks with presentations, labs, and handouts~~ ✅
 2. ~~Create Neural Network Primer module~~ ✅
 3. ~~Create LSTM Primer module~~ ✅
 4. ~~Create master course index document~~ ✅
 5. ~~Create deliverability infrastructure (dependencies, README, installation guide)~~ ✅
-6. Generate course overview presentation (Week 0 intro lecture)
-7. Test all 15 Jupyter notebooks for execution
-8. Create student-facing course website/navigation
-9. Create master syllabus with timeline
+6. ~~Week 4 substantial restructure with didactic framework~~ ✅
+7. ~~Extract and document reusable didactic framework~~ ✅
+8. ~~Distribute framework to all course repositories~~ ✅
+9. ~~Compile all missing PDFs (Week 11)~~ ✅
+10. ~~Verify all figure references (0 missing, 131 existing)~~ ✅
+11. ~~Week 5 substantial restructure with didactic framework~~ ✅
+12. ~~Framework proven reusable: 2/2 successful applications (Weeks 4, 5)~~ ✅
+
+## Next Priority Actions
+1. ~~Apply didactic framework to Week 5 Transformers~~ ✅ (COMPLETED 2025-09-28)
+2. Test and fix Jupyter notebook execution issues (Weeks 2-7)
+3. Apply didactic framework to Week 1 (first impression optimization - foundational content)
+4. Apply didactic framework to Week 6 Pre-trained Models (BERT/GPT paradigm shift)
+5. Create master syllabus with learning objectives and timeline
+6. Create student-facing course website/navigation
+7. Review and enhance Weeks 8-12 presentations using framework checklist
 
 ## Build Commands Reference
 ```bash

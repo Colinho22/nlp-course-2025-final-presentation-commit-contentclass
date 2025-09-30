@@ -1,0 +1,1498 @@
+% Week 5: The Transformer Architecture - Pedagogical Version
+% NLP Course 2025
+% Created: 2025-09-29 24:00
+
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+
+% Lavender color scheme from template_beamer_final
+\definecolor{mllavender}{RGB}{200,180,220}
+\definecolor{mlpurple}{RGB}{130,100,160}
+\definecolor{mlblue}{RGB}{100,120,180}
+\definecolor{mldarkblue}{RGB}{60,80,120}
+\definecolor{mlgray}{RGB}{100,100,100}
+
+% Apply the lavender color scheme
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{frametitle}{bg=mllavender!70,fg=mldarkblue}
+\setbeamercolor{title}{fg=mldarkblue}
+\setbeamercolor{subtitle}{fg=mlpurple}
+\setbeamercolor{author}{fg=mlgray}
+\setbeamercolor{date}{fg=mlgray}
+\setbeamercolor{block title}{bg=mllavender!50,fg=mldarkblue}
+\setbeamercolor{block body}{bg=mllavender!10}
+
+% Custom commands
+\newcommand{\highlight}[1]{\textcolor{mlpurple}{\textbf{#1}}}
+\newcommand{\keypoint}[1]{
+    \vspace{2mm}
+    \begin{center}
+    \colorbox{mllavender!30}{\parbox{0.9\textwidth}{\centering\small #1}}
+    \end{center}
+    \vspace{2mm}
+}
+\newcommand{\warning}[1]{\textcolor{red!70!black}{\textbf{Warning:} #1}}
+\newcommand{\success}[1]{\textcolor{green!70!black}{\textbf{#1}}}
+\newcommand{\secondary}[1]{\textcolor{mlgray}{#1}}
+\newcommand{\formula}[1]{
+    \begin{center}
+    \colorbox{mllavender!20}{\parbox{0.8\textwidth}{\centering\large $\displaystyle #1$}}
+    \end{center}
+}
+\newcommand{\misconception}[1]{\textcolor{red!60!black}{#1}}
+
+% Bottom note command
+\newcommand{\bottomnote}[1]{
+    \vfill
+    \begin{center}
+    \textcolor{mlgray}{\footnotesize\textit{#1}}
+    \end{center}
+}
+
+% Checkpoint command for pedagogical approach
+\newcommand{\checkpoint}[1]{
+    \begin{center}
+    \colorbox{yellow!30}{\parbox{0.9\textwidth}{\centering\small\textbf{#1}}}
+    \end{center}
+}
+
+% Code listing setup
+\usepackage{listings}
+\lstset{
+    basicstyle=\tiny\ttfamily,
+    keywordstyle=\color{mlblue},
+    commentstyle=\color{mlgray},
+    frame=single,
+    backgroundcolor=\color{mllavender!10},
+    numbers=left,
+    numberstyle=\tiny\color{mlgray}
+}
+
+% Packages
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
+\title{The Transformer Architecture}
+\subtitle{Chapter 5: Attention Is All You Need - Pedagogical Journey}
+\author{NLP Course 2025}
+\date{\today}
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}
+\secondary{\footnotesize A pedagogical exploration of the architecture that revolutionized AI}\\
+\secondary{\footnotesize 47 slides • 4 sections • 2 checkpoints}
+\end{center}
+\end{frame}
+
+% Learning objectives
+\begin{frame}{Learning Journey Ahead}
+\begin{center}
+{\Large \textbf{What You Will Master Today}}
+\end{center}
+
+\vspace{8mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Conceptual Understanding}
+\begin{itemize}
+\item Why RNNs hit a computational wall
+\item How self-attention solves parallelization
+\item Multi-head attention intuition
+\item Position encoding necessity
+\item Architecture components
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Practical Skills}
+\begin{itemize}
+\item Implement attention mechanism
+\item Build mini-transformers
+\item Debug attention patterns
+\item Apply to real problems
+\item Understand modern LLMs
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{By the end: You'll understand exactly how ChatGPT, BERT, and modern AI work}
+
+\bottomnote{We'll build understanding step-by-step, with checkpoints along the way}
+\end{frame}
+
+% ============================================
+% SECTION 1: THE CHALLENGE
+% ============================================
+
+\section{The Challenge: Sequential Processing Bottleneck}
+
+% Section title slide
+\begin{frame}
+\begin{center}
+{\Huge \textbf{Section 1}}\\
+\vspace{5mm}
+{\Large The Challenge}\\
+\vspace{10mm}
+{\large Sequential Processing Bottleneck}
+\end{center}
+\end{frame}
+
+% The Journey So Far
+\begin{frame}{The Journey to Transformers}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/architecture_evolution.pdf}
+\end{center}
+
+\vspace{5mm}
+\begin{itemize}
+\item \textbf{1990s}: Simple RNNs - vanishing gradients limited depth
+\item \textbf{1997}: LSTMs - better memory but still sequential
+\item \textbf{2014}: Seq2Seq - encoder-decoder paradigm
+\item \textbf{2015}: Attention mechanism - focus on relevance
+\item \textbf{2017}: \highlight{Transformers} - parallel processing revolution
+\item \textbf{2018+}: BERT, GPT - the LLM era begins
+\end{itemize}
+
+\bottomnote{Each step solved a problem but created new limitations}
+\end{frame}
+
+% The RNN Bottleneck
+\begin{frame}{The Sequential Processing Problem}
+\textbf{Why RNNs Hit a Wall:}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Sequential Processing}
+\begin{itemize}
+\item Must process word 1 before word 2
+\item Can't parallelize across sequence
+\item Training time: $O(T)$ where $T$ = length
+\item GPUs sit idle most of the time
+\end{itemize}
+
+\vspace{5mm}
+\warning{Result: Weeks to train large models}
+
+\column{0.48\textwidth}
+\textbf{Information Bottleneck}
+\begin{itemize}
+\item All history compressed into one vector
+\item Long sequences lose information
+\item Gradient vanishing/exploding
+\item Can't capture long-range dependencies
+\end{itemize}
+
+\vspace{5mm}
+\warning{Result: Poor performance on long texts}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{We needed a completely different approach - one that could process all words simultaneously}
+
+\bottomnote{The sequential nature of RNNs is fundamentally incompatible with modern parallel hardware}
+\end{frame}
+
+% Why This Matters
+\begin{frame}{Why This Problem Matters}
+\textbf{Real-World Impact of Sequential Bottleneck:}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Training Limitations}
+\begin{itemize}
+\item LSTM on Wikipedia: 3 weeks
+\item Can't scale to internet-size data
+\item Limited model size (memory constraints)
+\item Expensive iteration cycles
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Performance Ceiling}
+\begin{itemize}
+\item Max context: ~100 words effectively
+\item Document understanding impossible
+\item Multi-turn dialogue fails
+\item Cross-sentence reasoning limited
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\textbf{The Vision:} What if we could...
+\begin{itemize}
+\item Process all words in parallel?
+\item Let every word see every other word directly?
+\item Scale to thousands of words context?
+\item Train models 100x faster?
+\end{itemize}
+
+\vspace{8mm}
+\keypoint{The answer: Self-Attention - a mechanism that revolutionized NLP}
+
+\bottomnote{This challenge motivated the complete reimagining of neural architectures}
+\end{frame}
+
+% ============================================
+% SECTION 2: THE FOUNDATION
+% ============================================
+
+\section{The Foundation: Self-Attention Mechanism}
+
+% Section title slide
+\begin{frame}
+\begin{center}
+{\Huge \textbf{Section 2}}\\
+\vspace{5mm}
+{\Large The Foundation}\\
+\vspace{10mm}
+{\large Self-Attention Mechanism}
+\end{center}
+\end{frame}
+
+% Self-Attention Intuition
+\begin{frame}{Self-Attention: The Core Innovation}
+\textbf{The Brilliant Insight:}
+
+\vspace{5mm}
+"Let every word directly look at every other word to decide what's relevant"
+
+\vspace{10mm}
+\textbf{Example:} "The cat sat on the mat because it was tired"
+
+\vspace{8mm}
+When processing "it":
+\begin{itemize}
+\item Traditional RNN: Only sees previous hidden states sequentially
+\item \highlight{Self-attention}: Directly examines all words:
+\begin{itemize}
+\item "it" strongly attends to "cat" (0.7 weight)
+\item "it" weakly attends to "mat" (0.1 weight)
+\item "it" moderately attends to "tired" (0.2 weight)
+\end{itemize}
+\end{itemize}
+
+\vspace{8mm}
+\keypoint{Every word builds its representation by looking at all other words simultaneously}
+
+\bottomnote{This parallel attention computation is what enables transformer speed}
+\end{frame}
+
+% Mathematical Foundation
+\begin{frame}{The Attention Formula}
+\begin{center}
+{\Large \textbf{Scaled Dot-Product Attention}}
+\end{center}
+
+\vspace{8mm}
+\formula{\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V}
+
+\vspace{10mm}
+\textbf{Step-by-step computation:}
+\begin{enumerate}
+\item \textbf{Create Q, K, V:} Linear projections of input embeddings
+\[Q = XW^Q, \quad K = XW^K, \quad V = XW^V\]
+\item \textbf{Compute attention scores:} How much should word $i$ attend to word $j$?
+\[\text{score}(i,j) = \frac{q_i \cdot k_j}{\sqrt{d_k}}\]
+\item \textbf{Apply softmax:} Convert scores to probability distribution
+\[\alpha_{ij} = \frac{\exp(\text{score}(i,j))}{\sum_k \exp(\text{score}(i,k))}\]
+\item \textbf{Weighted sum:} Combine values using attention weights
+\[\text{output}_i = \sum_j \alpha_{ij} v_j\]
+\end{enumerate}
+
+\bottomnote{The $\sqrt{d_k}$ scaling prevents softmax saturation in high dimensions}
+\end{frame}
+
+% Query, Key, Value Explained
+\begin{frame}{Understanding Query, Key, and Value}
+\textbf{The Information Retrieval Analogy:}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Query (Q)}
+\begin{itemize}
+\item "What am I looking for?"
+\item Current word's search vector
+\item Dimension: $d_k$
+\item Learned through $W^Q$
+\end{itemize}
+
+\vspace{5mm}
+\secondary{\small Example: "bank" asks "Am I financial or river-related?"}
+
+\column{0.32\textwidth}
+\textbf{Key (K)}
+\begin{itemize}
+\item "What do I contain?"
+\item Each word's content descriptor
+\item Dimension: $d_k$
+\item Learned through $W^K$
+\end{itemize}
+
+\vspace{5mm}
+\secondary{\small Example: "river" advertises "I'm about water"}
+
+\column{0.32\textwidth}
+\textbf{Value (V)}
+\begin{itemize}
+\item "What information do I provide?"
+\item Actual content to aggregate
+\item Dimension: $d_v$
+\item Learned through $W^V$
+\end{itemize}
+
+\vspace{5mm}
+\secondary{\small Example: "river" provides its semantic content}
+\end{columns}
+
+\vspace{10mm}
+\keypoint{Q and K determine attention weights; V provides the actual information}
+
+\bottomnote{Think of it as a soft, differentiable database lookup}
+\end{frame}
+
+% Attention Visualization
+\begin{frame}{Visualizing Attention Patterns}
+\begin{center}
+\textbf{Attention Weights for: "The cat sat on the mat"}
+\end{center}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/week5_attention_matrix.pdf}
+\end{center}
+
+\column{0.45\textwidth}
+\textbf{What the Matrix Shows:}
+\begin{itemize}
+\item Darker = stronger attention
+\item Row $i$ = where word $i$ looks
+\item Column $j$ = who attends to word $j$
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Key Observations:}
+\begin{itemize}
+\item "cat" and "sat" strongly connected
+\item "on" attends to "mat"
+\item Articles attend broadly
+\item Diagonal = self-attention
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{Attention patterns reveal learned semantic and syntactic relationships}
+
+\bottomnote{Real transformers have multiple heads capturing different relationship types}
+\end{frame}
+
+% Multi-Head Attention
+\begin{frame}{Multi-Head Attention: Multiple Perspectives}
+\textbf{Why One Head Isn't Enough:}
+
+\vspace{5mm}
+Different heads capture different relationships:
+\begin{itemize}
+\item Head 1: Syntactic dependencies (subject-verb)
+\item Head 2: Coreference resolution (pronouns)
+\item Head 3: Semantic similarity
+\item Head 4: Positional patterns
+\end{itemize}
+
+\vspace{8mm}
+\formula{\text{MultiHead}(Q,K,V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O}
+
+where each head is:
+\[\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)\]
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Typical Configuration:}
+\begin{itemize}
+\item 8-16 heads in practice
+\item Each head: $d_k = d_{model}/h$
+\item Parallel computation
+\item Concatenated and projected
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Benefits:}
+\begin{itemize}
+\item Richer representations
+\item Redundancy and robustness
+\item Different abstraction levels
+\item Better generalization
+\end{itemize}
+\end{columns}
+
+\bottomnote{Multiple heads allow the model to jointly attend to different types of information}
+\end{frame}
+
+% ============================================
+% FIRST CHECKPOINT
+% ============================================
+
+\begin{frame}[t]{Checkpoint 1: Understanding Self-Attention}
+\begin{center}
+\textbf{Test Your Understanding}
+\end{center}
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Quick Quiz:}
+
+\vspace{3mm}
+\textbf{Q1:} Why do we scale by $\sqrt{d_k}$?
+\begin{itemize}
+\item[A)] Make computation faster
+\item[B)] Prevent softmax saturation
+\item[C)] Reduce memory usage
+\item[D)] Improve accuracy
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Q2:} What's the main advantage of self-attention over RNNs?
+\begin{itemize}
+\item[A)] Less parameters
+\item[B)] Better accuracy
+\item[C)] Parallel processing
+\item[D)] Simpler implementation
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Q3:} In multi-head attention with $d_{model}=512$ and 8 heads, what's each head's dimension?
+\begin{itemize}
+\item[A)] 512
+\item[B)] 64
+\item[C)] 128
+\item[D)] 4096
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Answers:}
+
+\vspace{3mm}
+\textbf{A1:} B - Prevent softmax saturation
+\begin{itemize}
+\item Large dot products → extreme softmax
+\item Scaling keeps values in reasonable range
+\item Critical for gradient flow
+\end{itemize}
+
+\vspace{5mm}
+\textbf{A2:} C - Parallel processing
+\begin{itemize}
+\item All positions computed simultaneously
+\item No sequential dependencies
+\item Enables 100x faster training
+\end{itemize}
+
+\vspace{5mm}
+\textbf{A3:} B - 64
+\begin{itemize}
+\item $d_k = d_{model} / h = 512 / 8 = 64$
+\item Each head gets equal dimension
+\item Concatenation restores full dimension
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\checkpoint{If you understand these concepts, you're ready to learn about the complete architecture!}
+\end{frame}
+
+% ============================================
+% SECTION 3: THE ARCHITECTURE
+% ============================================
+
+\section{The Architecture: Building Transformers}
+
+% Section title slide
+\begin{frame}
+\begin{center}
+{\Huge \textbf{Section 3}}\\
+\vspace{5mm}
+{\Large The Architecture}\\
+\vspace{10mm}
+{\large Building Complete Transformers}
+\end{center}
+\end{frame}
+
+% Position Problem
+\begin{frame}{The Position Problem}
+\textbf{Attention Has No Notion of Order!}
+
+\vspace{8mm}
+Without position information, these are identical to self-attention:
+\begin{itemize}
+\item "The cat chased the mouse"
+\item "The mouse chased the cat"
+\item "Cat the chased mouse the"
+\end{itemize}
+
+\vspace{8mm}
+\warning{Self-attention is permutation invariant - order doesn't matter!}
+
+\vspace{10mm}
+\textbf{The Solution: Positional Encoding}
+\begin{itemize}
+\item Add position information to embeddings
+\item Must be deterministic and smooth
+\item Should generalize to unseen lengths
+\item Preserve relative position information
+\end{itemize}
+
+\vspace{8mm}
+\keypoint{We inject position information before attention computation}
+
+\bottomnote{This is why transformers can handle variable-length sequences}
+\end{frame}
+
+% Positional Encoding
+\begin{frame}{Positional Encoding: Sinusoidal Functions}
+\textbf{The Elegant Solution:}
+
+\vspace{8mm}
+\formula{
+\begin{aligned}
+PE_{(pos, 2i)} &= \sin\left(\frac{pos}{10000^{2i/d_{model}}}\right)\\
+PE_{(pos, 2i+1)} &= \cos\left(\frac{pos}{10000^{2i/d_{model}}}\right)
+\end{aligned}
+}
+
+\vspace{8mm}
+where:
+\begin{itemize}
+\item $pos$ = position in sequence (0, 1, 2, ...)
+\item $i$ = dimension index
+\item $d_{model}$ = model dimension (e.g., 512)
+\end{itemize}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Why Sinusoids?}
+\begin{itemize}
+\item Unique pattern for each position
+\item Smooth interpolation
+\item Can extrapolate to longer sequences
+\item Relative positions computable
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/positional_encoding.pdf}
+\end{center}
+\end{columns}
+
+\bottomnote{Modern models sometimes learn positional embeddings instead}
+\end{frame}
+
+% Layer Normalization
+\begin{frame}{Layer Normalization: Stabilizing Training}
+\textbf{Why Normalization is Critical:}
+
+\vspace{8mm}
+\begin{itemize}
+\item Deep networks suffer from internal covariate shift
+\item Attention can produce varying magnitude outputs
+\item Gradients can vanish or explode
+\item Training becomes unstable without normalization
+\end{itemize}
+
+\vspace{10mm}
+\textbf{Layer Normalization:}
+\formula{\text{LayerNorm}(x) = \gamma \cdot \frac{x - \mu}{\sigma + \epsilon} + \beta}
+
+where:
+\begin{itemize}
+\item $\mu$ = mean across features for each sample
+\item $\sigma$ = standard deviation across features
+\item $\gamma, \beta$ = learned scale and shift parameters
+\item $\epsilon$ = small constant for numerical stability
+\end{itemize}
+
+\vspace{8mm}
+\keypoint{Applied after each sub-layer (attention and feed-forward)}
+
+\bottomnote{Modern transformers use pre-normalization for better stability}
+\end{frame}
+
+% Residual Connections
+\begin{frame}[fragile]{Residual Connections: Highway for Gradients}
+\textbf{The Deep Network Challenge:}
+
+\vspace{5mm}
+Transformers are DEEP (12-24+ layers). Without residuals:
+\begin{itemize}
+\item Gradients vanish exponentially
+\item Information gets lost
+\item Training becomes impossible
+\end{itemize}
+
+\vspace{10mm}
+\textbf{Residual Connections to the Rescue:}
+\formula{\text{Output} = \text{LayerNorm}(x + \text{Sublayer}(x))}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Benefits:}
+\begin{itemize}
+\item Direct gradient path
+\item Preserves information
+\item Enables very deep networks
+\item Faster convergence
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Implementation:}
+\begin{lstlisting}[language=Python]
+# Attention with residual
+attn_out = attention(x)
+x = layer_norm(x + attn_out)
+
+# FFN with residual
+ffn_out = feed_forward(x)
+x = layer_norm(x + ffn_out)
+\end{lstlisting}
+\end{columns}
+
+\bottomnote{Every sublayer in the transformer has a residual connection}
+\end{frame}
+
+% Complete Architecture
+\begin{frame}{The Complete Transformer Architecture}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/architecture_evolution.pdf}
+\end{center}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Encoder (Left):}
+\begin{itemize}
+\item 6 identical layers
+\item Multi-head self-attention
+\item Position-wise feed-forward
+\item Residuals \& LayerNorm
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Decoder (Right):}
+\begin{itemize}
+\item 6 identical layers
+\item Masked self-attention
+\item Encoder-decoder attention
+\item Position-wise feed-forward
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{Most modern models use only encoder (BERT) or decoder (GPT)}
+
+\bottomnote{The original paper used both for translation; modern LLMs typically use one}
+\end{frame}
+
+% Encoder Details
+\begin{frame}[fragile]{Inside the Encoder}
+\textbf{Each Encoder Layer Contains:}
+
+\vspace{8mm}
+\begin{enumerate}
+\item \textbf{Multi-Head Self-Attention}
+\begin{itemize}
+\item All positions attend to all positions
+\item Parallel computation for all words
+\item 8-16 attention heads typically
+\end{itemize}
+
+\vspace{5mm}
+\item \textbf{Position-wise Feed-Forward Network}
+\begin{lstlisting}[language=Python]
+FFN(x) = max(0, xW1 + b1)W2 + b2
+\end{lstlisting}
+\begin{itemize}
+\item Applied to each position separately
+\item Hidden dimension typically 4x model dimension
+\item ReLU or GELU activation
+\end{itemize}
+
+\vspace{5mm}
+\item \textbf{Residual Connections} around each sublayer
+\item \textbf{Layer Normalization} after each sublayer
+\end{enumerate}
+
+\vspace{8mm}
+\textbf{Dimensions (BERT-base example):}
+\begin{itemize}
+\item Model dimension: 768, Feed-forward: 3072, Heads: 12, Layers: 12
+\end{itemize}
+
+\bottomnote{The feed-forward network provides the non-linearity that attention lacks}
+\end{frame}
+
+% Decoder Details
+\begin{frame}{Inside the Decoder}
+\textbf{Three Sublayers per Decoder Layer:}
+
+\vspace{8mm}
+\begin{enumerate}
+\item \textbf{Masked Multi-Head Self-Attention}
+\begin{itemize}
+\item Prevents looking at future tokens
+\item Ensures autoregressive property
+\item Critical for generation tasks
+\end{itemize}
+
+\vspace{5mm}
+\item \textbf{Encoder-Decoder Attention}
+\begin{itemize}
+\item Queries from decoder
+\item Keys and Values from encoder output
+\item Allows decoder to focus on relevant input
+\end{itemize}
+
+\vspace{5mm}
+\item \textbf{Position-wise Feed-Forward}
+\begin{itemize}
+\item Same as encoder FFN
+\item Independent processing per position
+\end{itemize}
+\end{enumerate}
+
+\vspace{8mm}
+\warning{Masking ensures we can't "cheat" during training by looking ahead}
+
+\bottomnote{GPT models are decoder-only with masked self-attention}
+\end{frame}
+
+% Implementation
+\begin{frame}[fragile]{Implementing Self-Attention from Scratch}
+\begin{lstlisting}[language=Python]
+import torch
+import torch.nn.functional as F
+
+class SelfAttention(torch.nn.Module):
+    def __init__(self, d_model, d_k):
+        super().__init__()
+        self.W_q = torch.nn.Linear(d_model, d_k)
+        self.W_k = torch.nn.Linear(d_model, d_k)
+        self.W_v = torch.nn.Linear(d_model, d_k)
+        self.scale = d_k ** 0.5
+
+    def forward(self, x):
+        # x shape: (batch_size, seq_len, d_model)
+        Q = self.W_q(x)  # (batch, seq_len, d_k)
+        K = self.W_k(x)
+        V = self.W_v(x)
+
+        # Compute attention scores
+        scores = torch.matmul(Q, K.transpose(-2, -1)) / self.scale
+        # scores shape: (batch, seq_len, seq_len)
+
+        # Apply softmax to get weights
+        attn_weights = F.softmax(scores, dim=-1)
+
+        # Apply weights to values
+        output = torch.matmul(attn_weights, V)
+        return output, attn_weights
+\end{lstlisting}
+
+\bottomnote{Matrix multiplication enables parallel computation across all positions}
+\end{frame}
+
+% Training Considerations
+\begin{frame}{Training Transformers: Key Considerations}
+\textbf{Optimization Challenges:}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Learning Rate Schedule}
+\begin{itemize}
+\item Warmup is critical
+\item Linear increase for first steps
+\item Then decay by $1/\sqrt{step}$
+\item Prevents early instability
+\end{itemize}
+
+\vspace{8mm}
+\formula{lr = d_{model}^{-0.5} \cdot \min(step^{-0.5}, step \cdot warmup^{-1.5})}
+
+\column{0.48\textwidth}
+\textbf{Regularization}
+\begin{itemize}
+\item Dropout (typically 0.1)
+\item Weight decay
+\item Label smoothing
+\item Gradient clipping
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Batch Size}
+\begin{itemize}
+\item Larger is better (if fits)
+\item Gradient accumulation
+\item Typically 4k-64k tokens
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\warning{Training is unstable without proper warmup and initialization}
+
+\bottomnote{Modern training uses mixed precision and distributed training for efficiency}
+\end{frame}
+
+% Computational Complexity
+\begin{frame}{Computational Complexity Analysis}
+\textbf{Time and Space Complexity:}
+
+\vspace{8mm}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Component} & \textbf{Time} & \textbf{Space} & \textbf{Bottleneck} \\
+\hline
+Self-Attention & $O(n^2 \cdot d)$ & $O(n^2)$ & Quadratic in length \\
+Feed-Forward & $O(n \cdot d^2)$ & $O(1)$ & Linear in length \\
+Multi-Head Proj & $O(n \cdot d^2)$ & $O(1)$ & Model dimension \\
+\hline
+Total per Layer & $O(n^2 \cdot d + n \cdot d^2)$ & $O(n^2)$ & \\
+\hline
+\end{tabular}
+\end{center}
+
+where $n$ = sequence length, $d$ = model dimension
+
+\vspace{10mm}
+\textbf{Practical Implications:}
+\begin{itemize}
+\item Memory grows quadratically with sequence length
+\item Long sequences (>2k tokens) become problematic
+\item Modern solutions: Sparse attention, Flash Attention
+\item Trade-off: Parallelization vs memory usage
+\end{itemize}
+
+\vspace{8mm}
+\keypoint{The $O(n^2)$ attention is both the strength and limitation}
+
+\bottomnote{Recent work focuses on linear attention mechanisms for longer contexts}
+\end{frame}
+
+% ============================================
+% SECOND CHECKPOINT
+% ============================================
+
+\begin{frame}[t]{Checkpoint 2: Architecture Understanding}
+\begin{center}
+\textbf{Test Your Architecture Knowledge}
+\end{center}
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Architecture Quiz:}
+
+\vspace{3mm}
+\textbf{Q1:} Why do we need positional encoding?
+\begin{itemize}
+\item[A)] Speed up training
+\item[B)] Self-attention is order-invariant
+\item[C)] Reduce memory usage
+\item[D)] Improve accuracy
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Q2:} What's the purpose of residual connections?
+\begin{itemize}
+\item[A)] Reduce parameters
+\item[B)] Speed up inference
+\item[C)] Enable gradient flow
+\item[D)] Save memory
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Q3:} Why is the FFN dimension typically 4x the model dimension?
+\begin{itemize}
+\item[A)] Hardware optimization
+\item[B)] Add capacity and non-linearity
+\item[C)] Match attention dimensions
+\item[D)] Historical reasons
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Answers:}
+
+\vspace{3mm}
+\textbf{A1:} B - Self-attention is order-invariant
+\begin{itemize}
+\item Attention treats input as a set
+\item Position encoding adds order info
+\item Critical for sequence understanding
+\end{itemize}
+
+\vspace{5mm}
+\textbf{A2:} C - Enable gradient flow
+\begin{itemize}
+\item Direct path through layers
+\item Prevents vanishing gradients
+\item Allows very deep networks
+\end{itemize}
+
+\vspace{5mm}
+\textbf{A3:} B - Add capacity and non-linearity
+\begin{itemize}
+\item Attention is linear transformation
+\item FFN adds non-linear processing
+\item Expansion increases model capacity
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\checkpoint{Understanding these components is crucial for implementing and debugging transformers}
+\end{frame}
+
+% ============================================
+% SECTION 4: THE REVOLUTION
+% ============================================
+
+\section{The Revolution: Impact and Applications}
+
+% Section title slide
+\begin{frame}
+\begin{center}
+{\Huge \textbf{Section 4}}\\
+\vspace{5mm}
+{\Large The Revolution}\\
+\vspace{10mm}
+{\large Impact and Applications}
+\end{center}
+\end{frame}
+
+% The Impact
+\begin{frame}{The Transformer Revolution (2017-2024)}
+\begin{center}
+{\Large \textbf{One Architecture Changed Everything}}
+\end{center}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Training Speed}
+\begin{itemize}
+\item \success{100x faster} than RNNs
+\item Full parallelization
+\item Days not weeks
+\item Scales with hardware
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Performance}
+\begin{itemize}
+\item SOTA on all benchmarks
+\item Better long-range deps
+\item Transfer learning works
+\item Multimodal capabilities
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Applications}
+\begin{itemize}
+\item ChatGPT (175B params)
+\item Google Search (BERT)
+\item GitHub Copilot
+\item DALL-E, Whisper
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/week5_benchmark_timeline.pdf}
+\end{center}
+
+\bottomnote{Transformers now power 98\% of state-of-the-art NLP systems}
+\end{frame}
+
+% BERT Architecture
+\begin{frame}{BERT: Bidirectional Encoder Representations}
+\textbf{The Encoder-Only Revolution (2018):}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Architecture:}
+\begin{itemize}
+\item Encoder-only transformer
+\item Bidirectional context
+\item 12/24 layers (Base/Large)
+\item 110M/340M parameters
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Training Objective:}
+\begin{itemize}
+\item Masked Language Modeling (MLM)
+\item Randomly mask 15\% of tokens
+\item Predict masked tokens
+\item Next Sentence Prediction (NSP)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Key Innovations:}
+\begin{itemize}
+\item Bidirectional pre-training
+\item Fine-tuning paradigm
+\item [CLS] token for classification
+\item Segment embeddings
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Impact:}
+\begin{itemize}
+\item SOTA on 11 NLP tasks
+\item Powers Google Search
+\item Started fine-tuning era
+\item 50,000+ citations
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{BERT showed that pre-training + fine-tuning is incredibly powerful}
+
+\bottomnote{BERT's bidirectional approach is perfect for understanding tasks}
+\end{frame}
+
+% GPT Architecture
+\begin{frame}{GPT: The Decoder-Only Approach}
+\textbf{Generative Pre-trained Transformer Evolution:}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Architecture:}
+\begin{itemize}
+\item Decoder-only (masked attention)
+\item Autoregressive generation
+\item Left-to-right only
+\item Scales to extreme sizes
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Model Progression:}
+\begin{itemize}
+\item GPT (2018): 117M params
+\item GPT-2 (2019): 1.5B params
+\item GPT-3 (2020): 175B params
+\item GPT-4 (2023): ~1.7T params*
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Training Approach:}
+\begin{itemize}
+\item Next token prediction
+\item Massive text corpora
+\item No fine-tuning needed
+\item In-context learning
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Capabilities:}
+\begin{itemize}
+\item Text generation
+\item Few-shot learning
+\item Code generation
+\item Reasoning tasks
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{GPT proved that scale + simple objective = emergent abilities}
+
+\bottomnote{*Estimated; GPT-4's exact size remains undisclosed}
+\end{frame}
+
+% Comparison
+\begin{frame}{Encoder-Only vs Decoder-Only vs Both}
+\begin{center}
+\textbf{Which Architecture When?}
+\end{center}
+
+\vspace{8mm}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Aspect} & \textbf{Encoder-Only} & \textbf{Decoder-Only} & \textbf{Both} \\
+\hline
+Example & BERT, RoBERTa & GPT, LLaMA & T5, BART \\
+\hline
+Context & Bidirectional & Left-to-right & Flexible \\
+Best for & Understanding & Generation & Translation \\
+Training & MLM & Next token & Varies \\
+Fine-tuning & Required & Optional & Optional \\
+Speed & Fast inference & Slower (sequential) & Slowest \\
+Parameters & Smaller & Can be huge & Medium \\
+\hline
+\end{tabular}
+
+\vspace{10mm}
+\textbf{Use Cases:}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Encoder-Only:}
+\begin{itemize}
+\item Classification
+\item NER, POS tagging
+\item Sentiment analysis
+\item Search/retrieval
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Decoder-Only:}
+\begin{itemize}
+\item Text generation
+\item Dialogue systems
+\item Code completion
+\item Creative writing
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Encoder-Decoder:}
+\begin{itemize}
+\item Translation
+\item Summarization
+\item Question answering
+\item Text-to-text tasks
+\end{itemize}
+\end{columns}
+
+\bottomnote{Choose architecture based on your task requirements}
+\end{frame}
+
+% Beyond Text
+\begin{frame}{Beyond Text: Vision Transformers (ViT)}
+\textbf{Transformers Conquer Computer Vision (2020):}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Key Idea:}
+\begin{itemize}
+\item Divide image into patches (16x16)
+\item Treat patches as "tokens"
+\item Add positional embeddings
+\item Standard transformer encoder
+\item [CLS] token for classification
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Results:}
+\begin{itemize}
+\item Beats CNNs at scale
+\item ImageNet: 88.5\% accuracy
+\item Needs lots of data
+\item Better transfer learning
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why It Works:}
+\begin{itemize}
+\item Global receptive field from start
+\item Flexible attention patterns
+\item No inductive bias of convolution
+\item Scales better than CNNs
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Extensions:}
+\begin{itemize}
+\item CLIP: Vision + Language
+\item DALL-E: Text to Image
+\item Flamingo: Visual QA
+\item SAM: Segmentation
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{Transformers are becoming the universal architecture for all modalities}
+
+\bottomnote{The same architecture works for text, images, audio, and more}
+\end{frame}
+
+% Scaling Laws
+\begin{frame}{Scaling Laws: Bigger is (Usually) Better}
+\textbf{The Kaplan Scaling Laws (2020):}
+
+\vspace{8mm}
+\formula{\text{Loss} = aN^{-\alpha} + bD^{-\beta} + c}
+
+where $N$ = parameters, $D$ = data, $\alpha \approx 0.076$, $\beta \approx 0.095$
+
+\vspace{10mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Key Findings:}
+\begin{itemize}
+\item Performance improves predictably
+\item No plateau in sight
+\item Data and compute equally important
+\item Optimal model size grows with budget
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/week5_efficiency_comparison.pdf}
+\end{center}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{Scaling laws justify the race to build larger models}
+
+\bottomnote{Chinchilla showed we also need proportionally more data}
+\end{frame}
+
+% Modern Variants
+\begin{frame}{Modern Transformer Variants}
+\textbf{Innovations to Address Limitations:}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Efficiency Improvements:}
+\begin{itemize}
+\item \textbf{Flash Attention:} 2-4x faster
+\item \textbf{Sparse Transformers:} $O(n\sqrt{n})$
+\item \textbf{Linformer:} $O(n)$ attention
+\item \textbf{Performer:} Kernel-based
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Architectural Changes:}
+\begin{itemize}
+\item \textbf{MoE:} Conditional computation
+\item \textbf{Retrieval:} External memory
+\item \textbf{Toolformer:} API calling
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Training Innovations:}
+\begin{itemize}
+\item \textbf{RoPE:} Better positions
+\item \textbf{ALiBi:} Longer sequences
+\item \textbf{FlashAttention-2:} Even faster
+\item \textbf{GQA:} Grouped queries
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Current SOTA:}
+\begin{itemize}
+\item LLaMA 2 architecture
+\item RMSNorm
+\item SwiGLU activation
+\item Rotary embeddings
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{Innovation continues at breakneck pace}
+
+\bottomnote{Each improvement enables larger models and longer contexts}
+\end{frame}
+
+% Real-World Applications
+\begin{frame}{Real-World Impact: Transformers Everywhere}
+\textbf{Applications Powered by Transformers (2024):}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.24\textwidth}
+\textbf{Language:}
+\begin{itemize}
+\item ChatGPT
+\item Claude
+\item Gemini
+\item DeepL
+\item Grammarly
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Code:}
+\begin{itemize}
+\item GitHub Copilot
+\item Cursor
+\item CodeWhisperer
+\item Tabnine
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Creative:}
+\begin{itemize}
+\item DALL-E 3
+\item Midjourney
+\item Stable Diffusion
+\item MuseNet
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Science:}
+\begin{itemize}
+\item AlphaFold
+\item ESMFold
+\item Galactica
+\item BioGPT
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\textbf{Industry Adoption:}
+\begin{itemize}
+\item \textbf{Microsoft:} Copilot in Office 365
+\item \textbf{Google:} Bard, Search, Workspace
+\item \textbf{Meta:} LLaMA, Make-A-Video
+\item \textbf{Every Tech Company:} Building transformer-based products
+\end{itemize}
+
+\vspace{8mm}
+\keypoint{Transformers are the foundation of the current AI revolution}
+
+\bottomnote{The impact extends far beyond NLP into all domains}
+\end{frame}
+
+% Key Takeaways
+\begin{frame}{Key Takeaways}
+\begin{center}
+{\Large \textbf{What to Remember}}
+\end{center}
+
+\vspace{10mm}
+\begin{enumerate}
+\item \textbf{Core Innovation:} Self-attention enables parallel processing
+\vspace{3mm}
+\item \textbf{Key Components:}
+\begin{itemize}
+\item Multi-head attention (different relationships)
+\item Positional encoding (order information)
+\item FFN (non-linearity and capacity)
+\item Residuals \& LayerNorm (training stability)
+\end{itemize}
+\vspace{3mm}
+\item \textbf{Advantages:} Parallelization, long-range dependencies, transfer learning
+\vspace{3mm}
+\item \textbf{Limitations:} Quadratic complexity, memory intensive
+\vspace{3mm}
+\item \textbf{Impact:} Powers essentially all modern NLP and beyond
+\vspace{3mm}
+\item \textbf{Future:} Longer context, efficiency, multimodal, reasoning
+\end{enumerate}
+
+\vspace{10mm}
+\keypoint{Transformers are the foundation you need to understand modern AI}
+
+\bottomnote{Master these concepts to work with any modern AI system}
+\end{frame}
+
+% Practice Problems
+\begin{frame}{Practice Problems}
+\textbf{Deepen Your Understanding:}
+
+\vspace{8mm}
+\begin{enumerate}
+\item \textbf{Computation:} For sequence length 100, model dimension 512, 8 heads:
+\begin{itemize}
+\item What's the dimension of each head?
+\item How many parameters in multi-head attention?
+\item Memory for attention matrices?
+\end{itemize}
+
+\vspace{5mm}
+\item \textbf{Architecture:} Why do we need positional encoding? What happens without it?
+
+\vspace{5mm}
+\item \textbf{Implementation:} Write the attention masking for decoder self-attention
+
+\vspace{5mm}
+\item \textbf{Analysis:} Why is the scaling factor $\sqrt{d_k}$ and not $d_k$?
+
+\vspace{5mm}
+\item \textbf{Design:} How would you modify transformers for 10k+ token sequences?
+\end{enumerate}
+
+\vspace{10mm}
+\bottomnote{Solutions will be discussed in the lab session}
+\end{frame}
+
+% Summary
+\begin{frame}{Summary: The Journey We've Taken}
+\textbf{From Challenge to Revolution:}
+
+\vspace{10mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Challenge:}
+\begin{itemize}
+\item RNNs' sequential bottleneck
+\item Couldn't parallelize
+\item Limited context
+\item Slow training
+\end{itemize}
+
+\vspace{8mm}
+\textbf{The Foundation:}
+\begin{itemize}
+\item Self-attention mechanism
+\item Query-Key-Value framework
+\item Multi-head perspectives
+\item Parallel processing
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Architecture:}
+\begin{itemize}
+\item Complete transformer design
+\item Positional encoding
+\item Residuals and normalization
+\item Encoder/Decoder variants
+\end{itemize}
+
+\vspace{8mm}
+\textbf{The Revolution:}
+\begin{itemize}
+\item BERT, GPT, and beyond
+\item Multimodal capabilities
+\item Universal architecture
+\item AI transformation
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\keypoint{You now understand the architecture powering the AI revolution!}
+
+\bottomnote{Next: Hands-on lab - implement your own transformer}
+\end{frame}
+
+% Final slide
+\begin{frame}
+\begin{center}
+{\Huge \textbf{Thank You!}}\\
+\vspace{10mm}
+{\Large Questions?}\\
+\vspace{15mm}
+{\large Next: Lab Session - Building Transformers}\\
+\vspace{5mm}
+\secondary{\footnotesize We'll implement a complete transformer from scratch}
+\end{center}
+\end{frame}
+
+\end{document}

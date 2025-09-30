@@ -1,0 +1,1228 @@
+% Week 5: Transformers - The Speed Revolution
+% NLP Course 2025
+% Created: 2025-09-28
+% Didactic Framework: Hope → Disappointment → Breakthrough
+
+\input{../../common/master_template.tex}
+
+\title{Natural Language Processing}
+\subtitle{Week 5: The Speed Revolution}
+\author{From Sequential Waiting to Parallel Processing}
+\date{NLP Course 2025}
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+\titlepage
+\end{frame}
+
+% ============================================
+% PART 1: THE WAITING GAME (5 slides)
+% ============================================
+
+\section{The Waiting Game}
+
+% Slide 1: The Nightmare Scenario
+\begin{frame}[t]{The Nightmare Scenario}
+\textbf{You want to train a language model on Wikipedia}
+
+\vspace{5mm}
+\textbf{The Data:}
+\begin{itemize}
+\item English Wikipedia: 6 billion words
+\item Need to process every word, many times
+\item Training typically requires 10-20 epochs
+\item Total words to process: 60-120 billion
+\end{itemize}
+
+\vspace{8mm}
+\textbf{With an RNN on modern GPU:}
+\begin{itemize}
+\item Processing speed: ~800 words/second
+\item Calculate: $\frac{100\text{ billion words}}{800 \text{ words/sec}} = 125\text{ million seconds}$
+\item Converting: \highlight{3.9 years of continuous training}
+\end{itemize}
+
+\vspace{8mm}
+\begin{center}
+\warning{\textbf{The Waiting Game:} Press ``train'', come back in 2027}
+\end{center}
+
+\secondary{\footnotesize Even with parallelization tricks, you're looking at months of waiting}
+\end{frame}
+
+% Slide 2: Why So Slow?
+\begin{frame}[t]{Why So Slow? The Sequential Trap}
+\textbf{RNN must process one word at a time:}
+
+\vspace{5mm}
+Step 1: Process ``The'' → hidden state $h_1$\\
+Step 2: Wait for $h_1$, process ``cat'' → hidden state $h_2$\\
+Step 3: Wait for $h_2$, process ``sat'' → hidden state $h_3$\\
+\hspace{2cm} $\vdots$
+
+\vspace{8mm}
+\textbf{Human Analogy:} Assembly line where each worker waits for previous worker to finish
+
+\vspace{8mm}
+\textbf{Your GPU Has:}
+\begin{itemize}
+\item 5,120 CUDA cores (NVIDIA A100)
+\item Can perform 5,120 operations \textit{simultaneously}
+\item But RNN uses only ONE core at a time
+\item The other 5,119 sit idle, waiting
+\end{itemize}
+
+\vspace{8mm}
+\begin{center}
+\keypoint{Sequential processing = massive underutilization}
+\end{center}
+\end{frame}
+
+% Slide 3: GPU Bored to Death
+\begin{frame}[t]{Your \$10,000 GPU Is Bored to Death}
+\begin{center}
+\textbf{Actual GPU Utilization During RNN Training}
+\end{center}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Hardware:}
+\begin{itemize}
+\item NVIDIA A100: \$10,000
+\item 5,120 parallel processors
+\item Designed for massive parallelism
+\item Peak: 312 TFLOPS
+\end{itemize}
+
+\vspace{5mm}
+\textbf{What RNN Uses:}
+\begin{itemize}
+\item Active processors: 49
+\item Idle processors: 5,071
+\item Utilization: \highlight{0.96\%}
+\item Actual throughput: 3 TFLOPS
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Cost:}
+\begin{itemize}
+\item You paid: \$10,000
+\item You're getting: \$96 worth of compute
+\item Wasted capacity: 99.04\%
+\item Like buying a sports car for city traffic
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Visualization:}\\
+\secondary{\small Imagine 5,120 workers at a factory}\\
+\secondary{\small Only 49 working}\\
+\secondary{\small 5,071 standing around waiting}
+\end{columns}
+
+\vspace{10mm}
+\begin{center}
+\warning{\textbf{The Waste:} This is like hiring 100 people but only giving work to 1}
+\end{center}
+\end{frame}
+
+% Slide 4: Attention Helped... A Little
+\begin{frame}[t]{Week 4 Recap: Attention Helped... A Little}
+\textbf{What We Learned Last Week:}
+
+\vspace{5mm}
+\textbf{RNN Alone:}
+\begin{itemize}
+\item All history compressed into one vector
+\item Long sequences: information lost
+\item Translation quality: BLEU 18.5
+\item Training time: 90 days for large model
+\end{itemize}
+
+\vspace{8mm}
+\textbf{RNN + Attention:}
+\begin{itemize}
+\item Keep all encoder states
+\item Decoder selectively attends
+\item Translation quality: BLEU 33.2 (\textcolor{green}{+79\% improvement})
+\item Training time: 45 days (\textcolor{green}{2x faster})
+\end{itemize}
+
+\vspace{8mm}
+\textbf{But...}
+\begin{itemize}
+\item Still sequential processing (RNN part)
+\item Still waiting for previous words
+\item GPU utilization: 5\% (slightly better, but still terrible)
+\item 45 days is better than 90, but still \textit{months}
+\end{itemize}
+
+\vspace{8mm}
+\begin{center}
+\keypoint{Quality improved, but speed problem remains}
+\end{center}
+\end{frame}
+
+% Slide 5: Quantifying the Problem
+\begin{frame}[t]{Quantifying the Speed Problem}
+\begin{center}
+\textbf{Training Time Comparison (Wikipedia-scale model)}
+\end{center}
+
+\vspace{5mm}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Model} & \textbf{Days} & \textbf{GPU Util} & \textbf{BLEU} & \textbf{Cost (\$)} \\
+\hline
+RNN & 90 & 1\% & 28.5 & \$45,000 \\
+RNN+Attention & 45 & 5\% & 33.2 & \$22,500 \\
+\textcolor{gray}{Target?} & \textcolor{green}{\textbf{1}} & \textcolor{green}{\textbf{90\%}} & \textcolor{green}{\textbf{34+}} & \textcolor{green}{\textbf{\$500}} \\
+\hline
+\end{tabular}
+
+\vspace{10mm}
+\textbf{Information Theory Perspective:}
+\begin{itemize}
+\item Sequential processing: Compute operations = $O(n)$ where $n$ = sequence length
+\item Parallel potential: Could do all operations simultaneously = $O(1)$
+\item Theoretical speedup: 100x (if we remove sequential dependency)
+\end{itemize}
+
+\vspace{8mm}
+\textbf{The Key Observation:}
+\begin{itemize}
+\item Attention was helpful (quality improved)
+\item RNN was the bottleneck (sequential processing)
+\item Radical question: \highlight{What if we removed the RNN entirely?}
+\end{itemize}
+
+\vspace{8mm}
+\begin{center}
+\keypoint{Can we keep attention but eliminate sequential processing?}
+\end{center}
+\end{frame}
+
+% ============================================
+% PART 2: ATTENTION WITHOUT RNN (6 slides)
+% ============================================
+
+\section{The First Attempt}
+
+% Slide 6: The Radical Idea
+\begin{frame}[t]{The Radical Idea: Pure Attention}
+\textbf{The Observation:}
+
+\vspace{5mm}
+Breaking down RNN+Attention:
+\begin{itemize}
+\item \textcolor{green}{Attention part}: Helped quality (selectively focus on relevant words)
+\item \textcolor{red}{RNN part}: Created bottleneck (sequential processing)
+\end{itemize}
+
+\vspace{8mm}
+\textbf{The Hypothesis:}
+\begin{center}
+``What if every word directly attends to every other word?''
+\end{center}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Old Way (RNN+Attention):}
+\begin{itemize}
+\item RNN: Process sequentially
+\item Build hidden states one-by-one
+\item Attention: Look back at states
+\item Sequential bottleneck
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{New Idea (Pure Attention):}
+\begin{itemize}
+\item No RNN at all
+\item All words connect to all words
+\item Attention happens simultaneously
+\item No sequential dependency
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\begin{center}
+\textbf{Conceptual Diagram:} Every word looks at every other word at the same time
+\end{center}
+
+\secondary{\footnotesize All 5,120 GPU cores can work simultaneously - no waiting!}
+\end{frame}
+
+% Slide 7: THE FIRST SUCCESS
+\begin{frame}[t]{The First Success: Short Sentences Work Great!}
+\begin{center}
+\textbf{Early Experiments (2017): Testing Pure Attention}
+\end{center}
+
+\vspace{5mm}
+\textbf{Test Cases (10-20 word sentences):}
+
+\vspace{5mm}
+\begin{tabular}{|l|l|c|}
+\hline
+\textbf{English} & \textbf{French (Pure Attention)} & \textbf{Quality} \\
+\hline
+The cat sat & Le chat s'est assis & \textcolor{green}{Perfect!} \\
+I love you & Je t'aime & \textcolor{green}{Perfect!} \\
+Good morning everyone & Bonjour tout le monde & \textcolor{green}{Perfect!} \\
+\hline
+\end{tabular}
+
+\vspace{10mm}
+\textbf{Performance Metrics:}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Quality:}
+\begin{itemize}
+\item BLEU score: 32.1
+\item Same as RNN+Attention!
+\item No quality loss
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Speed:}
+\begin{itemize}
+\item Training time: \textcolor{green}{\textbf{10x faster}}
+\item GPU utilization: 45\%
+\item Massive improvement!
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\begin{center}
+\success{\textbf{Breakthrough Moment:} Attention works without RNN! And it's FAST!}
+\end{center}
+
+\secondary{\footnotesize The research team was ecstatic - looked like the solution}
+\end{frame}
+
+% Slide 8: THE FAILURE PATTERN EMERGES
+\begin{frame}[t]{The Failure Pattern Emerges}
+\begin{center}
+\textbf{Testing on Longer Sequences... Disaster Strikes}
+\end{center}
+
+\vspace{5mm}
+\textbf{Experimental Results (Vaswani et al., 2017 - before positional encoding):}
+
+\vspace{5mm}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Sequence Length} & \textbf{BLEU Score} & \textbf{Quality Drop} & \textbf{Training Speed} \\
+\hline
+10 words & 32.1 & Baseline & 10x faster \\
+20 words & 31.8 & -1\% & 10x faster \\
+50 words & 18.4 & \textcolor{red}{-43\%} & 10x faster \\
+100 words & 8.2 & \textcolor{red}{-74\%} & 10x faster \\
+200 words & 3.1 & \textcolor{red}{-90\%} & 10x faster \\
+\hline
+\end{tabular}
+
+\vspace{10mm}
+\textbf{The Pattern:}
+\begin{itemize}
+\item Short sequences: Works perfectly
+\item Long sequences: Complete collapse
+\item Speed: Consistently fast (good news)
+\item Quality: Degrades catastrophically with length (bad news)
+\end{itemize}
+
+\vspace{8mm}
+\begin{center}
+\warning{\textbf{The Disappointment:} We traded speed for accuracy on anything useful}
+\end{center}
+
+\secondary{\footnotesize Real-world sentences are often 20-50+ words - this was unusable}
+\end{frame}
+
+% Slide 9: DIAGNOSING THE PROBLEM
+\begin{frame}[t]{Diagnosing the Root Cause}
+\textbf{Let's trace what happens with: ``The cat sat on the mat''}
+
+\vspace{5mm}
+\textbf{With RNN+Attention:}
+\begin{itemize}
+\item RNN processes: ``The'' (position 1), ``cat'' (position 2), ``sat'' (position 3)...
+\item Hidden states carry position information automatically
+\item Model knows ``cat'' comes before ``sat''
+\item Order preserved naturally
+\end{itemize}
+
+\vspace{8mm}
+\textbf{With Pure Attention (No RNN):}
+\begin{itemize}
+\item All words process simultaneously
+\item ``cat'' attends to ``sat'', ``the'', ``mat''...
+\item But: \textcolor{red}{No way to tell which word came first!}
+\item These are identical to pure attention:
+\begin{itemize}
+\item ``The cat sat on the mat''
+\item ``The mat sat on the cat'' \textcolor{red}{← Wrong meaning!}
+\item ``Cat the sat mat on the'' \textcolor{red}{← Nonsense!}
+\end{itemize}
+\end{itemize}
+
+\vspace{8mm}
+\begin{center}
+\textbf{Root Cause Identified:}
+\end{center}
+
+\vspace{3mm}
+\warning{\textbf{Attention is permutation invariant} - order doesn't matter!}
+
+\secondary{\footnotesize Without RNN, we lost the sequence information that tells us word order}
+\end{frame}
+
+% Slide 10: What Information Got Lost
+\begin{frame}[t]{What Information Got Lost?}
+\begin{center}
+\textbf{Two-Column Analysis: What Survived vs What Died}
+\end{center}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What Pure Attention CAN See:}
+\begin{itemize}
+\item Which words are present
+\item Semantic relationships
+\item Word meanings
+\item Attention weights
+\item Co-occurrence patterns
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Example:}
+\begin{itemize}
+\item Knows ``cat'' and ``sat'' are related
+\item Knows ``mat'' is object
+\item Understands semantic fields
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{What Pure Attention CANNOT See:}
+\begin{itemize}
+\item Which word came first
+\item Temporal ordering
+\item Sequence position
+\item Left-to-right flow
+\item Syntactic structure
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Example:}
+\begin{itemize}
+\item Can't distinguish subject vs object
+\item ``cat sat'' = ``sat cat'' (same!)
+\item Word order scrambled
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\textbf{Quantifying the Mismatch:}
+\begin{itemize}
+\item Test: Randomly permute word order
+\item Pure attention performance: 52\% (barely better than random 50\%)
+\item \textcolor{red}{Model literally can't tell if words are in right order!}
+\end{itemize}
+
+\vspace{8mm}
+\begin{center}
+\keypoint{We need position information WITHOUT sequential processing}
+\end{center}
+\end{frame}
+
+% Slide 11: The Key Question
+\begin{frame}[t]{The Key Question}
+\begin{center}
+{\Large \textbf{How Do We Add Position\\
+Without Going Back to Sequential Processing?}}
+\end{center}
+
+\vspace{10mm}
+\textbf{The Dilemma:}
+\begin{itemize}
+\item RNN gave us position \textit{automatically} (by processing sequentially)
+\item But sequential processing is exactly what we want to eliminate
+\item We need position information \textit{without} sequential dependency
+\end{itemize}
+
+\vspace{10mm}
+\textbf{Requirements for a Solution:}
+\begin{enumerate}
+\item Inject position information somehow
+\item Must be computable in parallel (no sequential dependency)
+\item Must work for any sequence length
+\item Should preserve relative positions
+\end{enumerate}
+
+\vspace{10mm}
+\begin{center}
+\textbf{The Insight Needed:}\\
+\vspace{3mm}
+Position can be represented as a \textit{signal} added to meaning
+\end{center}
+
+\vspace{5mm}
+\secondary{\footnotesize Like adding a timestamp or GPS coordinate to each word}
+\end{frame}
+
+% ============================================
+% PART 3: THE BREAKTHROUGH (10 slides)
+% ============================================
+
+\section{The Positional Encoding Revolution}
+
+% Slide 12: HUMAN INTROSPECTION
+\begin{frame}[t]{Human Introspection: How Do YOU Know Order?}
+\textbf{Prompt: When you read, how do you track word position?}
+
+\vspace{8mm}
+\textbf{Honest Self-Observation:}
+\begin{enumerate}
+\item You see \textit{spatial layout}: Words from left to right on page
+\item You track mentally: ``This is the first word, that's the second...''
+\item You use \textit{both} meaning AND position together
+\item Position isn't separate - it's part of how you understand each word
+\end{enumerate}
+
+\vspace{10mm}
+\textbf{Key Realizations:}
+\begin{itemize}
+\item Position information can be \textit{visual/spatial} (location on page)
+\item Or it can be \textit{numerical} (counting: 1st, 2nd, 3rd)
+\item It's added to meaning, not processed separately
+\item You process meaning + position \textit{simultaneously}
+\end{itemize}
+
+\vspace{10mm}
+\begin{center}
+\textbf{The Aha Moment:}
+\end{center}
+
+\vspace{5mm}
+\textbf{What if we add a ``position number'' to each word's meaning vector?}
+
+\secondary{\footnotesize Like giving each word both ``what it means'' and ``where it is''}
+\end{frame}
+
+% Slide 13: THE HYPOTHESIS
+\begin{frame}[t]{The Hypothesis: Position as Added Signal}
+\begin{center}
+\textbf{Conceptual Idea (No Math Yet)}
+\end{center}
+
+\vspace{8mm}
+\textbf{The Approach:}
+\begin{itemize}
+\item Each word has a meaning vector: [0.3, 0.5, 0.1, ...]
+\item Create a position pattern: [0.1, 0.0, 0.05, ...]
+\item Add them together: [0.4, 0.5, 0.15, ...]
+\item Now word has \textit{both} meaning and position!
+\end{itemize}
+
+\vspace{10mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Why This Should Work:}
+\begin{itemize}
+\item Position 1 gets pattern A
+\item Position 2 gets pattern B
+\item Position 3 gets pattern C
+\item Each position unique
+\item Model sees combined signal
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Analogy:}\\
+Like adding GPS coordinates to photos:
+\begin{itemize}
+\item Photo content = meaning
+\item GPS tag = position
+\item Together = complete info
+\item Can process in parallel
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\begin{center}
+\textbf{Two-Column Comparison:}
+\end{center}
+
+\vspace{3mm}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Old Way (RNN)} & \textbf{New Way (Positional Encoding)} \\
+\hline
+Process sequentially to get position & Add position signal to embedding \\
+Position emerges from order & Position explicitly encoded \\
+Must wait for previous words & All positions computed in parallel \\
+\hline
+\end{tabular}
+\end{frame}
+
+% Slide 14: ZERO-JARGON EXPLANATION
+\begin{frame}[t]{Zero-Jargon Explanation: Adding Position Numbers}
+\textbf{Let's see this with actual numbers:}
+
+\vspace{5mm}
+\textbf{Example: The word ``cat''}
+
+\vspace{5mm}
+\begin{itemize}
+\item Word embedding (meaning of ``cat''): [0.3, 0.2, 0.5, 0.1]
+\end{itemize}
+
+\vspace{5mm}
+\textbf{When ``cat'' is at position 1:}
+\begin{itemize}
+\item Position pattern for 1: [0.1, 0.0, 0.0, 0.05]
+\item Combined: [0.3, 0.2, 0.5, 0.1] + [0.1, 0.0, 0.0, 0.05]
+\item Result: [0.4, 0.2, 0.5, 0.15] \textcolor{green}{← This represents ``cat at position 1''}
+\end{itemize}
+
+\vspace{8mm}
+\textbf{When ``cat'' is at position 2:}
+\begin{itemize}
+\item Position pattern for 2: [0.0, 0.1, 0.05, 0.0]
+\item Combined: [0.3, 0.2, 0.5, 0.1] + [0.0, 0.1, 0.05, 0.0]
+\item Result: [0.3, 0.3, 0.55, 0.1] \textcolor{green}{← This represents ``cat at position 2''}
+\end{itemize}
+
+\vspace{10mm}
+\textbf{The Magic:}
+\begin{itemize}
+\item Same word, different positions = different number patterns
+\item Model can now tell positions apart
+\item All computed in parallel (no waiting!)
+\end{itemize}
+
+\vspace{8mm}
+\begin{center}
+\highlight{This is called ``positional encoding''}
+\end{center}
+
+\secondary{\footnotesize The name makes sense: we're encoding position into the numbers}
+\end{frame}
+
+% Slide 15: GEOMETRIC INTUITION
+\begin{frame}[t]{Geometric Intuition: Sine Wave Patterns}
+\textbf{How to create unique patterns for each position?}
+
+\vspace{8mm}
+\textbf{Start in 2D (easy to visualize):}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Idea:}
+\begin{itemize}
+\item Position 1: [sin(1), cos(1)] = [0.84, 0.54]
+\item Position 2: [sin(2), cos(2)] = [0.91, -0.42]
+\item Position 3: [sin(3), cos(3)] = [0.14, -0.99]
+\item Each position: unique 2D point
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Why Sine Waves?}
+\begin{itemize}
+\item Smooth, continuous patterns
+\item Never repeat (infinite positions)
+\item Unique for each position
+\item Relative distances preserved
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Visualization:}
+
+\vspace{3mm}
+\secondary{\footnotesize Imagine sine wave at different frequencies:}
+\begin{itemize}
+\item Low frequency: Slow oscillation
+\item High frequency: Fast oscillation
+\item Each dimension: different frequency
+\item Together: unique fingerprint
+\end{itemize}
+
+\vspace{8mm}
+\textbf{In Higher Dimensions:}
+\begin{itemize}
+\item Use 256 or 512 dimensions
+\item Mix many frequencies
+\item Same principle as 2D
+\item Extremely rich patterns
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\begin{center}
+\keypoint{Each position gets a unique sine/cosine pattern}
+\end{center}
+
+\secondary{\footnotesize Think of it like a barcode - each position has its own unique pattern}
+\end{frame}
+
+% Slide 16: The Complete Algorithm
+\begin{frame}[t]{Self-Attention: The Complete 3-Step Algorithm}
+\textbf{Now that we have position + meaning, how does attention work?}
+
+\vspace{8mm}
+\textbf{Step 1: Compare All Words (Find Similarities)}
+\begin{itemize}
+\item Each word asks: ``Which other words are relevant to me?''
+\item Measure: Dot product between word vectors (alignment measure)
+\item Result: Similarity scores for all pairs
+\item \textit{Why:} Need to know what to focus on
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Step 2: Convert to Percentages (Focus Distribution)}
+\begin{itemize}
+\item Take similarity scores, apply softmax
+\item Result: Percentages that sum to 100\%
+\item Example: 58\% on ``cat'', 31\% on ``sat'', 11\% on ``the''
+\item \textit{Why:} Turn scores into ``how much to focus on each word''
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Step 3: Weighted Combination (Aggregate Information)}
+\begin{itemize}
+\item Combine word meanings using the percentages
+\item Each word contributes proportionally to its focus percentage
+\item Result: New representation incorporating context
+\item \textit{Why:} Build meaning from relevant surrounding words
+\end{itemize}
+
+\vspace{8mm}
+\secondary{\footnotesize Notice: All three steps happen for ALL words simultaneously - no sequential processing!}
+\end{frame}
+
+% Slide 17: FULL NUMERICAL WALKTHROUGH
+\begin{frame}[t]{Full Numerical Walkthrough}
+\textbf{Trace every calculation for: ``The cat sat''}
+
+\vspace{5mm}
+\textbf{Given (simplified 2D for clarity):}
+\begin{itemize}
+\item ``the'': [0.1, 0.3] + [0.0, 0.1] = [0.1, 0.4] (with position)
+\item ``cat'': [0.5, 0.2] + [0.1, 0.0] = [0.6, 0.2]
+\item ``sat'': [0.3, 0.6] + [0.0, 0.05] = [0.3, 0.65]
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Step 1: Compute Similarities (Dot Products)}
+
+When processing ``cat'', compare to all words:
+\begin{itemize}
+\item cat $\cdot$ the = (0.6)(0.1) + (0.2)(0.4) = 0.06 + 0.08 = 0.14
+\item cat $\cdot$ cat = (0.6)(0.6) + (0.2)(0.2) = 0.36 + 0.04 = 0.40
+\item cat $\cdot$ sat = (0.6)(0.3) + (0.2)(0.65) = 0.18 + 0.13 = 0.31
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Step 2: Softmax to Percentages}
+
+\begin{itemize}
+\item $e^{0.14} = 1.15$, $e^{0.40} = 1.49$, $e^{0.31} = 1.36$
+\item Sum = 1.15 + 1.49 + 1.36 = 4.00
+\item Percentages: 29\% (the), 37\% (cat), 34\% (sat)
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Step 3: Weighted Combination}
+
+\begin{itemize}
+\item 0.29$\times$[0.1, 0.4] + 0.37$\times$[0.6, 0.2] + 0.34$\times$[0.3, 0.65]
+\item Result: [0.35, 0.41] \textcolor{green}{← New representation of ``cat'' with context}
+\end{itemize}
+
+\vspace{5mm}
+\secondary{\footnotesize Interpretation: ``cat'' focuses most on itself, but also incorporates ``sat'' and ``the''}
+\end{frame}
+
+% Slide 18: Why "Self-Attention"
+\begin{frame}[t]{Why the Name ``Self-Attention'' Makes Sense}
+\textbf{Now that you've seen it work, let's understand the terminology:}
+
+\vspace{8mm}
+\textbf{``Self'':}
+\begin{itemize}
+\item Each word attends to the \textit{same sentence} (self-referential)
+\item Not attending to external information
+\item All words are from the same input sequence
+\item Example: ``cat'' looks at ``the'', ``cat'', ``sat'' (all from same sentence)
+\end{itemize}
+
+\vspace{10mm}
+\textbf{``Attention'':}
+\begin{itemize}
+\item Selective focus based on relevance
+\item Some words get more weight (higher percentage)
+\item Others get less weight (lower percentage)
+\item Like human attention: focus on important parts
+\end{itemize}
+
+\vspace{10mm}
+\textbf{Technical Terms Q/K/V (Introduced AFTER Understanding):}
+\begin{itemize}
+\item \textbf{Query (Q)}: ``What am I looking for?'' (your search vector)
+\item \textbf{Key (K)}: ``What do I contain?'' (each word's content descriptor)
+\item \textbf{Value (V)}: ``What information do I provide?'' (actual content to aggregate)
+\end{itemize}
+
+\vspace{8mm}
+\begin{center}
+\keypoint{Q and K determine focus percentages; V provides the actual information}
+\end{center}
+
+\secondary{\footnotesize The information retrieval analogy: Query searches through Keys to find relevant Values}
+\end{frame}
+
+% Slide 19: Multi-Head Attention
+\begin{frame}[t]{Multi-Head: Multiple Perspectives Simultaneously}
+\textbf{One attention mechanism finds one type of relationship}
+
+\vspace{8mm}
+\textbf{But different relationships matter:}
+\begin{itemize}
+\item Head 1: Syntactic dependencies (subject-verb agreement)
+\item Head 2: Semantic similarity (related meanings)
+\item Head 3: Positional patterns (nearby words)
+\item Head 4: Co-reference (pronouns to nouns)
+\item ... (typically 8-16 heads)
+\end{itemize}
+
+\vspace{10mm}
+\textbf{Example: ``The bank by the river''}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.24\textwidth}
+\textbf{Head 1}\\
+\secondary{\footnotesize Syntax}
+\begin{itemize}
+\item bank → the
+\item river → the
+\item by → bank
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Head 2}\\
+\secondary{\footnotesize Semantics}
+\begin{itemize}
+\item bank → river
+\item Strong connection
+\item Related concepts
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Head 3}\\
+\secondary{\footnotesize Position}
+\begin{itemize}
+\item Adjacent words
+\item Local context
+\item Sequential flow
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Head 4}\\
+\secondary{\footnotesize Global}
+\begin{itemize}
+\item Sentence-level
+\item Broad attention
+\item Context gathering
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\textbf{The Key:} All heads compute \textit{in parallel} - no sequential bottleneck!
+
+\vspace{5mm}
+\begin{center}
+\keypoint{Multiple perspectives, all processed simultaneously}
+\end{center}
+\end{frame}
+
+% Slide 20: Why This Solves Speed Problem
+\begin{frame}[t]{Why This Solves the Speed Problem}
+\begin{center}
+\textbf{Architecture Comparison: Sequential vs Parallel}
+\end{center}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{RNN (Sequential):}
+\begin{itemize}
+\item Process word 1 → state 1
+\item Wait... Process word 2 → state 2
+\item Wait... Process word 3 → state 3
+\item Time complexity: $O(n)$ steps
+\item GPU utilization: 1-5\%
+\item Bottleneck: Sequential dependency
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Timeline:}\\
+\secondary{\footnotesize Word 1: [----] (100ms)}\\
+\secondary{\footnotesize Word 2: [----] (100ms)}\\
+\secondary{\footnotesize Word 3: [----] (100ms)}\\
+\secondary{\footnotesize Total: 300ms}
+
+\column{0.48\textwidth}
+\textbf{Transformer (Parallel):}
+\begin{itemize}
+\item All words processed simultaneously
+\item Self-attention: All pairs at once
+\item Positional encoding: Pre-computed
+\item Time complexity: $O(1)$ steps
+\item GPU utilization: 85-92\%
+\item No sequential dependency!
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Timeline:}\\
+\secondary{\footnotesize Word 1: [-] (10ms)}\\
+\secondary{\footnotesize Word 2: [-] (10ms) } \textit{(parallel)}\\
+\secondary{\footnotesize Word 3: [-] (10ms) } \textit{(parallel)}\\
+\secondary{\footnotesize Total: 10ms}
+\end{columns}
+
+\vspace{10mm}
+\begin{center}
+\textbf{Speedup Factor:}
+\end{center}
+
+\vspace{3mm}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Metric} & \textbf{RNN} & \textbf{Transformer} \\
+\hline
+GPU Utilization & 2\% & 92\% \\
+Training Speed & Baseline & \textcolor{green}{\textbf{100x faster}} \\
+Parallelization & Sequential & Full parallel \\
+\hline
+\end{tabular}
+\end{frame}
+
+% Slide 21: EXPERIMENTAL VALIDATION
+\begin{frame}[t]{Experimental Validation: The Numbers Speak}
+\begin{center}
+\textbf{Real Results from ``Attention Is All You Need'' (Vaswani et al., 2017)}
+\end{center}
+
+\vspace{5mm}
+\textbf{Translation Quality (WMT English-German):}
+
+\vspace{5mm}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Model} & \textbf{Training Time} & \textbf{BLEU} & \textbf{GPU Usage} & \textbf{Parameters} \\
+\hline
+RNN & 90 days & 24.5 & 2\% & 200M \\
+RNN+Attention & 45 days & 28.4 & 5\% & 210M \\
+Transformer (base) & \textcolor{green}{\textbf{1 day}} & \textcolor{green}{\textbf{27.3}} & \textcolor{green}{\textbf{90\%}} & 65M \\
+Transformer (big) & \textcolor{green}{\textbf{3.5 days}} & \textcolor{green}{\textbf{28.4}} & \textcolor{green}{\textbf{92\%}} & 213M \\
+\hline
+\end{tabular}
+
+\vspace{10mm}
+\textbf{Key Observations:}
+\begin{itemize}
+\item Transformer base: Same quality as RNN+Attention in 1 day vs 45 days (\textcolor{green}{45x speedup})
+\item Transformer big: \textit{Better} quality in 3.5 days vs 90 days (\textcolor{green}{25x speedup + better BLEU})
+\item GPU utilization: 2\% → 92\% (\textcolor{green}{46x improvement})
+\item Fewer parameters but better efficiency
+\end{itemize}
+
+\vspace{10mm}
+\begin{center}
+\success{\textbf{Breakthrough Validated:} Faster training, better quality, full parallelization achieved!}
+\end{center}
+
+\secondary{\footnotesize This was the moment transformers revolutionized NLP}
+\end{frame}
+
+% Slide 22: Simple Implementation
+\begin{frame}[fragile]{Simple Implementation: It's Just Matrix Operations}
+\textbf{The complete self-attention mechanism in ~40 lines:}
+
+\vspace{5mm}
+\begin{lstlisting}[language=Python,basicstyle=\tiny]
+import torch
+import torch.nn.functional as F
+
+def self_attention(x):
+    # x shape: (batch_size, seq_len, d_model)
+    # Example: (32, 50, 512) = 32 sentences, 50 words each, 512 dimensions
+
+    batch_size, seq_len, d_model = x.shape
+
+    # Step 1: Create Q, K, V projections
+    # (These are learned linear transformations)
+    Q = W_q @ x  # Query:  "What am I looking for?"
+    K = W_k @ x  # Key:    "What do I contain?"
+    V = W_v @ x  # Value:  "What do I provide?"
+
+    # Step 2: Compute attention scores (similarities)
+    # Matrix multiplication of Q and K^T gives all pairwise similarities
+    scores = Q @ K.transpose(-2, -1) / sqrt(d_model)  # Scale by sqrt(d_k)
+    # scores shape: (batch, seq_len, seq_len)
+    # scores[i,j] = similarity between word i and word j
+
+    # Step 3: Softmax to get percentages
+    attention_weights = F.softmax(scores, dim=-1)
+    # attention_weights[i,j] = percentage that word i focuses on word j
+    # Each row sums to 1.0 (100%)
+
+    # Step 4: Apply weights to values (weighted combination)
+    output = attention_weights @ V
+    # output[i] = weighted sum of all values, using attention_weights[i] as coefficients
+
+    return output, attention_weights
+
+# That's it! Just matrix operations - fully parallelizable on GPU
+\end{lstlisting}
+
+\vspace{5mm}
+\secondary{\footnotesize Key insight: Matrix multiplication enables parallel computation of all word pairs simultaneously}
+\end{frame}
+
+% ============================================
+% PART 4: SYNTHESIS & IMPACT (7 slides)
+% ============================================
+
+\section{The Revolution Unfolds}
+
+% Slide 23: Complete Architecture
+\begin{frame}[t]{The Complete Transformer Architecture}
+\begin{center}
+\textbf{All Components Working Together}
+\end{center}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Input Processing:}
+\begin{enumerate}
+\item Word embeddings (meaning vectors)
+\item + Positional encoding (position patterns)
+\item = Complete representation
+\end{enumerate}
+
+\vspace{8mm}
+\textbf{Core Mechanism:}
+\begin{enumerate}
+\item Multi-head self-attention
+\item Parallel processing of all words
+\item Multiple relationship types
+\item Attention weights show focus
+\end{enumerate}
+
+\vspace{8mm}
+\textbf{Enhancement Layers:}
+\begin{enumerate}
+\item Feed-forward networks
+\item Layer normalization
+\item Residual connections
+\item Dropout for regularization
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{The Three Key Innovations:}
+
+\vspace{5mm}
+\textbf{1. Positional Encoding:}\\
+Solved order problem without sequential processing
+
+\vspace{3mm}
+\textbf{2. Self-Attention:}\\
+All words attend to all words simultaneously
+
+\vspace{3mm}
+\textbf{3. Full Parallelization:}\\
+100x speedup by using all GPU cores
+
+\vspace{8mm}
+\textbf{Typical Configuration:}
+\begin{itemize}
+\item 6-24 layers
+\item 8-16 attention heads
+\item 512-1024 model dimension
+\item 10M-1B+ parameters
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\begin{center}
+\keypoint{Position + Attention + Parallelization = Modern NLP}
+\end{center}
+\end{frame}
+
+% Slide 24: What We Learned
+\begin{frame}[t]{What We Learned: Principles Beyond Transformers}
+\textbf{Conceptual Insights That Transfer to Other Domains:}
+
+\vspace{10mm}
+\textbf{1. Sequential Processing Is Not Always Necessary}
+\begin{itemize}
+\item Order can be encoded explicitly (positional encoding)
+\item Don't assume sequential processing is required for sequential data
+\item Remove unnecessary dependencies to enable parallelization
+\end{itemize}
+
+\vspace{8mm}
+\textbf{2. Parallelization Through Independence}
+\begin{itemize}
+\item Identify what can be computed independently
+\item Matrix operations enable massive parallelism
+\item Trade more compute operations for less wall-clock time
+\end{itemize}
+
+\vspace{8mm}
+\textbf{3. Selective Attention vs Compression}
+\begin{itemize}
+\item Week 4 lesson: Don't compress, selectively attend
+\item Week 5 extension: Do it all in parallel
+\item Keep information, let model decide what's relevant
+\end{itemize}
+
+\vspace{8mm}
+\textbf{4. Hardware-Algorithm Co-Design}
+\begin{itemize}
+\item GPUs are built for parallel operations
+\item Transformer architecture perfectly matches GPU strengths
+\item Algorithm design should consider hardware capabilities
+\end{itemize}
+
+\vspace{8mm}
+\begin{center}
+\keypoint{These principles apply beyond NLP: vision, audio, reinforcement learning}
+\end{center}
+\end{frame}
+
+% Slide 25: 2024 Applications
+\begin{frame}[t]{The 2024 Landscape: Transformers Everywhere}
+\textbf{Seven Years from Paper to Dominance (2017 → 2024):}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.24\textwidth}
+\textbf{Language:}
+\begin{itemize}
+\item ChatGPT (175B)
+\item GPT-4 (1.7T)
+\item Claude (200B)
+\item Bard/Gemini
+\item LLaMA
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Vision:}
+\begin{itemize}
+\item ViT (images)
+\item DALL-E 3
+\item Midjourney
+\item Stable Diffusion
+\item SAM (segmentation)
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Audio:}
+\begin{itemize}
+\item Whisper (speech)
+\item MusicGen
+\item AudioLM
+\item Vall-E (voice)
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Code \& Science:}
+\begin{itemize}
+\item Copilot
+\item AlphaFold
+\item ESMFold
+\item Galactica
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\textbf{Timeline of Impact:}
+\begin{itemize}
+\item 2017: Paper published (``Attention Is All You Need'')
+\item 2018: BERT revolutionizes NLP (Google Search)
+\item 2019: GPT-2 shows scale matters
+\item 2020: GPT-3 demonstrates emergent abilities (175B parameters)
+\item 2021: Vision Transformers beat CNNs
+\item 2022: ChatGPT launches (100M users in 2 months)
+\item 2023: GPT-4, multimodal transformers everywhere
+\item 2024: Transformers in every AI product
+\end{itemize}
+
+\vspace{8mm}
+\begin{center}
+\keypoint{The speed breakthrough enabled the scale that enabled modern AI}
+\end{center}
+
+\secondary{\footnotesize Without 100x speedup, training GPT-3 would take 10 years}
+\end{frame}
+
+% Slide 26: Summary
+\begin{frame}[t]{Summary: The Speed Revolution Journey}
+\begin{center}
+{\Large \textbf{From Waiting Months to Training in Days}}
+\end{center}
+
+\vspace{10mm}
+\textbf{The Journey:}
+\begin{enumerate}
+\item \textbf{The Problem:} RNNs sequentially process = 90 days training, 2\% GPU usage
+\vspace{3mm}
+\item \textbf{First Attempt:} Remove RNN, use pure attention = 10x faster BUT lost word order
+\vspace{3mm}
+\item \textbf{The Diagnosis:} Attention is permutation invariant - can't tell word order
+\vspace{3mm}
+\item \textbf{The Insight:} Add position as explicit signal (positional encoding)
+\vspace{3mm}
+\item \textbf{The Breakthrough:} Self-attention + positional encoding = 100x speedup
+\end{enumerate}
+
+\vspace{10mm}
+\textbf{Key Takeaways:}
+\begin{itemize}
+\item Self-attention enables full parallelization (all words simultaneously)
+\item Positional encoding preserves order without sequential processing
+\item Result: 1 day training instead of 90 days, 90\% GPU usage instead of 2\%
+\item Enabled modern AI: ChatGPT, GPT-4, DALL-E only possible due to speed
+\end{itemize}
+
+\vspace{10mm}
+\textbf{Next Week:} Pre-training and Fine-tuning (BERT, GPT)\\
+\secondary{\footnotesize Now that training is fast, we can train HUGE models}
+
+\vspace{5mm}
+\textbf{Lab:} Build a transformer from scratch, visualize attention patterns
+\end{frame}
+
+% Final slide
+\begin{frame}
+\begin{center}
+{\Huge \textbf{The Speed Revolution}}\\
+\vspace{10mm}
+{\Large From Sequential Waiting to Parallel Processing}\\
+\vspace{15mm}
+{\large Questions?}\\
+\vspace{10mm}
+\secondary{\footnotesize Next: Lab - Implementing Transformers From Scratch}
+\end{center}
+\end{frame}
+
+\end{document}

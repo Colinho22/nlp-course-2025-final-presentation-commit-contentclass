@@ -18,7 +18,10 @@
       "Bash(do echo \"=== $week presentations ===\")",
       "Bash(echo:*)",
       "Bash(do echo \"$week:\")",
-      "Bash(do echo:*)"
+      "Bash(do echo:*)",
+      "Bash(awk:*)",
+      "Bash(pdflatex:*)",
+      "Bash(cp:*)"
     ],
     "deny": [],
     "ask": []

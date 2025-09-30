@@ -6,16 +6,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 NLP course presentation system with LaTeX/Beamer slides covering 12 weeks of Natural Language Processing topics. The course progresses from statistical language models through neural networks to modern transformer architectures and ethical considerations. Contains over 100 LaTeX presentations, 25+ Jupyter notebooks, 80+ Python figure generation scripts, and comprehensive lab materials.
 
+**Platform**: Windows (PowerShell commands)
+**LaTeX**: Beamer presentations with Madrid theme, 8pt font
+**Python**: 3.8+ with PyTorch, matplotlib, seaborn
+
+## User Preferences (from global config)
+- **Always** save .tex files with timestamp prefix: `YYYYMMDD_HHMM_filename.tex`
+- Move previous versions to `previous/` folder before saving new version
+- After compiling PDF, move auxiliary files (.aux, .log, etc.) to `temp/` folder
+- Never use emoji or Unicode special characters in documents
+- Charts must be Python-generated PDFs (never TikZ)
+- Use minimalist monochromatic gray palette for new presentations
+
 ## Quick Start Commands
 
 ### Most Common Tasks
 ```bash
-# Verify installation (30 seconds)
-python verify_installation.py
-
-# Test all lab notebooks
-python test_notebooks.py
-
 # Compile a presentation with timestamp
 $timestamp = Get-Date -Format "yyyyMMdd_HHmm"
 cd NLP_slides/weekXX_topic/presentations
@@ -29,6 +35,9 @@ python generate_weekXX_optimal_charts.py
 # Build embeddings module
 cd embeddings
 .\build.ps1
+
+# Generate all remaining course materials
+python generate_all_remaining_materials.py
 ```
 
 ## Key Architecture
@@ -38,9 +47,9 @@ Each week follows a consistent pattern:
 ```
 NLP_slides/weekXX_topic/
 ├── presentations/
-│   ├── main_presentation.tex      # Primary lecture slides
-│   ├── handouts/                  # Student/instructor versions
-│   └── previous/                  # Timestamped backups
+│   ├── YYYYMMDD_HHMM_weekXX_topic_template.tex  # Template-based version
+│   ├── previous/                                 # Timestamped backups
+│   └── temp/                                     # Auxiliary files (.aux, .log, etc.)
 ├── python/                        # Figure generation scripts
 ├── figures/                       # Week-specific figures
 ├── lab/                          # Jupyter lab notebook
@@ -92,14 +101,6 @@ NLP_slides/weekXX_topic/
   - Uses `[fragile]` frames for code listings to avoid compilation errors
 
 ## Key Commands
-
-### Full Course Generation Script
-```bash
-# Generate all remaining materials for weeks 8-12
-python generate_all_remaining_materials.py
-
-# Creates presentations, lab notebooks, and handouts with proper structure
-```
 
 ### Building LaTeX/PDF Documents
 ```bash
@@ -376,6 +377,12 @@ jupyter lab notebook.ipynb
 **Note**: Notebooks are designed for interactive exploration, not automated testing. Focus on manual validation of key learning objectives.
 
 ## Course Week Topics Reference
+
+### Canonical Presentations (Pedagogically Excellent)
+- **Week 4**: `20250928_1510_week04_seq2seq_journey_complete.tex` - Journey from hope to breakthrough
+- **Week 5**: `20250928_1648_week05_transformers_speed_revolution.tex` - Speed revolution narrative (90→1 day)
+
+### Complete Week List
 1. **Foundations & Statistical Language Models** - N-grams, Markov models, basic probability
 2. **Neural Language Models & Word Embeddings** - Word2Vec, GloVe, neural architectures
 3. **RNN/LSTM/GRU** - Sequential models, vanishing gradients, gating mechanisms
@@ -399,6 +406,7 @@ jupyter lab notebook.ipynb
 5. Clean auxiliary files to `temp/` after compilation
 
 ### Presentation Naming Conventions
+- Template-based: `YYYYMMDD_HHMM_weekXX_topic_template.tex` (Madrid theme with lavender colors)
 - Main presentations: `weekXX_topic.tex` (e.g., `week05_transformers.tex`)
 - Optimal versions: `YYYYMMDD_HHMM_weekXX_topic_optimal.tex`
 - BSc level: `weekXX_topic_bsc.tex`
@@ -409,14 +417,18 @@ jupyter lab notebook.ipynb
 ### Quality Checklist
 - Two-column layout (0.48\textwidth each)
 - Madrid theme, 8pt font, aspectratio=169
-- Monochromatic gray palette (RGB values as specified)
+- Lavender color scheme for template-based presentations (mllavender, mlpurple, mlblue)
+- Monochromatic gray palette for minimalist style (RGB values as specified)
 - Python-generated PDF figures only
 - Proper LaTeX quotes and math mode
 - `[fragile]` for code listings
+- Bottom notes on content slides using `\bottomnote{}`
+- Interactive exercises and quiz checkpoints for pedagogical engagement
 
 ## Important Files and Utilities
 
 ### Templates and Configuration
+- `NLP_slides/template_beamer_final.tex` - Professional template with 22 slide layouts (Madrid theme, lavender colors)
 - `NLP_slides/common/master_template.tex` - Master template used by all presentations
 - `NLP_slides/common/slide_layouts.tex` - LaTeX macros for all slide templates and commands
 - `NLP_slides/common/chart_utils.py` - Python utilities for consistent figure styling
@@ -495,6 +507,23 @@ New students should follow this sequence:
 4. **Review Week 0 lecture** → `NLP_slides/week00_introduction/presentations/20250927_1400_week00_first_day_lecture.pdf`
 5. **Complete NN Primer** (if needed) → `NLP_slides/nn_primer/` for zero pre-knowledge students
 6. **Start Week 2 lab** → `jupyter lab NLP_slides/week02_neural_lm/lab/week02_word_embeddings_lab.ipynb`
+
+## Template-Based Presentation System
+
+### Using the Template
+All new presentations should use the template-based approach:
+1. Base on `NLP_slides/template_beamer_final.tex` or week-specific templates
+2. Use timestamp naming: `YYYYMMDD_HHMM_weekXX_topic_template.tex`
+3. Apply lavender color scheme (mllavender, mlpurple, mlblue) for template versions
+4. Reference `NLP_slides/common/slide_layouts.tex` for macros
+5. Move previous versions to `previous/` folder before saving updates
+
+### Didactic Framework
+The repository includes a proven pedagogical framework (`DIDACTIC_PRESENTATION_FRAMEWORK.md`) with:
+- Four-act dramatic structure for technical content
+- Zero pre-knowledge principle
+- 8 critical pedagogical beats
+- Successfully applied to Weeks 4 and 5 (canonical versions)
 
 ## Course Delivery Infrastructure
 
