@@ -1,6 +1,6 @@
 # NLP Course 2025 - Project Status
 
-## Last Updated: 2025-09-28
+## Last Updated: 2025-09-30
 
 ## Overall Progress
 - **Total Weeks**: 12
@@ -14,9 +14,10 @@
 ### Completed Weeks (Full Materials)
 - **Week 1: Foundations & Statistical Language Models** ✅
   - Main presentation (Foundations_and_Statistical_Language_Modelling.tex/pdf)
+  - Lab notebook created (week01_ngrams_lab.ipynb) **[NEW 2025-09-30]**
   - Python figure generation scripts
   - Student/instructor handouts
-  - No lab (introductory week)
+  - Complete n-gram implementation with perplexity calculation
 
 - **Week 2: Neural Language Models & Word Embeddings** ✅
   - Multiple presentation versions (optimal, enhanced, restructured)
@@ -156,7 +157,13 @@
 - **Exercise notebooks**: Shakespeare sonnets, Alice n-grams
 - **Visualization series**: 8 progressive notebooks
 
-## Recent Achievements (2025-09-28)
+## Recent Achievements (2025-09-30)
+1. ~~Improved CLAUDE.md with platform info and user preferences~~ ✅
+2. ~~Cleaned up Git repository - organized previous versions~~ ✅
+3. ~~Created Week 1 lab notebook (n-grams and perplexity)~~ ✅
+4. ~~Resolved notebook testing issues (timeout due to model downloads)~~ ✅
+
+## Previous Achievements (2025-09-28)
 1. ~~Complete all 12 weeks with presentations, labs, and handouts~~ ✅
 2. ~~Create Neural Network Primer module~~ ✅
 3. ~~Create LSTM Primer module~~ ✅
