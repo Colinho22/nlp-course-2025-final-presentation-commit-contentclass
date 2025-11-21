@@ -15,9 +15,9 @@ from pathlib import Path
 import re
 
 # Configuration
-LOGO_PATH = Path("quantlet_logo.png")
+LOGO_PATH = Path("quantlet_design.png")
 FIGURES_DIR = Path("figures")
-OUTPUT_DIR = Path("figures_final")  # Final output with individual URLs
+OUTPUT_DIR = Path("figures_with_quantlet_design")  # Final output with design logo
 LOGO_SIZE = 40
 PADDING = 10
 
