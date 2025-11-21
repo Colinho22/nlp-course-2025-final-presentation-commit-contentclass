@@ -2,29 +2,32 @@
 
 ## Canonical Version
 
-**RECOMMENDED PRESENTATION:** `presentations/20250922_1242_week03_rnn_optimal.pdf` (19 slides)
+**RECOMMENDED PRESENTATION:** `presentations/20250929_1027_week03_rnn_template.pdf` (28 slides, 599KB)
 
-This is the recommended version for teaching Week 3. It assumes students have completed the Neural Network Primer prerequisite.
+This is the recommended template-based version for teaching Week 3. Uses the Madrid theme with lavender color scheme and follows the template_beamer_final.tex layout conventions. Assumes students have completed the Neural Network Primer prerequisite.
 
 ## Version Guide
 
 ### Primary Version (Use This)
-- **File:** `20250922_1242_week03_rnn_optimal.pdf` (19 slides, 439KB)
+- **File:** `20250929_1027_week03_rnn_template.pdf` (28 slides, 599KB)
+- **Source:** `20250929_1027_week03_rnn_template.tex` (38KB)
+- **Created:** 2025-09-29
 - **Duration:** 60-90 minutes
 - **Scope:** RNN-specific concepts only
+- **Style:** Template-based with Madrid theme and lavender color scheme
 - **Prerequisites:** Neural Network Primer or equivalent knowledge
 - **Coverage:**
   - Why sequential processing matters
   - RNN architecture and equations
   - Vanishing gradient problem
-  - LSTM overview (high-level)
+  - LSTM architecture overview (high-level)
   - GRU comparison
+  - Backpropagation Through Time (BPTT)
   - Code examples (NumPy + PyTorch)
 
-### Alternative Versions (Reference Only)
-- **with_foundations (34 slides):** DEPRECATED - Contains redundant NN basics that duplicate NN Primer
-- **restructured (33 slides):** Older version, superseded by optimal
-- **enhanced (17 slides):** Too brief, lacks depth on LSTM
+### Previous Versions (Reference Only - in previous/ folder)
+- **20250922_1242_week03_rnn_optimal.pdf (19 slides):** Earlier optimal version
+- **20250922_1458_week03_rnn_with_foundations.pdf (34 slides):** DEPRECATED - Contains redundant NN basics that duplicate NN Primer
 
 ## Prerequisites
 
@@ -110,4 +113,4 @@ All 24 required figures are generated and located in `figures/`:
 
 ## Last Updated
 
-2025-09-28 - Canonical version designated, prerequisites clarified
+2025-09-30 - Updated canonical version to template-based presentation, cleaned up previous versions

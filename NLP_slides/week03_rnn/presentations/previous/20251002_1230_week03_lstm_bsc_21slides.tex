@@ -1,0 +1,1824 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+% Packages
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{tcolorbox}
+
+% Math commands
+\newcommand{\given}{\mid}
+
+% BSc Pedagogical boxes
+\newtcolorbox{checkpoint}[1][]{
+    colback=yellow!10!white,
+    colframe=yellow!75!black,
+    title=\textbf{Checkpoint: #1},
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{intuition}[1][]{
+    colback=purple!5!white,
+    colframe=purple!75!black,
+    title=\textbf{Intuition: #1},
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{realworld}[1][]{
+    colback=orange!5!white,
+    colframe=orange!75!black,
+    title=\textbf{Real World: #1},
+    fonttitle=\bfseries
+}
+
+% Title information
+\title{LSTM - Long Short-Term Memory}
+\subtitle{Understanding Through a Complete Example}
+\author{}
+\date{}
+
+\begin{document}
+
+% Slide 1: Title
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Slide 2: NEW - Discovery-Based Question
+\begin{frame}{Before We Begin: A Thought Experiment}
+    \vspace{-0.2em}
+    \begin{center}
+    {\large\bfseries Imagine You're Designing a Memory System}
+    \end{center}
+
+    \vspace{0.5em}
+
+    \begin{columns}[T]
+        \begin{column}{0.50\textwidth}
+            \begin{center}
+            \textbf{The Challenge:}
+            \end{center}
+
+            \vspace{0.3em}
+
+            \begin{tikzpicture}[scale=0.9]
+                % Central water tank
+                \draw[thick, fill=blue!10] (2,2) rectangle (5,5);
+                \node at (3.5,3.5) {\Large Water Tank};
+                \node[below] at (3.5,2) {\scriptsize (Your Memory System)};
+
+                % Top Left: DRAIN problem
+                \node[draw, thick, fill=red!20, rectangle, text width=2.5cm, align=center] at (0,6) {
+                \scriptsize
+                \textbf{Problem 1:}\\
+                Old water gets stale!\\
+                \vspace{0.1em}
+                You need to\_\_\_\_\\
+                old water?
+                };
+                \draw[->, thick, red] (1.25,5.7) -- (2,4.8);
+
+                % Top Right: INPUT problem
+                \node[draw, thick, fill=green!20, rectangle, text width=2.5cm, align=center] at (7,6) {
+                \scriptsize
+                \textbf{Problem 2:}\\
+                Tank runs empty!\\
+                \vspace{0.1em}
+                You need to\_\_\_\_\\
+                new water?
+                };
+                \draw[->, thick, green] (5.75,5.7) -- (5,4.8);
+
+                % Bottom Left: OUTPUT problem
+                \node[draw, thick, fill=blue!20, rectangle, text width=2.5cm, align=center] at (0,0.5) {
+                \scriptsize
+                \textbf{Problem 3:}\\
+                Water is there but\\
+                can't use it!\\
+                \vspace{0.1em}
+                You need to\_\_\_\_\\
+                the water?
+                };
+                \draw[->, thick, blue] (1.25,1.3) -- (2,2.2);
+
+                % Bottom Right: ALL THREE problem
+                \node[draw, thick, fill=yellow!20, rectangle, text width=2.5cm, align=center] at (7,0.5) {
+                \scriptsize
+                \textbf{Problem 4:}\\
+                ALL THREE\\
+                at different rates!\\
+                \vspace{0.1em}
+                Sometimes drain lots,\\
+                sometimes keep lots
+                };
+                \draw[->, thick, orange] (5.75,1.3) -- (5,2.2);
+            \end{tikzpicture}
+        \end{column}
+
+        \begin{column}{0.46\textwidth}
+            \small
+
+            \textbf{Why Do We Care About This Tank?}
+
+            \vspace{0.2em}
+
+            \begin{center}
+            \colorbox{orange!10}{\parbox{0.95\textwidth}{
+            \scriptsize
+            \textbf{Imagine:} It rained yesterday
+
+            \vspace{0.1em}
+            \textbf{Question:} Should we buy water tomorrow?
+
+            \vspace{0.1em}
+            \textbf{To predict, you need to know:}
+            \begin{itemize}\setlength\itemsep{-0.1em}
+                \item How much was \textcolor{red}{\textbf{DRAINED}}? (old water out)
+                \item How much rain was \textcolor{green}{\textbf{ADDED}}? (new water in)
+                \item How much is \textcolor{blue}{\textbf{AVAILABLE}} now? (can use it?)
+            \end{itemize}
+
+            \vspace{0.1em}
+            $\rightarrow$ \textbf{Memory state helps make predictions!}
+            }}
+            \end{center}
+
+            \vspace{0.3em}
+
+            \textbf{Your Design Task:}
+
+            \vspace{0.2em}
+
+            \textbf{What THREE controls would YOU design?}
+
+            \vspace{0.2em}
+
+            \begin{enumerate}\setlength\itemsep{0.1em}
+                \item \textbf{Control \#1:} To handle stale water
+                {\scriptsize (Hint: Think about draining...)}
+
+                \item \textbf{Control \#2:} To handle empty tank
+                {\scriptsize (Hint: Think about adding...)}
+
+                \item \textbf{Control \#3:} To handle using water
+                {\scriptsize (Hint: Think about tapping...)}
+            \end{enumerate}
+
+            \vspace{0.2em}
+
+            \begin{checkpoint}[Think First!]
+            \scriptsize
+            \textbf{Key Question:}
+            Do these three controls need to be INDEPENDENT?
+
+            \vspace{0.1em}
+            Can you drain a lot while adding a little?
+            Can you add a lot while using only some?
+
+            \vspace{0.1em}
+            \textbf{Your answer:} \_\_\_\_\_\_\_\_\_\_\_\_
+            \end{checkpoint}
+
+            \vspace{0.2em}
+            {\footnotesize\color{gray}Next slide reveals: Your design is exactly what LSTM does!}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 3: NEWEST - What This Is About (Predicting Next Word)
+\begin{frame}{What Is This About?}
+    \vspace{0.5em}
+    \begin{center}
+    {\Large\bfseries The Core Task: Predict the Next Word}
+    \end{center}
+
+    \vspace{0.8em}
+
+    \begin{columns}[T]
+        \begin{column}{0.58\textwidth}
+            \textbf{Simple Example:}
+
+            \vspace{0.5em}
+
+            \begin{center}
+            \colorbox{blue!10}{\parbox{0.9\textwidth}{
+            \centering
+            \Large
+            \textbf{Input:} ``The cat was''
+
+            \vspace{0.5em}
+            {\Huge $\downarrow$}
+
+            \vspace{0.3em}
+            \textbf{LSTM}
+
+            \vspace{0.3em}
+            {\Huge $\downarrow$}
+
+            \vspace{0.5em}
+            \textbf{Predictions:}
+
+            \vspace{0.3em}
+            \begin{tabular}{ll}
+            hungry & 35\% \\
+            sleeping & 28\% \\
+            running & 15\% \\
+            small & 8\% \\
+            \end{tabular}
+            }}
+            \end{center}
+
+            \vspace{0.5em}
+            \textbf{How does it work?}
+
+            Must remember ``cat'' to predict appropriate adjective/verb!
+        \end{column}
+
+        \begin{column}{0.38\textwidth}
+            \textbf{Why This Matters:}
+
+            \vspace{0.5em}
+            \begin{itemize}\setlength\itemsep{0.4em}
+                \item \textbf{Autocomplete}\\
+                      {\scriptsize Your phone keyboard}
+
+                \item \textbf{Translation}\\
+                      {\scriptsize Google Translate (2016)}
+
+                \item \textbf{Text Generation}\\
+                      {\scriptsize Write stories, code}
+
+                \item \textbf{Voice Assistants}\\
+                      {\scriptsize Siri, Alexa}
+
+                \item \textbf{Chatbots}\\
+                      {\scriptsize Customer service}
+            \end{itemize}
+
+            \vspace{0.5em}
+            \begin{checkpoint}[The Challenge]
+            \scriptsize
+            To predict well, the model must REMEMBER earlier words in the sentence.
+
+            \vspace{0.2em}
+            That's what LSTM does brilliantly!
+            \end{checkpoint}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.5em}
+    {\footnotesize\color{gray}But there's a problem with older models...}
+\end{frame}
+
+% Slide 3: Problem/Method/Solution Overview
+\begin{frame}{The Challenge and The Solution}
+    \vspace{0.5em}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{center}
+            \colorbox{red!20}{\Large\textbf{THE PROBLEM}}
+            \end{center}
+
+            \vspace{0.5em}
+
+            \textbf{RNNs Cannot Remember}
+
+            \vspace{0.3em}
+            \begin{itemize}\setlength\itemsep{0.3em}
+                \item Vanishing gradients
+                \item $0.5^{50} \approx 0$ (information dies)
+                \item Forgets early context
+                \item Cannot handle long sentences
+            \end{itemize}
+
+            \vspace{0.5em}
+            \textbf{Example:}
+
+            \textit{``I grew up in Paris. I speak fluent \_\_\_''}
+
+            \vspace{0.3em}
+            RNN forgets ``Paris'' after 20 words
+
+            Cannot predict ``French''
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{center}
+            \colorbox{green!20}{\Large\textbf{THE SOLUTION}}
+            \end{center}
+
+            \vspace{0.5em}
+
+            \textbf{LSTM Controls Memory}
+
+            \vspace{0.3em}
+            \begin{itemize}\setlength\itemsep{0.3em}
+                \item Three gates (0-1 values)
+                \item Addition path (not multiplication)
+                \item Preserves gradients
+                \item Remembers 100+ steps
+            \end{itemize}
+
+            \vspace{0.5em}
+            \textbf{The Method:}
+
+            \vspace{0.3em}
+            \colorbox{yellow!15}{\parbox{0.9\textwidth}{
+            \centering
+            \textbf{Three Independent Gates:}
+            \begin{itemize}\setlength\itemsep{0.2em}
+                \item \textcolor{red}{FORGET}: What to erase
+                \item \textcolor{green}{INPUT}: What to add
+                \item \textcolor{blue}{OUTPUT}: What to use
+            \end{itemize}
+            }}
+        \end{column}
+    \end{columns}
+
+    \vspace{1em}
+
+    \begin{center}
+    \Large
+    \textbf{Let's see how this works with a simple analogy...}
+    \end{center}
+\end{frame}
+
+% Slide 3: MOVED - The Water Tank Analogy (Intuition First!)
+\begin{frame}{Understanding The Idea: Water Tank Analogy}
+    \vspace{-0.3em}
+    \begin{center}
+    {\large\bfseries Think of Memory as a Water Tank with Three Valves}
+    \end{center}
+
+    \vspace{0.5em}
+
+    \begin{columns}[T]
+        \begin{column}{0.55\textwidth}
+            \begin{center}
+            \textbf{The Tank System:}
+            \end{center}
+
+            \vspace{0.5em}
+
+            \begin{tikzpicture}
+                % Water tank
+                \draw[thick, fill=blue!10] (0,0) rectangle (4,3);
+                \node at (2,1.5) {\Large Water = Memory};
+
+                % Drain valve (bottom left)
+                \draw[thick, red] (-0.5,0.3) -- (0,0.3);
+                \node[left, red] at (-0.5,0.3) {\small Drain};
+                \node[left, red] at (-0.5,0) {\tiny FORGET};
+
+                % Input valve (top right)
+                \draw[thick, green] (4,2.5) -- (4.5,2.5);
+                \draw[thick, green, ->] (4.7,2.5) -- (4.3,2.5);
+                \node[right, green] at (4.5,2.5) {\small Input};
+                \node[right, green] at (4.5,2.8) {\tiny INPUT};
+
+                % Output tap (bottom right)
+                \draw[thick, blue] (4,0.8) -- (4.5,0.8);
+                \draw[thick, blue, ->] (4.3,0.8) -- (4.7,0.8);
+                \node[right, blue] at (4.5,0.8) {\small Tap};
+                \node[right, blue] at (4.5,0.5) {\tiny OUTPUT};
+            \end{tikzpicture}
+
+            \vspace{0.5em}
+            \scriptsize
+            \textbf{How Each Valve Works:}
+
+            \vspace{0.3em}
+            \colorbox{red!15}{\parbox{0.95\textwidth}{
+            \textcolor{red}{\textbf{FORGET = Drain Valve}}\\
+            Controls how much water flows OUT\\
+            0.1 = Open 10\% → 90\% drains away\\
+            Removes old water (old memory)
+            }}
+
+            \vspace{0.3em}
+            \colorbox{green!15}{\parbox{0.95\textwidth}{
+            \textcolor{green}{\textbf{INPUT = Input Valve}}\\
+            Controls how much new water flows IN\\
+            0.9 = Open 90\% → lots added\\
+            Adds fresh water (new memory)
+            }}
+
+            \vspace{0.3em}
+            \colorbox{blue!15}{\parbox{0.95\textwidth}{
+            \textcolor{blue}{\textbf{OUTPUT = Output Tap}}\\
+            Controls what you can USE\\
+            0.9 = Open 90\% → most available\\
+            Determines what flows to network
+            }}
+        \end{column}
+
+        \begin{column}{0.42\textwidth}
+            \textbf{Real Examples:}
+
+            \vspace{0.5em}
+            \scriptsize
+            At period ``.'' in sentence:
+            \begin{itemize}\setlength\itemsep{0.2em}
+                \item Drain: 90\% (0.1 forget)
+                \item Input: 40\% (0.4 input)
+                \item Tap: 30\% (0.3 output)
+            \end{itemize}
+
+            $\rightarrow$ Tank mostly empties!
+
+            \vspace{0.5em}
+            At noun ``dog'':
+            \begin{itemize}\setlength\itemsep{0.2em}
+                \item Drain: 30\% (0.7 forget)
+                \item Input: 90\% (0.9 input)
+                \item Tap: 90\% (0.9 output)
+            \end{itemize}
+
+            $\rightarrow$ Tank fills up!
+
+            \vspace{0.5em}
+            \begin{intuition}[The Key Insight]
+            \scriptsize
+            \textbf{Three INDEPENDENT valves on ONE tank!}
+
+            \vspace{0.3em}
+            Each valve controls a different aspect:
+            \begin{itemize}\setlength\itemsep{0.2em}
+                \item \textcolor{red}{Drain}: How much OLD to remove
+                \item \textcolor{green}{Input}: How much NEW to add
+                \item \textcolor{blue}{Tap}: How much to USE now
+            \end{itemize}
+
+            \vspace{0.3em}
+            This is EXACTLY what LSTM does!
+            \end{intuition}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.3em}
+    {\footnotesize\color{gray}But wait... where does that tap water GO?}
+\end{frame}
+
+% Slide 5: NEW - Where Does The Tap Water Go?
+\begin{frame}{Where Does The Tap Water Go?}
+    \vspace{-0.2em}
+    \begin{center}
+    {\large\bfseries Continuing The Analogy: From Tank to Predictions}
+    \end{center}
+
+    \vspace{0.5em}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{center}
+            \textbf{The Complete System:}
+            \end{center}
+
+            \vspace{0.3em}
+
+            \begin{tikzpicture}[scale=0.8]
+                % Current word entering from top
+                \node[draw, fill=yellow!20, rectangle] at (2,4.2) {\scriptsize Current word: ``was''};
+                \draw[thick, orange, ->] (2,3.9) -- (2,3.1);
+                \node[right, orange] at (2.1,3.5) {\tiny enters};
+
+                % Water tank
+                \draw[thick, fill=blue!10] (0,0) rectangle (4,3);
+                \node at (2,1.5) {\Large Water = Memory};
+
+                % Drain valve (bottom left) - faded
+                \draw[thick, red!30] (-0.5,0.3) -- (0,0.3);
+                \node[left, red!30] at (-0.5,0.3) {\tiny Drain};
+
+                % Input valve (top right) - faded
+                \draw[thick, green!30] (4,2.5) -- (4.5,2.5);
+                \draw[thick, green!30, ->] (4.7,2.5) -- (4.3,2.5);
+                \node[right, green!30] at (4.5,2.5) {\tiny Input};
+
+                % Output tap (bottom right) - HIGHLIGHTED!
+                \draw[very thick, blue] (4,0.8) -- (5,0.8);
+                \draw[very thick, blue, ->] (4.3,0.8) -- (5,0.8);
+                \node[right, blue] at (5.1,0.8) {\textbf{Tap}};
+                \node[right, blue] at (5.1,0.5) {\scriptsize OUTPUT};
+
+                % Water flowing out
+                \draw[blue, ultra thick, ->] (5,0.8) -- (6.5,0.8);
+                \node[above, blue] at (5.75,0.8) {\scriptsize memory};
+            \end{tikzpicture}
+
+            \vspace{0.3em}
+            \scriptsize
+            \textbf{Two Things Happening:}
+            \begin{itemize}\setlength\itemsep{0.2em}
+                \item \textcolor{orange}{Current word} enters system
+                \item \textcolor{blue}{Memory} (tap water) flows out
+                \item BOTH go to prediction!
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{center}
+            \textbf{Where They Go:}
+            \end{center}
+
+            \vspace{0.3em}
+
+            \begin{tikzpicture}[scale=0.8]
+                % Current word arrow
+                \node[draw, fill=yellow!20] at (-0.5,3) {\tiny ``was''};
+                \draw[orange, ultra thick, ->] (0.2,3) -- (1.5,2.8);
+                \node[above, orange] at (0.5,3) {\tiny word};
+
+                % Memory arrow
+                \draw[blue, ultra thick, ->] (0,1.8) -- (1.5,1.8);
+                \node[above, blue] at (0.75,1.8) {\tiny memory};
+
+                % Prediction Machine Box
+                \draw[thick, fill=orange!10] (1.5,0.5) rectangle (5.5,3.5);
+                \node at (3.5,3.2) {\textbf{Prediction Machine}};
+                \node[align=center] at (3.5,2.6) {\scriptsize Combines BOTH\\current word + memory};
+
+                % Output predictions
+                \node[align=left] at (3.5,1.4) {
+                \textbf{Next Word:}\\
+                \scriptsize
+                hungry: 35\%\\
+                sleeping: 28\%\\
+                running: 15\%\\
+                small: 8\%
+                };
+
+                % Arrow going out
+                \draw[thick, ->] (3.5,0.5) -- (3.5,-0.3);
+                \node[below] at (3.5,-0.3) {\tiny best word};
+            \end{tikzpicture}
+
+            \vspace{0.3em}
+            \scriptsize
+            \textbf{The Complete Flow:}
+
+            \vspace{0.2em}
+            \colorbox{yellow!15}{\parbox{0.95\textwidth}{
+            \centering
+            \textcolor{orange}{\textbf{Current word: ``was''}}
+
+            +
+
+            \textcolor{blue}{\textbf{Memory (tap water)}}
+
+            $\downarrow$
+
+            \textbf{Prediction Machine}
+
+            $\downarrow$
+
+            \textbf{Next word: ``hungry''!}
+            }}
+
+            \vspace{0.3em}
+            \begin{checkpoint}[Key Insight!]
+            \tiny
+            Predictions need BOTH:
+            \begin{itemize}\setlength\itemsep{0em}
+                \item Current word (``was'')
+                \item Memory from tap (subject ``cat'')
+            \end{itemize}
+
+            That's why the verb matches the subject!
+            \end{checkpoint}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.2em}
+    {\footnotesize\color{gray}Now let's see the actual gates that control memory...}
+\end{frame}
+
+% Slide 6: What Are Gates? (Concepts)
+\begin{frame}{What Are ``Gates''?}
+    \vspace{-0.3em}
+    \begin{center}
+    {\large\bfseries Three Gates Control Memory Like Volume Knobs (0 to 1)}
+    \end{center}
+
+    \vspace{0.5em}
+
+    \begin{columns}[T]
+        \begin{column}{0.32\textwidth}
+            \begin{center}
+            \colorbox{red!20}{\Large\textbf{FORGET}}
+
+            \vspace{0.3em}
+            {\Huge $\times$}
+
+            \vspace{0.3em}
+            \textbf{REMOVES}\\
+            old information
+
+            \vspace{0.5em}
+            \scriptsize
+            \textbf{Value 0-1:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item 0.0 = erase all
+                \item 0.5 = keep half
+                \item 1.0 = keep all
+            \end{itemize}
+
+            \vspace{0.3em}
+            \textbf{Example:}\\
+            0.1 at period\\
+            → Erase 90\%!
+            \end{center}
+        \end{column}
+
+        \begin{column}{0.32\textwidth}
+            \begin{center}
+            \colorbox{green!20}{\Large\textbf{INPUT}}
+
+            \vspace{0.3em}
+            {\Huge $+$}
+
+            \vspace{0.3em}
+            \textbf{ADDS}\\
+            new information
+
+            \vspace{0.5em}
+            \scriptsize
+            \textbf{Value 0-1:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item 0.0 = add nothing
+                \item 0.5 = add half
+                \item 1.0 = add all
+            \end{itemize}
+
+            \vspace{0.3em}
+            \textbf{Example:}\\
+            0.9 on ``cat''\\
+            → Store lots!
+            \end{center}
+        \end{column}
+
+        \begin{column}{0.32\textwidth}
+            \begin{center}
+            \colorbox{blue!20}{\Large\textbf{OUTPUT}}
+
+            \vspace{0.3em}
+            {\Huge $\rightarrow$}
+
+            \vspace{0.3em}
+            \textbf{REVEALS}\\
+            stored information
+
+            \vspace{0.5em}
+            \scriptsize
+            \textbf{Value 0-1:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item 0.0 = hide all
+                \item 0.5 = show half
+                \item 1.0 = show all
+            \end{itemize}
+
+            \vspace{0.3em}
+            \textbf{Example:}\\
+            0.9 at ``was''\\
+            → Use memory!
+            \end{center}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.8em}
+
+    \begin{center}
+    \colorbox{yellow!20}{\parbox{0.85\textwidth}{
+    \centering
+    \textbf{How They Work Together:}\\
+    \vspace{0.2em}
+    New Memory = (Forget $\times$ Old Memory) + (Input $\times$ New Info)\\
+    Output = Output Gate $\times$ Memory
+    }}
+    \end{center}
+
+    \vspace{0.3em}
+    {\footnotesize\color{gray}Now let's see these gates in action with concrete numbers...}
+\end{frame}
+
+% Slide 5: SPLIT PART 1 - The 4-Step Process (Steps 1-2: Erase and Add)
+\begin{frame}{The 4-Step Process (Part 1): Erase Old, Add New}
+    \vspace{-0.3em}
+    \begin{center}
+    {\large\bfseries Updating Memory From ``cat'' to ``dog''}
+    \end{center}
+
+    \vspace{0.3em}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Starting Point:}
+
+            \vspace{0.2em}
+            Old Memory: [0.8, 0.6, 0.4]
+
+            {\scriptsize Contains ``cat'' information}
+
+            \vspace{0.6em}
+            \colorbox{red!15}{\parbox{0.97\textwidth}{
+            \textbf{Step 1: FORGET Gate = 0.1}
+
+            \vspace{0.2em}
+            \textbf{What it does:} Multiply old memory by 0.1
+
+            \vspace{0.2em}
+            [0.8, 0.6, 0.4] $\times$ 0.1 = [0.08, 0.06, 0.04]
+
+            \vspace{0.2em}
+            \textbf{Result:} 90\% erased! ``cat'' mostly removed.
+
+            \vspace{0.2em}
+            \textbf{Why?} At period, we need fresh start for new sentence.
+            }}
+
+            \vspace{0.6em}
+            \colorbox{green!15}{\parbox{0.97\textwidth}{
+            \textbf{Step 2: INPUT Gate = 0.9}
+
+            \vspace{0.2em}
+            \textbf{What it does:} Filter new candidate info
+
+            \vspace{0.2em}
+            Create candidate: [0.7, 0.5, 0.9]
+
+            Multiply by 0.9: [0.7, 0.5, 0.9] $\times$ 0.9
+
+            = [0.63, 0.45, 0.81]
+
+            \vspace{0.2em}
+            \textbf{Result:} 90\% of ``dog'' info ready to add.
+
+            \vspace{0.2em}
+            \textbf{Why?} ``dog'' is new subject, very important!
+            }}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Visual Flow (Steps 1-2):}
+
+            \vspace{0.5em}
+            \begin{center}
+            \scriptsize
+            \begin{tikzpicture}[
+                node distance=1.2cm,
+                box/.style={draw, minimum width=2.8cm, minimum height=0.6cm}
+            ]
+                % Left path: FORGET
+                \node[box, fill=red!20] (old) {Old: [0.8, 0.6, 0.4]};
+                \node[below=0.8cm of old] (f) {\textcolor{red}{$\times$ 0.1 (FORGET)}};
+                \node[box, below=0.8cm of f] (erased) {[0.08, 0.06, 0.04]};
+
+                \draw[-{Stealth}] (old) -- (f);
+                \draw[-{Stealth}] (f) -- (erased);
+
+                % Right path: INPUT
+                \node[box, fill=green!20, right=1.5cm of old] (new) {New: [0.7, 0.5, 0.9]};
+                \node[below=0.8cm of new] (i) {\textcolor{green}{$\times$ 0.9 (INPUT)}};
+                \node[box, below=0.8cm of i] (filtered) {[0.63, 0.45, 0.81]};
+
+                \draw[-{Stealth}] (new) -- (i);
+                \draw[-{Stealth}] (i) -- (filtered);
+
+                % Annotation
+                \node[below=0.4cm of erased, text width=2.5cm, align=center] {\tiny Mostly empty\\(90\% erased)};
+                \node[below=0.4cm of filtered, text width=2.5cm, align=center] {\tiny Ready to add\\(90\% of ``dog'')};
+            \end{tikzpicture}
+            \end{center}
+
+            \vspace{0.5em}
+            \begin{checkpoint}[Key Point]
+            \scriptsize
+            Two INDEPENDENT operations:
+            \begin{itemize}\setlength\itemsep{0.2em}
+                \item FORGET decides what OLD to keep
+                \item INPUT decides what NEW to add
+                \item They don't interfere!
+            \end{itemize}
+
+            Next: How do we combine them?
+            \end{checkpoint}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.3em}
+    {\footnotesize\color{gray}Now let's combine these two results...}
+\end{frame}
+
+% Slide 6: SPLIT PART 2 - The 4-Step Process (Steps 3-4: Combine and Reveal)
+\begin{frame}{The 4-Step Process (Part 2): Combine and Use}
+    \vspace{-0.3em}
+    \begin{center}
+    {\large\bfseries From Separate Results to Final Output}
+    \end{center}
+
+    \vspace{0.3em}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Where We Left Off:}
+
+            \vspace{0.3em}
+            \begin{itemize}\setlength\itemsep{0.2em}
+                \item Erased old: [0.08, 0.06, 0.04]
+                \item Filtered new: [0.63, 0.45, 0.81]
+            \end{itemize}
+
+            \vspace{0.6em}
+            \colorbox{yellow!15}{\parbox{0.97\textwidth}{
+            \textbf{Step 3: COMBINE (Addition!)}
+
+            \vspace{0.2em}
+            \textbf{What it does:} Add the two results together
+
+            \vspace{0.2em}
+            [0.08, 0.06, 0.04] + [0.63, 0.45, 0.81]
+
+            = [0.71, 0.51, 0.85]
+
+            \vspace{0.2em}
+            \textbf{Result:} Updated memory = ``dog'' info
+
+            \vspace{0.2em}
+            \textbf{Why addition?} Preserves gradients! This is the key innovation that prevents vanishing.
+            }}
+
+            \vspace{0.6em}
+            \colorbox{blue!15}{\parbox{0.97\textwidth}{
+            \textbf{Step 4: OUTPUT Gate = 0.9}
+
+            \vspace{0.2em}
+            \textbf{What it does:} Filter what network sees
+
+            \vspace{0.2em}
+            [0.71, 0.51, 0.85] $\times$ 0.9
+
+            = [0.64, 0.46, 0.77]
+
+            \vspace{0.2em}
+            \textbf{Result:} 90\% revealed to next layer
+
+            \vspace{0.2em}
+            \textbf{Why?} At ``was'', we NEED subject info for verb prediction!
+            }}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Visual Flow (Steps 3-4):}
+
+            \vspace{0.5em}
+            \begin{center}
+            \scriptsize
+            \begin{tikzpicture}[
+                node distance=1.2cm,
+                box/.style={draw, minimum width=2.8cm, minimum height=0.6cm}
+            ]
+                % Top: two inputs
+                \node[box] (erased) {[0.08, 0.06, 0.04]};
+                \node[box, right=1.5cm of erased] (filtered) {[0.63, 0.45, 0.81]};
+
+                % Combine
+                \node[below=1.2cm of erased, xshift=1.8cm] (add) {\textcolor{orange}{+ COMBINE}};
+                \node[box, fill=yellow!20, below=0.8cm of add] (combined) {[0.71, 0.51, 0.85]};
+
+                \draw[-{Stealth}] (erased) -- (add);
+                \draw[-{Stealth}] (filtered) -- (add);
+                \draw[-{Stealth}] (add) -- (combined);
+
+                % Output
+                \node[below=0.8cm of combined] (o) {\textcolor{blue}{$\times$ 0.9 (OUTPUT)}};
+                \node[box, fill=blue!20, below=0.8cm of o] (out) {[0.64, 0.46, 0.77]};
+
+                \draw[-{Stealth}] (combined) -- (o);
+                \draw[-{Stealth}] (o) -- (out);
+
+                % Annotations
+                \node[right=0.1cm of combined, text width=1.5cm, align=left] {\tiny New\\memory};
+                \node[right=0.1cm of out, text width=1.8cm, align=left] {\tiny Goes to\\prediction!};
+            \end{tikzpicture}
+            \end{center}
+
+            \vspace{0.5em}
+            \begin{checkpoint}[Critical Innovation]
+            \scriptsize
+            \textbf{Why LSTM Works:}
+            \begin{itemize}\setlength\itemsep{0.2em}
+                \item RNN: Multiplication only → $0.5^{50} \approx 0$
+                \item LSTM: ADDITION path → gradients preserved!
+                \item Memory can survive 100+ steps
+            \end{itemize}
+
+            This addition in Step 3 is the breakthrough!
+            \end{checkpoint}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.3em}
+    {\footnotesize\color{gray}But what happens to that output next?}
+\end{frame}
+
+% Slide 7: NEW - What Do We Do With The Output?
+\begin{frame}{What Do We Do With The Output?}
+    \vspace{-0.2em}
+    \begin{center}
+    {\large\bfseries From Hidden State to Prediction}
+    \end{center}
+
+    \vspace{0.5em}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Recap: Output Gate Result}
+
+            \vspace{0.3em}
+            From Step 4: [0.64, 0.46, 0.77]
+
+            \vspace{0.2em}
+            This is the \textbf{hidden state} $h_t$
+
+            \vspace{0.6em}
+            \textbf{Where Does It Go?}
+
+            \vspace{0.3em}
+            \begin{enumerate}\setlength\itemsep{0.3em}
+                \item \textbf{To Prediction Layer}
+
+                $h_t$ → Linear → Softmax → Probabilities
+
+                \vspace{0.2em}
+                Example at ``was'': Predict next word
+
+                \item \textbf{To Next Time Step}
+
+                $h_t$ feeds into next LSTM cell
+
+                \vspace{0.2em}
+                Used to compute next gates
+
+                \item \textbf{Optional: To Attention}
+
+                In seq2seq models, decoder attends to these $h_t$ values
+            \end{enumerate}
+
+            \vspace{0.5em}
+            \textbf{Key Distinction:}
+            \begin{itemize}\setlength\itemsep{0.2em}
+                \item $C_t$ = Long-term memory (protected)
+                \item $h_t$ = Working memory (filtered output)
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Concrete Example:}
+
+            \vspace{0.3em}
+            \colorbox{blue!10}{\parbox{0.95\textwidth}{
+            \scriptsize
+            \textbf{At word ``was'' in ``The dog was sleeping'':}
+
+            \vspace{0.3em}
+            Memory $C_t$ contains: [dog, context]
+
+            Output gate: 0.9 (reveal 90\%)
+
+            Hidden state $h_t$: [0.64, 0.46, 0.77]
+
+            \vspace{0.3em}
+            \textbf{Prediction layer receives $h_t$:}
+
+            $h_t$ → Linear(512 → vocab) → Softmax
+
+            \vspace{0.3em}
+            \textbf{Top predictions:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item ``sleeping'': 0.35 (verb matches dog)
+                \item ``running'': 0.18
+                \item ``eating'': 0.12
+            \end{itemize}
+
+            \vspace{0.3em}
+            The subject info (``dog'') in $h_t$ helps predict appropriate verb!
+            }}
+
+            \vspace{0.5em}
+            \begin{intuition}[Why Filter?]
+            \scriptsize
+            Not all memory is relevant NOW.
+
+            \vspace{0.2em}
+            \textbf{Examples:}
+            \begin{itemize}\setlength\itemsep{0.2em}
+                \item At ``The'': Output gate low (0.2) → hide memory, article doesn't need context
+                \item At ``was'': Output gate high (0.9) → reveal memory, verb needs subject!
+            \end{itemize}
+
+            The OUTPUT gate is smart about WHEN to use memory.
+            \end{intuition}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.3em}
+    {\footnotesize\color{gray}But what does this look like mathematically?}
+\end{frame}
+
+% Slide 8: NEW - Under The Hood: It's All Vectors!
+\begin{frame}{Under The Hood: It's All Vectors!}
+    \vspace{-0.2em}
+    \begin{center}
+    {\large\bfseries From Water Tank Analogy to Math}
+    \end{center}
+
+    \vspace{0.5em}
+
+    \begin{columns}[T]
+        \begin{column}{0.42\textwidth}
+            \begin{center}
+            \colorbox{blue!10}{\parbox{0.95\textwidth}{
+            \centering
+            \textbf{What We Just Learned}
+
+            \vspace{0.3em}
+            \begin{tikzpicture}[scale=0.4]
+                % Mini water tank
+                \draw[thick, fill=blue!10] (0,0) rectangle (2,2);
+                \node at (1,1) {\tiny Memory};
+                \draw[thick, blue] (2,0.8) -- (2.5,0.8);
+                \draw[thick, blue, ->] (2.2,0.8) -- (2.5,0.8);
+            \end{tikzpicture}
+
+            \vspace{0.2em}
+            \scriptsize
+            ``Tap water''
+
+            ``Gate = 0.9''
+
+            ``Memory flows''
+
+            \vspace{0.3em}
+            \textbf{This was the INTUITION}
+            }}
+            \end{center}
+
+            \vspace{0.5em}
+            \textbf{The Translation:}
+
+            \vspace{0.3em}
+            \scriptsize
+            \begin{itemize}\setlength\itemsep{0.3em}
+                \item \textbf{Water} → Vector in space
+                \item \textbf{Tank} → Memory $C_t$
+                \item \textbf{Tap setting 0.9} → Multiply by 0.9
+                \item \textbf{Flowing water} → Scaled vector $h_t$
+            \end{itemize}
+
+            \vspace{0.3em}
+            \begin{checkpoint}[Key Insight]
+            \tiny
+            The ``tap'' is just SCALAR MULTIPLICATION!
+
+            Gate value 0.9 = scale each dimension by 0.9
+            \end{checkpoint}
+        \end{column}
+
+        \begin{column}{0.55\textwidth}
+            \begin{center}
+            \textbf{What's Actually Happening:}
+            \end{center}
+
+            \vspace{0.3em}
+
+            \begin{tikzpicture}[scale=1.1]
+                % Coordinate axes
+                \draw[->, gray] (0,0) -- (4.5,0) node[right] {\tiny dim 1};
+                \draw[->, gray] (0,0) -- (0,4) node[above] {\tiny dim 2};
+
+                % Memory vector C_t
+                \draw[->, very thick, blue] (0,0) -- (3.5,2.5) node[midway, above left] {\scriptsize $C_t$};
+                \node[right, blue] at (3.5,2.5) {\scriptsize $[0.7, 0.5, 0.9]$};
+                \node[below, blue] at (1.75,1.25) {\tiny Memory};
+
+                % Output gate operation
+                \node[draw, fill=yellow!20, rectangle] at (5.5,3) {\scriptsize $o_t = 0.9$};
+                \node[below] at (5.5,2.7) {\tiny Output gate};
+                \draw[->, thick] (4,2.5) -- (5.2,2.9);
+
+                % Scaled vector h_t
+                \draw[->, ultra thick, red] (0,0) -- (3.15,2.25) node[midway, below right] {\scriptsize $h_t$};
+                \node[right, red] at (3.15,2.25) {\scriptsize $[0.63, 0.45, 0.81]$};
+                \node[above, red] at (1.57,1.12) {\tiny Hidden state};
+
+                % Show the scaling
+                \draw[dashed, gray] (3.5,2.5) -- (3.15,2.25);
+                \node[right, gray] at (3.3,2.38) {\tiny 90\%};
+            \end{tikzpicture}
+
+            \vspace{0.3em}
+            \scriptsize
+            \textbf{The Math:}
+
+            \vspace{0.2em}
+            \colorbox{green!10}{\parbox{0.95\textwidth}{
+            Memory vector: $C_t = [0.7, 0.5, 0.9]$
+
+            \vspace{0.2em}
+            Output gate: $o_t = 0.9$ (the ``tap setting'')
+
+            \vspace{0.2em}
+            \textbf{Element-wise multiplication:}
+
+            $h_t = o_t \odot C_t$
+
+            $h_t = 0.9 \times [0.7, 0.5, 0.9]$
+
+            $h_t = [0.63, 0.45, 0.81]$
+
+            \vspace{0.2em}
+            \textbf{Result:} Vector is 90\% of original length!
+            }}
+
+            \vspace{0.3em}
+            \begin{intuition}[Why This Works]
+            \tiny
+            Each dimension stores different info about ``dog'':
+            \begin{itemize}\setlength\itemsep{0em}
+                \item dim 1: noun vs verb
+                \item dim 2: singular vs plural
+                \item dim 3: animate vs inanimate
+            \end{itemize}
+
+            Gate 0.9 reduces ALL dimensions by 10\%
+            \end{intuition}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.2em}
+    {\footnotesize\color{gray}Now let's see why we need three separate gates...}
+\end{frame}
+
+% Slide 9: Why Three Separate Gates? (Scenarios)
+\begin{frame}{Why Three Separate Gates? Real Scenarios}
+    \vspace{-0.3em}
+    \begin{center}
+    {\large\bfseries Reading: ``The cat sat. The dog...''}
+    \end{center}
+
+    \vspace{0.3em}
+    \scriptsize
+
+    \begin{columns}[T]
+        \begin{column}{0.31\textwidth}
+            \begin{center}
+            \colorbox{green!20}{\textbf{Scenario 1: At ``cat''}}
+            \end{center}
+
+            \vspace{0.3em}
+            \textbf{Gate Values:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item F = 0.8 (keep)
+                \item I = 0.9 (STORE!)
+                \item O = 0.8 (show)
+            \end{itemize}
+
+            \vspace{0.4em}
+            \textbf{What Happens:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item Keep previous context
+                \item STORE subject strongly
+                \item Show it to network
+            \end{itemize}
+
+            \vspace{0.4em}
+            \textbf{Goal:}\\
+            Remember ``cat'' for rest of sentence
+
+            \vspace{0.4em}
+            \textbf{Memory:}\\
+            $\rightarrow$ [cat, context]
+        \end{column}
+
+        \begin{column}{0.31\textwidth}
+            \begin{center}
+            \colorbox{red!20}{\textbf{Scenario 2: At ``.''}}
+            \end{center}
+
+            \vspace{0.3em}
+            \textbf{Gate Values:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item F = 0.1 (ERASE!)
+                \item I = 0.4 (small)
+                \item O = 0.3 (HIDE)
+            \end{itemize}
+
+            \vspace{0.4em}
+            \textbf{What Happens:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item ERASE old sentence
+                \item Small punctuation add
+                \item HIDE memory
+            \end{itemize}
+
+            \vspace{0.4em}
+            \textbf{Goal:}\\
+            Clean slate for new sentence
+
+            \vspace{0.4em}
+            \textbf{Memory:}\\
+            $\rightarrow$ [mostly empty]
+        \end{column}
+
+        \begin{column}{0.31\textwidth}
+            \begin{center}
+            \colorbox{blue!20}{\textbf{Scenario 3: At ``dog''}}
+            \end{center}
+
+            \vspace{0.3em}
+            \textbf{Gate Values:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item F = 0.7 (keep some)
+                \item I = 0.9 (NEW!)
+                \item O = 0.9 (REVEAL!)
+            \end{itemize}
+
+            \vspace{0.4em}
+            \textbf{What Happens:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item Keep some context
+                \item STORE new subject
+                \item REVEAL all info
+            \end{itemize}
+
+            \vspace{0.4em}
+            \textbf{Goal:}\\
+            New focus, need it NOW
+
+            \vspace{0.4em}
+            \textbf{Memory:}\\
+            $\rightarrow$ [dog, some context]
+        \end{column}
+    \end{columns}
+
+    \vspace{0.6em}
+
+    \begin{center}
+    \colorbox{yellow!20}{\parbox{0.9\textwidth}{
+    \centering
+    \textbf{Key Insight: Each situation needs DIFFERENT gate values!}\\
+    \vspace{0.2em}
+    That's why LSTM has three independent gates, not just one.\\
+    The network LEARNS which values to use for each word.
+    }}
+    \end{center}
+
+    \vspace{0.3em}
+    {\footnotesize\color{gray}Now let's watch these gates in action on a real sentence...}
+\end{frame}
+
+% Slide 9: THE CORE TABLE - Show Pure Magic First!
+\begin{frame}{Watch LSTM Process a Sentence}
+    \vspace{-0.5em}
+    \begin{center}
+    {\large\bfseries Sentence: ``The cat was hungry. The dog was sleeping.''}
+    \end{center}
+
+    \vspace{0.3em}
+
+    \begin{center}
+    \scriptsize
+    \renewcommand{\arraystretch}{1.0}
+    \begin{tabular}{|c|c|c|c|p{2.6cm}|}
+    \hline
+    \textbf{Word} & \textbf{Forget} & \textbf{Input} & \textbf{Output} & \textbf{Memory State} \\
+    \hline
+    The & 0.9 & 0.3 & 0.2 & \textit{article} \\
+    \hline
+    cat & 0.8 & \cellcolor{green!30}\textbf{0.9} & 0.8 & \textit{subject: cat} \\
+    \hline
+    was & 0.9 & 0.7 & 0.9 & \textit{cat + verb} \\
+    \hline
+    hungry & 0.8 & 0.8 & 0.7 & \textit{cat is hungry} \\
+    \hline
+    \rowcolor{yellow!20}
+    . & \cellcolor{red!30}\textbf{0.1} & 0.4 & 0.3 & \textit{sentence ends} \\
+    \hline
+    The & 0.1 & 0.8 & 0.2 & \textit{new article} \\
+    \hline
+    dog & 0.7 & \cellcolor{green!30}\textbf{0.9} & 0.9 & \textit{subject: dog} \\
+    \hline
+    was & 0.9 & 0.8 & \cellcolor{blue!30}\textbf{0.9} & \textit{using dog info} \\
+    \hline
+    \end{tabular}
+    \end{center}
+
+    \vspace{0.8em}
+
+    \begin{columns}
+    \column{0.32\textwidth}
+    \centering
+    \colorbox{red!20}{\scriptsize \textbf{0.1} = Forget}
+
+    \column{0.32\textwidth}
+    \centering
+    \colorbox{green!20}{\scriptsize \textbf{0.9} = Store/Use}
+
+    \column{0.32\textwidth}
+    \centering
+    {\scriptsize Period → Reset}
+    \end{columns}
+
+    \vspace{0.4em}
+    {\footnotesize\color{gray} Notice the patterns? Let's explore what you observed...}
+\end{frame}
+
+% Slide 10: What Did You Notice?
+\begin{frame}{What Did You Notice?}
+    \vspace{-0.3em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Common Observations:}
+
+            \vspace{0.5em}
+            Students usually notice:
+            \begin{itemize}\setlength\itemsep{0.3em}
+                \item \textcolor{red}{\textbf{``It drops to 0.1 at the period!''}}
+                \item \textcolor{green}{\textbf{``It's 0.9 on important words (cat, dog)''}}
+                \item ``The memory changes from cat to dog''
+                \item ``It resets between sentences''
+                \item ``Three different columns of numbers''
+            \end{itemize}
+
+            \vspace{0.5em}
+            \textbf{Key Questions:}
+            \begin{enumerate}
+                \item HOW does it know to forget at period?
+                \item HOW does it know cat and dog are important?
+                \item HOW does it decide when to use memory?
+            \end{enumerate}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{center}
+            \includegraphics[width=0.9\textwidth]{../figures/lstm_gates_simple_bsc.pdf}
+            \end{center}
+
+            \vspace{0.3em}
+            \begin{checkpoint}[The Big Reveal]
+            Those three columns are called \textbf{GATES}:
+            \begin{itemize}\setlength\itemsep{0.2em}
+                \item \textcolor{red}{Forget Gate}: Controls what to erase
+                \item \textcolor{green}{Input Gate}: Controls what to store
+                \item \textcolor{blue}{Output Gate}: Controls what to use
+            \end{itemize}
+
+            \vspace{0.3em}
+            But WHY do we need gates?\\
+            Let's find out...
+            \end{checkpoint}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 11: Why Do We Need This?
+\begin{frame}{Why Do We Need Controlled Memory?}
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{../figures/vanishing_gradient_problem_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.6em}
+    \scriptsize
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{RNN Problem:}
+            \begin{itemize}\setlength\itemsep{-0.1em}
+                \item Gradients vanish (0.5$^{50}$ $\approx$ 0)
+                \item Forgets early information
+                \item Can't handle long dependencies
+                \item Would lose ``cat'' by ``dog''
+            \end{itemize}
+
+            \vspace{0.3em}
+            \textbf{Example:} ``I grew up in Paris. I speak fluent \_\_\_''
+
+            RNN forgets ``Paris'' after 20 words → can't predict ``French''
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{LSTM Solution:}
+            \begin{itemize}\setlength\itemsep{-0.1em}
+                \item Cell state highway (addition not multiplication)
+                \item Three gates for CONTROL
+                \item Can preserve info for 100+ steps
+                \item Then ERASE when sentence ends
+            \end{itemize}
+
+            \vspace{0.3em}
+            \textbf{Remember Our Table?}
+
+            That \textbf{0.1} at period = \textit{controlled forgetting}
+
+            That \textbf{0.9} on ``dog'' = \textit{controlled storing}
+
+            \vspace{0.2em}
+            Now let's see HOW we GET those numbers...
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 12: Gate 1 - Forget (Explain the 0.1)
+\begin{frame}{Forget Gate: How We Get That 0.1}
+    \begin{center}
+        \includegraphics[width=0.65\textwidth]{../figures/forget_gate_detail_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \scriptsize
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Back to Our Table - Row 5:}
+
+            \begin{center}
+            \begin{tabular}{|c|c|}
+            \hline
+            \textbf{Word} & \textbf{Forget} \\
+            \hline
+            \rowcolor{yellow!20}
+            ``.'' & \cellcolor{red!30}\textbf{0.1} \\
+            \hline
+            \end{tabular}
+            \end{center}
+
+            \vspace{0.3em}
+            \textbf{What This 0.1 Means:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item 0.0 = forget everything
+                \item 1.0 = keep everything
+                \item 0.1 = forget 90\% (keep only 10\%)
+            \end{itemize}
+
+            \vspace{0.3em}
+            \textbf{Why at period?}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item New sentence starting
+                \item Old subject (``cat'') no longer relevant
+                \item Clear memory for new context
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{The Formula That Produces 0.1:}
+            \[
+            f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)
+            \]
+
+            \vspace{0.2em}
+            \textbf{How It Decides:}
+            \begin{enumerate}\setlength\itemsep{0em}
+                \item Look at current word (``.'')
+                \item Look at previous hidden state
+                \item Compute weighted sum
+                \item Apply sigmoid → output 0 to 1
+            \end{enumerate}
+
+            \vspace{0.3em}
+            \textbf{Cell State Update:}
+            \[
+            C_t = \textcolor{red}{f_t \odot C_{t-1}} + \ldots
+            \]
+
+            Multiply old memory by \textbf{0.1} = erase 90\%!
+
+            \vspace{0.2em}
+            \textit{The network LEARNED that periods signal sentence boundaries!}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 13: Gate 2 - Input (Explain the 0.9)
+\begin{frame}{Input Gate: How We Get That 0.9}
+    \begin{center}
+        \includegraphics[width=0.65\textwidth]{../figures/input_gate_detail_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \scriptsize
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Back to Our Table - Row 7:}
+
+            \begin{center}
+            \begin{tabular}{|c|c|}
+            \hline
+            \textbf{Word} & \textbf{Input} \\
+            \hline
+            \rowcolor{green!20}
+            ``dog'' & \cellcolor{green!30}\textbf{0.9} \\
+            \hline
+            \end{tabular}
+            \end{center}
+
+            \vspace{0.3em}
+            \textbf{What This 0.9 Means:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item 0.0 = add nothing
+                \item 1.0 = add everything
+                \item 0.9 = add 90\% of candidate
+            \end{itemize}
+
+            \vspace{0.3em}
+            \textbf{Why at ``dog''?}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item New subject appearing
+                \item Important to remember
+                \item Will need it for verb prediction
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{The Formulas (Two Parts):}
+            \[
+            i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i)
+            \]
+            \[
+            \tilde{C}_t = \tanh(W_C \cdot [h_{t-1}, x_t] + b_C)
+            \]
+
+            \vspace{0.2em}
+            \textbf{How It Works:}
+            \begin{enumerate}\setlength\itemsep{0em}
+                \item Create candidate info ($\tilde{C}_t$) with tanh
+                \item Decide how much to use ($i_t$ = 0.9)
+                \item Multiply: 0.9 × candidate
+                \item Add to cell state
+            \end{enumerate}
+
+            \vspace{0.3em}
+            \textbf{Cell State Update:}
+            \[
+            C_t = \ldots + \textcolor{green}{i_t \odot \tilde{C}_t}
+            \]
+
+            \textit{The network LEARNED that nouns are important subjects!}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 14: Gate 3 - Output (Explain the final 0.9)
+\begin{frame}{Output Gate: When to USE Memory}
+    \begin{center}
+        \includegraphics[width=0.65\textwidth]{../figures/output_gate_detail_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \scriptsize
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Back to Our Table - Row 8:}
+
+            \begin{center}
+            \begin{tabular}{|c|c|}
+            \hline
+            \textbf{Word} & \textbf{Output} \\
+            \hline
+            \rowcolor{blue!20}
+            ``was'' & \cellcolor{blue!30}\textbf{0.9} \\
+            \hline
+            \end{tabular}
+            \end{center}
+
+            \vspace{0.3em}
+            \textbf{What This 0.9 Means:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item 0.0 = hide everything
+                \item 1.0 = reveal everything
+                \item 0.9 = output 90\% of memory
+            \end{itemize}
+
+            \vspace{0.3em}
+            \textbf{Why at ``was''?}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item Need to predict next word
+                \item Subject info is critical
+                \item ``dog'' determines verb form
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{The Formulas:}
+            \[
+            o_t = \sigma(W_o \cdot [h_{t-1}, x_t] + b_o)
+            \]
+            \[
+            h_t = o_t \odot \tanh(C_t)
+            \]
+
+            \vspace{0.2em}
+            \textbf{How It Works:}
+            \begin{enumerate}\setlength\itemsep{0em}
+                \item Look at cell state (has ``dog'' info)
+                \item Decide what's relevant NOW
+                \item Filter memory through gate (0.9)
+                \item Send $h_t$ to prediction layer
+            \end{enumerate}
+
+            \vspace{0.3em}
+            \textbf{Key Insight:}
+
+            Cell state $C_t$ stays protected (long-term memory)
+
+            Hidden state $h_t$ is filtered output (working memory)
+
+            \vspace{0.2em}
+            \textit{The network LEARNED when predictions need subject info!}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 15: How All Gates Work Together
+\begin{frame}{The Big Picture: Three Gates Working Together}
+    \begin{center}
+        \includegraphics[width=0.55\textwidth]{../figures/lstm_architecture_overview_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \scriptsize
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{The Cell State Highway:}
+            \begin{itemize}\setlength\itemsep{-0.1em}
+                \item Protected memory channel
+                \item Information flows easily
+                \item Gates control entry/exit
+                \item Gradients don't vanish!
+            \end{itemize}
+
+            \vspace{0.3em}
+            \textbf{At Each Time Step:}
+            \begin{enumerate}\setlength\itemsep{-0.1em}
+                \item \textcolor{red}{\textbf{Forget:}} Erase old (0.1 → erase ``cat'')
+                \item \textcolor{green}{\textbf{Input:}} Add new (0.9 → add ``dog'')
+                \item \textcolor{blue}{\textbf{Output:}} Use (0.9 → use ``dog'' info)
+            \end{enumerate}
+
+            \vspace{0.3em}
+            \textbf{Complete Cell Update:}
+            \[
+            C_t = \textcolor{red}{f_t \odot C_{t-1}} + \textcolor{green}{i_t \odot \tilde{C}_t}
+            \]
+
+            Addition preserves gradients!
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{intuition}[Visual Analogy]
+            Think of LSTM like a notebook:
+            \begin{itemize}\setlength\itemsep{0.1em}
+                \item \textcolor{red}{Forget Gate} = Eraser\\
+                      (Clear old notes at period)
+                \item \textcolor{green}{Input Gate} = Pen\\
+                      (Write important info like ``dog'')
+                \item \textcolor{blue}{Output Gate} = Highlighter\\
+                      (Highlight what's needed now)
+            \end{itemize}
+            \end{intuition}
+
+            \vspace{0.3em}
+            \textbf{Why This Solves RNN Problems:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item RNN: $0.5^{50}$ $\approx$ $10^{-15}$ (dead)
+                \item LSTM: $0.95^{50}$ $\approx$ 0.08 (usable!)
+                \item Addition path for gradients
+                \item 100+ step memory possible
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 16: THE CORE REVISITED - Full Understanding!
+\begin{frame}{Now Look Again - You Understand EVERYTHING!}
+    \vspace{-0.4em}
+    {\footnotesize\bfseries Sentence: ``The cat was hungry. The dog was sleeping.''}
+
+    \vspace{0.2em}
+    \begin{center}
+    \tiny
+    \renewcommand{\arraystretch}{1.1}
+    \begin{tabular}{|c|c|c|c|p{3.2cm}|}
+    \hline
+    \textbf{Word} & \textbf{Forget} & \textbf{Input} & \textbf{Output} & \textbf{What LSTM ``Thinks''} \\
+    \hline
+    The & 0.9 \tiny(keep) & 0.3 \tiny(weak) & 0.2 \tiny(hide) & Article seen, nothing special yet \\
+    \hline
+    cat & 0.8 \tiny(keep) & \cellcolor{green!30}\textbf{0.9} \tiny(STORE!) & 0.8 \tiny(show) & Subject! Important noun! \\
+    \hline
+    was & 0.9 \tiny(keep) & 0.7 \tiny(add) & 0.9 \tiny(need!) & Verb connects to cat \\
+    \hline
+    hungry & 0.8 \tiny(keep) & 0.8 \tiny(add) & 0.7 \tiny(show) & Describes the cat's state \\
+    \hline
+    \rowcolor{yellow!20}
+    . & \cellcolor{red!30}\textbf{0.1} \tiny(ERASE!) & 0.4 \tiny(end) & 0.3 \tiny(hide) & Sentence over! Clear memory! \\
+    \hline
+    The & 0.1 \tiny(clear) & 0.8 \tiny(new!) & 0.2 \tiny(hide) & NEW sentence starts fresh \\
+    \hline
+    \rowcolor{green!20}
+    dog & 0.7 \tiny(keep) & \cellcolor{green!30}\textbf{0.9} \tiny(NEW!) & 0.9 \tiny(use!) & NEW subject! (forgot cat) \\
+    \hline
+    \rowcolor{blue!20}
+    was & 0.9 \tiny(keep) & 0.8 \tiny(add) & \cellcolor{blue!30}\textbf{0.9} \tiny(USE!) & Using DOG info for prediction \\
+    \hline
+    \end{tabular}
+    \end{center}
+
+    \vspace{0.3em}
+    \begin{checkpoint}[The Magic Transition]
+    \small
+    Watch rows 4→5→6→7: \textbf{hungry} → \textbf{.} → \textbf{The} → \textbf{dog}
+
+    \textbf{Memory Evolution:} [cat, hungry] \textcolor{red}{→ FORGET (0.1) →} [end] \textcolor{green}{→ ADD (0.9) →} [dog]
+
+    This intelligent memory control is what RNNs cannot do! LSTM uses gates to:
+    \begin{itemize}\setlength\itemsep{-0.1em}
+        \item Preserve important info (0.9 on subject nouns)
+        \item Erase when context changes (0.1 at sentence boundaries)
+        \item Reveal info when needed (0.9 output for predictions)
+    \end{itemize}
+    \end{checkpoint}
+\end{frame}
+
+% Slide 17: Summary
+\begin{frame}{Summary: From Table to Understanding}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Your Learning Journey:}
+            \begin{enumerate}\setlength\itemsep{0.3em}
+                \item \textbf{Intuition:} Water tank analogy\\
+                      (Three valves on one tank)
+                \item \textbf{Concepts:} What gates are\\
+                      (Volume knobs from 0 to 1)
+                \item \textbf{Mechanics:} How they work\\
+                      (4-step process with real numbers)
+                \item \textbf{Usage:} What happens to output\\
+                      (Hidden state → prediction layer)
+                \item \textbf{Mastery:} Complete understanding\\
+                      (Table makes perfect sense now!)
+            \end{enumerate}
+
+            \vspace{0.5em}
+            \textbf{Key Equations:}
+            \begin{align*}
+            f_t &= \sigma(W_f [h_{t-1}, x_t] + b_f) \\
+            i_t &= \sigma(W_i [h_{t-1}, x_t] + b_i) \\
+            o_t &= \sigma(W_o [h_{t-1}, x_t] + b_o) \\
+            C_t &= f_t \odot C_{t-1} + i_t \odot \tilde{C}_t \\
+            h_t &= o_t \odot \tanh(C_t)
+            \end{align*}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{realworld}[Where LSTMs Excel]
+            \textbf{Applications (2015-2020):}
+            \begin{itemize}\setlength\itemsep{0.1em}
+                \item Machine Translation (Google Translate)
+                \item Speech Recognition (Siri, Alexa)
+                \item Text Generation (early GPT)
+                \item Video Analysis
+                \item Music Generation
+                \item Handwriting Recognition
+            \end{itemize}
+
+            \vspace{0.3em}
+            \textbf{Modern Context (2024):}
+
+            Transformers now dominate NLP, but LSTMs:
+            \begin{itemize}\setlength\itemsep{0.1em}
+                \item Still used in time series
+                \item Efficient for streaming data
+                \item Foundation for understanding attention
+            \end{itemize}
+            \end{realworld}
+
+            \vspace{0.3em}
+            \textbf{The Core Insight:}
+
+            That table showed you \textit{exactly} how gates work. Every 0.1 and 0.9 has a purpose. That's the real magic of LSTMs!
+        \end{column}
+    \end{columns}
+
+    \vspace{0.5em}
+    \begin{center}
+        \Large \textbf{Questions?}
+    \end{center}
+\end{frame}
+
+\end{document}

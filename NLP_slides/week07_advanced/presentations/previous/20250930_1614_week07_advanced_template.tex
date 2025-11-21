@@ -1,0 +1,1036 @@
+% Week 7: Advanced Transformers
+% Using Lavender Template with Pedagogical Elements
+% Created: 2025-09-30 16:14
+
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+
+% Lavender color scheme from template_beamer_final
+\definecolor{mllavender}{RGB}{200,180,220}
+\definecolor{mlpurple}{RGB}{130,100,160}
+\definecolor{mlblue}{RGB}{100,120,180}
+\definecolor{mldarkblue}{RGB}{60,80,120}
+\definecolor{mlgray}{RGB}{100,100,100}
+\definecolor{mlgreen}{RGB}{44,160,44}
+\definecolor{mlred}{RGB}{214,39,40}
+\definecolor{mlorange}{RGB}{255,127,14}
+
+% Apply the lavender color scheme
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{frametitle}{bg=mllavender!70,fg=mldarkblue}
+\setbeamercolor{title}{fg=mldarkblue}
+\setbeamercolor{subtitle}{fg=mlpurple}
+\setbeamercolor{author}{fg=mlgray}
+\setbeamercolor{date}{fg=mlgray}
+\setbeamercolor{block title}{bg=mllavender!50,fg=mldarkblue}
+\setbeamercolor{block body}{bg=mllavender!10}
+
+% Custom commands
+\newcommand{\highlight}[1]{\textcolor{mlpurple}{\textbf{#1}}}
+\newcommand{\keypoint}[1]{
+    \vspace{2mm}
+    \begin{center}
+    \colorbox{mllavender!30}{\parbox{0.9\textwidth}{\centering\small #1}}
+    \end{center}
+    \vspace{2mm}
+}
+\newcommand{\warning}[1]{\textcolor{red!70!black}{\textbf{Warning:} #1}}
+\newcommand{\success}[1]{\textcolor{green!70!black}{\textbf{#1}}}
+\newcommand{\secondary}[1]{\textcolor{mlgray}{#1}}
+\newcommand{\data}[1]{\textcolor{mlblue}{\textbf{#1}}}
+\newcommand{\dataalt}[1]{\textcolor{mlpurple}{\textbf{#1}}}
+\newcommand{\formula}[1]{
+    \begin{center}
+    \colorbox{mllavender!20}{\parbox{0.8\textwidth}{\centering\large $\displaystyle #1$}}
+    \end{center}
+}
+
+% Bottom note command
+\newcommand{\bottomnote}[1]{
+    \vfill
+    \begin{center}
+    \textcolor{mlgray}{\footnotesize\textit{#1}}
+    \end{center}
+}
+
+% Pedagogical commands
+\newcommand{\checkpoint}[1]{
+    \begin{center}
+    \colorbox{yellow!30}{\parbox{0.9\textwidth}{\centering\small\textbf{#1}}}
+    \end{center}
+}
+
+\newcommand{\intuition}[1]{
+    \begin{center}
+    \colorbox{purple!10}{\parbox{0.9\textwidth}{\small\textbf{Intuition:} #1}}
+    \end{center}
+}
+
+\newcommand{\realworld}[1]{
+    \begin{center}
+    \colorbox{orange!10}{\parbox{0.9\textwidth}{\small\textbf{Real World:} #1}}
+    \end{center}
+}
+
+\newcommand{\misconception}[1]{
+    \begin{center}
+    \colorbox{red!10}{\parbox{0.9\textwidth}{\small\textbf{Common Misconception:} #1}}
+    \end{center}
+}
+
+% Code listing setup
+\usepackage{listings}
+\lstset{
+    basicstyle=\tiny\ttfamily,
+    keywordstyle=\color{mlblue},
+    commentstyle=\color{mlgray},
+    frame=single,
+    backgroundcolor=\color{mllavender!10},
+    numbers=left,
+    numberstyle=\tiny\color{mlgray}
+}
+
+% Packages
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
+\title{Advanced Transformers}
+\subtitle{\secondary{Week 7 - T5, GPT-3, and the Era of Scale}}
+\author{NLP Course 2025}
+\date{\today}
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}
+\secondary{\footnotesize From BERT to GPT-3: The Scaling Revolution}
+\end{center}
+\end{frame}
+
+% Overview
+\begin{frame}{Week 7: The Era of Giant Models}
+\begin{center}
+{\Large \textbf{When Size Started to Matter}}
+\end{center}
+
+\vspace{10mm}
+
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{The Discovery}
+\begin{itemize}
+\item Scaling \warning{changes everything}
+\item Emergent abilities appear
+\item \highlight{Quality} from quantity
+\item Power laws rule
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{The Models}
+\begin{itemize}
+\item T5: \data{11B parameters}
+\item GPT-3: \dataalt{175B parameters}
+\item Switch: \success{1.6T parameters}
+\item Compute as currency
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{The Impact}
+\begin{itemize}
+\item Few-shot learning works
+\item In-context learning emerges
+\item Task-agnostic models
+\item AI becomes mainstream
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize The moment language models became foundation models}
+\end{frame}
+
+% Part 1: The Scaling Hypothesis
+\begin{frame}{\Large Part 1: The Scaling Hypothesis}
+\begin{center}
+{\huge \textbf{Bigger is Different}}
+\end{center}
+
+\vfill
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Kaplan Scaling Laws (2020)}
+
+\formula{L = aN^{-\alpha} + bD^{-\beta} + L_{\infty}}
+
+Where:
+\begin{itemize}
+\item $N$ = number of parameters
+\item $D$ = dataset size (tokens)
+\item $\alpha \approx 0.076$, $\beta \approx 0.095$
+\item Loss decreases predictably with scale
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Chinchilla Laws (2022)}
+
+\keypoint{Compute-optimal training: $N \propto D^{0.5}$}
+
+Key insight:
+\begin{itemize}
+\item Most models are \warning{undertrained}
+\item Need 20 tokens per parameter
+\item Smaller models + more data = better
+\item Changes entire industry approach
+\end{itemize}
+\end{columns}
+
+\vspace{3mm}
+
+\misconception{``Bigger models are always better'' - Chinchilla showed that GPT-3 (175B params, 300B tokens) was actually undertrained. A 70B model trained on 1.4T tokens would outperform it! The industry was scaling parameters instead of training compute.}
+
+\vfill
+\secondary{\footnotesize From ``make it bigger'' to ``train it longer''}
+\end{frame}
+
+% ========== CHECKPOINT 1 ==========
+\begin{frame}{Checkpoint: Understanding Scaling Laws}
+\begin{center}
+\textbf{Quick Check: Test Your Understanding}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Question 1:}
+
+What's the key insight from Chinchilla scaling laws?
+
+\begin{itemize}
+\item[A)] Bigger models always better
+\item[B)] 20 tokens per parameter optimal
+\item[C)] More layers = more performance
+\item[D)] Dataset size doesn't matter
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Question 2:}
+
+Why do scaling laws matter?
+
+\begin{itemize}
+\item[A)] They predict loss predictably
+\item[B)] They reduce training cost
+\item[C)] They make models smaller
+\item[D)] They eliminate overfitting
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Answers:}
+
+\vspace{3mm}
+
+\textbf{Answer 1:} \success{B - 20 tokens per parameter}
+\begin{itemize}
+\item Most models were undertrained
+\item Chinchilla: compute-optimal training
+\item Changed industry from "make it bigger" to "train it longer"
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Answer 2:} \success{A - Predict loss predictably}
+\begin{itemize}
+\item $L = aN^{-\alpha} + bD^{-\beta}$
+\item Loss decreases with scale
+\item Enables planning investments
+\item Power laws guide research
+\end{itemize}
+\end{columns}
+
+\vfill
+\checkpoint{Key takeaway: Scaling follows predictable laws, but optimal training requires balance between model size and data}
+\end{frame}
+
+% Emergent Abilities
+\begin{frame}{Emergent Abilities: The Phase Transition}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What Are Emergent Abilities?}
+
+Capabilities that:
+\begin{itemize}
+\item Appear \highlight{suddenly} at scale
+\item Were \warning{not} explicitly trained
+\item Show sharp phase transitions
+\item Cannot be predicted from smaller models
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Examples at Different Scales}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameters} & \textbf{Emergent Ability} \\
+\midrule
+1B & Basic syntax \\
+10B & Multi-step reasoning \\
+50B & Chain-of-thought \\
+100B+ & In-context learning \\
+\bottomrule
+\end{tabular}
+
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/emergent_abilities_chart.pdf}
+
+\vspace{5mm}
+
+\textbf{The Mystery}
+
+Nobody knows why:
+\begin{itemize}
+\item Sharp transitions occur
+\item Specific scales matter
+\item Some tasks need 100B+
+\item Others emerge at 1B
+\end{itemize}
+\end{columns}
+
+\vspace{3mm}
+
+\intuition{Why sudden phase transitions? Think of water freezing at 0°C - small temperature changes cause dramatic state shifts. Similarly, models may accumulate latent capabilities until a critical threshold triggers sudden performance jumps. The exact mechanisms remain an open research question.}
+
+\vfill
+\secondary{\footnotesize The most surprising discovery in modern AI}
+\end{frame}
+
+% T5: Text-to-Text Transfer Transformer
+\begin{frame}{T5: Everything is Text Generation}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Unified Framework}
+
+Every task as text-to-text:
+\begin{itemize}
+\item Translation: \data{``translate English to French: hello''}
+\item Summarization: \data{``summarize: [article]''}
+\item Question: \data{``question: what is NLP?''}
+\item Classification: \data{``sentiment: great movie''}
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Architecture Choices}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Component} & \textbf{Decision} \\
+\midrule
+Model & Encoder-decoder \\
+Size & 60M to 11B \\
+Objective & Span corruption \\
+Dataset & C4 (750GB text) \\
+\bottomrule
+\end{tabular}
+
+\column{0.48\textwidth}
+\textbf{Key Innovation: Span Corruption}
+
+\includegraphics[width=\textwidth]{../figures/t5_span_corruption.pdf}
+
+\vspace{5mm}
+
+\textbf{Performance Impact}
+
+\begin{itemize}
+\item SOTA on 20+ benchmarks
+\item Single model, many tasks
+\item Better than task-specific models
+\item Scales predictably
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Google's answer to GPT: unify everything}
+\end{frame}
+
+% GPT-3: The 175B Monster
+\begin{frame}[fragile]{GPT-3: The Model That Changed Everything}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Scale}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Parameters & 175 billion \\
+Layers & 96 \\
+Hidden size & 12,288 \\
+Attention heads & 96 \\
+Training tokens & 300 billion \\
+Training cost & \$4.6 million \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+
+\textbf{Few-Shot Learning}
+
+No gradient updates needed:
+\begin{itemize}
+\item 0-shot: Just describe task
+\item 1-shot: One example
+\item Few-shot: 2-10 examples
+\item \success{Works surprisingly well!}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{In-Context Learning Example}
+
+\begin{lstlisting}[language={}]
+Translate to French:
+sea otter -> loutre de mer
+cheese -> fromage
+peppermint ->
+(*@\textcolor{DarkGreen}{menthe poivr\'ee}@*)
+\end{lstlisting}
+
+\vspace{5mm}
+
+\includegraphics[width=\textwidth]{../figures/gpt3_performance.pdf}
+
+\vspace{5mm}
+
+\keypoint{First model to show general intelligence}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize The moment AI became a mainstream conversation}
+\end{frame}
+
+% ========== CHECKPOINT 2 ==========
+\begin{frame}{Checkpoint: Few-Shot Learning}
+\begin{center}
+\textbf{Quick Check: Understanding GPT-3}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Question 1:}
+
+What makes GPT-3's few-shot learning special?
+
+\begin{itemize}
+\item[A)] No gradient updates needed
+\item[B)] Faster training time
+\item[C)] Smaller model size
+\item[D)] Better architecture
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Question 2:}
+
+What is in-context learning?
+
+\begin{itemize}
+\item[A)] Learning from examples in prompt
+\item[B)] Transfer learning technique
+\item[C)] New training algorithm
+\item[D)] Data augmentation method
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Answers:}
+
+\vspace{3mm}
+
+\textbf{Answer 1:} \success{A - No gradient updates}
+\begin{itemize}
+\item Just provide examples in prompt
+\item Model infers pattern from context
+\item 0-shot, 1-shot, or few-shot
+\item No fine-tuning required!
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Answer 2:} \success{A - Learning from examples}
+\begin{itemize}
+\item Model sees pattern in prompt
+\item Applies to new instances
+\item Emergent ability at scale
+\item Revolutionized how we use LLMs
+\end{itemize}
+\end{columns}
+
+\vfill
+\checkpoint{Key takeaway: GPT-3 showed that large enough models can learn tasks from just examples in the prompt, no training needed}
+\end{frame}
+
+% Architecture Deep Dive
+\begin{frame}{Architecture Evolution: From BERT to GPT-3}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Three Paradigms}
+
+\includegraphics[width=\textwidth]{../figures/architecture_comparison_advanced.pdf}
+
+\begin{enumerate}
+\item \textbf{Encoder-only} (BERT)
+   \begin{itemize}
+   \item Bidirectional context
+   \item Best for understanding
+   \item Classification tasks
+   \end{itemize}
+
+\item \textbf{Decoder-only} (GPT)
+   \begin{itemize}
+   \item Autoregressive
+   \item Best for generation
+   \item Most scalable
+   \end{itemize}
+
+\item \textbf{Encoder-Decoder} (T5)
+   \begin{itemize}
+   \item Flexible input/output
+   \item Best for seq2seq
+   \item More parameters needed
+   \end{itemize}
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{Why Decoder-Only Won}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Advantage} & \textbf{Reason} \\
+\midrule
+Simplicity & One stack vs two \\
+Efficiency & Better GPU utilization \\
+Scaling & More predictable \\
+Generation & Natural fit \\
+Training & Simpler objective \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+
+\textbf{The Convergence}
+
+All roads lead to autoregressive:
+\begin{itemize}
+\item BERT team moves to decoder (PaLM)
+\item T5 team adopts decoder (Flan)
+\item Industry standardizes on GPT-style
+\item Even vision models follow (ViT-GPT)
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize The architecture debate is over: decoder-only won}
+\end{frame}
+
+% Sparse Models and MoE
+\begin{frame}{Mixture of Experts: Scaling Without Cost}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Problem with Dense Models}
+
+Every token uses ALL parameters:
+\begin{itemize}
+\item 175B params = 175B operations
+\item Linear scaling of compute
+\item Hit hardware limits quickly
+\item \warning{Unsustainable growth}
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{The MoE Solution}
+
+\includegraphics[width=\textwidth]{../figures/moe_architecture.pdf}
+
+Only activate what you need!
+
+\column{0.48\textwidth}
+\textbf{Switch Transformer (2021)}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Total params & 1.6 trillion \\
+Active params & 100B per token \\
+Experts & 2048 \\
+Speedup & 7x \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+
+\textbf{How It Works}
+
+\begin{enumerate}
+\item Router selects experts
+\item Each token → 1-2 experts
+\item Experts specialize automatically
+\item Load balancing critical
+\end{enumerate}
+
+\vspace{5mm}
+
+\keypoint{1.6T params, 100B compute cost!}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize The clever way to scale: use sparsity}
+\end{frame}
+
+% ========== CHECKPOINT 3 ==========
+\begin{frame}{Checkpoint: Sparse Models}
+\begin{center}
+\textbf{Quick Check: Understanding Mixture of Experts}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Question 1:}
+
+How does Switch Transformer save compute?
+
+\begin{itemize}
+\item[A)] Fewer total parameters
+\item[B)] Only activate needed experts
+\item[C)] Faster GPUs
+\item[D)] Better optimization algorithm
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Question 2:}
+
+What's the main advantage of MoE?
+
+\begin{itemize}
+\item[A)] Scale parameters without cost
+\item[B)] Easier to train
+\item[C)] Better accuracy
+\item[D)] Less memory needed
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Answers:}
+
+\vspace{3mm}
+
+\textbf{Answer 1:} \success{B - Activate only needed experts}
+\begin{itemize}
+\item Router selects 1-2 experts per token
+\item 1.6T total params, 100B active
+\item 16x parameter efficiency
+\item Sparsity is the key!
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Answer 2:} \success{A - Scale without cost}
+\begin{itemize}
+\item Add params without compute penalty
+\item Each expert specializes
+\item 7x speedup over dense
+\item Future of scaling
+\end{itemize}
+\end{columns}
+
+\vfill
+\checkpoint{Key takeaway: Sparse models like Switch Transformer show we can have massive parameter counts with manageable compute costs through selective activation}
+\end{frame}
+
+% Training at Scale
+\begin{frame}{Training Infrastructure: The Hidden Challenge}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Model Parallelism Types}
+
+\begin{enumerate}
+\item \textbf{Data Parallel}
+   \begin{itemize}
+   \item Split batch across GPUs
+   \item Replicate model
+   \item Synchronize gradients
+   \end{itemize}
+
+\item \textbf{Pipeline Parallel}
+   \begin{itemize}
+   \item Split layers across GPUs
+   \item Micro-batching
+   \item Bubble overhead
+   \end{itemize}
+
+\item \textbf{Tensor Parallel}
+   \begin{itemize}
+   \item Split matrices across GPUs
+   \item High communication
+   \item Best for large layers
+   \end{itemize}
+\end{enumerate}
+
+\vspace{5mm}
+
+\textbf{3D Parallelism}: Combine all three!
+
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/3d_parallelism.pdf}
+
+\vspace{5mm}
+
+\textbf{GPT-3 Training Stats}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Resource} & \textbf{Amount} \\
+\midrule
+GPUs & 10,000 V100s \\
+Training time & 34 days \\
+FLOPs & $3.14 \times 10^{23}$ \\
+Power usage & 1,287 MWh \\
+CO2 emissions & 552 tons \\
+\bottomrule
+\end{tabular}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Training large models is an engineering feat}
+\end{frame}
+
+% Practical Applications
+\begin{frame}{From Research to Production}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The API Revolution}
+
+No more training needed:
+\begin{itemize}
+\item OpenAI API (GPT-3)
+\item Google Cloud (PaLM)
+\item Anthropic (Claude)
+\item Cohere, AI21, etc.
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Prompt Engineering}
+
+The new programming:
+\begin{itemize}
+\item Zero-shot prompts
+\item Few-shot examples
+\item Chain-of-thought
+\item Instruction following
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Cost Per 1M Tokens}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Model} & \textbf{Price} \\
+\midrule
+GPT-3 Ada & \$0.40 \\
+GPT-3 Curie & \$2.00 \\
+GPT-3 Davinci & \$20.00 \\
+\bottomrule
+\end{tabular}
+
+\column{0.48\textwidth}
+\textbf{Real Applications (2021-2023)}
+
+\includegraphics[width=\textwidth]{../figures/gpt3_applications.pdf}
+
+\vspace{5mm}
+
+\textbf{Success Stories}
+
+\begin{itemize}
+\item GitHub Copilot: 40\% of code
+\item Jasper.ai: \$125M revenue
+\item Copy.ai: 10M users
+\item ChatGPT: 100M in 2 months
+\end{itemize}
+\end{columns}
+
+\vspace{3mm}
+
+\realworld{GitHub Copilot (2021): Developers now write 40\% of their code with AI assistance. This represents a 10x productivity boost for routine tasks, fundamentally changing how software is written.}
+
+\vspace{2mm}
+
+\realworld{ChatGPT Growth (2022): Reached 100 million users in just 2 months - the fastest consumer app adoption in history. Compare: Instagram took 2.5 years, TikTok took 9 months.}
+
+\vfill
+\secondary{\footnotesize From lab to product in record time}
+\end{frame}
+
+% The Compute Race
+\begin{frame}{The Compute Race: Power Laws and Politics}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Compute Requirements Over Time}
+
+\includegraphics[width=\textwidth]{../figures/compute_scaling.pdf}
+
+\vspace{5mm}
+
+Doubling every 3.4 months!
+
+\vspace{5mm}
+
+\textbf{The Players (2023)}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Company} & \textbf{Largest Model} \\
+\midrule
+OpenAI & GPT-4 (1T?) \\
+Google & PaLM 2 (340B) \\
+Meta & Llama 2 (70B) \\
+Anthropic & Claude (52B) \\
+\bottomrule
+\end{tabular}
+
+\column{0.48\textwidth}
+\textbf{The Hardware Arms Race}
+
+\begin{itemize}
+\item NVIDIA A100: \$10,000
+\item NVIDIA H100: \$30,000
+\item TPU v4: Not for sale
+\item Custom chips emerging
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{National AI Strategies}
+
+\begin{itemize}
+\item US: Export controls on chips
+\item China: \$150B investment
+\item EU: Sovereign cloud initiative
+\item UK: Safety focus
+\end{itemize}
+
+\vspace{5mm}
+
+\keypoint{Compute is the new oil}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize The geopolitics of artificial intelligence}
+\end{frame}
+
+% Limitations and Challenges
+\begin{frame}{The Dark Side of Scale}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Known Limitations}
+
+\begin{enumerate}
+\item \textbf{Hallucinations}
+   \begin{itemize}
+   \item Confident wrong answers
+   \item Made-up citations
+   \item No uncertainty estimates
+   \end{itemize}
+
+\item \textbf{Reasoning Failures}
+   \begin{itemize}
+   \item Simple math errors
+   \item Logic puzzles fail
+   \item Common sense gaps
+   \end{itemize}
+
+\item \textbf{Control Problems}
+   \begin{itemize}
+   \item Can't guarantee safety
+   \item Prompt injection attacks
+   \item Jailbreaking possible
+   \end{itemize}
+\end{enumerate}
+
+\vspace{5mm}
+
+\warning{Bigger models = bigger problems}
+
+\column{0.48\textwidth}
+\textbf{The Cost Crisis}
+
+\begin{itemize}
+\item Training GPT-4: \$100M+
+\item Running costs: \$700K/day
+\item Environmental impact huge
+\item Excludes most researchers
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{The Alignment Problem}
+
+\includegraphics[width=\textwidth]{../figures/alignment_challenge.pdf}
+
+\vspace{5mm}
+
+How do we ensure:
+\begin{itemize}
+\item Models do what we want?
+\item They're honest and helpful?
+\item They refuse harmful requests?
+\item They remain controllable?
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize With great scale comes great responsibility}
+\end{frame}
+
+% Future Directions
+\begin{frame}{The Road Ahead: What's Next?}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Scaling Continues}
+
+GPT-5 and beyond:
+\begin{itemize}
+\item 10T parameters coming
+\item Multimodal by default
+\item Video understanding
+\item Reasoning breakthroughs?
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Efficiency Revolution}
+
+Making models smaller:
+\begin{itemize}
+\item Quantization (1-bit models!)
+\item Knowledge distillation
+\item Efficient architectures
+\item On-device inference
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{New Paradigms}
+
+\begin{itemize}
+\item Retrieval-augmented generation
+\item Tool use and plugins
+\item Constitutional AI
+\item Mechanistic interpretability
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Cambrian Explosion}
+
+\includegraphics[width=\textwidth]{../figures/model_explosion.pdf}
+
+\vspace{5mm}
+
+\textbf{Open Questions}
+
+\begin{enumerate}
+\item Will scaling laws hold forever?
+\item Can we solve hallucinations?
+\item Is AGI possible this way?
+\item Who controls the models?
+\item How do we ensure safety?
+\end{enumerate}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize The next chapter is being written now}
+\end{frame}
+
+% Key Takeaways
+\begin{frame}{Key Takeaways}
+\begin{center}
+{\Large \textbf{What We Learned About Scale}}
+\end{center}
+
+\vspace{10mm}
+
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Technical Insights}
+\begin{itemize}
+\item \highlight{Scale} brings emergence
+\item Decoder-only won
+\item Sparsity enables scale
+\item In-context learning works
+\item Compute is everything
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Practical Lessons}
+\begin{itemize}
+\item APIs democratize AI
+\item Prompting is programming
+\item Few-shot often enough
+\item Fine-tuning less needed
+\item Costs dropping fast
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Future Challenges}
+\begin{itemize}
+\item Hallucination problem
+\item Alignment crucial
+\item Efficiency needed
+\item Access inequality
+\item Safety concerns real
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+
+\keypoint{The scaling revolution changed everything. We're still figuring out what that means.}
+
+\vfill
+\secondary{\footnotesize Next week: How these models actually read text (Tokenization)}
+\end{frame}
+
+% References
+\begin{frame}{References}
+\footnotesize
+\begin{itemize}
+\item Kaplan et al. (2020). ``Scaling Laws for Neural Language Models''
+\item Brown et al. (2020). ``Language Models are Few-Shot Learners'' (GPT-3)
+\item Raffel et al. (2020). ``Exploring the Limits of Transfer Learning with T5''
+\item Fedus et al. (2021). ``Switch Transformers: Scaling to Trillion Parameter Models''
+\item Hoffmann et al. (2022). ``Training Compute-Optimal Large Language Models'' (Chinchilla)
+\item Wei et al. (2022). ``Emergent Abilities of Large Language Models''
+\item Chowdhery et al. (2022). ``PaLM: Scaling Language Modeling with Pathways''
+\item Anil et al. (2023). ``PaLM 2 Technical Report''
+\item OpenAI (2023). ``GPT-4 Technical Report''
+\item Anthropic (2023). ``Constitutional AI: Harmlessness from AI Feedback''
+\end{itemize}
+\end{frame}
+
+\end{document}

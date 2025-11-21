@@ -1,0 +1,1664 @@
+% Week 7: Advanced Transformers - The Scaling Crisis
+% Narrative Structure Following Didactic Framework
+% Created: 2025-09-30 17:25
+% Structure: 4-Act Dramatic Arc with 8 Critical Pedagogical Beats
+
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+
+% Lavender color scheme from template_beamer_final
+\definecolor{mllavender}{RGB}{200,180,220}
+\definecolor{mlpurple}{RGB}{130,100,160}
+\definecolor{mlblue}{RGB}{100,120,180}
+\definecolor{mldarkblue}{RGB}{60,80,120}
+\definecolor{mlgray}{RGB}{100,100,100}
+\definecolor{mlgreen}{RGB}{44,160,44}
+\definecolor{mlred}{RGB}{214,39,40}
+\definecolor{mlorange}{RGB}{255,127,14}
+
+% Apply the lavender color scheme
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{frametitle}{bg=mllavender!70,fg=mldarkblue}
+\setbeamercolor{title}{fg=mldarkblue}
+\setbeamercolor{subtitle}{fg=mlpurple}
+\setbeamercolor{author}{fg=mlgray}
+\setbeamercolor{date}{fg=mlgray}
+\setbeamercolor{block title}{bg=mllavender!50,fg=mldarkblue}
+\setbeamercolor{block body}{bg=mllavender!10}
+
+% Custom commands
+\newcommand{\highlight}[1]{\textcolor{mlpurple}{\textbf{#1}}}
+\newcommand{\keypoint}[1]{
+    \vspace{2mm}
+    \begin{center}
+    \colorbox{mllavender!30}{\parbox{0.9\textwidth}{\centering\small #1}}
+    \end{center}
+    \vspace{2mm}
+}
+\newcommand{\warning}[1]{\textcolor{red!70!black}{\textbf{Warning:} #1}}
+\newcommand{\success}[1]{\textcolor{green!70!black}{\textbf{#1}}}
+\newcommand{\secondary}[1]{\textcolor{mlgray}{#1}}
+\newcommand{\data}[1]{\textcolor{mlblue}{\textbf{#1}}}
+\newcommand{\dataalt}[1]{\textcolor{mlpurple}{\textbf{#1}}}
+\newcommand{\formula}[1]{
+    \begin{center}
+    \colorbox{mllavender!20}{\parbox{0.8\textwidth}{\centering\large $\displaystyle #1$}}
+    \end{center}
+}
+
+% Bottom note command
+\newcommand{\bottomnote}[1]{
+    \vfill
+    \begin{center}
+    \textcolor{mlgray}{\footnotesize\textit{#1}}
+    \end{center}
+}
+
+% Pedagogical commands
+\newcommand{\checkpoint}[1]{
+    \begin{center}
+    \colorbox{yellow!30}{\parbox{0.9\textwidth}{\centering\small\textbf{#1}}}
+    \end{center}
+}
+
+\newcommand{\intuition}[1]{
+    \begin{center}
+    \colorbox{purple!10}{\parbox{0.9\textwidth}{\small\textbf{Intuition:} #1}}
+    \end{center}
+}
+
+\newcommand{\realworld}[1]{
+    \begin{center}
+    \colorbox{orange!10}{\parbox{0.9\textwidth}{\small\textbf{Real World:} #1}}
+    \end{center}
+}
+
+\newcommand{\misconception}[1]{
+    \begin{center}
+    \colorbox{red!10}{\parbox{0.9\textwidth}{\small\textbf{Common Misconception:} #1}}
+    \end{center}
+}
+
+% Code listing setup
+\usepackage{listings}
+\lstset{
+    basicstyle=\tiny\ttfamily,
+    keywordstyle=\color{mlblue},
+    commentstyle=\color{mlgray},
+    frame=single,
+    backgroundcolor=\color{mllavender!10},
+    numbers=left,
+    numberstyle=\tiny\color{mlgray}
+}
+
+% Packages
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
+\title{The Scaling Crisis}
+\subtitle{Week 7: When Bigger Models Hit Fundamental Limits}
+\author{NLP Course 2025}
+\date{\today}
+
+\begin{document}
+
+% ==================== TITLE SLIDE ====================
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}
+\secondary{\footnotesize From naive parameter scaling to modern efficiency breakthroughs}
+\end{center}
+\end{frame}
+
+% ==================== ACT 1: THE CHALLENGE ====================
+% ==================== Slide 1: Human Experience ====================
+\begin{frame}{What We Want: Artificial General Intelligence}
+\begin{center}
+{\Large \textbf{From Narrow to General}}
+\end{center}
+
+\vspace{8mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{2015: Narrow AI}
+
+Specialized systems:
+\begin{itemize}
+\item Translate: "The cat" → "Le chat"
+\item Summarize: Article → 3 sentences
+\item Classify: Email → Spam/Not spam
+\item Answer: "Capital of France?" → "Paris"
+\end{itemize}
+
+\vspace{3mm}
+Each task needs separate model!
+
+\column{0.48\textwidth}
+\textbf{2023: General AI (The Dream)}
+
+Single model that can:
+\begin{itemize}
+\item Write code
+\item Explain physics
+\item Translate languages
+\item Generate images from text
+\item Reason through problems
+\item Learn new tasks from examples
+\end{itemize}
+
+\vspace{3mm}
+\success{One model for everything!}
+\end{columns}
+
+\vspace{5mm}
+
+\textbf{The Question:} How do we build models that can do ANYTHING?
+
+\bottomnote{Human intelligence is general - we can learn any task. Can machines do the same?}
+\end{frame}
+
+% ==================== Slide 2: What Training Means ====================
+\begin{frame}{Building Foundational Concept: What is "Training"?}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Human Learning Analogy}
+
+Becoming an expert doctor:
+\begin{itemize}
+\item Read 10,000 medical cases
+\item Practice for 10 years
+\item Learn from mistakes
+\item Build intuition
+\end{itemize}
+
+\vspace{3mm}
+Cost: Time + effort + resources
+
+\column{0.48\textwidth}
+\textbf{Machine Learning}
+
+Training a language model:
+\begin{itemize}
+\item Read billions of text examples
+\item Adjust billions of parameters
+\item Minimize prediction errors
+\item Learn patterns
+\end{itemize}
+
+\vspace{3mm}
+Cost: Compute + time + money + energy
+\end{columns}
+
+\vspace{5mm}
+
+\textbf{Concrete Example: GPT-3 Training}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Resource} & \textbf{Amount} \\
+\midrule
+Parameters & 175 billion \\
+Training data & 300 billion tokens \\
+GPUs & 10,000 V100s \\
+Training time & 34 days \\
+Cost & \data{\$4.6 million} \\
+Power usage & 1,287 MWh \\
+CO₂ emissions & 552 tons \\
+\bottomrule
+\end{tabular}
+
+\bottomnote{Training is expensive - but what if we need to go bigger to get general AI?}
+\end{frame}
+
+% ==================== Slide 3: The Scaling Hypothesis ====================
+\begin{frame}{The Scaling Hypothesis: A Pattern Emerges}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Discovery (Kaplan et al. 2020)}
+
+Test many model sizes:
+\begin{itemize}
+\item 10M parameters → Loss: 3.2
+\item 100M parameters → Loss: 2.8
+\item 1B parameters → Loss: 2.3
+\item 10B parameters → Loss: 1.9
+\item 100B parameters → Loss: 1.6
+\end{itemize}
+
+\vspace{3mm}
+
+Pattern: \highlight{Loss decreases predictably!}
+
+\formula{L = aN^{-\alpha} + bD^{-\beta}}
+
+Where:
+\begin{itemize}
+\item $N$ = parameters
+\item $D$ = data (tokens)
+\item $\alpha \approx 0.076$
+\item Loss follows power law
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{What This Means}
+
+Performance scaling table:
+
+\begin{tabular}{lll}
+\toprule
+\textbf{Size} & \textbf{Loss} & \textbf{Quality} \\
+\midrule
+1B & 2.5 & Basic \\
+10B & 2.0 & Good \\
+100B & 1.6 & Excellent \\
+1T & 1.3 & \success{Perfect?} \\
+\bottomrule
+\end{tabular}
+
+\vspace{3mm}
+
+\textbf{The Implication:}
+\begin{itemize}
+\item Make model 10x bigger → Predictable improvement
+\item Make data 10x more → Predictable improvement
+\item It scales!
+\end{itemize}
+
+\keypoint{If scaling is predictable, can we just keep going bigger until we reach AGI?}
+\end{columns}
+
+\bottomnote{The scaling hypothesis: Loss decreases as power law of compute}
+\end{frame}
+
+% ==================== Slide 4: Quantifying the Scaling Path ====================
+\begin{frame}{Quantifying the Challenge: The Path to AGI}
+\begin{center}
+{\Large \textbf{How Much Scaling Do We Need?}}
+\end{center}
+
+\vspace{5mm}
+
+\textbf{Extrapolation from GPT-3:}
+
+\begin{tabular}{llllll}
+\toprule
+\textbf{Model} & \textbf{Params} & \textbf{Data} & \textbf{Cost} & \textbf{Time} & \textbf{CO₂} \\
+\midrule
+GPT-2 & 1.5B & 40B & \$50K & 2 days & 10 tons \\
+GPT-3 & 175B & 300B & \$4.6M & 34 days & 552 tons \\
+GPT-4 (est) & 1T & 10T & \$100M & 200 days & 5,000 tons \\
+GPT-5 (proj) & 10T & 100T & \data{\$1B+} & \warning{500+ days} & 50,000 tons \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Trend}
+\begin{itemize}
+\item Each 10x in size = 20x cost
+\item Training time growing linearly
+\item Environmental impact massive
+\item \warning{Will hit physical limits!}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Questions}
+\begin{itemize}
+\item Can we afford trillion-parameter models?
+\item Can we wait 1-2 years for training?
+\item Is planet sustainable?
+\item \highlight{Is there a better way?}
+\end{itemize}
+\end{columns}
+
+\vspace{3mm}
+
+\keypoint{Naive scaling works... but do we have the resources to reach AGI this way?}
+
+\bottomnote{The scaling crisis: Success requires resources we don't have}
+\end{frame}
+
+% ==================== Slide 5: The Challenge Crystalizes ====================
+\begin{frame}{The Challenge: Can We Keep Scaling?}
+\begin{center}
+{\Large \textbf{Three Fundamental Problems}}
+\end{center}
+
+\vspace{8mm}
+
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Problem 1: Cost}
+
+\begin{itemize}
+\item GPT-3: \$4.6M training
+\item GPT-4: \$100M+ training
+\item Running costs: \$700K/day
+\item \warning{Excludes most researchers}
+\end{itemize}
+
+\vspace{3mm}
+
+Only big tech can afford...
+
+\column{0.32\textwidth}
+\textbf{Problem 2: Time}
+
+\begin{itemize}
+\item 34 days for 175B model
+\item 200+ days for 1T model
+\item Cannot iterate quickly
+\item \warning{Competitors will pass you}
+\end{itemize}
+
+\vspace{3mm}
+
+Innovation slows to a crawl...
+
+\column{0.32\textwidth}
+\textbf{Problem 3: Planet}
+
+\begin{itemize}
+\item 552 tons CO₂ for GPT-3
+\item 5,000+ tons for GPT-4
+\item Exponential growth
+\item \warning{Not sustainable}
+\end{itemize}
+
+\vspace{3mm}
+
+Environmental crisis looming...
+\end{columns}
+
+\vspace{8mm}
+
+\textbf{The Central Question:}
+
+\begin{center}
+\colorbox{mllavender!40}{\parbox{0.85\textwidth}{\centering\Large
+\textbf{Can we get better models WITHOUT naive scaling?}
+}}
+\end{center}
+
+\bottomnote{Act 1 complete: Challenge established - we need smarter scaling, not just bigger}
+\end{frame}
+
+% ==================== ACT 2: NAIVE SOLUTION & ITS LIMITS ====================
+% ==================== Slide 6: The Breakthrough - GPT-3 ====================
+\begin{frame}[fragile]{The Breakthrough: GPT-3 Changes Everything}
+\begin{center}
+{\Large \textbf{Just Scale It! (2020)}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{OpenAI's Bet}
+
+Ignore the costs, just build it:
+\begin{itemize}
+\item 175 billion parameters
+\item 300 billion tokens
+\item \$4.6M investment
+\item 34 days training
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{The Result? It WORKS!}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Task} & \textbf{Quality} \\
+\midrule
+Translation & 94\% \\
+Summarization & 89\% \\
+Q\&A & 92\% \\
+Code generation & 87\% \\
+\bottomrule
+\end{tabular}
+
+\column{0.48\textwidth}
+\textbf{The Magic: Few-Shot Learning}
+
+No fine-tuning needed!
+
+\vspace{2mm}
+
+\textbf{Example:}
+\begin{lstlisting}[language={}]
+Translate to French:
+sea otter -> loutre de mer
+cheese -> fromage
+peppermint ->
+\end{lstlisting}
+
+Model completes: \textcolor{mlgreen}{"menthe poivree"}
+
+\vspace{3mm}
+
+\textbf{In-Context Learning Works!}
+\begin{itemize}
+\item Just show examples in prompt
+\item No gradient updates
+\item Model learns pattern
+\item \success{Revolutionary!}
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+
+\keypoint{Success! GPT-3 shows that massive scale unlocks new abilities. Problem solved?}
+
+\bottomnote{The first success - validate the approach before showing limits}
+\end{frame}
+
+% ==================== CRITICAL BEAT 1: Failure Pattern Emerges ====================
+\begin{frame}{*** THE FAILURE PATTERN EMERGES ***}
+\begin{center}
+{\Large \textbf{Success Creates New Problems}}
+\end{center}
+
+\vspace{5mm}
+
+\textbf{Everyone wants to replicate GPT-3... but can they?}
+
+\vspace{3mm}
+
+\textbf{The Cost Crisis (Data Table):}
+
+\begin{tabular}{llllll}
+\toprule
+\textbf{Organization} & \textbf{GPU Budget} & \textbf{Can Train?} & \textbf{Time} & \textbf{Cost} & \textbf{Access} \\
+\midrule
+OpenAI & 10,000 GPUs & \success{Yes} & 34 days & \$4.6M & Private \\
+Google & 10,000+ GPUs & \success{Yes} & 30 days & \$5M & Private \\
+Meta & 8,000 GPUs & \success{Yes} & 45 days & \$3.5M & Private \\
+Microsoft & Partner OpenAI & \success{Yes} & -- & \$1B investment & Private \\
+\midrule
+University Lab & 50 GPUs & \warning{No} & 2300 days & Impossible & -- \\
+Startup & 200 GPUs & \warning{No} & 575 days & \$23M & -- \\
+Individual Researcher & 4 GPUs & \warning{No} & 28,750 days & Impossible & -- \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Pattern}
+\begin{itemize}
+\item Only 4-5 organizations can afford
+\item Academic research excluded
+\item Innovation centralized
+\item \warning{Democracy of AI dies}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Trend}
+\begin{itemize}
+\item Next generation: 10x more expensive
+\item GPT-4: Only 3 orgs can afford
+\item GPT-5: Maybe 1-2 orgs worldwide
+\item \warning{AI monopoly emerging}
+\end{itemize}
+\end{columns}
+
+\bottomnote{Critical pedagogical beat: Show pattern of failure with quantified data}
+\end{frame}
+
+% ==================== CRITICAL BEAT 2: Diagnosing Root Cause ====================
+\begin{frame}{Diagnosing the Root Causes}
+\begin{center}
+{\Large \textbf{Why Did Naive Scaling Hit a Wall?}}
+\end{center}
+
+\vspace{5mm}
+
+\textbf{Trace a Specific Example: Training Next-Gen Model}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What We Need (1T parameters)}
+
+\begin{itemize}
+\item Tokens needed: 20T (if we follow GPT-3 ratio)
+\item GPUs: 100,000 A100s
+\item Time: 200+ days
+\item Cost: \$100M+
+\item Energy: 10,000 MWh
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{What We Have}
+
+\begin{itemize}
+\item Most orgs: <1,000 GPUs
+\item Realistic time: 30-60 days
+\item Realistic budget: \$5-10M
+\item Energy constraints: 1,000 MWh max
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+
+\textbf{The Mismatch: What Survived vs What Got Lost}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What Survived}
+\begin{itemize}
+\item Small models (10B params)
+\item Limited training (500B tokens)
+\item Academic research
+\item Open source community
+\item Innovation diversity
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{What Got Lost}
+\begin{itemize}
+\item Large models (1T+ params)
+\item Optimal training (20T tokens)
+\item Most research labs
+\item Fair competition
+\item Democratized access
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+
+\textbf{Root Cause \#1:} \warning{GPT-3 followed wrong scaling law!}
+
+\begin{itemize}
+\item Kaplan (2020): Scale parameters AND data together
+\item But GPT-3: 175B params, only 300B tokens
+\item Ratio: 1.7 tokens per parameter
+\item Model was \warning{UNDERTRAINED!}
+\end{itemize}
+
+\textbf{Root Cause \#2:} \warning{Dense models waste compute!}
+
+\begin{itemize}
+\item Every token uses ALL 175B parameters
+\item Most parameters not relevant for each token
+\item Massive redundant computation
+\end{itemize}
+
+\bottomnote{Critical beat: Diagnose root causes with traced example and quantified mismatch}
+\end{frame}
+
+% ==================== ACT 3: THE BREAKTHROUGH ====================
+% ==================== CRITICAL BEAT 3: Human Introspection ====================
+\begin{frame}{How Do YOU Solve Complex Problems?}
+\begin{center}
+{\Large \textbf{Human Introspection Moment}}
+\end{center}
+
+\vspace{5mm}
+
+\textbf{Pause and think about your own problem-solving:}
+
+\vspace{3mm}
+
+\begin{tcolorbox}[colback=purple!5,colframe=purple!50!black,title=Introspection Exercise]
+When you face a complex challenge (like understanding transformers), do you:
+
+\vspace{2mm}
+
+\textbf{A)} Use ALL your knowledge equally for every question?
+
+\textbf{B)} Select relevant expertise and activate it as needed?
+
+\vspace{2mm}
+
+Be honest - which describes how you ACTUALLY think?
+\end{tcolorbox}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What You Notice}
+
+\begin{itemize}
+\item You don't access all memories equally
+\item You activate relevant knowledge
+\item Math problems → math skills
+\item Language questions → language skills
+\item \highlight{Selective activation!}
+\end{itemize}
+
+\vspace{2mm}
+
+You're NOT a dense model!
+
+\column{0.48\textwidth}
+\textbf{The Insight}
+
+\begin{itemize}
+\item Human brain: 86B neurons
+\item But only small fraction active per task
+\item Specialized regions activate selectively
+\item Energy efficient
+\item \success{Sparsity is natural!}
+\end{itemize}
+
+\vspace{2mm}
+
+What if models did the same?
+\end{columns}
+
+\vspace{5mm}
+
+\keypoint{Key difference: Humans use SELECTIVE ACTIVATION, not dense computation}
+
+\bottomnote{Critical beat: Human introspection reveals the solution principle}
+\end{frame}
+
+% ==================== CRITICAL BEAT 4: The Hypothesis ====================
+\begin{frame}{The Hypothesis: Two Breakthroughs}
+\begin{center}
+{\Large \textbf{What If We're Scaling the WRONG Things?}}
+\end{center}
+
+\vspace{5mm}
+
+\textbf{Conceptual Comparison (No Math Yet):}
+
+\vspace{3mm}
+
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Old Way (GPT-3)}
+
+\includegraphics[width=\textwidth]{../figures/architecture_comparison_advanced.pdf}
+
+\vspace{2mm}
+
+\begin{itemize}
+\item 175B params
+\item 300B tokens (1.7 per param)
+\item ALL params active always
+\item Dense computation
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Breakthrough 1: Chinchilla}
+
+Better training, not bigger:
+
+\vspace{2mm}
+
+\begin{itemize}
+\item 70B params (smaller!)
+\item 1.4T tokens (20 per param)
+\item Same dense structure
+\item \success{Better performance!}
+\end{itemize}
+
+\vspace{3mm}
+
+Insight: \highlight{Train longer, not bigger}
+
+\column{0.32\textwidth}
+\textbf{Breakthrough 2: MoE}
+
+Selective activation:
+
+\vspace{2mm}
+
+\begin{itemize}
+\item 1.6T params (huge!)
+\item Only 100B active per token
+\item Sparse computation
+\item \success{16x efficiency!}
+\end{itemize}
+
+\vspace{3mm}
+
+Insight: \highlight{Specialize, then select}
+\end{columns}
+
+\vspace{5mm}
+
+\textbf{Why These Should Work:}
+
+\begin{enumerate}
+\item \textbf{Chinchilla:} If GPT-3 was undertrained, training smaller model longer should match quality at lower cost
+\item \textbf{MoE:} If we mimic human selective activation, can scale parameters without scaling compute
+\end{enumerate}
+
+\vspace{2mm}
+
+\keypoint{Hypothesis: Scale DATA (Chinchilla) + Scale SPARSITY (MoE) = Solve crisis}
+
+\bottomnote{Critical beat: Hypothesis stated conceptually before mechanism}
+\end{frame}
+
+% ==================== CRITICAL BEAT 5: Zero-Jargon Explanation (Chinchilla) ====================
+\begin{frame}{Solution 1: Chinchilla Laws (Zero Jargon)}
+\begin{center}
+{\Large \textbf{The 20-to-1 Rule}}
+\end{center}
+
+\vspace{5mm}
+
+\textbf{Plain Language Explanation:}
+
+\vspace{3mm}
+
+Think of training like studying for an exam:
+\begin{itemize}
+\item \textbf{Parameters} = Your brain capacity (IQ points)
+\item \textbf{Training tokens} = Study time (hours with textbook)
+\end{itemize}
+
+\vspace{3mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{GPT-3 Approach (Wasteful)}
+
+\begin{itemize}
+\item Brain capacity: 175 IQ points
+\item Study time: 300 hours
+\item Ratio: 1.7 hours per IQ point
+\item Result: \warning{Underprepared genius!}
+\end{itemize}
+
+\vspace{3mm}
+
+Like cramming before exam...
+
+\column{0.48\textwidth}
+\textbf{Chinchilla Approach (Optimal)}
+
+\begin{itemize}
+\item Brain capacity: 70 IQ points
+\item Study time: 1,400 hours
+\item Ratio: 20 hours per IQ point
+\item Result: \success{Well-prepared expert!}
+\end{itemize}
+
+\vspace{3mm}
+
+Like thorough preparation...
+\end{columns}
+
+\vspace{5mm}
+
+\textbf{The Discovery (Hoffmann et al. 2022):}
+
+\begin{tcolorbox}[colback=mllavender!10,colframe=mlpurple]
+\textbf{Optimal compute allocation:}
+
+For every 1 billion parameters, train on 20 billion tokens.
+
+$$N_{\text{params}} \propto D_{\text{tokens}}^{0.5}$$
+
+This ratio minimizes loss per compute dollar spent.
+\end{tcolorbox}
+
+\vspace{2mm}
+
+\textbf{What the numbers DO:} Spread your compute budget between model size and training length optimally!
+
+\vspace{2mm}
+
+\highlight{Technical term:} This is called "compute-optimal training"
+
+\bottomnote{Critical beat: Zero-jargon explanation with concrete analogy, then introduce technical term}
+\end{frame}
+
+% ==================== Chinchilla Concrete Example ====================
+\begin{frame}{Chinchilla in Practice: The Numerical Evidence}
+\begin{center}
+{\Large \textbf{Smaller Model, Better Training, Same Performance}}
+\end{center}
+
+\vspace{5mm}
+
+\textbf{Head-to-Head Comparison:}
+
+\begin{tabular}{lllll}
+\toprule
+\textbf{Model} & \textbf{Parameters} & \textbf{Tokens} & \textbf{Ratio} & \textbf{Loss} \\
+\midrule
+GPT-3 & 175B & 300B & 1.7:1 & 1.73 \\
+Gopher (DeepMind) & 280B & 300B & 1.1:1 & 1.69 \\
+\midrule
+\textbf{Chinchilla} & \textbf{70B} & \textbf{1.4T} & \textbf{20:1} & \textbf{1.56} \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Shocking Result}
+
+Chinchilla beats both:
+\begin{itemize}
+\item \success{10\% better loss} than GPT-3
+\item Using \success{40\% fewer parameters}
+\item Same compute budget
+\item Better on all benchmarks
+\end{itemize}
+
+\vspace{3mm}
+
+\misconception{``Bigger is always better'' - FALSE! Better training beats bigger size.}
+
+\column{0.48\textwidth}
+\textbf{Cost Implications}
+
+\begin{tabular}{lll}
+\toprule
+\textbf{Metric} & \textbf{GPT-3} & \textbf{Chinchilla} \\
+\midrule
+Training & \$4.6M & \$4.6M \\
+Inference & \$20/1M & \$8/1M \\
+Memory & 350GB & 140GB \\
+Latency & 2.1s & 0.8s \\
+\bottomrule
+\end{tabular}
+
+\vspace{2mm}
+
+\success{Cheaper to run, faster, better quality!}
+\end{columns}
+
+\vspace{3mm}
+
+\keypoint{Industry was scaling parameters. Should have been scaling training data!}
+
+\bottomnote{Concrete numbers show Chinchilla breakthrough - better training beats bigger models}
+\end{frame}
+
+% ==================== Slide 13: Solution 2 - MoE Zero-Jargon ====================
+% CRITICAL BEAT #6: Zero-Jargon Explanation (continued)
+\begin{frame}{Solution 2: What If We Used a Team of Specialists?}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Imagine a Hospital Emergency Room:}
+
+\vspace{3mm}
+
+\begin{enumerate}
+\item Patient arrives $\rightarrow$ Triage nurse (router)
+\item \textbf{Nurse asks}: ``Heart problem? Broken bone? Infection?''
+\item Routes to specialist: Cardiologist, Orthopedist, or Infectious Disease
+\item \textbf{Only 1 specialist sees patient} (not all 10 doctors)
+\end{enumerate}
+
+\vspace{5mm}
+
+\intuition{Efficiency: 10 doctors on call, but only 1-2 actively working per patient.}
+
+\column{0.48\textwidth}
+\textbf{Same Idea for Language Models:}
+
+\vspace{3mm}
+
+\begin{itemize}
+\item \textcolor{mlpurple}{\textbf{GPT-3}}: 175B parameters, ALL active for EVERY word
+\item \textcolor{mllavender}{\textbf{New approach}}: 1 trillion parameters total, but only 100B active per word
+\end{itemize}
+
+\vspace{3mm}
+
+\textbf{How does it work?}
+\begin{enumerate}
+\item Input word $\rightarrow$ Router network
+\item Router: ``Math? Poetry? Code?''
+\item Activates 2 specialist experts
+\item Other 2046 experts stay dormant
+\end{enumerate}
+
+\vspace{3mm}
+
+\realworld{Switch Transformer (Google): 1.6 trillion params, only 137B active per token}
+\end{columns}
+
+\vspace{3mm}
+
+\keypoint{Technical term (comes LAST): ``Mixture of Experts'' (MoE) with sparse activation}
+
+\bottomnote{Zero-jargon explanation: team of specialists beats jack-of-all-trades generalist}
+\end{frame}
+
+% ==================== Slide 14: MoE Numerical Walkthrough ====================
+% CRITICAL BEAT #7: Numerical Walkthrough
+\begin{frame}{How MoE Works: Follow the Token ``cat''}
+
+\textbf{Concrete Example: Processing the word ``cat''}
+
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Step 1: Router Scoring}
+
+\vspace{2mm}
+
+Token embedding: $\mathbf{x}_{\text{cat}} = [0.8, -0.3, 0.5, \ldots]$ (768 dims)
+
+\vspace{2mm}
+
+Router computes scores for 2048 experts:
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Expert} & \textbf{Score} \\
+\midrule
+Expert 42 (Animals) & \textcolor{mlpurple}{\textbf{0.91}} \\
+Expert 891 (Nouns) & \textcolor{mlpurple}{\textbf{0.84}} \\
+Expert 12 (Math) & 0.15 \\
+Expert 1024 (Code) & 0.08 \\
+\ldots & \ldots \\
+\bottomrule
+\end{tabular}
+
+\vspace{2mm}
+
+\textbf{Selection}: Top-2 experts activated
+
+\column{0.48\textwidth}
+\textbf{Step 2: Expert Processing}
+
+\vspace{2mm}
+
+Only 2 experts process the token:
+
+\begin{itemize}
+\item Expert 42: $\mathbf{h}_{42} = \text{FFN}_{42}(\mathbf{x}_{\text{cat}})$
+\item Expert 891: $\mathbf{h}_{891} = \text{FFN}_{891}(\mathbf{x}_{\text{cat}})$
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{Step 3: Weighted Combination}
+
+\begin{align*}
+\mathbf{h}_{\text{cat}} &= 0.91 \cdot \mathbf{h}_{42} + 0.84 \cdot \mathbf{h}_{891} \\
+&= \text{(normalized weighted sum)}
+\end{align*}
+
+\vspace{3mm}
+
+\textbf{Parameters Active:}
+\begin{itemize}
+\item Dense GPT-3: 175B params (100\%)
+\item Switch MoE: 137B params (8.6\% of 1.6T)
+\end{itemize}
+
+\vspace{2mm}
+
+\success{16x more total capacity, same compute per token!}
+\end{columns}
+
+\vspace{3mm}
+
+\bottomnote{Concrete numerical example showing sparse activation - most experts dormant per token}
+\end{frame}
+
+% ==================== Slide 15: Experimental Validation ====================
+% CRITICAL BEAT #8: Experimental Validation
+\begin{frame}{*** EXPERIMENTAL VALIDATION: Do These Solutions Actually Work? ***}
+
+\textbf{Head-to-Head Comparison on Same Tasks}
+
+\vspace{3mm}
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Model} & \textbf{Params} & \textbf{Training} & \textbf{Quality} & \textbf{Cost} \\
+ & \textbf{Active} & \textbf{Tokens} & \textbf{(MMLU)} & \textbf{per Token} \\
+\midrule
+GPT-3 (Baseline) & 175B & 300B & 43.9\% & \$15 \\
+Chinchilla & 70B & 1.4T & \textcolor{mlpurple}{\textbf{67.5\%}} & \textcolor{mlpurple}{\textbf{\$6}} \\
+Switch-XXL (MoE) & 137B (1.6T) & 1T & \textcolor{mlpurple}{\textbf{71.8\%}} & \textcolor{mlpurple}{\textbf{\$4}} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{What the Data Shows:}
+
+\begin{itemize}
+\item \textbf{Chinchilla} (70B): +24\% quality improvement over GPT-3 (175B)
+\item \textbf{Chinchilla}: 60\% cheaper per token at inference
+\item \textbf{Switch MoE}: +28\% quality, 73\% cheaper
+\item Both beat ``naive scaling'' dramatically
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Real-World Impact:}
+
+\vspace{2mm}
+
+\begin{itemize}
+\item GPT-3 inference: \$20 per 1M tokens
+\item Chinchilla inference: \$8 per 1M tokens
+\item Switch inference: \$4 per 1M tokens
+\end{itemize}
+
+\vspace{3mm}
+
+\textbf{Training Accessibility:}
+\begin{itemize}
+\item Chinchilla 70B: 10x fewer GPUs than GPT-3
+\item Universities can now train frontier models
+\end{itemize}
+
+\vspace{2mm}
+
+\realworld{Google, Meta, Anthropic all adopted these principles for 2023-2024 models}
+\end{columns}
+
+\vspace{3mm}
+
+\keypoint{Experimental validation: Both solutions deliver better quality at lower cost}
+
+\bottomnote{Hard data proves the hypotheses - smarter training beats naive parameter scaling}
+\end{frame}
+
+% ==================== Slide 16: Why These Solutions Work ====================
+\begin{frame}{Why These Solutions Work: Addressing Root Causes}
+
+\textbf{Recall the Problems We Diagnosed:}
+
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Root Cause \#1: Undertraining}
+
+\vspace{2mm}
+
+\begin{tcolorbox}[colback=red!5!white, colframe=red!75!black, title=The Problem]
+GPT-3 saw only 1.7 tokens per parameter \\
+(Should have been 20:1 ratio)
+\end{tcolorbox}
+
+\vspace{2mm}
+
+\begin{tcolorbox}[colback=green!5!white, colframe=green!75!black, title=Chinchilla Solution]
+Train 70B model on 1.4T tokens \\
+Ratio: 20:1 (exactly compute-optimal) \\
+Result: Smaller, better, cheaper
+\end{tcolorbox}
+
+\column{0.48\textwidth}
+\textbf{Root Cause \#2: Dense Waste}
+
+\vspace{2mm}
+
+\begin{tcolorbox}[colback=red!5!white, colframe=red!75!black, title=The Problem]
+Every parameter active for every token \\
+(Like using all 10 doctors per patient)
+\end{tcolorbox}
+
+\vspace{2mm}
+
+\begin{tcolorbox}[colback=green!5!white, colframe=green!75!black, title=MoE Solution]
+Sparse activation: 2048 experts, top-2 per token \\
+Ratio: 8.6\% active (91.4\% dormant) \\
+Result: 16x capacity, same compute
+\end{tcolorbox}
+\end{columns}
+
+\vspace{5mm}
+
+\begin{center}
+\begin{tcolorbox}[colback=mllavender!10!white, colframe=mlpurple!75!black, width=0.9\textwidth]
+\textbf{Key Insight:} Both solutions \emph{decouple capacity from compute}
+\begin{itemize}
+\item Chinchilla: More data exposure per parameter (time dimension)
+\item MoE: More parameters per computation (space dimension)
+\end{itemize}
+\end{tcolorbox}
+\end{center}
+
+\bottomnote{Solutions directly target diagnosed root causes - not random improvements}
+\end{frame}
+
+% ==================== CHECKPOINT SLIDE 1 ====================
+\begin{frame}{Checkpoint: Understanding the Scaling Crisis Solutions}
+
+\begin{center}
+\textbf{\large Test Your Understanding}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Quick Quiz:}
+
+\vspace{3mm}
+
+\textbf{Question 1:} What was GPT-3's main inefficiency?
+
+\begin{itemize}
+\item[A)] Too many parameters
+\item[B)] Undertrained (1.7 tokens/param vs 20:1 optimal)
+\item[C)] Wrong architecture
+\item[D)] Bad optimization algorithm
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Question 2:} How does MoE save computation?
+
+\begin{itemize}
+\item[A)] Uses smaller experts
+\item[B)] Only activates 2 of 2048 experts per token
+\item[C)] Trains faster
+\item[D)] Uses less memory
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Answers:}
+
+\vspace{3mm}
+
+\textbf{Answer 1:} B - Undertrained
+
+\begin{itemize}
+\item GPT-3: 300B tokens $\div$ 175B params = 1.7
+\item Chinchilla optimal: 1.4T tokens $\div$ 70B = 20:1
+\item More training data per parameter = better learning
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Answer 2:} B - Sparse activation
+
+\begin{itemize}
+\item 1.6 trillion total parameters
+\item Only 137B active per token (8.6\%)
+\item Router selects top-2 specialists
+\item Same compute, 16x capacity
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+
+\begin{center}
+\checkpoint{Can you explain to a friend why ``bigger models'' isn't the full story?}
+\end{center}
+
+\end{frame}
+
+% ==================== SYNTHESIS SECTION (ACT 4 IN COMMENTS ONLY) ====================
+
+% ==================== Slide 17: Modern Applications ====================
+\begin{frame}{These Ideas Power Today's AI Systems}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Chinchilla Principles in Production:}
+
+\vspace{3mm}
+
+\textbf{LLaMA 2 (Meta, 2023):}
+\begin{itemize}
+\item 70B parameters
+\item Trained on 2T tokens (28.6:1 ratio)
+\item Matches GPT-3.5 quality
+\item 40\% cheaper to run
+\end{itemize}
+
+\vspace{3mm}
+
+\textbf{Mistral 7B (2023):}
+\begin{itemize}
+\item Only 7.3B parameters
+\item Trained on 1T+ tokens (137:1!)
+\item Outperforms LLaMA 13B
+\item Runs on consumer GPUs
+\end{itemize}
+
+\vspace{3mm}
+
+\realworld{All major labs now train small models longer instead of giant models briefly}
+
+\column{0.48\textwidth}
+\textbf{MoE in Production:}
+
+\vspace{3mm}
+
+\textbf{GPT-4 (OpenAI, 2023):}
+\begin{itemize}
+\item Rumored: 1.76T total params
+\item MoE with 16 experts
+\item Only 220B active per token
+\item Powers ChatGPT (200M users)
+\end{itemize}
+
+\vspace{3mm}
+
+\textbf{Mixtral 8x7B (Mistral, 2024):}
+\begin{itemize}
+\item 8 experts $\times$ 7B each = 56B total
+\item Only 2 experts (14B) active per token
+\item Matches GPT-3.5 quality
+\item Open weights, free to run
+\end{itemize}
+
+\vspace{3mm}
+
+\success{GitHub Copilot, Claude, Gemini all use these efficiency principles}
+\end{columns}
+
+\vspace{5mm}
+
+\keypoint{2023-2024: Industry shift from ``bigger models'' to ``smarter training + sparse models''}
+
+\bottomnote{Real-world adoption validates both breakthrough approaches}
+\end{frame}
+
+% ==================== Slide 18: Scale of Modern Deployment ====================
+\begin{frame}{The Scale of Modern AI Deployment}
+
+\textbf{How Many People Use These Systems Today?}
+
+\vspace{5mm}
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{System} & \textbf{Launch} & \textbf{Users} & \textbf{Daily} & \textbf{Architecture} \\
+ &  &  & \textbf{Queries} &  \\
+\midrule
+ChatGPT & Nov 2022 & 200M+ & 1B+ & Dense + MoE \\
+GitHub Copilot & Jun 2021 & 50M+ & 100M+ & Chinchilla-style \\
+Google Gemini & Dec 2023 & 100M+ & 500M+ & MoE \\
+Claude (Anthropic) & Mar 2023 & 10M+ & 50M+ & Chinchilla-style \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Cost Economics:}
+
+\vspace{2mm}
+
+\begin{itemize}
+\item ChatGPT daily inference: \$700K (2023 estimate)
+\item \textbf{Without efficiency improvements}: \$2M+ per day
+\item Annual savings: \$475M+
+\end{itemize}
+
+\vspace{3mm}
+
+\intuition{These breakthroughs made mass deployment economically viable}
+
+\column{0.48\textwidth}
+\textbf{Environmental Impact:}
+
+\vspace{2mm}
+
+\begin{itemize}
+\item GPT-3 training: 552 tons CO\textsubscript{2}
+\item Chinchilla-style training: 220 tons CO\textsubscript{2} (60\% reduction)
+\item MoE inference: 70\% less energy per token
+\end{itemize}
+
+\vspace{3mm}
+
+\realworld{Smarter training = lower environmental cost at billion-user scale}
+\end{columns}
+
+\vspace{5mm}
+
+\keypoint{Efficiency breakthroughs enabled the AI deployment era (2023-2024)}
+
+\bottomnote{Without Chinchilla + MoE principles, modern AI scale would be economically impossible}
+\end{frame}
+
+% ==================== Slide 19: Unified Diagram ====================
+\begin{frame}{Three Paths Forward: Unified View}
+
+\begin{center}
+\textbf{From Scaling Crisis to Modern Solutions}
+\end{center}
+
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Original Problem:}
+
+\vspace{2mm}
+
+\begin{tcolorbox}[colback=red!10!white, colframe=red!75!black, width=\textwidth]
+\centering
+\textbf{GPT-3 Approach} \\[2mm]
+Scale parameters $\uparrow$ \\
+Keep data fixed \\
+Use all parameters always \\[2mm]
+\textbf{Result:} Expensive, slow, inaccessible
+\end{tcolorbox}
+
+\vspace{5mm}
+
+\textbf{The Diagnosis:}
+\begin{enumerate}
+\item Undertrained (1.7:1 vs 20:1)
+\item Dense activation waste
+\item Cost/time/environmental limits
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{The Solutions:}
+
+\vspace{2mm}
+
+\begin{tcolorbox}[colback=mllavender!20!white, colframe=mlpurple!75!black, width=\textwidth]
+\centering
+\textbf{Path 1: Chinchilla} \\[2mm]
+Smaller model (70B) \\
+Much more data (1.4T) \\
+Compute-optimal ratio (20:1) \\[2mm]
+\textbf{Result:} Better + Cheaper
+\end{tcolorbox}
+
+\vspace{2mm}
+
+\begin{tcolorbox}[colback=mllavender!20!white, colframe=mlpurple!75!black, width=\textwidth]
+\centering
+\textbf{Path 2: MoE} \\[2mm]
+Huge capacity (1.6T params) \\
+Sparse activation (8.6\%) \\
+Router selects experts \\[2mm]
+\textbf{Result:} 16x capacity, same cost
+\end{tcolorbox}
+
+\vspace{2mm}
+
+\begin{tcolorbox}[colback=green!10!white, colframe=green!75!black, width=\textwidth]
+\centering
+\textbf{Path 3: Hybrid} \\[2mm]
+Chinchilla training + MoE architecture \\[2mm]
+\textbf{Result:} Best of both worlds
+\end{tcolorbox}
+\end{columns}
+
+\vspace{5mm}
+
+\keypoint{Modern models (GPT-4, Gemini, Claude) combine both approaches}
+
+\bottomnote{Unified perspective: decouple capacity from compute in time + space dimensions}
+\end{frame}
+
+% ==================== Slide 20: Principles We Learned ====================
+\begin{frame}{What We Learned: Universal Principles}
+
+\textbf{Beyond Specific Models - General Lessons:}
+
+\vspace{5mm}
+
+\begin{enumerate}
+\item \textbf{First Success $\neq$ Final Solution}
+\begin{itemize}
+\item GPT-3 worked, but was inefficient
+\item Introspection revealed waste patterns
+\end{itemize}
+
+\vspace{2mm}
+
+\item \textbf{Scaling Laws Have Multiple Dimensions}
+\begin{itemize}
+\item Not just parameters $N$
+\item Also data $D$ and activation sparsity $S$
+\item Optimal: $D = 20N$ and $S \approx 0.1$
+\end{itemize}
+
+\vspace{2mm}
+
+\item \textbf{Biological Inspiration Works}
+\begin{itemize}
+\item Human brain: selective activation, not all neurons firing
+\item MoE mirrors cortical specialization
+\end{itemize}
+
+\vspace{2mm}
+
+\item \textbf{Economic Constraints Drive Innovation}
+\begin{itemize}
+\item \$4.6M training cost forced rethinking
+\item Efficiency enabled mass deployment
+\end{itemize}
+
+\vspace{2mm}
+
+\item \textbf{Trade-offs Can Be Broken}
+\begin{itemize}
+\item False choice: ``Quality OR Efficiency''
+\item Reality: Smarter design gives BOTH
+\end{itemize}
+\end{enumerate}
+
+\vspace{5mm}
+
+\keypoint{Meta-lesson: Question assumptions, even when current approach ``works''}
+
+\bottomnote{These principles apply beyond NLP to all large-scale ML systems}
+\end{frame}
+
+% ==================== Slide 21: The Compute Race ====================
+\begin{frame}{The Current Frontier: The Compute Race}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{2024-2025 Training Runs:}
+
+\vspace{3mm}
+
+\begin{tabular}{lc}
+\toprule
+\textbf{Model} & \textbf{Compute} \\
+\midrule
+GPT-4 & $\sim$25k A100-years \\
+Gemini Ultra & $\sim$35k A100-years \\
+Claude 3 & $\sim$20k A100-years \\
+LLaMA 3 & $\sim$15k A100-years \\
+\bottomrule
+\end{tabular}
+
+\vspace{3mm}
+
+\textbf{Cost per training run:}
+\begin{itemize}
+\item GPT-4: \$50-100M (estimated)
+\item Gemini: \$75-150M
+\item Compute doubling every 6 months
+\end{itemize}
+
+\vspace{3mm}
+
+\realworld{All using Chinchilla ratios + MoE architectures}
+
+\column{0.48\textwidth}
+\textbf{National AI Strategies:}
+
+\vspace{3mm}
+
+\begin{itemize}
+\item \textbf{USA}: Export controls on H100 GPUs
+\item \textbf{China}: Domestic chip development (Huawei)
+\item \textbf{EU}: AI Act regulation + sovereignty
+\item \textbf{UAE/Saudi}: Massive GPU purchases
+\end{itemize}
+
+\vspace{3mm}
+
+\textbf{Open Questions:}
+
+\vspace{2mm}
+
+\begin{enumerate}
+\item Will scaling continue past 2025?
+\item What's beyond MoE? (Mixture of Depths?)
+\item Energy limits? (10 GW datacenters?)
+\item Algorithmic breakthroughs vs hardware?
+\end{enumerate}
+
+\vspace{3mm}
+
+\misconception{``Scaling is over'' - FALSE! But smarter scaling, not naive.}
+\end{columns}
+
+\vspace{5mm}
+
+\keypoint{Next 2-3 years: Race to 100T parameter models with Chinchilla + MoE principles}
+
+\bottomnote{Efficiency breakthroughs extended scaling runway, but fundamental limits remain}
+\end{frame}
+
+% ==================== Slide 22: Summary and Next Week ====================
+\begin{frame}{Summary: From Crisis to Solutions}
+
+\textbf{What We Covered Today:}
+
+\vspace{3mm}
+
+\begin{enumerate}
+\item \textbf{The Challenge}: GPT-3 scaling approach hit cost/time/environmental limits
+
+\vspace{2mm}
+
+\item \textbf{First Success}: GPT-3 worked (few-shot learning) but was inefficient
+
+\vspace{2mm}
+
+\item \textbf{Root Causes}: Undertraining (1.7:1 ratio) + Dense activation waste
+
+\vspace{2mm}
+
+\item \textbf{Breakthrough 1}: Chinchilla Laws - Train smaller models longer (20:1 optimal)
+
+\vspace{2mm}
+
+\item \textbf{Breakthrough 2}: Mixture of Experts - Sparse activation (8.6\% active per token)
+
+\vspace{2mm}
+
+\item \textbf{Validation}: Both deliver better quality at lower cost (experimental data)
+
+\vspace{2mm}
+
+\item \textbf{Modern Systems}: GPT-4, Gemini, Claude all use these principles
+\end{enumerate}
+
+\vspace{5mm}
+
+\begin{center}
+\begin{tcolorbox}[colback=mllavender!20!white, colframe=mlpurple!75!black, width=0.85\textwidth]
+\textbf{Core Insight:} Decouple model capacity from computation cost
+\begin{itemize}
+\item Chinchilla: More data exposure (time)
+\item MoE: Selective activation (space)
+\item Combined: Best of both worlds
+\end{itemize}
+\end{tcolorbox}
+\end{center}
+
+\vspace{3mm}
+
+\textbf{Next Week}: Tokenization - How do we turn ``cat'' into numbers that models understand?
+
+\bottomnote{From scaling crisis to efficient modern AI in one decade (2019-2024)}
+\end{frame}
+
+% ==================== FINAL CHECKPOINT SLIDE ====================
+\begin{frame}{Final Checkpoint: Can You Explain the Full Story?}
+
+\begin{center}
+\textbf{\large Understanding Check}
+\end{center}
+
+\vspace{5mm}
+
+\textbf{Challenge: Explain to a non-technical friend (in 3 minutes):}
+
+\vspace{3mm}
+
+\begin{enumerate}
+\item Why was GPT-3's approach hitting limits?
+
+\vspace{2mm}
+
+\item What were the two key breakthroughs?
+
+\vspace{2mm}
+
+\item Why do these solutions work? (Root causes)
+
+\vspace{2mm}
+
+\item What real-world systems use these ideas today?
+\end{enumerate}
+
+\vspace{5mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Key Analogies to Use:}
+
+\begin{itemize}
+\item Student cramming vs proper studying
+\item Hospital specialists vs general practitioners
+\item Brain selective activation
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Numbers to Remember:}
+
+\begin{itemize}
+\item 20:1 token-to-parameter ratio
+\item 8.6\% sparse activation
+\item 60\% cost reduction
+\item 24-28\% quality improvement
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+
+\begin{center}
+\checkpoint{If you can explain this story clearly, you understand modern AI efficiency deeply!}
+\end{center}
+
+\vspace{3mm}
+
+\textbf{Further Exploration:}
+\begin{itemize}
+\item Chinchilla paper (Hoffmann et al., 2022)
+\item Switch Transformer paper (Fedus et al., 2021)
+\item Lab exercise: Train small vs large models with different data amounts
+\end{itemize}
+
+\end{frame}
+
+\end{document}

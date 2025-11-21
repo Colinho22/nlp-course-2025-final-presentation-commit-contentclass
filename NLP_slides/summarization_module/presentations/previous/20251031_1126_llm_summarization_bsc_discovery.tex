@@ -1,0 +1,1517 @@
+% LLM-Based Summarization
+% BSc Discovery Three-Tier: 20 main + 15 theory + 10 lab
+% Human-like paraphrasing hook
+% Focus: Prompt engineering + Decoding control + Context handling
+% Template: template_beamer_final.tex (Madrid theme with lavender colors)
+
+\documentclass[10pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{algorithm2e}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{subcaption}
+
+% Color definitions (lavender theme)
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255, 127, 14}
+\definecolor{mlgreen}{RGB}{44, 160, 44}
+\definecolor{mlred}{RGB}{214, 39, 40}
+\definecolor{mlgray}{RGB}{127, 127, 127}
+\definecolor{lightgray}{RGB}{240, 240, 240}
+\definecolor{midgray}{RGB}{180, 180, 180}
+
+% Apply custom colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in toc}{fg=mlblue}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{block title}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{block body}{bg=mllavender4,fg=black}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% Clean itemize/enumerate
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+
+% Reduce margins for more content space
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% Command for bottom annotation (Madrid-style)
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+% Compatibility with master template
+\newcommand{\secondary}[1]{\textcolor{mlgray}{#1}}
+
+\title{LLM-Based Summarization}
+\subtitle{\secondary{From Paraphrasing to Production}}
+\author{NLP Course 2025}
+\date{October 31, 2025}
+
+\begin{document}
+
+% MAIN PRESENTATION (20 SLIDES)
+
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}\secondary{\footnotesize Professional Template | Graphviz Flows + Clean Visualizations}\end{center}
+\end{frame}
+
+% HOOK: Human-like Paraphrasing (3 slides: 2-4)
+
+\begin{frame}[t]{The Paraphrasing Challenge}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{../figures/human_paraphrasing_graphviz.pdf}
+\end{center}
+\begin{center}
+\textbf{Discovery}: LLMs don't just copy sentences - they rephrase like humans
+\end{center}
+\bottomnote{Unlike extractive methods, LLMs generate natural variations of text}
+\end{frame}
+
+\begin{frame}[t]{What Makes LLMs Different?}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Traditional Approaches}
+
+Extractive summarization:
+\begin{itemize}
+\item Select important sentences
+\item Copy verbatim from source
+\item No generation capability
+\item Limited coherence
+\end{itemize}
+
+\vspace{5mm}
+Old neural models (BART, T5):
+\begin{itemize}
+\item Trained for specific task
+\item Fixed behavior
+\item Limited control
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{LLM Approach}
+
+Instruction-following models:
+\begin{itemize}
+\item \textbf{Generate} new text
+\item Natural paraphrasing
+\item Creative rewording
+\item Coherent narratives
+\end{itemize}
+
+\vspace{5mm}
+GPT-3.5/4, Claude, LLaMA:
+\begin{itemize}
+\item Follow natural language instructions
+\item Highly controllable (prompts)
+\item Flexible (zero-shot/few-shot)
+\end{itemize}
+\end{columns}
+
+\bottomnote{LLMs enable summarization through conversational instructions}
+\end{frame}
+
+\begin{frame}[t]{Summarization Task Definition}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What is Summarization?}
+
+Input: Long document (article, report, paper)
+
+Output: Concise text capturing key information
+
+\vspace{3mm}
+\textbf{Requirements}:
+\begin{itemize}
+\item Preserve main ideas
+\item Remove redundancy
+\item Maintain coherence
+\item Target length (e.g., 3 sentences, 150 words)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{LLM Advantages}
+
+\textbf{1. Natural language control}
+
+``Summarize in 3 sentences''
+
+``Focus on policy implications''
+
+``Write for general audience''
+
+\vspace{3mm}
+\textbf{2. Adaptable style}
+
+Formal, casual, technical, simple
+
+\vspace{3mm}
+\textbf{3. Context-aware}
+
+Can combine multiple documents
+
+Handle different domains
+\end{columns}
+
+\bottomnote{LLMs make summarization accessible through simple prompts}
+\end{frame}
+
+% PROMPT ENGINEERING (7 slides: 5-11)
+
+\begin{frame}[t]{The Summarization Pipeline}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/llm_pipeline_graphviz.pdf}
+\end{center}
+\vspace{-0.2cm}
+\begin{center}
+\textbf{Three Control Points}: Prompt design, model selection, decoding parameters
+\end{center}
+\bottomnote{Each stage offers levers for controlling summary quality and style}
+\end{frame}
+
+\begin{frame}[fragile,t]{Zero-Shot Prompting: The Simplest Approach}
+\small
+\textbf{Concept}: Give direct instructions without examples
+
+\vspace{5mm}
+\textbf{Example}:
+
+\begin{verbatim}
+Prompt: "Summarize the following article in 3 sentences:
+
+[800-word article about Federal Reserve rates]
+
+Focus on main findings and policy implications."
+\end{verbatim}
+
+\vspace{5mm}
+\textbf{Output}: ``Federal Reserve chiefs have raised interest rates to a range of 5.00\% to 5.25\%, the highest level in 16 years.''
+
+\vspace{5mm}
+\textbf{Key Insight}: Just ask! No training examples needed
+
+\bottomnote{Zero-shot works when task is clear and model has seen similar examples during pre-training}
+\end{frame}
+
+\begin{frame}[fragile,t]{Few-Shot Prompting: Teaching by Example}
+\small
+\textbf{Concept}: Provide 2-5 examples to teach format and style
+
+\vspace{3mm}
+\begin{verbatim}
+Prompt: "You are a financial news summarizer.
+
+Example:
+Article: Stock market rose 2% on tech earnings...
+Summary: Markets gained on tech earnings. Indexes up 2%.
+
+Now summarize this article in the same style:"
+\end{verbatim}
+
+\vspace{3mm}
+\textbf{Output}: ``Federal Reserve raises interest rates by 0.25 percentage points on Wednesday, a pause that continues to be a trend between the central bank and the central bank.''
+
+\vspace{3mm}
+\textbf{Key Insight}: Show 2-5 examples → model learns your style
+
+\bottomnote{Few-shot dramatically improves quality when you need specific format or tone}
+\end{frame}
+
+\begin{frame}[t]{Chain-of-Thought: Multi-Step Reasoning}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.45\textwidth]{../figures/chain_of_thought_graphviz.pdf}
+\end{center}
+\vspace{-0.3cm}
+\begin{center}
+\textbf{Key Insight}: Break complex documents into steps for better reasoning
+\end{center}
+\bottomnote{Essential for long documents (50+ pages) that exceed model context limits}
+\end{frame}
+
+\begin{frame}[t]{Prompt Engineering Best Practices}
+\footnotesize
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Structure Your Prompt}
+
+\textbf{1. System role}
+
+``You are a professional writer''
+
+\textbf{2. Task}
+
+``Summarize the article''
+
+\textbf{3. Constraints}
+
+``In 3 sentences, focus on findings''
+
+\textbf{4. Examples}
+
+Show 2-3 examples (few-shot)
+
+\textbf{5. Input}
+
+Paste document
+
+\column{0.48\textwidth}
+\textbf{Common Patterns}
+
+\textbf{Length}: ``Summarize in X sentences''
+
+\vspace{2mm}
+\textbf{Focus}: ``Highlight policy implications''
+
+\vspace{2mm}
+\textbf{Style}: ``Use formal tone''
+
+\vspace{2mm}
+\textbf{Format}: ``Output as bullet points''
+\end{columns}
+
+\bottomnote{Good prompts: specific, structured, include format}
+\end{frame}
+
+\begin{frame}[t]{Worked Example: Prompt Evolution}
+\small
+\textbf{Task}: Summarize research paper on climate change
+
+\vspace{5mm}
+\textbf{Attempt 1} (vague):
+
+``Summarize this paper'' → \textcolor{red}{Too general, inconsistent quality}
+
+\vspace{5mm}
+\textbf{Attempt 2} (better):
+
+``Summarize this climate research paper in 3 sentences, focusing on main findings and policy recommendations'' → \textcolor{orange}{Better, but still varies}
+
+\vspace{5mm}
+\textbf{Attempt 3} (best):
+
+``You are a science journalist. Summarize this climate research paper in exactly 3 sentences for a general audience. Structure: (1) main finding, (2) evidence, (3) policy implication. Use plain language, no jargon.'' → \textcolor{green}{\textbf{Consistent, high quality}}
+
+\bottomnote{Iterative refinement: vague → specific → structured with role and format}
+\end{frame}
+
+\begin{frame}[t]{Checkpoint: Prompt Engineering}
+\begin{center}
+\textbf{Quick Self-Check}
+\end{center}
+
+\vspace{3mm}
+\textbf{Question}: You need to summarize 100 medical research papers for a literature review. Which approach?
+
+\begin{itemize}
+\item[A)] Zero-shot with simple prompt
+\item[B)] Few-shot with 3 examples of your desired format
+\item[C)] Chain-of-thought for each paper
+\item[D)] Different prompt for each paper
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Answer}: \textbf{B} - Few-shot with examples
+
+\vspace{2mm}
+\textbf{Reasoning}:
+\begin{itemize}
+\item Need consistent format across 100 papers
+\item Medical domain benefits from examples
+\item Zero-shot varies too much
+\item CoT unnecessary (papers likely fit in context)
+\item Consistency > customization for batch processing
+\end{itemize}
+
+\bottomnote{Choose prompting strategy based on volume, consistency needs, and domain specificity}
+\end{frame}
+
+% DECODING STRATEGIES (7 slides: 12-18)
+
+\begin{frame}[t]{Decoding Parameters: Fine-Tuning Output}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What is Decoding?}
+
+LLM generates text token-by-token:
+
+\vspace{3mm}
+\textbf{Step 1}: Compute probabilities
+
+$P(w_1 | context) = [0.35, 0.25, 0.15, ...]$
+
+\textbf{Step 2}: Select next word
+
+Different strategies → different outputs
+
+\textbf{Step 3}: Repeat until done
+
+Stop at max\_tokens or natural end
+
+\vspace{3mm}
+\textcolor{blue}{\textbf{Key point}}: Same prompt + model, different parameters → very different summaries
+
+\column{0.48\textwidth}
+\textbf{Main Parameters}
+
+\textbf{1. Temperature} ($T$)
+
+Controls randomness
+
+Low (0.3): safe, repetitive
+
+High (1.0): creative, varied
+
+\vspace{3mm}
+\textbf{2. Top-p (nucleus)}
+
+Dynamic probability cutoff
+
+Typical: $p = 0.9$
+
+\vspace{3mm}
+\textbf{3. Max tokens}
+
+Length limit (e.g., 150)
+
+\vspace{3mm}
+\textbf{4. Repetition penalty}
+
+Reduce redundancy (1.1-1.2)
+
+\vspace{3mm}
+\textbf{5. Stop sequences}
+
+End generation early
+\end{columns}
+
+\bottomnote{Decoding parameters are your knobs for controlling output quality and diversity}
+\end{frame}
+
+\begin{frame}[t]{Temperature: Randomness Control}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/temperature_effect_clean.pdf}
+\end{center}
+\vspace{-0.2cm}
+\begin{center}
+\textbf{Key Insight}: Lower T = factual accuracy | Higher T = creative variation
+\end{center}
+\bottomnote{For summarization: Use T=0.3-0.5 to prioritize accuracy over creativity}
+\end{frame}
+
+\begin{frame}[t]{Top-p (Nucleus Sampling): Dynamic Cutoff}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/nucleus_sampling_clean.pdf}
+\end{center}
+\vspace{-0.2cm}
+\begin{center}
+\textbf{Key Insight}: Include words until cumulative probability reaches p (e.g., 0.9)
+\end{center}
+\bottomnote{Adapts to probability distribution: peaked → fewer words, flat → more words}
+\end{frame}
+
+\begin{frame}[t]{Max Tokens: Length Control}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/max_tokens_clean.pdf}
+\end{center}
+\vspace{-0.2cm}
+\begin{center}
+\textbf{Key Insight}: Set based on desired summary length (100-200 typical for news)
+\end{center}
+\bottomnote{Too short truncates, too long adds unnecessary verbosity}
+\end{frame}
+
+\begin{frame}[t]{Repetition Penalty: Avoiding Redundancy}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/repetition_penalty_clean.pdf}
+\end{center}
+\vspace{-0.2cm}
+\begin{center}
+\textbf{Key Insight}: Penalty 1.1-1.2 encourages vocabulary diversity
+\end{center}
+\bottomnote{Essential for summarization to avoid ``The company... The company... The company...''}
+\end{frame}
+
+\begin{frame}[t]{Worked Example: Parameter Tuning}
+\small
+\textbf{Scenario}: Summarizing financial earnings reports (need accuracy, not creativity)
+
+\vspace{5mm}
+\textbf{Configuration 1} (default):
+
+$T=1.0$, $p=1.0$, repetition\_penalty=1.0
+
+Result: ``The company performed well and results were good...''
+
+\textcolor{red}{Too vague, repetitive}
+
+\vspace{5mm}
+\textbf{Configuration 2} (optimized):
+
+$T=0.3$, $p=0.9$, max\_tokens=150, repetition\_penalty=1.2
+
+Result: ``Q4 revenue increased 18\% to \$2.1B, exceeding analyst expectations of \$1.9B. Operating margins expanded from 12\% to 15\% due to cost optimization. Management raised full-year guidance by 10\%.''
+
+\textcolor{green}{\textbf{Specific, concise, accurate}}
+
+\bottomnote{Low temperature + repetition penalty = accurate, non-redundant financial summaries}
+\end{frame}
+
+\begin{frame}[t]{Decoding Best Practices by Use Case}
+\small
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Use Case} & \textbf{Temp} & \textbf{Top-p} & \textbf{Max Tokens} & \textbf{Rep. Penalty} \\
+\hline
+News articles & 0.3-0.5 & 0.9 & 100-150 & 1.1-1.2 \\
+\hline
+Scientific papers & 0.3 & 0.85 & 200-300 & 1.2 \\
+\hline
+Legal documents & 0.2 & 0.8 & 300-500 & 1.1 \\
+\hline
+Customer reviews & 0.5-0.7 & 0.9 & 50-100 & 1.2 \\
+\hline
+Meeting transcripts & 0.4 & 0.9 & 150-250 & 1.3 \\
+\hline
+Creative content & 0.7-1.0 & 0.95 & variable & 1.0-1.1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{General Rules}:
+\begin{itemize}
+\item \textbf{Factual domains} (news, science, legal): Low temp (0.2-0.5), higher repetition penalty
+\item \textbf{Creative domains} (marketing, content): Higher temp (0.7+), lower penalty
+\item \textbf{Length}: Match typical summary length for domain
+\item \textbf{Top-p}: Usually 0.85-0.95 (rarely need to change)
+\end{itemize}
+
+\bottomnote{Start conservative (T=0.3, p=0.9), then increase creativity if needed}
+\end{frame}
+
+% CONTEXT LIMITS (3 slides: 19-20 + key takeaways)
+
+\begin{frame}[t]{Long Documents: The Context Window Problem}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Problem}
+
+Most LLMs have limited context:
+
+\begin{itemize}
+\item GPT-3.5: 4K tokens (~3K words)
+\item GPT-4: 8K-32K tokens
+\item GPT-4 Turbo: 128K tokens
+\item Claude 2: 100K tokens
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Real-world documents}:
+
+\begin{itemize}
+\item PhD thesis: 50K-100K words
+\item Legal contract: 20K-50K words
+\item Research report: 10K-30K words
+\end{itemize}
+
+\vspace{3mm}
+\textcolor{red}{\textbf{Many documents exceed context limits!}}
+
+\column{0.48\textwidth}
+\textbf{Three Strategies}
+
+\textbf{1. Chunking}
+
+Split → Summarize each → Merge
+
+Simple, parallelizable
+
+\vspace{3mm}
+\textbf{2. Map-Reduce}
+
+Map: Process all chunks independently
+
+Reduce: Combine into final output
+
+Scalable to many documents
+
+\vspace{3mm}
+\textbf{3. Recursive Hierarchical}
+
+Level 0: Summarize sections
+
+Level 1: Combine summaries
+
+Level 2: Final synthesis
+
+Best coherence, preserves structure
+\end{columns}
+
+\bottomnote{Strategy choice depends on document length, structure, and coherence requirements}
+\end{frame}
+
+\begin{frame}[t]{Chunking Strategy: Sequential Processing}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/chunking_strategy_graphviz.pdf}
+\end{center}
+\vspace{-0.2cm}
+\begin{center}
+\textbf{Chunking}: Split long document → Summarize each → Merge summaries
+\end{center}
+\bottomnote{Good for: Single long document exceeding context limit}
+\end{frame}
+
+\begin{frame}[t]{Map-Reduce: Parallel Processing}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/map_reduce_graphviz.pdf}
+\end{center}
+\vspace{-0.2cm}
+\begin{center}
+\textbf{Map-Reduce}: Process all documents independently → Combine results
+\end{center}
+\bottomnote{Good for: Multiple documents or highly parallelizable tasks}
+\end{frame}
+
+\begin{frame}[t]{Key Takeaways}
+\begin{enumerate}
+\item \textbf{LLMs enable human-like paraphrasing} - not just sentence extraction
+\item \textbf{Prompt engineering is critical} - zero-shot, few-shot, chain-of-thought
+\item \textbf{Decoding parameters control output} - temperature, top-p, max\_tokens, repetition penalty
+\item \textbf{Different use cases need different settings} - factual (low temp) vs creative (high temp)
+\item \textbf{Long documents need special strategies} - chunking, map-reduce, hierarchical
+\item \textbf{Iteration improves quality} - refine prompts and parameters based on outputs
+\end{enumerate}
+
+\vspace{5mm}
+\begin{center}
+\textbf{Bottom Line}: LLM summarization = Prompts + Decoding + Context handling
+\end{center}
+
+\bottomnote{Modern summarization is about controlling LLMs through natural language}
+\end{frame}
+
+% TECHNICAL APPENDIX (15 SLIDES)
+
+\begin{frame}[t]{}
+\begin{center}\Huge\textbf{Technical Appendix}\end{center}
+\vspace{5mm}
+\begin{center}\large Advanced Prompting | Decoding Mathematics | Context Handling\end{center}
+\end{frame}
+
+% Advanced Prompting (A2-A6)
+
+\begin{frame}[t]{A1: System Prompts and Role-Playing}
+\small
+\textbf{System Prompts} set global behavior (GPT-4, Claude)
+
+\vspace{5mm}
+\textbf{Example System Prompt}:
+
+\texttt{``You are an expert medical researcher with 20 years of experience. Summarize clinical studies with focus on methodology, sample size, statistical significance, and clinical implications. Always mention limitations. Use precise medical terminology but explain complex concepts."}
+
+\vspace{5mm}
+\textbf{Effects}:
+\begin{itemize}
+\item Establishes expertise level
+\item Sets domain vocabulary
+\item Defines required elements (methodology, limitations)
+\item Balances technical accuracy with accessibility
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Role-Playing Variations}:
+\begin{itemize}
+\item ``You are a skeptical peer reviewer'' → critical analysis
+\item ``You are explaining to a patient'' → simplified language
+\item ``You are a regulatory auditor'' → compliance focus
+\end{itemize}
+
+\bottomnote{System prompts persist across conversation, user prompts are per-request}
+\end{frame}
+
+\begin{frame}[t]{A2: Format Control and Structured Output}
+\small
+\textbf{Challenge}: Ensure consistent output structure across many summaries
+
+\vspace{5mm}
+\textbf{Technique 1 - Template specification}:
+
+``Output format:
+
+\textbf{Title}: [One sentence]
+
+\textbf{Key Findings}: [Bullet list of 3-5 items]
+
+\textbf{Methodology}: [One paragraph]
+
+\textbf{Implications}: [One paragraph]''
+
+\vspace{5mm}
+\textbf{Technique 2 - JSON output}:
+
+``Return summary as JSON: \{``title'': ``...'', ``findings'': [``...'', ``...''], ``methodology'': ``...'', ``implications'': ``...''\}''
+
+\vspace{5mm}
+\textbf{Benefits}:
+\begin{itemize}
+\item Enables automated post-processing
+\item Ensures all required sections present
+\item Facilitates database storage
+\item Allows programmatic validation
+\end{itemize}
+
+\bottomnote{Structured output essential for production systems processing thousands of documents}
+\end{frame}
+
+\begin{frame}[t]{A3: Multi-Step Chain-of-Thought Decomposition}
+\small
+\textbf{For very complex documents}, break reasoning into explicit steps:
+
+\vspace{5mm}
+\textbf{Prompt Pattern}:
+
+``Let's summarize this 100-page research report step by step:
+
+Step 1: Identify the main research question and hypothesis
+
+Step 2: Extract methodology details (sample, design, procedures)
+
+Step 3: Summarize key findings with supporting evidence
+
+Step 4: Note limitations and caveats mentioned
+
+Step 5: Extract policy or practical recommendations
+
+Step 6: Synthesize all above into 5-sentence executive summary
+
+Please work through each step explicitly, then provide the final summary.''
+
+\vspace{5mm}
+\textbf{Why this works}:
+\begin{itemize}
+\item Forces systematic coverage of all aspects
+\item Reduces hallucination (grounded in text)
+\item Makes reasoning transparent and debuggable
+\item Better handles complex logical relationships
+\end{itemize}
+
+\bottomnote{Multi-step prompts improve accuracy but increase token usage (costs)}
+\end{frame}
+
+\begin{frame}[t]{A4: Self-Consistency and Multiple Samples}
+\small
+\textbf{Technique}: Generate multiple summaries, then combine or select best
+
+\vspace{5mm}
+\textbf{Approach 1 - Majority voting}:
+\begin{enumerate}
+\item Generate 5 summaries with $T=0.7$ (moderate diversity)
+\item Extract key facts mentioned in each
+\item Final summary includes facts appearing in 3+ versions
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Approach 2 - Best-of-N selection}:
+\begin{enumerate}
+\item Generate 3 summaries with different prompts
+\item Use LLM to evaluate: ``Which summary is most accurate and comprehensive?''
+\item Return selected summary
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Approach 3 - Ensemble merging}:
+\begin{enumerate}
+\item Generate 3 summaries from different models (GPT-4, Claude, LLaMA)
+\item Prompt: ``Combine these 3 summaries into one optimal summary''
+\item Leverage strengths of multiple models
+\end{enumerate}
+
+\bottomnote{Multiple samples reduce single-run errors but increase computational cost}
+\end{frame}
+
+\begin{frame}[t]{A5: Prompt Optimization and Iteration}
+\small
+\textbf{Systematic prompt improvement}:
+
+\vspace{5mm}
+\textbf{Phase 1 - Baseline} (5 test documents):
+
+Prompt: ``Summarize this article in 3 sentences''
+
+Evaluate: Generic, misses key points 40\% of time
+
+\vspace{5mm}
+\textbf{Phase 2 - Add specificity}:
+
+Prompt: ``Summarize focusing on: (1) main finding, (2) evidence, (3) implications''
+
+Evaluate: Better coverage, still inconsistent phrasing
+
+\vspace{5mm}
+\textbf{Phase 3 - Add examples and format}:
+
+Prompt: ``<System role + 2 examples> Summarize this article. Format: Finding: ... | Evidence: ... | Implications: ...''
+
+Evaluate: Consistent, captures all required info
+
+\vspace{5mm}
+\textbf{Phase 4 - Parameter tuning}:
+
+Test $T \in \{0.2, 0.3, 0.5\}$ and repetition\_penalty $\in \{1.1, 1.2, 1.3\}$
+
+Select: $T=0.3$, penalty=1.2 based on A/B testing
+
+\bottomnote{Prompt engineering is empirical - test on real documents, iterate based on failures}
+\end{frame}
+
+% Decoding Mathematics (A6-A10)
+
+\begin{frame}[t]{A6: Temperature Scaling Mathematics}
+\small
+\textbf{Softmax with temperature}:
+
+$$P(w_i | context) = \frac{\exp(logit_i / T)}{\sum_{j} \exp(logit_j / T)}$$
+
+\vspace{5mm}
+\textbf{Example}: Logits = $[3.0, 2.0, 1.0]$
+
+\vspace{3mm}
+$T=0.5$ (peaked):
+
+$P = [\exp(6.0), \exp(4.0), \exp(2.0)] / Z = [0.71, 0.24, 0.05]$
+
+\vspace{3mm}
+$T=1.0$ (normal):
+
+$P = [\exp(3.0), \exp(2.0), \exp(1.0)] / Z = [0.58, 0.32, 0.10]$
+
+\vspace{3mm}
+$T=2.0$ (flat):
+
+$P = [\exp(1.5), \exp(1.0), \exp(0.5)] / Z = [0.46, 0.31, 0.23]$
+
+\vspace{5mm}
+\textbf{Limits}:
+\begin{itemize}
+\item $T \to 0$: $P \to$ one-hot (argmax, deterministic)
+\item $T \to \infty$: $P \to$ uniform (random)
+\end{itemize}
+
+\bottomnote{Temperature rescales logits before softmax, controlling distribution sharpness}
+\end{frame}
+
+\begin{frame}[t]{A7: Nucleus (Top-p) Sampling Algorithm}
+\small
+\textbf{Algorithm}:
+
+\begin{enumerate}
+\item Compute probabilities: $P(w_1), P(w_2), ..., P(w_V)$ via softmax
+\item Sort words by probability: $P(w_{(1)}) \geq P(w_{(2)}) \geq ... \geq P(w_{(V)})$
+\item Compute cumulative sum: $C_k = \sum_{i=1}^{k} P(w_{(i)})$
+\item Find cutoff: $k^* = \min\{k : C_k \geq p\}$
+\item Sample from top $k^*$ words (renormalize)
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Example} ($p=0.9$):
+
+\begin{tabular}{lccc}
+Word & $P$ & $C$ & Include? \\
+\hline
+``growth'' & 0.35 & 0.35 & Yes \\
+``increase'' & 0.25 & 0.60 & Yes \\
+``rise'' & 0.15 & 0.75 & Yes \\
+``gain'' & 0.12 & 0.87 & Yes \\
+``surge'' & 0.08 & 0.95 & Yes \\
+``boost'' & 0.05 & 1.00 & No \\
+\end{tabular}
+
+Nucleus size adapts: peaked dist → few words, flat dist → many words
+
+\bottomnote{Top-p is dynamic cutoff, top-k is fixed cutoff (less common)}
+\end{frame}
+
+\begin{frame}[t]{A8: Repetition Penalty Formulation}
+\small
+\textbf{Goal}: Reduce probability of recently generated tokens
+
+\vspace{5mm}
+\textbf{Method 1 - Multiplicative penalty}:
+
+$$P'(w_i) = \begin{cases}
+P(w_i) / \alpha & \text{if } w_i \text{ in recent context} \\
+P(w_i) & \text{otherwise}
+\end{cases}$$
+
+Then renormalize: $P''(w_i) = P'(w_i) / \sum_j P'(w_j)$
+
+\vspace{5mm}
+\textbf{Method 2 - Additive penalty} (less common):
+
+$$logit'_i = logit_i - \beta \cdot \text{count}(w_i)$$
+
+\vspace{5mm}
+\textbf{Typical values}: $\alpha \in [1.0, 1.5]$ where:
+\begin{itemize}
+\item $\alpha = 1.0$: No penalty
+\item $\alpha = 1.1$: Mild (natural variance)
+\item $\alpha = 1.2$: Moderate (good for summarization)
+\item $\alpha = 1.5$: Aggressive (may sound unnatural)
+\end{itemize}
+
+\bottomnote{Penalty applies to tokens in recent window (e.g., last 64 tokens)}
+\end{frame}
+
+\begin{frame}[t]{A9: Beam Search for Summarization}
+\small
+\textbf{Beam search} finds high-probability sequences (vs sampling)
+
+\vspace{5mm}
+\textbf{Algorithm} (beam width $k$):
+
+\textbf{Step 0}: Start with $[BOS]$ (beginning of sequence)
+
+\textbf{Step 1}: Generate top-$k$ first tokens
+
+Keep $k$ best hypotheses: $H = \{h_1, h_2, ..., h_k\}$
+
+\textbf{Step 2}: For each hypothesis $h_i$, generate all continuations
+
+Score each: $score(h_i + w_j) = \log P(h_i) + \log P(w_j | h_i)$
+
+Keep top-$k$ overall (prune rest)
+
+\textbf{Step t}: Repeat until all beams end or max length
+
+\textbf{Output}: Highest-scoring complete sequence
+
+\vspace{5mm}
+\textbf{Length normalization} (prevent short bias):
+
+$$score(h) = \frac{1}{|h|^\alpha} \sum_{t=1}^{|h|} \log P(w_t | h_{<t})$$
+
+Typical: $\alpha = 0.6$ (slight penalty for length)
+
+\bottomnote{Beam search: deterministic, high quality, no diversity (always same output)}
+\end{frame}
+
+\begin{frame}[t]{A10: Sampling Strategies Comparison}
+\small
+\begin{center}
+\begin{tabular}{|l|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+\textbf{Method} & \textbf{How it works} & \textbf{Pros} & \textbf{Cons} \\
+\hline
+Greedy & Always pick highest $P$ & Fast, deterministic & Repetitive, no diversity \\
+\hline
+Pure Sampling & Sample from full $P$ & Diverse & Too random, incoherent \\
+\hline
+Temperature & Scale logits by $T$ & Simple control knob & Still samples unlikely words if $T$ high \\
+\hline
+Top-k & Sample from top $k$ words & Fixed vocabulary size & $k$ doesn't adapt to distribution \\
+\hline
+Top-p (nucleus) & Dynamic cutoff at $p$ & Adapts to peaked/flat & More complex \\
+\hline
+Beam search & Keep top $k$ hypotheses & High quality, coherent & No diversity, slow \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{For summarization}, typical combination:
+
+Temperature $T=0.3$ (low randomness) + Top-p $p=0.9$ (filter unlikely) + Repetition penalty $\alpha=1.2$ (diversity)
+
+\bottomnote{Multiple strategies can be combined (e.g., temperature + top-p + penalty)}
+\end{frame}
+
+% Context Handling Advanced (A11-A15)
+
+\begin{frame}[t]{A11: Sliding Window for Long Documents}
+\small
+\textbf{Strategy}: Maintain overlapping context between chunks
+
+\vspace{5mm}
+\textbf{Algorithm}:
+
+\begin{enumerate}
+\item Split document into chunks of size $L$ tokens
+\item Process with overlap $O$ tokens (e.g., $O = 0.2 \cdot L$)
+\item Each chunk sees last $O$ tokens from previous chunk
+\item Prevents loss of context at boundaries
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Example} ($L=1000$, $O=200$):
+
+Chunk 1: tokens [0, 1000]
+
+Chunk 2: tokens [800, 1800] (overlaps 800-1000)
+
+Chunk 3: tokens [1600, 2600] (overlaps 1600-1800)
+
+\vspace{5mm}
+\textbf{Benefit}: Sentences spanning chunk boundaries are fully captured
+
+\textbf{Cost}: Process $O$ tokens twice (1.2x total tokens for $O=0.2L$)
+
+\bottomnote{Overlap essential for maintaining coherence across chunks}
+\end{frame}
+
+\begin{frame}[t]{A12: Hierarchical Merging Strategy}
+\small
+\textbf{Recursive summarization} preserves document structure
+
+\vspace{5mm}
+\textbf{Full algorithm}:
+
+\textbf{Level 0} (base): Summarize each section independently
+
+$S_1, S_2, ..., S_n$ → summaries $s_1, s_2, ..., s_n$
+
+\textbf{Level 1}: Group related summaries, merge
+
+$(s_1, s_2)$ → $s_{12}$, $(s_3, s_4, s_5)$ → $s_{345}$, etc.
+
+\textbf{Level 2}: Merge Level 1 summaries
+
+$(s_{12}, s_{345})$ → $s_{final}$
+
+\vspace{5mm}
+\textbf{Grouping strategies}:
+\begin{itemize}
+\item By document structure (Introduction + Methods, All Results, Discussion)
+\item By topic (cluster similar sections)
+\item Fixed size (every $k$ sections)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Advantages}:
+\begin{itemize}
+\item Preserves logical document flow
+\item Maintains topic coherence within groups
+\item Reduces redundancy (each fact summarized once per level)
+\end{itemize}
+
+\bottomnote{Hierarchical > flat chunking for structured documents (papers, reports)}
+\end{frame}
+
+\begin{frame}[t]{A13: Attention Sink and Context Management}
+\small
+\textbf{Challenge}: LLMs have limited attention to very distant tokens
+
+\vspace{5mm}
+\textbf{Attention patterns in long contexts}:
+
+\begin{itemize}
+\item \textbf{Recency bias}: Attend more to recent tokens
+\item \textbf{Attention sink}: First few tokens get disproportionate attention
+\item \textbf{Middle loss}: Tokens in middle of long context often ignored
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Implication for summarization}:
+
+Placing document at different positions affects summary quality:
+
+\begin{itemize}
+\item Position 1 (after prompt): Gets attention sink benefit
+\item Position middle: May be partially ignored
+\item Position end: Gets recency benefit
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Best practices}:
+\begin{itemize}
+\item Keep prompts short (save tokens for document)
+\item Place most important content early or late in chunk
+\item For multi-chunk: Repeat critical info (e.g., key definitions) in each chunk prompt
+\end{itemize}
+
+\bottomnote{Context position matters: beginning and end attended more than middle}
+\end{frame}
+
+\begin{frame}[t]{A14: Multi-Document Summarization}
+\small
+\textbf{Task}: Summarize 10-100 related documents into one coherent summary
+
+\vspace{5mm}
+\textbf{Challenges}:
+\begin{itemize}
+\item Identify common themes vs unique points
+\item Avoid redundancy (same fact mentioned in many docs)
+\item Maintain attribution (which doc said what)
+\item Handle contradictions between sources
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Approach 1 - Map-Reduce with deduplication}:
+
+\textbf{Map}: Summarize each document → $s_1, ..., s_n$
+
+\textbf{Deduplicate}: Cluster similar sentences, keep one per cluster
+
+\textbf{Reduce}: Merge deduplicated summaries → final summary
+
+\vspace{5mm}
+\textbf{Approach 2 - Query-focused}:
+
+Prompt: ``Given these 10 articles about climate policy, summarize: (1) consensus findings, (2) disagreements, (3) policy recommendations mentioned''
+
+Forces analysis across documents
+
+\vspace{5mm}
+\textbf{Approach 3 - Hierarchical by topic}:
+
+Cluster documents by topic → Summarize each cluster → Merge cluster summaries
+
+\bottomnote{Multi-document harder than single-document due to redundancy and contradictions}
+\end{frame}
+
+\begin{frame}[t]{A15: Production System Considerations}
+\small
+\textbf{Deploying LLM summarization at scale}:
+
+\vspace{5mm}
+\textbf{Latency}:
+\begin{itemize}
+\item 1-3 seconds per summary (typical)
+\item Batch processing for non-urgent use cases
+\item Caching for repeated documents
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Cost}:
+\begin{itemize}
+\item GPT-4: \$0.03 per 1K input tokens, \$0.06 per 1K output
+\item For 5K input + 200 output: ~\$0.16 per summary
+\item Use cheaper models (GPT-3.5, open-source) when possible
+\item Test cost vs quality tradeoff
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Quality control}:
+\begin{itemize}
+\item Sample 1\% for human evaluation
+\item Automated checks: length, formatting, profanity filter
+\item Hallucination detection (faithfulness to source)
+\item Fallback to extractive if LLM fails
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Monitoring}:
+\begin{itemize}
+\item Track: latency, error rate, cost per summary
+\item A/B test prompt variations
+\item User feedback loop for iterative improvement
+\end{itemize}
+
+\bottomnote{Production systems need reliability, cost optimization, and quality monitoring}
+\end{frame}
+
+% LAB IMPLEMENTATION DETAILS (10 SLIDES: A16-A25)
+
+\begin{frame}[t]{}
+\begin{center}\Huge\textbf{Lab Implementation Details}\end{center}
+\vspace{5mm}
+\begin{center}\large Code-Level Walkthrough | Real Outputs | Hands-On Concepts\end{center}
+\end{frame}
+
+\begin{frame}[t]{A16: Lab Overview - What We Implemented}
+\small
+\textbf{4-Part Lab Structure}:
+
+\vspace{3mm}
+\textbf{Part 1}: Setup and Model Loading
+\begin{itemize}
+\item Load FLAN-T5-small via Hugging Face Transformers
+\item Configure device (CPU/GPU)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Part 2}: Prompt Engineering Experiments
+\begin{itemize}
+\item Zero-shot vs few-shot comparison
+\item Same article, different prompts
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Part 3}: Decoding Parameter Experiments
+\begin{itemize}
+\item Temperature: 0.3, 0.7, 1.0
+\item Top-p: 0.8, 0.9, 0.95
+\item Repetition penalty: 1.0, 1.2, 1.5
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Part 4}: Long Document Handling
+\begin{itemize}
+\item Chunking strategy with overlap
+\item Merge chunk summaries
+\end{itemize}
+
+\bottomnote{Total: 19 cells, runs on CPU (~10 min) or GPU (~2 min)}
+\end{frame}
+
+\begin{frame}[fragile,t]{A17: FLAN-T5 Model Loading Code}
+\small
+\textbf{Why FLAN-T5-small?}
+\begin{itemize}
+\item \textbf{Size}: 80M parameters (fits on CPU)
+\item \textbf{Speed}: Fast inference (~1-2 sec/summary on CPU)
+\item \textbf{Quality}: Instruction-tuned, good for summarization
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Loading Code}:
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\footnotesize]
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+import torch
+
+model_name = "google/flan-t5-small"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model = model.to(device)
+print(f"Model loaded on {device}")
+\end{lstlisting}
+
+\vspace{3mm}
+\textbf{Real Output}:
+\begin{verbatim}
+PyTorch version: 2.5.1+cpu
+CUDA available: False
+Model loaded on cpu
+\end{verbatim}
+
+\bottomnote{AutoModelForSeq2SeqLM: Encoder-decoder architecture for text-to-text tasks}
+\end{frame}
+
+\begin{frame}[t]{A18: Model Comparison - FLAN-T5 Variants}
+\small
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Model} & \textbf{Parameters} & \textbf{Memory} & \textbf{Speed} & \textbf{Quality} \\
+\hline
+flan-t5-small & 80M & 300MB & Fast (2s) & Good \\
+\hline
+flan-t5-base & 250M & 1GB & Medium (5s) & Better \\
+\hline
+flan-t5-large & 780M & 3GB & Slow (15s) & Best \\
+\hline
+flan-t5-xl & 3B & 11GB & Very slow (60s) & Excellent \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{Hardware Requirements}:
+\begin{itemize}
+\item \textbf{CPU}: Works for small/base (8GB+ RAM recommended)
+\item \textbf{GPU}: Recommended for large/xl (16GB+ VRAM)
+\item \textbf{Cloud}: Use Google Colab (free T4 GPU) or AWS
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Speed vs Quality Trade-off}:
+\begin{itemize}
+\item Development: Use small (fast iteration)
+\item Production: Test base vs large (quality matters)
+\item Research: Use xl if available (best results)
+\end{itemize}
+
+\bottomnote{Lab uses small for accessibility - works on any laptop}
+\end{frame}
+
+\begin{frame}[fragile,t]{A19: Tokenizer Mechanics Code}
+\small
+\textbf{Tokenization Process}:
+
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\footnotesize]
+# Input: raw text string
+text = "Summarize: The Fed raised interest rates..."
+
+# Tokenizer converts to model inputs
+inputs = tokenizer(
+    text,
+    return_tensors="pt",    # PyTorch tensors
+    max_length=512,         # Truncate if longer
+    truncation=True         # Enable truncation
+).to(device)
+
+# Output: dictionary with input_ids and attention_mask
+print(inputs.keys())  # dict_keys(['input_ids', 'attention_mask'])
+print(inputs['input_ids'].shape)  # torch.Size([1, N])
+\end{lstlisting}
+
+\vspace{5mm}
+\textbf{What Happens}:
+\begin{enumerate}
+\item Text split into subword tokens (SentencePiece)
+\item Each token mapped to integer ID
+\item IDs converted to PyTorch tensor
+\item Attention mask created (1=real token, 0=padding)
+\end{enumerate}
+
+\bottomnote{return\_tensors="pt" returns PyTorch tensors (vs "tf" for TensorFlow)}
+\end{frame}
+
+\begin{frame}[t]{A20: Special Tokens and Truncation}
+\small
+\textbf{FLAN-T5 Special Tokens}:
+
+\begin{itemize}
+\item \textbf{PAD} (0): Padding token (unused in seq2seq generation)
+\item \textbf{EOS} (1): End-of-sequence (marks end of output)
+\item \textbf{UNK} (2): Unknown token (rare words)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{512 Token Limit}:
+
+\textbf{Input}: ``Summarize: [1000-word article]''
+
+Token count: $\sim$250 tokens
+
+\textbf{Problem}: If article + prompt $>$ 512 tokens → truncation
+
+\textbf{Solution}:
+\begin{itemize}
+\item Truncate input (\texttt{truncation=True})
+\item OR use chunking strategy (Part 4)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Real Example}:
+
+Article: 160 words = $\sim$200 tokens
+
+Prompt: ``Summarize this article in 3 sentences'' = $\sim$10 tokens
+
+Total: $\sim$210 tokens (well under 512 limit)
+
+\bottomnote{1 token $\approx$ 0.75 words (English text). Context window = max input length}
+\end{frame}
+
+\begin{frame}[fragile,t]{A21: Generate() Function Parameters}
+\small
+\textbf{Complete Generation Code}:
+
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\footnotesize]
+outputs = model.generate(
+    **inputs,                      # Unpacked input_ids, attention_mask
+    max_length=100,                # Max output tokens (not words)
+    temperature=0.7,               # Randomness (0=deterministic, 2=chaos)
+    top_p=0.9,                     # Nucleus sampling cutoff
+    repetition_penalty=1.2,        # Penalize repeated tokens (>1.0)
+    do_sample=True,                # Use sampling (False=greedy)
+    num_return_sequences=1         # Number of outputs to generate
+)
+
+# Decode output tokens back to text
+summary = tokenizer.decode(outputs[0], skip_special_tokens=True)
+\end{lstlisting}
+
+\vspace{5mm}
+\textbf{Parameter Types}:
+\begin{itemize}
+\item \textbf{Length}: max\_length (int)
+\item \textbf{Randomness}: temperature (float), do\_sample (bool)
+\item \textbf{Filtering}: top\_p (float 0-1), top\_k (int)
+\item \textbf{Penalties}: repetition\_penalty (float $\geq$ 1.0)
+\item \textbf{Batch}: num\_return\_sequences (int)
+\end{itemize}
+
+\bottomnote{do\_sample=True required for temperature/top-p to take effect}
+\end{frame}
+
+\begin{frame}[t]{A22: Decoding Parameter Effects (Real Outputs)}
+\tiny
+\textbf{Same Article, Different Parameters}:
+
+\vspace{3mm}
+\begin{tabular}{|p{2cm}|p{9cm}|}
+\hline
+\textbf{Setting} & \textbf{Actual Output from Notebook} \\
+\hline
+\textbf{T=0.3} (factual) & ``Federal Reserve chiefs have raised interest rates to a range of 5.00\% to 5.25\%, the highest level in 16 years.'' \\
+\hline
+\textbf{T=0.7} (balanced) & ``Federal Reserve President Mark Zuckerberg told the Wall Street Journal the Federal Reserve remained calm in the wake of the flurry of interest rates.'' \\
+\hline
+\textbf{T=1.0} (creative) & ``Federal Reserve chair Jerome Powell said the US rate had been lowered, a move which highlights ongoing uncertainty as the central bank faces interest rates.'' \\
+\hline
+\end{tabular}
+
+\vspace{5mm}
+\begin{tabular}{|p{2cm}|p{9cm}|}
+\hline
+\textbf{Top-p=0.8} & ``Federal Reserve officials have raised interest rates by 0.25 percentage points in a bid to cut interest rates, despite a decline in inflation.'' \\
+\hline
+\textbf{Top-p=0.9} & ``Federal Reserve officials say they will monitor data on a possible rate hike to keep inflation lower.'' \\
+\hline
+\textbf{Top-p=0.95} & ``Federal Reserve Chairman Jerome Powell said he would monitor the current rate growth rate...'' \\
+\hline
+\end{tabular}
+
+\vspace{3mm}
+\textbf{Observation}: Lower temperature (0.3) gives most accurate summary. Higher values introduce errors (e.g., ``Mark Zuckerberg'').
+
+\bottomnote{For summarization: T=0.3-0.5, p=0.9, penalty=1.2 work best}
+\end{frame}
+
+\begin{frame}[fragile,t]{A23: Optimal Parameter Combination}
+\small
+\textbf{Best Practices from Lab}:
+
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\footnotesize]
+# Optimal configuration for factual summarization
+outputs = model.generate(
+    **inputs,
+    max_length=100,          # Allow enough space for summary
+    temperature=0.3,         # Low randomness = factual
+    top_p=0.9,              # Filter bottom 10% unlikely words
+    repetition_penalty=1.2,  # Mild penalty for variety
+    do_sample=True           # Enable sampling
+)
+\end{lstlisting}
+
+\vspace{5mm}
+\textbf{Why These Values}:
+\begin{itemize}
+\item \textbf{temperature=0.3}: Factual accuracy > creativity
+\item \textbf{top\_p=0.9}: Remove very unlikely words, keep reasonable options
+\item \textbf{repetition\_penalty=1.2}: Avoid ``the company... the company...'' but not too aggressive
+\item \textbf{max\_length=100}: Typical summary length (50-100 tokens = 30-75 words)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Real Output with Optimal Settings}:
+
+\texttt{``Federal Reserve chiefs have raised interest rates to a range of 5.00\% to 5.25\%, the highest level in 16 years.''}
+
+\textbf{Quality}: Accurate, concise, no hallucinations
+
+\bottomnote{Always test parameter combinations on your specific domain/task}
+\end{frame}
+
+\begin{frame}[fragile,t]{A24: Chunking Algorithm Implementation}
+\small
+\textbf{Problem}: Document too long for 512 token limit
+
+\textbf{Solution}: Split into overlapping chunks
+
+\vspace{5mm}
+\textbf{Full Implementation}:
+
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\footnotesize]
+def chunk_text(text, chunk_size=500, overlap=100):
+    """Split text into overlapping chunks by words"""
+    words = text.split()  # Split by whitespace
+    chunks = []
+
+    # Step through text with stride = chunk_size - overlap
+    for i in range(0, len(words), chunk_size - overlap):
+        chunk = " ".join(words[i:i + chunk_size])
+        if chunk:  # Only add non-empty chunks
+            chunks.append(chunk)
+
+    return chunks
+
+# Example: 800-word document
+chunks = chunk_text(long_doc, chunk_size=300, overlap=50)
+# Result: 3 chunks of ~300 words each
+# Chunk 1: words 0-299
+# Chunk 2: words 250-549 (50-word overlap with chunk 1)
+# Chunk 3: words 500-799 (50-word overlap with chunk 2)
+\end{lstlisting}
+
+\bottomnote{Overlap ensures sentences spanning boundaries are captured in at least one chunk}
+\end{frame}
+
+\begin{frame}[t]{A25: Chunking Example with Real Outputs}
+\small
+\textbf{Input}: 5x repeated article = 800 words
+
+\vspace{3mm}
+\textbf{Chunking Parameters}: chunk\_size=300, overlap=50
+
+\vspace{3mm}
+\textbf{Result}: 3 chunks created
+
+\begin{itemize}
+\item Chunk 1: 300 words
+\item Chunk 2: 300 words (overlaps with chunk 1 by 50 words)
+\item Chunk 3: 250 words (remaining text)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Processing Strategy}:
+
+\textbf{Step 1}: Summarize each chunk independently
+
+Chunk 1 → Summary 1 (50 tokens)
+
+Chunk 2 → Summary 2 (50 tokens)
+
+Chunk 3 → Summary 3 (50 tokens)
+
+\vspace{3mm}
+\textbf{Step 2}: Combine all summaries
+
+Combined text: Summary 1 + Summary 2 + Summary 3 = 150 tokens
+
+\vspace{3mm}
+\textbf{Step 3}: Summarize the summaries
+
+Final summary: 80 tokens (comprehensive overview)
+
+\vspace{5mm}
+\textbf{Key Insight}: Hierarchical summarization preserves information better than single-pass truncation
+
+\bottomnote{This is the ``map-reduce'' strategy discussed in main presentation}
+\end{frame}
+
+\end{document}

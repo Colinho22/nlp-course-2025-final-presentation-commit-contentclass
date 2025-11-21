@@ -1,7 +1,9 @@
 # NLP Course 2025: From N-grams to Transformers
 
 ![Course Status](https://img.shields.io/badge/weeks-12%2F12%20complete-brightgreen)
+![Framework](https://img.shields.io/badge/framework-100%25%20applied-success)
 ![Labs](https://img.shields.io/badge/labs-12%20notebooks-blue)
+![Charts](https://img.shields.io/badge/charts-168%20visualizations-purple)
 ![License](https://img.shields.io/badge/license-MIT-orange)
 
 > A comprehensive Natural Language Processing course covering statistical foundations through modern transformer architectures. Build ChatGPT from scratch!
@@ -109,7 +111,7 @@ Full navigation with topics, prerequisites, and learning objectives: [COURSE_IND
 | 6 | Pre-trained | BERT, GPT, transfer learning | Fine-tune BERT |
 | 7 | Advanced | T5, GPT-3, scaling laws | Experiment with GPT |
 | 8 | Tokenization | BPE, WordPiece, SentencePiece | Implement tokenizer |
-| 9 | Decoding | Beam search, sampling, nucleus | Compare strategies |
+| 9 | Decoding | Beam, sampling, nucleus, **contrastive** | Compare 6 methods |
 | 10 | Fine-tuning | LoRA, prompt engineering | Adapt models |
 | 11 | Efficiency | Quantization, distillation | Optimize models |
 | 12 | Ethics | Bias, fairness, safety | Measure bias |

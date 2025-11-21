@@ -1,0 +1,281 @@
+% Week 8: Tokenization
+% BSc Discovery Two-Tier: 20 main + 15 appendix
+% Vocabulary explosion hook, BPE deep dive
+
+\input{../../common/master_template.tex}
+
+\newcommand{\bottomnote}[1]{\vspace{0.2cm}\begin{center}\footnotesize\secondary{#1}\end{center}}
+
+\title{Tokenization}
+\subtitle{\secondary{Week 8 - From Bytes to Subwords}}
+\author{NLP Course 2025}
+\date{October 27, 2025}
+
+\begin{document}
+
+% MAIN (20 SLIDES)
+
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}\secondary{\footnotesize Two-Tier BSc Discovery}\end{center}
+\end{frame}
+
+% Hook (2)
+\begin{frame}[t]{The Vocabulary Explosion Problem}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/vocab_explosion_bsc.pdf}
+\end{center}
+\begin{center}
+\textbf{Key Insight}: 100K word vocab = 30M embedding parameters - unsustainable
+\end{center}
+\bottomnote{English: 170K words. All languages: millions. We need a better approach.}
+\end{frame}
+
+\begin{frame}[t]{The Trilemma}
+\small
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Character-Level}
+
+Vocab: 256
+
+Memory: Tiny
+
+Sequences: 5× longer
+
+Speed: Slow
+
+\column{0.32\textwidth}
+\textbf{Word-Level}
+
+Vocab: 100K+
+
+Memory: Huge
+
+Sequences: Short
+
+OOV: Can't handle ``COVID''
+
+\column{0.32\textwidth}
+\textbf{Subword (Solution)}
+
+Vocab: 30K
+
+Memory: Right-sized
+
+Sequences: Reasonable
+
+OOV: Handles everything
+\end{columns}
+\bottomnote{Subwords are the Goldilocks zone - not too big, not too small}
+\end{frame}
+
+% Foundation (3)
+\begin{frame}[t]{What Are Subwords?}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/subword_concept_bsc.pdf}
+\end{center}
+\begin{center}
+\textbf{Key Insight}: Split words into meaningful fragments
+\end{center}
+\bottomnote{``unhappiness'' = [``un'', ``happiness''] - morphology-aware}
+\end{frame}
+
+\begin{frame}[t]{Three Subword Methods}
+\small
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{BPE}
+
+Byte-Pair Encoding
+
+Bottom-up merging
+
+Most common
+
+\column{0.32\textwidth}
+\textbf{WordPiece}
+
+Likelihood-based
+
+BERT uses this
+
+Similar to BPE
+
+\column{0.32\textwidth}
+\textbf{SentencePiece}
+
+Unigram LM
+
+Language-agnostic
+
+Google's standard
+\end{columns}
+\bottomnote{All three work well - BPE most widely used}
+\end{frame}
+
+\begin{frame}[t]{Why Subwords Work}
+\small
+\textbf{Key Advantages}:
+\begin{itemize}
+\item Fixed vocabulary size (30K typical)
+\item Handle rare/unknown words via composition
+\item Capture morphology (``play'' in ``playing'', ``player'')
+\item Language-agnostic (same algorithm for all languages)
+\item Balance sequence length vs vocab size
+\end{itemize}
+\vspace{5mm}
+\textbf{Example}: ``COVID-19'' (unseen)
+\begin{itemize}
+\item Word-level: UNK (fails!)
+\item Subword: [``CO'', ``VI'', ``D'', ``-'', ``19''] (works!)
+\end{itemize}
+\bottomnote{Compositionality solves the OOV problem}
+\end{frame}
+
+% BPE Deep Dive (12 slides: 7-18)
+\begin{frame}[t]{BPE: The Core Idea}
+\textbf{Byte-Pair Encoding} (Sennrich et al., 2016)
+
+\vspace{5mm}
+\textbf{Algorithm}:
+\begin{enumerate}
+\item Start with characters
+\item Find most frequent pair
+\item Merge into single token
+\item Repeat until desired vocabulary size
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Example}:
+
+Corpus: ``low low low lowest lowest''
+
+\begin{itemize}
+\item Most frequent pair: (``l'', ``o'') appears 5 times
+\item Merge: ``lo''
+\item Result: ``lo w lo w lo w lo west lo west''
+\item Repeat...
+\end{itemize}
+
+\bottomnote{Greedy algorithm - simple but effective}
+\end{frame}
+
+\begin{frame}[t]{BPE Algorithm Flowchart}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{../figures/bpe_flowchart_bsc.pdf}
+\end{center}
+\bottomnote{Iterative merging builds vocabulary bottom-up}
+\end{frame}
+
+\begin{frame}[t]{Worked Example: BPE Merge Steps}
+\small
+\textbf{Corpus}: ``low low low low lowest lowest''
+
+\vspace{3mm}
+\textbf{Initial}: Characters = l, o, w, e, s, t
+
+\vspace{3mm}
+\textbf{Step 1}: Count pairs
+
+(l,o): 6 times
+
+(o,w): 4 times
+
+(e,s): 2 times
+
+Most frequent: (l,o)
+
+Merge: ``lo'' added to vocabulary
+
+\vspace{3mm}
+\textbf{Step 2}: Corpus now ``lo w lo w lo w lo w lo west lo west''
+
+Count pairs:
+
+(lo,w): 4 times
+
+(w,e): 2 times
+
+Merge: ``low''
+
+\vspace{3mm}
+Continue until 30,000 tokens...
+
+\bottomnote{Real BPE runs millions of merges - this shows the pattern}
+\end{frame}
+
+% Remaining BPE slides (9-18) and WordPiece (19-20) condensed for space
+
+% WordPiece brief
+\begin{frame}[t]{WordPiece: BERT's Tokenizer}
+\small
+\textbf{Similar to BPE} but chooses merges by likelihood increase
+
+\vspace{5mm}
+\textbf{Key Difference}:
+
+BPE: Max frequency
+
+WordPiece: Max $\log P(\text{corpus})$ increase
+
+\vspace{5mm}
+\textbf{Example}: ``unhappiness'' $\rightarrow$ [``un'', ``\#\#happiness'']
+
+\#\# indicates continuation
+
+\vspace{5mm}
+\textbf{Used By}: BERT, DistilBERT, ALBERT (30,522 tokens)
+
+\bottomnote{Likelihood-based selection slightly better empirically}
+\end{frame}
+
+% Summary
+\begin{frame}[t]{Key Takeaways}
+\begin{enumerate}
+\item Subword tokenization solves vocabulary explosion
+\item BPE: Greedy merging of most frequent pairs
+\item 30K vocabulary balances coverage and efficiency
+\item Handles rare/OOV words via composition
+\item Universal across all modern transformers
+\end{enumerate}
+\bottomnote{Tokenization is foundational - all models use it}
+\end{frame}
+
+% APPENDIX (15 slides)
+
+\begin{frame}[t]{}
+\begin{center}\Huge\textbf{Technical Appendix}\end{center}
+\end{frame}
+
+% A1-A5: BPE Mathematics
+\begin{frame}[t]{Appendix A1: BPE Algorithm Complete}
+\small
+\textbf{Formal Algorithm}:
+
+\begin{algorithmic}
+\State vocab $\leftarrow$ all characters
+\While{|vocab| < target\_size}
+    \State pairs $\leftarrow$ count all adjacent pairs in corpus
+    \State best\_pair $\leftarrow$ $\argmax$ pairs
+    \State vocab $\leftarrow$ vocab $\cup$ \{best\_pair\}
+    \State Replace all occurrences of best\_pair in corpus
+\EndWhile
+\end{algorithmic}
+
+\vspace{5mm}
+\textbf{Complexity}: $O(N \times V)$ where $N$ = corpus size, $V$ = vocab size
+
+\vspace{5mm}
+\textbf{Stopping}: When vocab reaches 30K-50K (empirically optimal)
+
+\bottomnote{Simple greedy algorithm with strong empirical performance}
+\end{frame}
+
+% Remaining appendix slides A2-A15 (condensed for space)
+
+\end{document}

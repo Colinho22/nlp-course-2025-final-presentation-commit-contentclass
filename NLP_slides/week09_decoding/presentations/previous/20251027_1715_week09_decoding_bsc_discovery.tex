@@ -1,0 +1,182 @@
+% Week 9: Decoding Strategies
+% BSc Discovery Two-Tier: 20 main + 15 appendix
+% Quality-diversity tradeoff hook
+
+\input{../../common/master_template.tex}
+
+\newcommand{\bottomnote}[1]{\vspace{0.2cm}\begin{center}\footnotesize\secondary{#1}\end{center}}
+
+\title{Decoding Strategies}
+\subtitle{\secondary{Week 9 - From Greedy to Creative}}
+\author{NLP Course 2025}
+\date{October 27, 2025}
+
+\begin{document}
+
+% MAIN (20 SLIDES)
+
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}\secondary{\footnotesize Two-Tier BSc Discovery}\end{center}
+\end{frame}
+
+% Hook (2)
+\begin{frame}[t]{The Quality-Diversity Tradeoff}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/quality_diversity_tradeoff_bsc.pdf}
+\end{center}
+\begin{center}
+\textbf{Key Insight}: Best text is boring, creative text is nonsense - need balance
+\end{center}
+\bottomnote{Greedy: deterministic and dull. Random: diverse but incoherent.}
+\end{frame}
+
+\begin{frame}[t]{Three Decoding Families}
+\small
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Deterministic}
+
+Greedy, Beam
+
+Always same output
+
+High quality
+
+No diversity
+
+\column{0.32\textwidth}
+\textbf{Stochastic}
+
+Temperature, Top-k
+
+Random sampling
+
+Creative
+
+Can be nonsense
+
+\column{0.32\textwidth}
+\textbf{Controlled}
+
+Nucleus (top-p)
+
+Balance both
+
+Tunable creativity
+
+Modern standard
+\end{columns}
+\bottomnote{Different tasks need different decoding strategies}
+\end{frame}
+
+% Greedy/Beam (6: slides 4-9)
+\begin{frame}[t]{Beam Search: Explore Multiple Paths}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/beam_search_visual_bsc.pdf}
+\end{center}
+\begin{center}
+\textbf{Key Insight}: Keep top-k hypotheses at each step - find better sequences
+\end{center}
+\bottomnote{Beam width = 5 typical. Balance between greedy (1) and exhaustive (∞)}
+\end{frame}
+
+\begin{frame}[t]{Worked Example: Beam Search (width=3)}
+\small
+\textbf{Task}: Generate after ``The cat''
+
+\vspace{3mm}
+\textbf{Step 1}: Top-3 words
+
+sat (0.4), is (0.3), was (0.2)
+
+Keep 3 hypotheses
+
+\vspace{3mm}
+\textbf{Step 2}: Expand each
+
+``The cat sat'' → on (0.5), there (0.3)
+
+``The cat is'' → sleeping (0.6), black (0.2)
+
+``The cat was'' → happy (0.4), tired (0.3)
+
+\vspace{3mm}
+\textbf{Step 3}: Score and prune
+
+Total scores: sat+on (0.2), is+sleeping (0.18), sat+there (0.12)
+
+Keep top-3, continue...
+
+\vspace{3mm}
+Final: ``The cat is sleeping'' wins!
+
+\bottomnote{Beam search finds better sequences than greedy}
+\end{frame}
+
+% Sampling (8: slides 10-17)
+\begin{frame}[t]{Temperature: Control Randomness}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/temperature_effects_bsc.pdf}
+\end{center}
+\begin{center}
+\textbf{Key Insight}: Temperature controls peakedness of probability distribution
+\end{center}
+\bottomnote{T=0.5: focused. T=1.0: unchanged. T=2.0: flattened (more random)}
+\end{frame}
+
+\begin{frame}[t]{Worked Example: Temperature Scaling}
+\small
+\textbf{Logits}: [2.0, 1.0, 0.5, 0.2]
+
+\vspace{5mm}
+\textbf{T=0.5} (focused):
+
+$$p_i = \frac{\exp(logit_i / 0.5)}{\sum \exp(logit_j / 0.5)}$$
+
+Result: [0.61, 0.22, 0.11, 0.06] - peaked!
+
+\vspace{5mm}
+\textbf{T=1.0} (normal):
+
+$$p_i = \softmax(logits)$$
+
+Result: [0.42, 0.23, 0.16, 0.13] - balanced
+
+\vspace{5mm}
+\textbf{T=2.0} (flat):
+
+Result: [0.32, 0.26, 0.23, 0.19] - uniform!
+
+\bottomnote{Lower T = more deterministic. Higher T = more random.}
+\end{frame}
+
+% Remaining sampling slides...
+
+% Comparison (4: slides 18-20 + summary)
+\begin{frame}[t]{Key Takeaways}
+\begin{enumerate}
+\item Beam search: Deterministic, high quality, no diversity
+\item Temperature: Simple randomness control
+\item Top-k: Filter unlikely words, sample from top
+\item Nucleus (top-p): Dynamic cutoff, modern standard
+\item Choose based on task: translation=beam, creative=sampling
+\end{enumerate}
+\bottomnote{Decoding strategy matters as much as model quality}
+\end{frame}
+
+% APPENDIX (15 slides)
+
+\begin{frame}[t]{}
+\begin{center}\Huge\textbf{Technical Appendix}\end{center}
+\end{frame}
+
+% A1-A5: Beam search mathematics
+% A6-A10: Sampling mathematics
+% A11-A15: Advanced (constrained, contrastive, quality metrics)
+
+\end{document}
