@@ -21,7 +21,7 @@ from pathlib import Path
 # Configuration
 LOGO_PATH = Path("quantlet_logo.png")
 FIGURES_DIR = Path("figures")
-OUTPUT_DIR = Path("figures_with_clickable_logo")
+OUTPUT_DIR = Path("figures_with_logo_bottomright")
 LOGO_SIZE = 40      # pixels
 PADDING = 10        # pixels from edges
 BASE_URL = "https://quantlet.com"  # Will update to GitHub URL later
@@ -40,7 +40,7 @@ print("=" * 70)
 print(f"Adding Clickable QuantLet Logo to {len(pdfs)} PDFs")
 print("=" * 70)
 print(f"Logo: {LOGO_PATH} (official QuantLet from GitHub)")
-print(f"Position: Bottom-left corner")
+print(f"Position: Bottom-right corner")
 print(f"Size: {LOGO_SIZE}x{LOGO_SIZE} pixels")
 print(f"Link: {BASE_URL}")
 print(f"Output: {OUTPUT_DIR}/")
@@ -60,8 +60,8 @@ for pdf_path in pdfs:
         page_width = page_rect.width
         page_height = page_rect.height
 
-        # Calculate logo position (bottom-left)
-        logo_x = PADDING
+        # Calculate logo position (bottom-right)
+        logo_x = page_width - LOGO_SIZE - PADDING
         logo_y = page_height - LOGO_SIZE - PADDING
 
         # Create rectangle for logo
