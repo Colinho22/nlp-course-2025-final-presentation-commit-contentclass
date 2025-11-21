@@ -114,6 +114,13 @@ def generate_prediction_pipeline():
                 fontsize=42, weight='bold', pad=20)
 
     plt.tight_layout()
+    # Add QuantLet attribution
+    ax.text(0.98, 0.02, 'Code: quantlet.com/NLPDecoding_Prediction_To_Text_Pipeline',
+            transform=ax.transAxes,
+            ha='right', va='bottom',
+            fontsize=7, color='#888888',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+                      edgecolor='#CCCCCC', alpha=0.7, linewidth=0.5))
     plt.savefig('./prediction_to_text_pipeline_bsc.pdf', dpi=300, bbox_inches='tight')
     plt.close()
     print("Generated: prediction_to_text_pipeline_bsc.pdf")

@@ -100,6 +100,13 @@ def generate_beam_example_tree():
     ax.set_title('Beam Search Example: "The cat..." (Width=3)', fontsize=40, weight='bold')
 
     plt.tight_layout()
+    # Add QuantLet attribution
+    ax.text(0.98, 0.02, 'Code: quantlet.com/NLPDecoding_Beam_Example_Tree',
+            transform=ax.transAxes,
+            ha='right', va='bottom',
+            fontsize=7, color='#888888',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+                      edgecolor='#CCCCCC', alpha=0.7, linewidth=0.5))
     plt.savefig('./beam_example_tree_bsc.pdf', dpi=300, bbox_inches='tight')
     plt.close()
     print("Generated: beam_example_tree_bsc.pdf")

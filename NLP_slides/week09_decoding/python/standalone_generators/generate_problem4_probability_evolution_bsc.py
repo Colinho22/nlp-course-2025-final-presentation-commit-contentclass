@@ -39,6 +39,9 @@ def generate_problem4_probability_evolution_bsc():
     dot.edge('t2', 't3', color=COLOR_RED, penwidth='2')
     dot.edge('t3', 'result', style='dashed', color=COLOR_GRAY)
 
+    # Add QuantLet attribution
+    dot.node('quantlet_attr', 'Code: quantlet.com/NLPDecoding_Problem4_Probability_Evolution',
+             shape='plaintext', fontsize='8', fontcolor='#888888')
     dot.render('./problem4_probability_evolution_bsc', cleanup=True)
     print("Generated problem4_probability_evolution_bsc.pdf")
 

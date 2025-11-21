@@ -47,6 +47,9 @@ def generate_problem4_search_tree_pruning_bsc():
     dot.node('note', '"In quick" had high probability\\nbut pruned at step 1!',
             shape='note', fillcolor='#FFFFCC', color=COLOR_MAIN)
 
+    # Add QuantLet attribution
+    dot.node('quantlet_attr', 'Code: quantlet.com/NLPDecoding_Problem4_Search_Tree_Pruning',
+             shape='plaintext', fontsize='8', fontcolor='#888888')
     dot.render('./problem4_search_tree_pruning_bsc', cleanup=True)
     print("Generated problem4_search_tree_pruning_bsc.pdf")
 

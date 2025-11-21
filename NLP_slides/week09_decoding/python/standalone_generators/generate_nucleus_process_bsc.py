@@ -99,6 +99,13 @@ def generate_nucleus_process():
     ax2.tick_params(colors=COLOR_ACCENT, which='both')
 
     plt.tight_layout()
+    # Add QuantLet attribution
+    ax.text(0.98, 0.02, 'Code: quantlet.com/NLPDecoding_Nucleus_Process',
+            transform=ax.transAxes,
+            ha='right', va='bottom',
+            fontsize=7, color='#888888',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+                      edgecolor='#CCCCCC', alpha=0.7, linewidth=0.5))
     plt.savefig('./nucleus_process_bsc.pdf', dpi=300, bbox_inches='tight')
     plt.close()
     print("Generated: nucleus_process_bsc.pdf")

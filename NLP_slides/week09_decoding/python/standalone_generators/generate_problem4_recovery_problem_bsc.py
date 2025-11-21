@@ -43,6 +43,9 @@ def generate_problem4_recovery_problem_bsc():
     dot.node('note', 'Beam search is GREEDY:\\nOnce pruned, paths are lost forever',
              shape='note', fillcolor='#E8E8F0', color=COLOR_ACCENT)
 
+    # Add QuantLet attribution
+    dot.node('quantlet_attr', 'Code: quantlet.com/NLPDecoding_Problem4_Recovery_Problem',
+             shape='plaintext', fontsize='8', fontcolor='#888888')
     dot.render('./problem4_recovery_problem_bsc', cleanup=True)
     print("Generated problem4_recovery_problem_bsc.pdf")
 

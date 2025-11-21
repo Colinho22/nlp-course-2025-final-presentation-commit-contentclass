@@ -132,6 +132,9 @@ def create_beam_search_tree():
 
     # Render to PDF
     output_path = './beam_search_tree_graphviz'
+    # Add QuantLet attribution
+    dot.node('quantlet_attr', 'Code: quantlet.com/NLPDecoding_Beam_Search',
+             shape='plaintext', fontsize='8', fontcolor='#888888')
     dot.render(output_path, cleanup=True, view=False)
 
     print(f"Generated {output_path}.pdf using graphviz")

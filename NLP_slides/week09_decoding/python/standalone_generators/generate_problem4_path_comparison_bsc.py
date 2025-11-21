@@ -49,6 +49,9 @@ def generate_problem4_path_comparison_bsc():
     dot.edge('o3', 'o4', color=COLOR_GREEN, penwidth='2')
     dot.edge('o4', 'o_score', color=COLOR_GREEN, penwidth='2')
 
+    # Add QuantLet attribution
+    dot.node('quantlet_attr', 'Code: quantlet.com/NLPDecoding_Problem4_Path_Comparison',
+             shape='plaintext', fontsize='8', fontcolor='#888888')
     dot.render('./problem4_path_comparison_bsc', cleanup=True)
     print("Generated problem4_path_comparison_bsc.pdf")
 

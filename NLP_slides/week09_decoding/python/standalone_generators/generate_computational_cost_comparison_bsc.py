@@ -107,6 +107,13 @@ def generate_computational_cost_comparison():
            bbox=dict(boxstyle='round', facecolor=COLOR_LIGHT, edgecolor=COLOR_MAIN))
 
     plt.tight_layout()
+    # Add QuantLet attribution
+    ax.text(0.98, 0.02, 'Code: quantlet.com/NLPDecoding_Computational_Cost_Comparison',
+            transform=ax.transAxes,
+            ha='right', va='bottom',
+            fontsize=7, color='#888888',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+                      edgecolor='#CCCCCC', alpha=0.7, linewidth=0.5))
     plt.savefig('./computational_cost_comparison_bsc.pdf', dpi=300, bbox_inches='tight')
     plt.close()
     print("Generated: computational_cost_comparison_bsc.pdf")

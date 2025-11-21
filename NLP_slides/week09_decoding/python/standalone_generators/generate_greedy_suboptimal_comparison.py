@@ -212,6 +212,13 @@ def generate_greedy_suboptimal_comparison():
 
     # Save figure
     plt.tight_layout()
+    # Add QuantLet attribution
+    ax.text(0.98, 0.02, 'Code: quantlet.com/NLPDecoding_Greedy_Suboptimal_Comparison',
+            transform=ax.transAxes,
+            ha='right', va='bottom',
+            fontsize=7, color='#888888',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+                      edgecolor='#CCCCCC', alpha=0.7, linewidth=0.5))
     plt.savefig('./greedy_suboptimal_comparison_bsc.pdf',
                 dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()

@@ -91,6 +91,13 @@ def generate_topk_filtering():
     set_minimalist_style(ax)
 
     plt.tight_layout()
+    # Add QuantLet attribution
+    ax.text(0.98, 0.02, 'Code: quantlet.com/NLPDecoding_Topk_Filtering',
+            transform=ax.transAxes,
+            ha='right', va='bottom',
+            fontsize=7, color='#888888',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+                      edgecolor='#CCCCCC', alpha=0.7, linewidth=0.5))
     plt.savefig('./topk_filtering_bsc.pdf', dpi=300, bbox_inches='tight')
     plt.close()
     print("Generated: topk_filtering_bsc.pdf")
