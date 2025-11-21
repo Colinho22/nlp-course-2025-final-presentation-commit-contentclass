@@ -133,7 +133,7 @@
 \begin{frame}[t]{The Decoding Challenge: Choosing From 50,000 Words}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.80\textwidth]{../figures_with_logo_200px/vocabulary_probability.pdf}
+\includegraphics[width=0.80\textwidth]{../figures/vocabulary_probability.pdf}
 \end{center}
 
 \vspace{3mm}
@@ -146,7 +146,7 @@
 \begin{frame}[t]{Context: How We Got Here}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures_with_logo_200px/prediction_to_text_pipeline.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/prediction_to_text_pipeline.pdf}
 \end{center}
 
 \vspace{3mm}
@@ -170,7 +170,7 @@
 \begin{frame}[t]{Extreme Case 1: Greedy Decoding (Too Narrow)}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.90\textwidth]{../figures_with_logo_200px/extreme_greedy_single_path.pdf}
+\includegraphics[width=0.90\textwidth]{../figures/extreme_greedy_single_path.pdf}
 \end{center}
 
 \bottomnote{Extreme 1: Too narrow - misses 99.9999999\% of search space}
@@ -216,7 +216,7 @@
 \begin{frame}[t]{Greedy's Fatal Flaw: Missing Better Paths}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures_with_logo_200px/greedy_suboptimal_comparison_bsc.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/greedy_suboptimal_comparison_bsc.pdf}
 \end{center}
 \vspace{2mm}
 \textbf{The Problem}: High first-step probability $\neq$ Best complete sentence
@@ -227,7 +227,7 @@
 \begin{frame}[t]{Extreme Case 2: Full Search Space (Too Broad)}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.70\textwidth]{../figures_with_logo_200px/extreme_full_beam_explosion.pdf}
+\includegraphics[width=0.70\textwidth]{../figures/extreme_full_beam_explosion.pdf}
 \end{center}
 
 \bottomnote{Extreme 2: Too broad - exponential explosion makes this impossible}
@@ -237,7 +237,7 @@
 \begin{frame}[t]{Full Exploration: From One Path to Billions}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.65\textwidth]{../figures_with_logo_200px/full_exploration_tree_graphviz.pdf}
+\includegraphics[width=0.65\textwidth]{../figures/full_exploration_tree_graphviz.pdf}
 \end{center}
 \vspace{1mm}
 \textbf{The Problem}: How do we explore more than 1 but less than 10 billion paths?
@@ -249,7 +249,7 @@
 \begin{frame}[t]{The Extremes: Why Neither Works}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.65\textwidth]{../figures_with_logo_200px/extreme_coverage_comparison.pdf}
+\includegraphics[width=0.65\textwidth]{../figures/extreme_coverage_comparison.pdf}
 \end{center}
 
 \vspace{2mm}
@@ -282,7 +282,7 @@
 \begin{frame}[t]{The Sweet Spot: Balanced Exploration}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures_with_logo_200px/practical_methods_coverage.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/practical_methods_coverage.pdf}
 \end{center}
 \vspace{3mm}
 
@@ -346,7 +346,7 @@ Expand each hypothesis, keep top-k by cumulative probability
 \begin{frame}[t]{Beam Search: Step-by-Step Example}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.65\textwidth]{../figures_with_logo_200px/beam_search_tree_graphviz.pdf}
+\includegraphics[width=0.65\textwidth]{../figures/beam_search_tree_graphviz.pdf}
 \end{center}
 \bottomnote{Worked example shows why beam search finds better sequences than greedy}
 \end{frame}
@@ -429,7 +429,7 @@ Reshape probability distribution with temperature T, then sample
 \begin{frame}[t]{Temperature Sampling: Control Randomness}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.65\textwidth]{../figures_with_logo_200px/temperature_effects.pdf}
+\includegraphics[width=0.65\textwidth]{../figures/temperature_effects.pdf}
 \end{center}
 \begin{center}
 \textbf{Key Insight}: Temperature reshapes probability distribution
@@ -439,36 +439,11 @@ Reshape probability distribution with temperature T, then sample
 
 % === TEMPERATURE EXAMPLE 2 (MOVED FROM SLIDE 34) ===
 \begin{frame}[t]{Temperature: Worked Example}
-\vspace{-0.2cm}
-
-\textbf{Original probabilities}: "The cat \_\_"
-
-\begin{itemize}
-\item sat: P = 0.40
-\item is: P = 0.30
-\item jumped: P = 0.20
-\item walked: P = 0.10
-\end{itemize}
-
-\vspace{3mm}
-\textbf{After temperature T = 0.5} (more focused):
-\begin{itemize}
-\item sat: P = 0.52 (increased)
-\item is: P = 0.28
-\item jumped: P = 0.15
-\item walked: P = 0.05 (decreased)
-\end{itemize}
-
-\vspace{3mm}
-\textbf{After temperature T = 2.0} (more random):
-\begin{itemize}
-\item sat: P = 0.30 (decreased)
-\item is: P = 0.28
-\item jumped: P = 0.24
-\item walked: P = 0.18 (increased)
-\end{itemize}
-
-\bottomnote{Lower T sharpens distribution, higher T flattens it}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{../figures/temperature_calculation.pdf}
+\end{center}
+\bottomnote{Concrete numbers show how temperature scaling works}
 \end{frame}
 
 % === METHOD 4: TOP-K + EXAMPLES ===
@@ -495,26 +470,13 @@ Reshape probability distribution with temperature T, then sample
 
 % === TOP-K EXAMPLE 1 (MOVED FROM SLIDE 35) ===
 \begin{frame}[t]{Top-k Sampling: Filter the Tail}
-\vspace{-0.2cm}
-
-\textbf{How it works}:
-
-\begin{enumerate}
-\item Sort all 50,000 words by probability (descending)
-\item Keep only the top k words (e.g., k = 50)
-\item Discard the remaining 49,950 low-probability words
-\item Renormalize probabilities to sum to 1.0
-\item Sample from the filtered k words
-\end{enumerate}
-
-\vspace{5mm}
-\textbf{Result}:
-\begin{itemize}
-\item Prevents unlikely/nonsensical words
-\item Fixed vocabulary size (always k words)
-\item Combines well with temperature
-\end{itemize}
-
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{../figures/topk_filtering.pdf}
+\end{center}
+\begin{center}
+\textbf{Key Insight}: Only sample from top-k most likely tokens
+\end{center}
 \bottomnote{Prevents sampling from long tail of unlikely words}
 \end{frame}
 
@@ -522,7 +484,7 @@ Reshape probability distribution with temperature T, then sample
 \begin{frame}[t]{Top-k: Worked Example}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.70\textwidth]{../figures_with_logo_200px/topk_example.pdf}
+\includegraphics[width=0.70\textwidth]{../figures/topk_example.pdf}
 \end{center}
 \bottomnote{Concrete numbers show k=50 filtering process}
 \end{frame}
@@ -551,26 +513,23 @@ Reshape probability distribution with temperature T, then sample
 
 % === NUCLEUS EXAMPLE 1 (MOVED FROM SLIDE 37) ===
 \begin{frame}[t]{Nucleus (Top-p) Sampling: Dynamic Cutoff}
-\vspace{-0.2cm}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{../figures/nucleus_process.pdf}
+\end{center}
+\begin{center}
+\textbf{Key Insight}: Adapt vocabulary size to distribution shape
+\end{center}
+\bottomnote{Nucleus size grows/shrinks based on probability spread}
+\end{frame}
 
-\textbf{Process} (p = 0.9 example):
-
-\begin{enumerate}
-\item Sort words by probability: sat (0.40), is (0.30), jumped (0.20), ...
-\item Add cumulative probabilities: 0.40, 0.70, 0.90, ...
-\item Stop when cumulative $\geq$ p (here: 3 words reach 0.90)
-\item Sample from these words only
-\end{enumerate}
-
-\vspace{5mm}
-\textbf{Adaptive behavior}:
-\begin{itemize}
-\item Peaked distribution: fewer words needed (e.g., 3 words)
-\item Flat distribution: more words needed (e.g., 100 words)
-\item Same p value, different vocabulary sizes
-\end{itemize}
-
-\bottomnote{Nucleus adapts to distribution shape - not fixed like top-k}
+% === NUCLEUS EXAMPLE 2 (MOVED FROM SLIDE 38) ===
+\begin{frame}[t]{Nucleus: How Distribution Shape Matters}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{../figures/nucleus_cumulative.pdf}
+\end{center}
+\bottomnote{Same p value gives different vocabulary sizes for peaked vs flat distributions}
 \end{frame}
 
 % === METHOD 6: CONTRASTIVE + EXAMPLES ===
@@ -598,7 +557,7 @@ Penalize words similar to already-generated text
 \begin{frame}[t]{The Degeneration Problem}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.70\textwidth]{../figures_with_logo_200px/degeneration_problem.pdf}
+\includegraphics[width=0.70\textwidth]{../figures/degeneration_problem.pdf}
 \end{center}
 \begin{center}
 \textbf{Discovery Question}: Why do models repeat themselves?
@@ -608,36 +567,22 @@ Penalize words similar to already-generated text
 
 % === CONTRASTIVE EXAMPLE 2 (MOVED FROM SLIDE 40) ===
 \begin{frame}[t]{Contrastive Search: Penalize Repetition}
-\vspace{-0.2cm}
-
-\textbf{The scoring function}:
-
-$$\text{score}(w) = (1-\alpha) \cdot P(w \given \text{context}) - \alpha \cdot \max_{w' \in \text{past}} \text{sim}(w, w')$$
-
-\vspace{3mm}
-\textbf{Two components}:
-\begin{itemize}
-\item Model probability: how likely is this word?
-\item Similarity penalty: how similar to words we already used?
-\item $\alpha$ balances the two (typically 0.6)
-\end{itemize}
-
-\vspace{3mm}
-\textbf{Effect}:
-\begin{itemize}
-\item High-probability words that repeat context get penalized
-\item Forces model to use semantically different words
-\item Prevents ``the cat sat on the cat on the cat...''
-\end{itemize}
-
-\bottomnote{Explicitly prevents degeneration in long text generation}
+\vspace{-0.3cm}
+\begin{center}
+\vspace{-3mm}
+\includegraphics[width=0.60\textwidth]{../figures/contrastive_mechanism.pdf}
+\end{center}
+\begin{center}
+\textbf{Key Insight}: Balance probability with diversity penalty
+\end{center}
+\bottomnote{Explicitly avoid copying recent context - prevents degeneration in long texts}
 \end{frame}
 
 % === CONTRASTIVE EXAMPLE 3 (MOVED FROM SLIDE 41) ===
 \begin{frame}[t]{Contrastive vs Nucleus: Direct Comparison}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.62\textwidth]{../figures_with_logo_200px/contrastive_vs_nucleus.pdf}
+\includegraphics[width=0.62\textwidth]{../figures/contrastive_vs_nucleus.pdf}
 \end{center}
 \bottomnote{Contrastive adds explicit similarity penalty that Nucleus lacks}
 \end{frame}
@@ -692,7 +637,7 @@ $$\text{score}(w) = (1-\alpha) \cdot P(w \given \text{context}) - \alpha \cdot \
 \begin{frame}[t]{Why Beam Search? Problem: Repetition Loops}
 \vspace{-0.5cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures_with_logo_200px/problem1_repetition_output.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/problem1_repetition_output.pdf}
 \end{center}
 \vspace{2mm}
 \textbf{Greedy's Problem}: Trapped in loops, can't escape
@@ -705,7 +650,7 @@ $$\text{score}(w) = (1-\alpha) \cdot P(w \given \text{context}) - \alpha \cdot \
 \begin{frame}[t]{Why Temperature? Problem: No Diversity}
 \vspace{-0.5cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures_with_logo_200px/problem2_diversity_output.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/problem2_diversity_output.pdf}
 \end{center}
 \vspace{2mm}
 \textbf{Greedy \& Beam's Problem}: Same input → same output always
@@ -718,7 +663,7 @@ $$\text{score}(w) = (1-\alpha) \cdot P(w \given \text{context}) - \alpha \cdot \
 \begin{frame}[t]{Why Top-k? Problem: Too Boring or Too Crazy}
 \vspace{-0.5cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures_with_logo_200px/problem3_balance_output.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/problem3_balance_output.pdf}
 \end{center}
 \vspace{2mm}
 \textbf{Temperature's Problem}: Pure sampling includes low-quality words
@@ -734,17 +679,17 @@ $$\text{score}(w) = (1-\alpha) \cdot P(w \given \text{context}) - \alpha \cdot \
 \begin{columns}[T]
 \column{0.48\textwidth}
 \vspace{-0.3cm}
-\includegraphics[width=\textwidth]{../figures_with_logo_200px/problem4_search_tree_pruning.pdf}
+\includegraphics[width=\textwidth]{../figures/problem4_search_tree_pruning.pdf}
 
 \vspace{2mm}
-\includegraphics[width=\textwidth]{../figures_with_logo_200px/problem4_path_comparison.pdf}
+\includegraphics[width=\textwidth]{../figures/problem4_path_comparison.pdf}
 
 \column{0.48\textwidth}
 \vspace{-0.3cm}
-\includegraphics[width=\textwidth]{../figures_with_logo_200px/problem4_probability_evolution.pdf}
+\includegraphics[width=\textwidth]{../figures/problem4_probability_evolution.pdf}
 
 \vspace{2mm}
-\includegraphics[width=\textwidth]{../figures_with_logo_200px/problem4_recovery_problem.pdf}
+\includegraphics[width=\textwidth]{../figures/problem4_recovery_problem.pdf}
 \end{columns}
 \bottomnote{Problem 4 of 6: Even beam search prunes early, cannot recover optimal path - 4 perspectives}
 \end{frame}
@@ -752,7 +697,7 @@ $$\text{score}(w) = (1-\alpha) \cdot P(w \given \text{context}) - \alpha \cdot \
 \begin{frame}[t]{Why Nucleus? Problem: Distribution Tail Contains Junk}
 \vspace{-0.5cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures_with_logo_200px/problem5_distribution_output.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/problem5_distribution_output.pdf}
 \end{center}
 \vspace{2mm}
 \textbf{Top-k's Problem}: Fixed k doesn't adapt to distribution shape
@@ -765,7 +710,7 @@ $$\text{score}(w) = (1-\alpha) \cdot P(w \given \text{context}) - \alpha \cdot \
 \begin{frame}[t]{Why Contrastive? Problem: Generic Repetitive Text}
 \vspace{-0.5cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures_with_logo_200px/problem6_speed_output.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/problem6_speed_output.pdf}
 \end{center}
 \vspace{2mm}
 \textbf{All Methods' Problem}: Can still produce generic, repetitive text
@@ -779,7 +724,7 @@ $$\text{score}(w) = (1-\alpha) \cdot P(w \given \text{context}) - \alpha \cdot \
 \begin{frame}[t]{The Quality-Diversity Tradeoff}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.63\textwidth]{../figures_with_logo_200px/quality_diversity_scatter.pdf}
+\includegraphics[width=0.63\textwidth]{../figures/quality_diversity_scatter.pdf}
 \end{center}
 \vspace{1mm}
 \textbf{Key Insight}: We saw problems and their solutions. Each method balances quality vs diversity.
@@ -833,7 +778,7 @@ $$\text{score}(w) = (1-\alpha) \cdot P(w \given \text{context}) - \alpha \cdot \
 \begin{frame}[t]{All Methods on Quality-Diversity Space}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.63\textwidth]{../figures_with_logo_200px/quality_diversity_pareto.pdf}
+\includegraphics[width=0.63\textwidth]{../figures/quality_diversity_pareto.pdf}
 \end{center}
 \begin{center}
 \textbf{Pareto Frontier}: No method dominates all others
@@ -844,7 +789,7 @@ $$\text{score}(w) = (1-\alpha) \cdot P(w \given \text{context}) - \alpha \cdot \
 \begin{frame}[t]{Choosing the Right Method: Decision Tree}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.70\textwidth]{../figures_with_logo_200px/task_method_decision_tree.pdf}
+\includegraphics[width=0.70\textwidth]{../figures/task_method_decision_tree.pdf}
 \end{center}
 \bottomnote{Start with task requirements, follow tree to recommended method}
 \end{frame}
@@ -852,7 +797,7 @@ $$\text{score}(w) = (1-\alpha) \cdot P(w \given \text{context}) - \alpha \cdot \
 \begin{frame}[t]{Task-Specific Recommendations (2025)}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures_with_logo_200px/task_recommendations_table.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/task_recommendations_table.pdf}
 \end{center}
 \bottomnote{Comprehensive mapping from 8 common tasks to optimal decoding strategies}
 \end{frame}
@@ -1567,7 +1512,7 @@ Contrastive: 30 seconds (only if quality critical)
 \begin{frame}[t]{A18: Production Settings (Real-World APIs)}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures_with_logo_200px/production_settings.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/production_settings.pdf}
 \end{center}
 \bottomnote{What ChatGPT, Claude, and other production systems actually use}
 \end{frame}
