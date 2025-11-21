@@ -1,0 +1,11 @@
+Name of QuantLet: NLPDecoding_GreedySuboptimalComparison
+
+Published in: NLP Course - Language Model Decoding Strategies (Week 9)
+
+Description: 'Greedy vs optimal path comparison showing suboptimal choices'
+
+Keywords: 'NLP, decoding, language model, text generation, visualization, greedy decoding, argmax'
+
+Author: Joerg Osterrieder
+
+Submitted: 2025-11-21

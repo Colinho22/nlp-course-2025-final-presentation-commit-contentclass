@@ -1,0 +1,11 @@
+Name of QuantLet: NLPDecoding_BeamSearchStepByStep
+
+Published in: NLP Course - Language Model Decoding Strategies (Week 9)
+
+Description: 'Step-by-step beam search visualization with scores'
+
+Keywords: 'NLP, decoding, language model, text generation, visualization, beam search, search algorithm'
+
+Author: Joerg Osterrieder
+
+Submitted: 2025-11-21

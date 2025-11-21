@@ -1,0 +1,11 @@
+Name of QuantLet: NLPDecoding_PredictionToTextPipeline
+
+Published in: NLP Course - Language Model Decoding Strategies (Week 9)
+
+Description: 'NLP pipeline from model predictions to text output'
+
+Keywords: 'NLP, decoding, language model, text generation, visualization, NLP pipeline, workflow'
+
+Author: Joerg Osterrieder
+
+Submitted: 2025-11-21

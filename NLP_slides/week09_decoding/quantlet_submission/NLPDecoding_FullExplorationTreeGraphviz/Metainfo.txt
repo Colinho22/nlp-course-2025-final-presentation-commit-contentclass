@@ -1,0 +1,11 @@
+Name of QuantLet: NLPDecoding_FullExplorationTreeGraphviz
+
+Published in: NLP Course - Language Model Decoding Strategies (Week 9)
+
+Description: 'Full exploration explosion tree showing exponential growth'
+
+Keywords: 'NLP, decoding, language model, text generation, visualization'
+
+Author: Joerg Osterrieder
+
+Submitted: 2025-11-21

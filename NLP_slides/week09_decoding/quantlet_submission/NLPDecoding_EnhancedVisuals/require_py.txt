@@ -1,5 +1,0 @@
-graphviz
-matplotlib
-numpy
-scipy
-seaborn

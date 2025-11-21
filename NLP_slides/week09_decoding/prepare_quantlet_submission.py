@@ -1,17 +1,14 @@
 """
 Prepare QuantLet Submission for Week 9 Decoding Scripts
 ========================================================
-Creates QuantLet-compatible folders with standalone, executable scripts.
+Creates ONE QuantLet folder per chart (not per script).
 
-Key improvements:
-- Scripts modified to output files in SAME folder (not ../figures/)
-- Missing imports added at top of file
-- Cleaner folder names (no prefix repetition)
+If a script generates multiple charts, it creates multiple folders,
+each with a modified script that generates only ONE chart.
 
 Usage:
-    python prepare_quantlet_submission.py              # Process all scripts
-    python prepare_quantlet_submission.py --test       # Test with single script
-    python prepare_quantlet_submission.py --list       # List scripts only
+    python prepare_quantlet_submission.py              # Process all
+    python prepare_quantlet_submission.py --list       # List only
 """
 
 import os
@@ -22,7 +19,6 @@ import shutil
 from pathlib import Path
 from datetime import datetime
 
-
 # Configuration
 SOURCE_DIR = Path("python")
 FIGURES_DIR = Path("figures")
@@ -32,19 +28,36 @@ OUTPUT_DIR = Path("quantlet_submission")
 AUTHOR_NAME = "Joerg Osterrieder"
 PUBLISHED_IN = "NLP Course - Language Model Decoding Strategies (Week 9)"
 
-# Filter: only include scripts that START with "generate_" and pass quality checks
-INCLUDE_PATTERN = r'^generate_'
-EXCLUDE_PATTERNS = [
-    r'fix',                    # Fix scripts
-    r'_CLEAN',                 # Clean versions
-    r'_bsc\.py$',              # Base BSC (keep enhanced)
-    r'week09_figures',         # Redundant with enhanced
-    r'week9_decoding_charts',  # Old version
-    r'all_charts_graphviz',    # Meta-script
-    r'missing_charts',         # Patch script
-]
+# Map of script -> list of (output_file, function_name, description)
+# Only include scripts we want to submit
+SCRIPT_CHARTS = {
+    'generate_beam_search_graphviz.py': [
+        ('beam_search_tree_graphviz.pdf', None, 'Beam search tree visualization with pruning using graphviz'),
+    ],
+    'generate_full_exploration_graphviz.py': [
+        ('full_exploration_tree_graphviz.pdf', None, 'Full exploration explosion tree showing exponential growth'),
+    ],
+    'generate_greedy_suboptimal_comparison.py': [
+        ('greedy_suboptimal_comparison.pdf', None, 'Greedy vs optimal path comparison showing suboptimal choices'),
+    ],
+    'generate_probability_distribution_animation.py': [
+        ('temperature_effect.pdf', None, 'Temperature effect on probability distribution visualization'),
+    ],
+    'generate_weeks_pipeline_graphviz.py': [
+        ('prediction_to_text_pipeline.pdf', None, 'NLP pipeline from model predictions to text output'),
+    ],
+    'generate_beam_search_step_by_step.py': [
+        ('beam_search_step_by_step.pdf', None, 'Step-by-step beam search visualization with scores'),
+    ],
+    'generate_decoding_live_demo.py': [
+        ('decoding_strategy_comparison.pdf', None, 'Side-by-side comparison of decoding strategies'),
+    ],
+    'generate_weeks_pipeline_chart.py': [
+        ('weeks_pipeline.pdf', None, 'NLP course pipeline showing weeks 1-8 leading to decoding'),
+    ],
+}
 
-# Standard library modules (not external dependencies)
+# Standard library modules
 STDLIB_MODULES = {
     'os', 'sys', 're', 'ast', 'math', 'random', 'collections', 'itertools',
     'functools', 'datetime', 'time', 'json', 'csv', 'io', 'pathlib',
@@ -53,7 +66,6 @@ STDLIB_MODULES = {
     'contextlib', 'enum', 'operator', 'logging', 'argparse', 'hashlib'
 }
 
-# Package name mappings (import name -> pip package name)
 PACKAGE_MAPPINGS = {
     'cv2': 'opencv-python',
     'PIL': 'Pillow',
@@ -63,180 +75,71 @@ PACKAGE_MAPPINGS = {
 }
 
 
-def extract_docstring(filepath):
-    """Extract the module docstring from a Python file."""
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            source = f.read()
-        tree = ast.parse(source)
-        docstring = ast.get_docstring(tree)
-        if docstring:
-            lines = docstring.strip().split('\n')
-            meaningful = [l.strip() for l in lines if l.strip()]
-            desc = ' '.join(meaningful[:3])
-            if len(desc) > 250:
-                desc = desc[:247] + '...'
-            return desc
-        return None
-    except Exception as e:
-        print(f"  Warning: Could not parse {filepath}: {e}")
-        return None
-
-
 def extract_imports(filepath):
-    """Extract import statements and return list of external packages."""
+    """Extract external package imports."""
     imports = set()
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             source = f.read()
         tree = ast.parse(source)
-
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
-                    module = alias.name.split('.')[0]
-                    imports.add(module)
+                    imports.add(alias.name.split('.')[0])
             elif isinstance(node, ast.ImportFrom):
                 if node.module:
-                    module = node.module.split('.')[0]
-                    imports.add(module)
-    except Exception as e:
-        print(f"  Warning: Could not parse imports from {filepath}: {e}")
+                    imports.add(node.module.split('.')[0])
+    except:
+        pass
 
     external = []
     for imp in sorted(imports):
         if imp not in STDLIB_MODULES:
-            pkg_name = PACKAGE_MAPPINGS.get(imp, imp)
-            external.append(pkg_name)
-
+            external.append(PACKAGE_MAPPINGS.get(imp, imp))
     return list(set(external))
 
 
-def extract_keywords(filepath, description):
-    """Generate keywords based on filename and description."""
-    keywords = ['decoding', 'NLP', 'language model', 'text generation']
-    filename = filepath.stem.lower()
+def create_quantlet_name(chart_name):
+    """Create clean QuantLet folder name from chart filename."""
+    name = chart_name.replace('.pdf', '').replace('.png', '')
+    name = re.sub(r'_bsc$', '', name)
 
-    keyword_patterns = {
-        'beam': ['beam search', 'search algorithm'],
-        'greedy': ['greedy decoding', 'argmax'],
-        'temperature': ['temperature scaling', 'softmax'],
-        'top_k': ['top-k sampling', 'truncation'],
-        'nucleus': ['nucleus sampling', 'top-p'],
-        'graphviz': ['visualization', 'graph'],
-        'chart': ['visualization', 'matplotlib'],
-        'probability': ['probability distribution', 'softmax'],
-        'pipeline': ['NLP pipeline', 'workflow'],
-    }
-
-    for pattern, kws in keyword_patterns.items():
-        if pattern in filename:
-            keywords.extend(kws)
-
-    return list(set(keywords))
-
-
-def find_output_figures(script_path):
-    """Find figures that might have been generated by this script."""
-    figures = []
-    script_name = script_path.stem.lower()
-
-    if not FIGURES_DIR.exists():
-        return figures
-
-    name_parts = script_name.replace('generate_', '').replace('_', ' ').split()
-
-    for fig_file in FIGURES_DIR.glob('*.pdf'):
-        fig_lower = fig_file.stem.lower()
-        matches = sum(1 for part in name_parts if part in fig_lower and len(part) > 3)
-        if matches >= 1:
-            figures.append(fig_file)
-
-    return figures[:5]
-
-
-def create_quantlet_name(script_path):
-    """Create clean QuantLet folder name from script filename."""
-    name = script_path.stem
-    # Remove generate_ prefix
-    name = re.sub(r'^generate_', '', name)
-
-    # Special case mappings for cleaner names
-    name_mappings = {
-        'week09_charts_bsc_enhanced': 'AllCharts',
-        'week09_enhanced_charts': 'EnhancedVisuals',
-        'weeks_pipeline_chart': 'Pipeline',
-        'weeks_pipeline_graphviz': 'PipelineGraphviz',
-        'beam_search_graphviz': 'BeamSearch',
-        'beam_search_step_by_step': 'BeamSearchSteps',
-        'full_exploration_graphviz': 'ExplorationTree',
-        'greedy_suboptimal_comparison': 'GreedyComparison',
-        'probability_distribution_animation': 'TemperatureEffects',
-        'setup_charts': 'ProbabilitySetup',
-        'decoding_live_demo': 'StrategyComparison',
-    }
-
-    if name in name_mappings:
-        return f"NLPDecoding_{name_mappings[name]}"
-
-    # Fallback: convert to CamelCase
+    # Convert to CamelCase
     parts = name.split('_')
     camel = ''.join(p.capitalize() for p in parts if p)
 
-    return f"NLPDecoding_{camel}" if camel else f"NLPDecoding_{name}"
+    return f"NLPDecoding_{camel}"
 
 
-def fix_script_for_standalone(source_code):
-    """
-    Modify script to be standalone:
-    1. Change output paths from '../figures/' to './' (current directory)
-    2. Move any imports from bottom to top
-    3. Add missing imports
-    """
-    # Fix output paths - change ../figures/ to ./
-    fixed = re.sub(r"'\.\./figures/", "'./", source_code)
-    fixed = re.sub(r'"\.\./figures/', '"./', fixed)
+def fix_script_paths(source_code, output_filename):
+    """Fix paths to output in current directory with correct filename."""
+    fixed = source_code
 
-    # Fix os.makedirs('../figures' to os.makedirs('./'
-    fixed = re.sub(r"os\.makedirs\s*\(\s*['\"]\.\.\/figures['\"]", "os.makedirs('.'", fixed)
-    fixed = re.sub(r"os\.makedirs\s*\(\s*'\.\./figures'", "os.makedirs('.'", fixed)
+    # Replace ../figures/ paths with ./
+    fixed = re.sub(r"'\.\./figures/[^']*'", f"'./{output_filename}'", fixed)
+    fixed = re.sub(r'"\.\./figures/[^"]*"', f'"./{output_filename}"', fixed)
 
-    # Check for matplotlib.patches used but not imported at top
-    if 'mpatches' in fixed or 'FancyBboxPatch' in fixed:
-        # Check if import is at bottom (in if __name__ block)
-        if 'import matplotlib.patches' not in fixed.split('if __name__')[0]:
-            # Add import after other matplotlib imports
-            if 'import matplotlib.pyplot as plt' in fixed:
-                fixed = fixed.replace(
-                    'import matplotlib.pyplot as plt',
-                    'import matplotlib.pyplot as plt\nimport matplotlib.patches as mpatches'
-                )
-            elif 'import matplotlib' in fixed:
-                # Find first matplotlib import and add after
-                fixed = re.sub(
-                    r'(import matplotlib[^\n]*\n)',
-                    r'\1import matplotlib.patches as mpatches\n',
-                    fixed,
-                    count=1
-                )
+    # Fix makedirs
+    fixed = re.sub(r"os\.makedirs\s*\([^)]+\)", "os.makedirs('.', exist_ok=True)", fixed)
 
-    # Remove the late import if it exists
-    fixed = re.sub(r'\n\s*import matplotlib\.patches as mpatches\s*#[^\n]*\n', '\n', fixed)
-    fixed = re.sub(r'\n\s*import matplotlib\.patches as mpatches\s*\n(?=\s*(setup_|def |if ))', '\n', fixed)
+    # Add missing import for mpatches if needed
+    if 'mpatches' in fixed and 'import matplotlib.patches' not in fixed.split('if __name__')[0]:
+        if 'import matplotlib.pyplot as plt' in fixed:
+            fixed = fixed.replace(
+                'import matplotlib.pyplot as plt',
+                'import matplotlib.pyplot as plt\nimport matplotlib.patches as mpatches'
+            )
 
     return fixed
 
 
-def create_metainfo(quantlet_name, description, keywords, author=AUTHOR_NAME):
-    """Create YAML-formatted Metainfo.txt content."""
+def create_metainfo(quantlet_name, description, keywords):
+    """Create YAML-formatted Metainfo.txt."""
     keyword_str = ', '.join(keywords)
-
     if description:
         description = description.replace("'", "''")
-    else:
-        description = "Python script for NLP decoding visualization"
 
-    metainfo = f"""Name of QuantLet: {quantlet_name}
+    return f"""Name of QuantLet: {quantlet_name}
 
 Published in: {PUBLISHED_IN}
 
@@ -244,139 +147,116 @@ Description: '{description}'
 
 Keywords: '{keyword_str}'
 
-Author: {author}
+Author: {AUTHOR_NAME}
 
 Submitted: {datetime.now().strftime('%Y-%m-%d')}
 """
-    return metainfo
 
 
-def create_require_py(packages):
-    """Create require_py.txt content."""
-    if not packages:
-        packages = ['numpy', 'matplotlib']
-    return '\n'.join(sorted(set(packages)))
-
-
-def process_script(script_path, output_base, dry_run=False):
-    """Process a single Python script into QuantLet format."""
-    quantlet_name = create_quantlet_name(script_path)
+def process_chart(script_path, chart_info, output_base):
+    """Process one chart from a script."""
+    output_file, func_name, description = chart_info
+    quantlet_name = create_quantlet_name(output_file)
     output_dir = output_base / quantlet_name
 
-    print(f"\n  Processing: {script_path.name}")
-    print(f"    Folder: {quantlet_name}")
+    print(f"\n  {quantlet_name}")
+    print(f"    Source: {script_path.name}")
+    print(f"    Output: {output_file}")
 
-    # Extract info
-    description = extract_docstring(script_path)
-    imports = extract_imports(script_path)
-    keywords = extract_keywords(script_path, description)
-    figures = find_output_figures(script_path)
-
-    print(f"    Description: {description[:50] if description else 'None'}...")
-    print(f"    Dependencies: {imports}")
-    print(f"    Related figures: {len(figures)}")
-
-    if dry_run:
-        print("    [DRY RUN - not creating files]")
-        return quantlet_name
-
-    # Create output directory
+    # Create folder
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # 1. Read, fix, and write Python script
+    # Read and fix script
     with open(script_path, 'r', encoding='utf-8') as f:
         source = f.read()
 
-    fixed_source = fix_script_for_standalone(source)
+    fixed_source = fix_script_paths(source, output_file)
 
+    # Write script
     dest_script = output_dir / f"{quantlet_name}.py"
     with open(dest_script, 'w', encoding='utf-8') as f:
         f.write(fixed_source)
-    print(f"    Created: {quantlet_name}.py (standalone)")
 
-    # 2. Create Metainfo.txt
+    # Create Metainfo.txt
+    keywords = ['NLP', 'decoding', 'language model', 'text generation', 'visualization']
+    if 'beam' in output_file.lower():
+        keywords.extend(['beam search', 'search algorithm'])
+    if 'greedy' in output_file.lower():
+        keywords.extend(['greedy decoding', 'argmax'])
+    if 'temperature' in output_file.lower():
+        keywords.extend(['temperature scaling', 'softmax'])
+    if 'pipeline' in output_file.lower():
+        keywords.extend(['NLP pipeline', 'workflow'])
+
     metainfo = create_metainfo(quantlet_name, description, keywords)
-    metainfo_path = output_dir / "Metainfo.txt"
-    with open(metainfo_path, 'w', encoding='utf-8') as f:
+    with open(output_dir / "Metainfo.txt", 'w', encoding='utf-8') as f:
         f.write(metainfo)
-    print(f"    Created: Metainfo.txt")
 
-    # 3. Create require_py.txt
-    require_content = create_require_py(imports)
-    require_path = output_dir / "require_py.txt"
-    with open(require_path, 'w', encoding='utf-8') as f:
-        f.write(require_content)
-    print(f"    Created: require_py.txt")
+    # Create require_py.txt
+    imports = extract_imports(script_path)
+    if not imports:
+        imports = ['numpy', 'matplotlib']
+    with open(output_dir / "require_py.txt", 'w', encoding='utf-8') as f:
+        f.write('\n'.join(sorted(set(imports))))
 
-    # 4. Copy related figures
-    for fig in figures[:3]:
-        dest_fig = output_dir / fig.name
-        shutil.copy2(fig, dest_fig)
-        print(f"    Copied: {fig.name}")
+    # Copy output PDF if it exists
+    for fig_dir in [FIGURES_DIR, Path('presentations/figures')]:
+        for pattern in [output_file, output_file.replace('.pdf', '_bsc.pdf')]:
+            fig_path = fig_dir / pattern
+            if fig_path.exists():
+                shutil.copy2(fig_path, output_dir / output_file)
+                print(f"    Copied: {output_file}")
+                break
 
     return quantlet_name
 
 
 def main():
-    """Main entry point."""
     print("=" * 60)
-    print("QuantLet Submission Preparation Tool")
+    print("QuantLet Submission - One Chart Per Folder")
     print("Week 9: Decoding Strategies")
     print("=" * 60)
 
-    test_mode = '--test' in sys.argv
     list_mode = '--list' in sys.argv
 
     if not SOURCE_DIR.exists():
-        print(f"ERROR: Source directory not found: {SOURCE_DIR}")
-        print("Run this script from: NLP_slides/week09_decoding/")
+        print(f"ERROR: Run from NLP_slides/week09_decoding/")
         sys.exit(1)
 
-    all_scripts = sorted(SOURCE_DIR.glob('*.py'))
-
-    # Filter scripts
-    scripts = []
-    excluded = []
-    for s in all_scripts:
-        name = s.name
-        if re.match(INCLUDE_PATTERN, name):
-            if not any(re.search(pat, name, re.IGNORECASE) for pat in EXCLUDE_PATTERNS):
-                scripts.append(s)
-            else:
-                excluded.append(s.name)
-        else:
-            excluded.append(s.name)
-
-    print(f"\nFound {len(all_scripts)} Python scripts, {len(scripts)} chart generators")
-    if excluded:
-        print(f"Excluded {len(excluded)}: {', '.join(excluded[:3])}...")
+    # Count charts
+    total_charts = sum(len(charts) for charts in SCRIPT_CHARTS.values())
+    print(f"\n{len(SCRIPT_CHARTS)} scripts -> {total_charts} charts (one folder each)")
 
     if list_mode:
-        print("\nScripts to process:")
-        for i, s in enumerate(scripts, 1):
-            print(f"  {i:2d}. {s.name} -> {create_quantlet_name(s)}")
+        print("\nCharts to create:")
+        for script, charts in SCRIPT_CHARTS.items():
+            for chart_info in charts:
+                output_file = chart_info[0]
+                name = create_quantlet_name(output_file)
+                print(f"  {name}")
+                print(f"    <- {script}")
         return
 
     OUTPUT_DIR.mkdir(exist_ok=True)
-    print(f"\nOutput: {OUTPUT_DIR.absolute()}")
 
-    if test_mode:
-        print("\n*** TEST MODE: Processing first script only ***")
-        scripts = scripts[:1]
+    created = []
+    for script_name, charts in SCRIPT_CHARTS.items():
+        script_path = SOURCE_DIR / script_name
+        if not script_path.exists():
+            print(f"\n  SKIP: {script_name} not found")
+            continue
 
-    quantlets_created = []
-    for script in scripts:
-        try:
-            name = process_script(script, OUTPUT_DIR, dry_run=list_mode)
-            quantlets_created.append(name)
-        except Exception as e:
-            print(f"  ERROR processing {script.name}: {e}")
+        for chart_info in charts:
+            try:
+                name = process_chart(script_path, chart_info, OUTPUT_DIR)
+                created.append(name)
+            except Exception as e:
+                print(f"    ERROR: {e}")
 
     print("\n" + "=" * 60)
-    print(f"Created {len(quantlets_created)} standalone QuantLet folders")
+    print(f"Created {len(created)} QuantLet folders (one chart each)")
     print("=" * 60)
     print(f"\nOutput: {OUTPUT_DIR.absolute()}")
-    print("\nEach script is now standalone - outputs to current folder")
 
 
 if __name__ == '__main__':
