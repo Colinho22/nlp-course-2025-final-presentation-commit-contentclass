@@ -1,0 +1,11 @@
+Name of QuantLet: NLPDecoding_Week09ChartsBscEnhanced
+
+Published in: NLP Course - Language Model Decoding Strategies (Week 9)
+
+Description: 'Generate all charts for Week 9: Decoding Strategies (Enhanced 2025) Creates 22 professional charts for BSc discovery-based presentation (42 slides) Enhancements:'
+
+Keywords: 'matplotlib, NLP, text generation, visualization, language model, decoding'
+
+Author: Joerg Osterrieder
+
+Submitted: 2025-11-21
