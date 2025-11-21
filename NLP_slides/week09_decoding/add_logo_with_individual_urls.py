@@ -77,9 +77,9 @@ for pdf_path in sorted(FIGURES_DIR.glob("*.pdf")):
         page_width = page.rect.width
         page_height = page.rect.height
 
-        # Bottom-right position
+        # Bottom-right position (at very bottom, no padding from bottom)
         logo_x = page_width - LOGO_SIZE - PADDING
-        logo_y = page_height - LOGO_SIZE - PADDING
+        logo_y = page_height - LOGO_SIZE  # No padding from bottom
 
         logo_rect = fitz.Rect(logo_x, logo_y, logo_x + LOGO_SIZE, logo_y + LOGO_SIZE)
 
