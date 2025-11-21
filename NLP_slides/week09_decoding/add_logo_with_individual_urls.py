@@ -17,8 +17,8 @@ import re
 # Configuration
 LOGO_PATH = Path("quantlet_design.png")
 FIGURES_DIR = Path("figures")
-OUTPUT_DIR = Path("figures_with_quantlet_design")  # Final output with design logo
-LOGO_SIZE = 40
+OUTPUT_DIR = Path("figures_with_quantlet_large")  # Final output with large logo
+LOGO_SIZE = 120     # 300% larger (was 40)
 PADDING = 10
 
 generators_dir = Path("python/standalone_generators")
