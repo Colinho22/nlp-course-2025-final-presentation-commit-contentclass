@@ -1,0 +1,11 @@
+Name of QuantLet: NLPDecoding_ExplorationTree
+
+Published in: NLP Course - Language Model Decoding Strategies (Week 9)
+
+Description: 'Generate Full Exploration Explosion Tree using Graphviz Shows exponential explosion of paths when exploring all options. Created: November 18, 2025'
+
+Keywords: 'decoding, visualization, language model, NLP, text generation, graph'
+
+Author: Joerg Osterrieder
+
+Submitted: 2025-11-21

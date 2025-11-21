@@ -1,0 +1,11 @@
+Name of QuantLet: NLPDecoding_ProbabilitySetup
+
+Published in: NLP Course - Language Model Decoding Strategies (Week 9)
+
+Description: 'Generate 4 variations of "The cat __" probability setup chart Font size: 20-22pt, clean layouts User will choose which one to use'
+
+Keywords: 'matplotlib, decoding, visualization, language model, NLP, text generation'
+
+Author: Joerg Osterrieder
+
+Submitted: 2025-11-21

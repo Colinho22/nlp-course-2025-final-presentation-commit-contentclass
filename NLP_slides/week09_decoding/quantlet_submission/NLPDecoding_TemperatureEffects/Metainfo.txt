@@ -1,0 +1,11 @@
+Name of QuantLet: NLPDecoding_TemperatureEffects
+
+Published in: NLP Course - Language Model Decoding Strategies (Week 9)
+
+Description: 'Generate temperature effect visualization showing how probability distribution changes Shows 5 temperature settings side-by-side with entropy indicators'
+
+Keywords: 'decoding, softmax, probability distribution, language model, NLP, text generation'
+
+Author: Joerg Osterrieder
+
+Submitted: 2025-11-21
