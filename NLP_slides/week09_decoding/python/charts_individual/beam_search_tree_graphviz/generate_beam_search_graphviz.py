@@ -131,7 +131,7 @@ def create_beam_search_tree():
                fillcolor='#FFFACD', color='black', penwidth='2')
 
     # Render to PDF
-    output_path = './beam_search_tree_graphviz'
+    output_path = '../figures/beam_search_tree_graphviz'
     dot.render(output_path, cleanup=True, view=False)
 
     print(f"Generated {output_path}.pdf using graphviz")

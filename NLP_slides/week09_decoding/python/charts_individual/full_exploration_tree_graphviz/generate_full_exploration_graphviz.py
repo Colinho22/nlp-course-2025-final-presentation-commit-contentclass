@@ -140,7 +140,7 @@ def create_full_exploration_tree():
     # Warning box removed for cleaner visualization
 
     # Render to PDF
-    output_path = './full_exploration_tree_graphviz'
+    output_path = '../figures/full_exploration_tree_graphviz'
     dot.render(output_path, cleanup=True, view=False)
 
     print(f"Generated {output_path}.pdf using graphviz")

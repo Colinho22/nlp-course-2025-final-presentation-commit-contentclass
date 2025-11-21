@@ -212,7 +212,7 @@ def generate_greedy_suboptimal_comparison():
 
     # Save figure
     plt.tight_layout()
-    plt.savefig('./greedy_suboptimal_comparison_bsc.pdf',
+    plt.savefig('../figures/greedy_suboptimal_comparison_bsc.pdf',
                 dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
 

@@ -1,0 +1,79 @@
+# Week 9 Figure Sources
+
+## Figures with Identified Source Scripts
+
+- `beam_example_tree_bsc.pdf` <- `fix_charts_redesign.py OR generate_all_charts_graphviz.py OR generate_week09_charts_bsc_enhanced.py`
+- `beam_search_example_bsc.pdf` <- `fix_week09_final_charts.py`
+- `beam_search_visual_bsc.pdf` <- `generate_week09_charts_bsc_enhanced.py OR generate_week09_charts_CLEAN.py`
+- `computational_cost_comparison_bsc.pdf` <- `generate_all_charts_graphviz.py OR generate_missing_charts.py OR generate_week09_charts_bsc_enhanced.py OR generate_week09_charts_CLEAN.py`
+- `contrastive_mechanism_bsc.pdf` <- `generate_all_charts_graphviz.py OR generate_week09_charts_bsc_enhanced.py`
+- `contrastive_vs_nucleus_bsc.pdf` <- `generate_missing_charts.py OR generate_week09_charts_bsc_enhanced.py`
+- `decoding_comparison_bsc.pdf` <- `generate_week09_charts_bsc_enhanced.py`
+- `degeneration_problem_bsc.pdf` <- `generate_all_charts_graphviz.py OR generate_week09_charts_bsc_enhanced.py OR generate_week09_charts_CLEAN.py`
+- `extreme_computational_cost_bsc.pdf` <- `generate_week09_enhanced_charts.py`
+- `extreme_coverage_comparison_bsc.pdf` <- `generate_week09_enhanced_charts.py`
+- `extreme_full_beam_explosion_bsc.pdf` <- `generate_week09_enhanced_charts.py`
+- `extreme_greedy_single_path_bsc.pdf` <- `generate_week09_enhanced_charts.py`
+- `greedy_suboptimal_comparison_bsc.pdf` <- `generate_greedy_suboptimal_comparison.py`
+- `greedy_vs_sampling_bsc.pdf` <- `generate_week09_charts_bsc_enhanced.py`
+- `length_normalization_bsc.pdf` <- `generate_week09_charts_bsc_enhanced.py`
+- `nucleus_cumulative_bsc.pdf` <- `generate_week09_charts_bsc_enhanced.py OR generate_week09_charts_CLEAN.py`
+- `nucleus_process_bsc.pdf` <- `generate_all_charts_graphviz.py OR generate_week09_charts_bsc_enhanced.py OR generate_week09_charts_CLEAN.py`
+- `practical_methods_coverage_bsc.pdf` <- `generate_week09_enhanced_charts.py`
+- `prediction_to_text_pipeline_bsc.pdf` <- `generate_all_charts_graphviz.py OR generate_week09_charts_bsc_enhanced.py OR generate_week09_charts_CLEAN.py`
+- `problem1_repetition_output_bsc.pdf` <- `fix_week09_final_charts.py`
+- `problem2_diversity_output_bsc.pdf` <- `fix_week09_final_charts.py`
+- `problem3_balance_output_bsc.pdf` <- `fix_week09_final_charts.py`
+- `problem4_path_comparison_bsc.pdf` <- `generate_week09_enhanced_charts.py`
+- `problem4_paths_output_bsc.pdf` <- `fix_week09_final_charts.py`
+- `problem4_probability_evolution_bsc.pdf` <- `generate_week09_enhanced_charts.py`
+- `problem4_recovery_problem_bsc.pdf` <- `generate_week09_enhanced_charts.py`
+- `problem4_search_tree_pruning_bsc.pdf` <- `generate_week09_enhanced_charts.py`
+- `problem5_distribution_output_bsc.pdf` <- `fix_week09_final_charts.py`
+- `problem6_speed_output_bsc.pdf` <- `fix_week09_final_charts.py`
+- `production_settings_bsc.pdf` <- `generate_missing_charts.py OR generate_week09_charts_bsc_enhanced.py`
+- `quality_diversity_pareto_bsc.pdf` <- `generate_all_charts_graphviz.py OR generate_week09_charts_bsc_enhanced.py OR generate_week09_charts_CLEAN.py`
+- `quality_diversity_scatter_bsc.pdf` <- `generate_week09_enhanced_charts.py`
+- `quality_diversity_tradeoff_bsc.pdf` <- `fix_charts_redesign.py OR generate_all_charts_graphviz.py OR generate_week09_charts_bsc_enhanced.py OR generate_week09_charts_CLEAN.py`
+- `quality_metrics_bsc.pdf` <- `generate_week09_charts_bsc_enhanced.py`
+- `setup_A_bar_chart.pdf` <- `generate_setup_charts.py`
+- `setup_B_list.pdf` <- `generate_setup_charts.py`
+- `setup_C_curve.pdf` <- `generate_setup_charts.py`
+- `setup_D_nodes.pdf` <- `generate_setup_charts.py`
+- `task_method_decision_tree_bsc.pdf` <- `generate_all_charts_graphviz.py OR generate_week09_charts_bsc_enhanced.py OR generate_week09_charts_bsc_enhanced.py`
+- `task_recommendations_table_bsc.pdf` <- `generate_all_charts_graphviz.py OR generate_week09_charts_bsc_enhanced.py`
+- `temperature_calculation_bsc.pdf` <- `generate_week09_charts_bsc_enhanced.py`
+- `temperature_effects_bsc.pdf` <- `generate_all_charts_graphviz.py OR generate_week09_charts_bsc_enhanced.py OR generate_week09_charts_CLEAN.py`
+- `topk_example_bsc.pdf` <- `generate_missing_charts.py OR generate_week09_charts_bsc_enhanced.py`
+- `topk_filtering_bsc.pdf` <- `generate_all_charts_graphviz.py OR generate_week09_charts_bsc_enhanced.py OR generate_week09_charts_CLEAN.py`
+- `vocabulary_probability_bsc.pdf` <- `fix_charts_redesign.py`
+
+## Unknown Sources (27 figures)
+
+- `beam_search_tree_graphviz.pdf` (USED IN TEX)
+- `extreme_search_space_coverage_bsc.pdf`
+- `framing1_problem1_repetition_loops.pdf`
+- `framing1_problem2_no_diversity.pdf`
+- `framing1_problem3_tail_sampling.pdf`
+- `framing1_problem4_fixed_cutoff.pdf`
+- `framing1_problem5_long_degeneration.pdf`
+- `framing1_problem6_quality_diversity.pdf`
+- `framing2_need1_exact_answers.pdf`
+- `framing2_need2_better_sequences.pdf`
+- `framing2_need3_creativity.pdf`
+- `framing2_need4_filter_unlikely.pdf`
+- `framing2_need5_adapt_distribution.pdf`
+- `framing2_need6_prevent_repetition.pdf`
+- `framing3_level1_too_deterministic.pdf`
+- `framing3_level2_too_random.pdf`
+- `framing3_level3_inflexible_filter.pdf`
+- `framing3_level4_missing_paths.pdf`
+- `framing3_level5_still_repetitive.pdf`
+- `framing3_level6_need_balance.pdf`
+- `framing4_output1_city_repetition.pdf`
+- `framing4_output2_nonsense_words.pdf`
+- `framing4_output3_boring_same.pdf`
+- `framing4_output4_missed_better.pdf`
+- `framing4_output5_wrong_distribution.pdf`
+- `framing4_output6_too_slow.pdf`
+- `full_exploration_tree_graphviz.pdf` (USED IN TEX)
