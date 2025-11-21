@@ -29,8 +29,9 @@ AUTHOR_NAME = "Joerg Osterrieder"
 PUBLISHED_IN = "NLP Course - Language Model Decoding Strategies (Week 9)"
 
 # Map of script -> list of (output_file, function_name, description)
-# Only include scripts we want to submit
+# Scripts with multiple charts get multiple entries (one folder per chart)
 SCRIPT_CHARTS = {
+    # Single-chart scripts
     'generate_beam_search_graphviz.py': [
         ('beam_search_tree_graphviz.pdf', None, 'Beam search tree visualization with pruning using graphviz'),
     ],
@@ -54,6 +55,13 @@ SCRIPT_CHARTS = {
     ],
     'generate_weeks_pipeline_chart.py': [
         ('weeks_pipeline.pdf', None, 'NLP course pipeline showing weeks 1-8 leading to decoding'),
+    ],
+    # Multi-chart script: generate_setup_charts.py (4 charts)
+    'generate_setup_charts.py': [
+        ('setup_A_bar_chart.pdf', 'setup_chart_A_bars', 'Bar chart showing probability distribution for next word prediction'),
+        ('setup_B_list.pdf', 'setup_chart_B_list', 'Probability list showing top word candidates with highlighting'),
+        ('setup_C_curve.pdf', 'setup_chart_C_curve', 'Power law distribution curve showing probability drop-off'),
+        ('setup_D_nodes.pdf', 'setup_chart_D_nodes', 'Graphviz node diagram showing word choice candidates'),
     ],
 }
 
@@ -211,6 +219,40 @@ def process_chart(script_path, chart_info, output_base):
     return quantlet_name
 
 
+def run_and_test_script(folder_path):
+    """Run the Python script in a folder and check if PDF is generated."""
+    import subprocess
+
+    # Find the .py file
+    py_files = list(folder_path.glob('*.py'))
+    if not py_files:
+        return False, "No .py file found"
+
+    script = py_files[0]
+
+    # Run the script from its folder
+    try:
+        result = subprocess.run(
+            [sys.executable, script.name],
+            cwd=folder_path,
+            capture_output=True,
+            text=True,
+            timeout=60
+        )
+
+        # Check for PDF output
+        pdfs = list(folder_path.glob('*.pdf'))
+        if pdfs:
+            return True, f"Generated {pdfs[0].name}"
+        else:
+            return False, f"No PDF generated. stderr: {result.stderr[:200]}"
+
+    except subprocess.TimeoutExpired:
+        return False, "Timeout (60s)"
+    except Exception as e:
+        return False, str(e)
+
+
 def main():
     print("=" * 60)
     print("QuantLet Submission - One Chart Per Folder")
@@ -218,6 +260,7 @@ def main():
     print("=" * 60)
 
     list_mode = '--list' in sys.argv
+    test_mode = '--test' in sys.argv
 
     if not SOURCE_DIR.exists():
         print(f"ERROR: Run from NLP_slides/week09_decoding/")
@@ -256,6 +299,27 @@ def main():
     print("\n" + "=" * 60)
     print(f"Created {len(created)} QuantLet folders (one chart each)")
     print("=" * 60)
+
+    # Run tests if requested
+    if test_mode:
+        print("\n" + "=" * 60)
+        print("TESTING: Running each script...")
+        print("=" * 60)
+
+        passed = 0
+        failed = 0
+        for folder in OUTPUT_DIR.iterdir():
+            if folder.is_dir():
+                success, msg = run_and_test_script(folder)
+                status = "PASS" if success else "FAIL"
+                print(f"  [{status}] {folder.name}: {msg}")
+                if success:
+                    passed += 1
+                else:
+                    failed += 1
+
+        print(f"\nResults: {passed} passed, {failed} failed")
+
     print(f"\nOutput: {OUTPUT_DIR.absolute()}")
 
 

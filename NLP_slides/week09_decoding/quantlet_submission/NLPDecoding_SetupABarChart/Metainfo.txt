@@ -1,0 +1,11 @@
+Name of QuantLet: NLPDecoding_SetupABarChart
+
+Published in: NLP Course - Language Model Decoding Strategies (Week 9)
+
+Description: 'Bar chart showing probability distribution for next word prediction'
+
+Keywords: 'NLP, decoding, language model, text generation, visualization'
+
+Author: Joerg Osterrieder
+
+Submitted: 2025-11-21

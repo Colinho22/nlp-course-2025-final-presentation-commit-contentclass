@@ -1,0 +1,68 @@
+// NLP Course Pipeline to Decoding
+digraph {
+	bgcolor=white fontname=Arial fontsize=28 nodesep=0.8 pad=0.5 rankdir=TB ranksep=1.2 ratio=fill size="16,10!"
+	subgraph cluster_weeks {
+		color="#4A90E2" fontcolor="#4A90E2" fontsize=14 label="Weeks 1-8: Different Architectures" penwidth=2 rank=same style=dashed
+		w1 [label="Week 1
+N-grams" fillcolor="#4A90E2" fontcolor=white fontsize=11 height=0.6 penwidth=2 shape=box style="rounded,filled" width=1.5]
+		w2 [label="Week 2
+Neural LM" fillcolor="#4A90E2" fontcolor=white fontsize=11 height=0.6 penwidth=2 shape=box style="rounded,filled" width=1.5]
+		w3 [label="Week 3
+RNN/LSTM" fillcolor="#4A90E2" fontcolor=white fontsize=11 height=0.6 penwidth=2 shape=box style="rounded,filled" width=1.5]
+		w4 [label="Week 4
+Seq2seq" fillcolor="#4A90E2" fontcolor=white fontsize=11 height=0.6 penwidth=2 shape=box style="rounded,filled" width=1.5]
+		w5 [label="Week 5
+Transformers" fillcolor="#4A90E2" fontcolor=white fontsize=11 height=0.6 penwidth=2 shape=box style="rounded,filled" width=1.5]
+		w6 [label="Week 6
+BERT/GPT" fillcolor="#4A90E2" fontcolor=white fontsize=11 height=0.6 penwidth=2 shape=box style="rounded,filled" width=1.5]
+		w7 [label="Week 7
+Advanced" fillcolor="#4A90E2" fontcolor=white fontsize=11 height=0.6 penwidth=2 shape=box style="rounded,filled" width=1.5]
+		w8 [label="Week 8
+Tokenization" fillcolor="#4A90E2" fontcolor=white fontsize=11 height=0.6 penwidth=2 shape=box style="rounded,filled" width=1.5]
+	}
+	conv [label="ALL Methods Output:
+P(word | context) for ENTIRE Vocabulary
+(50,000+ words)" fillcolor="#E74C3C" fontcolor=white fontsize=14 height=0.8 penwidth=3 shape=box style="filled,bold" width=8.0]
+	prob [label="Example: \"The weather is __\"
+
+nice: 0.60  |  beautiful: 0.20  |  perfect: 0.10
+gorgeous: 0.05  |  awful: 0.02  |  mild: 0.02
+unpredictable: 0.01  |  ... (49,993 more words)" fillcolor="#F39C12" fontcolor=black fontsize=10 height=1.2 penwidth=2 shape=box style=filled width=7.0]
+	question [label="WEEK 9 QUESTION:
+Which word should we actually pick?" fillcolor="#FFEB3B" fontcolor="#D32F2F" fontsize=13 height=0.7 penwidth=3 shape=box style="filled,bold" width=6.0]
+	subgraph cluster_strategies {
+		color="#27AE60" fontcolor="#27AE60" fontsize=14 label="Week 9: Decoding Strategies" penwidth=2 rank=same style=dashed
+		s1 [label=Greedy fillcolor="#27AE60" fontcolor=white fontsize=10 height=0.5 penwidth=2 shape=box style="rounded,filled" width=1.3]
+		s2 [label="Beam
+Search" fillcolor="#27AE60" fontcolor=white fontsize=10 height=0.5 penwidth=2 shape=box style="rounded,filled" width=1.3]
+		s3 [label=Temperature fillcolor="#27AE60" fontcolor=white fontsize=10 height=0.5 penwidth=2 shape=box style="rounded,filled" width=1.3]
+		s4 [label="Top-k" fillcolor="#27AE60" fontcolor=white fontsize=10 height=0.5 penwidth=2 shape=box style="rounded,filled" width=1.3]
+		s5 [label="Top-p" fillcolor="#27AE60" fontcolor=white fontsize=10 height=0.5 penwidth=2 shape=box style="rounded,filled" width=1.3]
+		s6 [label="Task-
+Specific" fillcolor="#27AE60" fontcolor=white fontsize=10 height=0.5 penwidth=2 shape=box style="rounded,filled" width=1.3]
+	}
+	output [label="Final Output:
+\"The weather is nice\"" fillcolor="#A5D6A7" fontcolor=black fontsize=12 height=0.6 penwidth=2 shape=box style=filled width=4.0]
+	w1 -> conv [arrowsize=0.8 color="#E74C3C" penwidth=2]
+	w2 -> conv [arrowsize=0.8 color="#E74C3C" penwidth=2]
+	w3 -> conv [arrowsize=0.8 color="#E74C3C" penwidth=2]
+	w4 -> conv [arrowsize=0.8 color="#E74C3C" penwidth=2]
+	w5 -> conv [arrowsize=0.8 color="#E74C3C" penwidth=2]
+	w6 -> conv [arrowsize=0.8 color="#E74C3C" penwidth=2]
+	w7 -> conv [arrowsize=0.8 color="#E74C3C" penwidth=2]
+	w8 -> conv [arrowsize=0.8 color="#E74C3C" penwidth=2]
+	conv -> prob [arrowsize=1.0 color="#F39C12" penwidth=3]
+	prob -> question [arrowsize=1.2 color="#D32F2F" penwidth=4 style=bold]
+	question -> s1 [arrowsize=0.8 color="#27AE60" penwidth=2]
+	question -> s2 [arrowsize=0.8 color="#27AE60" penwidth=2]
+	question -> s3 [arrowsize=0.8 color="#27AE60" penwidth=2]
+	question -> s4 [arrowsize=0.8 color="#27AE60" penwidth=2]
+	question -> s5 [arrowsize=0.8 color="#27AE60" penwidth=2]
+	question -> s6 [arrowsize=0.8 color="#27AE60" penwidth=2]
+	s1 -> output [arrowsize=0.7 color="#66BB6A" penwidth=1.5]
+	s2 -> output [arrowsize=0.7 color="#66BB6A" penwidth=1.5]
+	s3 -> output [arrowsize=0.7 color="#66BB6A" penwidth=1.5]
+	s4 -> output [arrowsize=0.7 color="#66BB6A" penwidth=1.5]
+	s5 -> output [arrowsize=0.7 color="#66BB6A" penwidth=1.5]
+	s6 -> output [arrowsize=0.7 color="#66BB6A" penwidth=1.5]
+}

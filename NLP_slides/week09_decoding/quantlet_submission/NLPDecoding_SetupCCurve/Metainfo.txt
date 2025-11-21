@@ -1,0 +1,11 @@
+Name of QuantLet: NLPDecoding_SetupCCurve
+
+Published in: NLP Course - Language Model Decoding Strategies (Week 9)
+
+Description: 'Power law distribution curve showing probability drop-off'
+
+Keywords: 'NLP, decoding, language model, text generation, visualization'
+
+Author: Joerg Osterrieder
+
+Submitted: 2025-11-21

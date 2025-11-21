@@ -1,0 +1,11 @@
+Name of QuantLet: NLPDecoding_SetupBList
+
+Published in: NLP Course - Language Model Decoding Strategies (Week 9)
+
+Description: 'Probability list showing top word candidates with highlighting'
+
+Keywords: 'NLP, decoding, language model, text generation, visualization'
+
+Author: Joerg Osterrieder
+
+Submitted: 2025-11-21
