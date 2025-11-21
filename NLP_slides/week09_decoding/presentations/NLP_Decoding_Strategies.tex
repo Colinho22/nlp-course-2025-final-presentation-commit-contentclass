@@ -133,7 +133,7 @@
 \begin{frame}[t]{The Decoding Challenge: Choosing From 50,000 Words}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.80\textwidth]{../figures/vocabulary_probability_bsc.pdf}
+\includegraphics[width=0.80\textwidth]{../figures/vocabulary_probability.pdf}
 \end{center}
 
 \vspace{3mm}
@@ -146,7 +146,7 @@
 \begin{frame}[t]{Context: How We Got Here}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures/prediction_to_text_pipeline_bsc.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/prediction_to_text_pipeline.pdf}
 \end{center}
 
 \vspace{3mm}
@@ -170,7 +170,7 @@
 \begin{frame}[t]{Extreme Case 1: Greedy Decoding (Too Narrow)}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.90\textwidth]{../figures/extreme_greedy_single_path_bsc.pdf}
+\includegraphics[width=0.90\textwidth]{../figures/extreme_greedy_single_path.pdf}
 \end{center}
 
 \bottomnote{Extreme 1: Too narrow - misses 99.9999999\% of search space}
@@ -227,7 +227,7 @@
 \begin{frame}[t]{Extreme Case 2: Full Search Space (Too Broad)}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.70\textwidth]{../figures/extreme_full_beam_explosion_bsc.pdf}
+\includegraphics[width=0.70\textwidth]{../figures/extreme_full_beam_explosion.pdf}
 \end{center}
 
 \bottomnote{Extreme 2: Too broad - exponential explosion makes this impossible}
@@ -249,7 +249,7 @@
 \begin{frame}[t]{The Extremes: Why Neither Works}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.65\textwidth]{../figures/extreme_coverage_comparison_bsc.pdf}
+\includegraphics[width=0.65\textwidth]{../figures/extreme_coverage_comparison.pdf}
 \end{center}
 
 \vspace{2mm}
@@ -282,7 +282,7 @@
 \begin{frame}[t]{The Sweet Spot: Balanced Exploration}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures/practical_methods_coverage_bsc.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/practical_methods_coverage.pdf}
 \end{center}
 \vspace{3mm}
 
@@ -429,7 +429,7 @@ Reshape probability distribution with temperature T, then sample
 \begin{frame}[t]{Temperature Sampling: Control Randomness}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.65\textwidth]{../figures/temperature_effects_bsc.pdf}
+\includegraphics[width=0.65\textwidth]{../figures/temperature_effects.pdf}
 \end{center}
 \begin{center}
 \textbf{Key Insight}: Temperature reshapes probability distribution
@@ -441,7 +441,7 @@ Reshape probability distribution with temperature T, then sample
 \begin{frame}[t]{Temperature: Worked Example}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.70\textwidth]{../figures/temperature_calculation_bsc.pdf}
+\includegraphics[width=0.70\textwidth]{../figures/temperature_calculation.pdf}
 \end{center}
 \bottomnote{Concrete numbers show how temperature scaling works}
 \end{frame}
@@ -472,7 +472,7 @@ Reshape probability distribution with temperature T, then sample
 \begin{frame}[t]{Top-k Sampling: Filter the Tail}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.70\textwidth]{../figures/topk_filtering_bsc.pdf}
+\includegraphics[width=0.70\textwidth]{../figures/topk_filtering.pdf}
 \end{center}
 \begin{center}
 \textbf{Key Insight}: Only sample from top-k most likely tokens
@@ -484,7 +484,7 @@ Reshape probability distribution with temperature T, then sample
 \begin{frame}[t]{Top-k: Worked Example}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.70\textwidth]{../figures/topk_example_bsc.pdf}
+\includegraphics[width=0.70\textwidth]{../figures/topk_example.pdf}
 \end{center}
 \bottomnote{Concrete numbers show k=50 filtering process}
 \end{frame}
@@ -515,7 +515,7 @@ Reshape probability distribution with temperature T, then sample
 \begin{frame}[t]{Nucleus (Top-p) Sampling: Dynamic Cutoff}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.70\textwidth]{../figures/nucleus_process_bsc.pdf}
+\includegraphics[width=0.70\textwidth]{../figures/nucleus_process.pdf}
 \end{center}
 \begin{center}
 \textbf{Key Insight}: Adapt vocabulary size to distribution shape
@@ -527,7 +527,7 @@ Reshape probability distribution with temperature T, then sample
 \begin{frame}[t]{Nucleus: How Distribution Shape Matters}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.70\textwidth]{../figures/nucleus_cumulative_bsc.pdf}
+\includegraphics[width=0.70\textwidth]{../figures/nucleus_cumulative.pdf}
 \end{center}
 \bottomnote{Same p value gives different vocabulary sizes for peaked vs flat distributions}
 \end{frame}
@@ -557,7 +557,7 @@ Penalize words similar to already-generated text
 \begin{frame}[t]{The Degeneration Problem}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.70\textwidth]{../figures/degeneration_problem_bsc.pdf}
+\includegraphics[width=0.70\textwidth]{../figures/degeneration_problem.pdf}
 \end{center}
 \begin{center}
 \textbf{Discovery Question}: Why do models repeat themselves?
@@ -570,7 +570,7 @@ Penalize words similar to already-generated text
 \vspace{-0.3cm}
 \begin{center}
 \vspace{-3mm}
-\includegraphics[width=0.60\textwidth]{../figures/contrastive_mechanism_bsc.pdf}
+\includegraphics[width=0.60\textwidth]{../figures/contrastive_mechanism.pdf}
 \end{center}
 \begin{center}
 \textbf{Key Insight}: Balance probability with diversity penalty
@@ -582,7 +582,7 @@ Penalize words similar to already-generated text
 \begin{frame}[t]{Contrastive vs Nucleus: Direct Comparison}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.62\textwidth]{../figures/contrastive_vs_nucleus_bsc.pdf}
+\includegraphics[width=0.62\textwidth]{../figures/contrastive_vs_nucleus.pdf}
 \end{center}
 \bottomnote{Contrastive adds explicit similarity penalty that Nucleus lacks}
 \end{frame}
@@ -637,7 +637,7 @@ Penalize words similar to already-generated text
 \begin{frame}[t]{Why Beam Search? Problem: Repetition Loops}
 \vspace{-0.5cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures/problem1_repetition_output_bsc.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/problem1_repetition_output.pdf}
 \end{center}
 \vspace{2mm}
 \textbf{Greedy's Problem}: Trapped in loops, can't escape
@@ -650,7 +650,7 @@ Penalize words similar to already-generated text
 \begin{frame}[t]{Why Temperature? Problem: No Diversity}
 \vspace{-0.5cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures/problem2_diversity_output_bsc.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/problem2_diversity_output.pdf}
 \end{center}
 \vspace{2mm}
 \textbf{Greedy \& Beam's Problem}: Same input → same output always
@@ -663,7 +663,7 @@ Penalize words similar to already-generated text
 \begin{frame}[t]{Why Top-k? Problem: Too Boring or Too Crazy}
 \vspace{-0.5cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures/problem3_balance_output_bsc.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/problem3_balance_output.pdf}
 \end{center}
 \vspace{2mm}
 \textbf{Temperature's Problem}: Pure sampling includes low-quality words
@@ -679,17 +679,17 @@ Penalize words similar to already-generated text
 \begin{columns}[T]
 \column{0.48\textwidth}
 \vspace{-0.3cm}
-\includegraphics[width=\textwidth]{../figures/problem4_search_tree_pruning_bsc.pdf}
+\includegraphics[width=\textwidth]{../figures/problem4_search_tree_pruning.pdf}
 
 \vspace{2mm}
-\includegraphics[width=\textwidth]{../figures/problem4_path_comparison_bsc.pdf}
+\includegraphics[width=\textwidth]{../figures/problem4_path_comparison.pdf}
 
 \column{0.48\textwidth}
 \vspace{-0.3cm}
-\includegraphics[width=\textwidth]{../figures/problem4_probability_evolution_bsc.pdf}
+\includegraphics[width=\textwidth]{../figures/problem4_probability_evolution.pdf}
 
 \vspace{2mm}
-\includegraphics[width=\textwidth]{../figures/problem4_recovery_problem_bsc.pdf}
+\includegraphics[width=\textwidth]{../figures/problem4_recovery_problem.pdf}
 \end{columns}
 \bottomnote{Problem 4 of 6: Even beam search prunes early, cannot recover optimal path - 4 perspectives}
 \end{frame}
@@ -697,7 +697,7 @@ Penalize words similar to already-generated text
 \begin{frame}[t]{Why Nucleus? Problem: Distribution Tail Contains Junk}
 \vspace{-0.5cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures/problem5_distribution_output_bsc.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/problem5_distribution_output.pdf}
 \end{center}
 \vspace{2mm}
 \textbf{Top-k's Problem}: Fixed k doesn't adapt to distribution shape
@@ -710,7 +710,7 @@ Penalize words similar to already-generated text
 \begin{frame}[t]{Why Contrastive? Problem: Generic Repetitive Text}
 \vspace{-0.5cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures/problem6_speed_output_bsc.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/problem6_speed_output.pdf}
 \end{center}
 \vspace{2mm}
 \textbf{All Methods' Problem}: Can still produce generic, repetitive text
@@ -724,7 +724,7 @@ Penalize words similar to already-generated text
 \begin{frame}[t]{The Quality-Diversity Tradeoff}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.63\textwidth]{../figures/quality_diversity_scatter_bsc.pdf}
+\includegraphics[width=0.63\textwidth]{../figures/quality_diversity_scatter.pdf}
 \end{center}
 \vspace{1mm}
 \textbf{Key Insight}: We saw problems and their solutions. Each method balances quality vs diversity.
@@ -778,7 +778,7 @@ Penalize words similar to already-generated text
 \begin{frame}[t]{All Methods on Quality-Diversity Space}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.63\textwidth]{../figures/quality_diversity_pareto_bsc.pdf}
+\includegraphics[width=0.63\textwidth]{../figures/quality_diversity_pareto.pdf}
 \end{center}
 \begin{center}
 \textbf{Pareto Frontier}: No method dominates all others
@@ -789,7 +789,7 @@ Penalize words similar to already-generated text
 \begin{frame}[t]{Choosing the Right Method: Decision Tree}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.70\textwidth]{../figures/task_method_decision_tree_bsc.pdf}
+\includegraphics[width=0.70\textwidth]{../figures/task_method_decision_tree.pdf}
 \end{center}
 \bottomnote{Start with task requirements, follow tree to recommended method}
 \end{frame}
@@ -797,7 +797,7 @@ Penalize words similar to already-generated text
 \begin{frame}[t]{Task-Specific Recommendations (2025)}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures/task_recommendations_table_bsc.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/task_recommendations_table.pdf}
 \end{center}
 \bottomnote{Comprehensive mapping from 8 common tasks to optimal decoding strategies}
 \end{frame}
@@ -1512,7 +1512,7 @@ Contrastive: 30 seconds (only if quality critical)
 \begin{frame}[t]{A18: Production Settings (Real-World APIs)}
 \vspace{-0.3cm}
 \begin{center}
-\includegraphics[width=0.75\textwidth]{../figures/production_settings_bsc.pdf}
+\includegraphics[width=0.75\textwidth]{../figures/production_settings.pdf}
 \end{center}
 \bottomnote{What ChatGPT, Claude, and other production systems actually use}
 \end{frame}

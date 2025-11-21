@@ -1,0 +1,39 @@
+# Chart Rename Mapping
+# Format: old_script.py | new_script.py | old_pdf | new_pdf | url
+
+generate_beam_example_tree_bsc.py | beam_example_tree.py | beam_example_tree_bsc.pdf | beam_example_tree.pdf | https://quantlet.com/NLPDecoding_Beamexampletree
+generate_beam_search_graphviz.py | beam_search_graphviz.py | beam_search_graphviz.pdf | beam_search_graphviz.pdf | https://quantlet.com/NLPDecoding_Beamsearchgraphviz
+generate_computational_cost_comparison_bsc.py | computational_cost_comparison.py | computational_cost_comparison_bsc.pdf | computational_cost_comparison.pdf | https://quantlet.com/NLPDecoding_Computationalcostcomparison
+generate_contrastive_mechanism_bsc.py | contrastive_mechanism.py | contrastive_mechanism_bsc.pdf | contrastive_mechanism.pdf | https://quantlet.com/NLPDecoding_Contrastivemechanism
+generate_contrastive_vs_nucleus_bsc.py | contrastive_vs_nucleus.py | contrastive_vs_nucleus_bsc.pdf | contrastive_vs_nucleus.pdf | https://quantlet.com/NLPDecoding_Contrastivevsnucleus
+generate_degeneration_problem_bsc.py | degeneration_problem.py | degeneration_problem_bsc.pdf | degeneration_problem.pdf | https://quantlet.com/NLPDecoding_Degenerationproblem
+generate_extreme_computational_cost_bsc.py | extreme_computational_cost.py | extreme_computational_cost_bsc.pdf | extreme_computational_cost.pdf | https://quantlet.com/NLPDecoding_Extremecomputationalcost
+generate_extreme_coverage_comparison_bsc.py | extreme_coverage_comparison.py | extreme_coverage_comparison_bsc.pdf | extreme_coverage_comparison.pdf | https://quantlet.com/NLPDecoding_Extremecoveragecomparison
+generate_extreme_full_beam_explosion_bsc.py | extreme_full_beam_explosion.py | extreme_full_beam_explosion_bsc.pdf | extreme_full_beam_explosion.pdf | https://quantlet.com/NLPDecoding_Extremefullbeamexplosion
+generate_extreme_greedy_single_path_bsc.py | extreme_greedy_single_path.py | extreme_greedy_single_path_bsc.pdf | extreme_greedy_single_path.pdf | https://quantlet.com/NLPDecoding_Extremegreedysinglepath
+generate_full_exploration_graphviz.py | full_exploration_graphviz.py | full_exploration_graphviz.pdf | full_exploration_graphviz.pdf | https://quantlet.com/NLPDecoding_Fullexplorationgraphviz
+generate_greedy_suboptimal_comparison.py | greedy_suboptimal_comparison.py | greedy_suboptimal_comparison.pdf | greedy_suboptimal_comparison.pdf | https://quantlet.com/NLPDecoding_Greedysuboptimalcomparison
+generate_nucleus_cumulative_bsc.py | nucleus_cumulative.py | nucleus_cumulative_bsc.pdf | nucleus_cumulative.pdf | https://quantlet.com/NLPDecoding_Nucleuscumulative
+generate_nucleus_process_bsc.py | nucleus_process.py | nucleus_process_bsc.pdf | nucleus_process.pdf | https://quantlet.com/NLPDecoding_Nucleusprocess
+generate_practical_methods_coverage_bsc.py | practical_methods_coverage.py | practical_methods_coverage_bsc.pdf | practical_methods_coverage.pdf | https://quantlet.com/NLPDecoding_Practicalmethodscoverage
+generate_prediction_to_text_pipeline_bsc.py | prediction_to_text_pipeline.py | prediction_to_text_pipeline_bsc.pdf | prediction_to_text_pipeline.pdf | https://quantlet.com/NLPDecoding_Predictiontotextpipeline
+generate_problem1_repetition_output_bsc.py | problem1_repetition_output.py | problem1_repetition_output_bsc.pdf | problem1_repetition_output.pdf | https://quantlet.com/NLPDecoding_Problem1Repetitionoutput
+generate_problem2_diversity_output_bsc.py | problem2_diversity_output.py | problem2_diversity_output_bsc.pdf | problem2_diversity_output.pdf | https://quantlet.com/NLPDecoding_Problem2Diversityoutput
+generate_problem3_balance_output_bsc.py | problem3_balance_output.py | problem3_balance_output_bsc.pdf | problem3_balance_output.pdf | https://quantlet.com/NLPDecoding_Problem3Balanceoutput
+generate_problem4_path_comparison_bsc.py | problem4_path_comparison.py | problem4_path_comparison_bsc.pdf | problem4_path_comparison.pdf | https://quantlet.com/NLPDecoding_Problem4Pathcomparison
+generate_problem4_probability_evolution_bsc.py | problem4_probability_evolution.py | problem4_probability_evolution_bsc.pdf | problem4_probability_evolution.pdf | https://quantlet.com/NLPDecoding_Problem4Probabilityevolution
+generate_problem4_recovery_problem_bsc.py | problem4_recovery_problem.py | problem4_recovery_problem_bsc.pdf | problem4_recovery_problem.pdf | https://quantlet.com/NLPDecoding_Problem4Recoveryproblem
+generate_problem4_search_tree_pruning_bsc.py | problem4_search_tree_pruning.py | problem4_search_tree_pruning_bsc.pdf | problem4_search_tree_pruning.pdf | https://quantlet.com/NLPDecoding_Problem4Searchtreepruning
+generate_problem5_distribution_output_bsc.py | problem5_distribution_output.py | problem5_distribution_output_bsc.pdf | problem5_distribution_output.pdf | https://quantlet.com/NLPDecoding_Problem5Distributionoutput
+generate_problem6_speed_output_bsc.py | problem6_speed_output.py | problem6_speed_output_bsc.pdf | problem6_speed_output.pdf | https://quantlet.com/NLPDecoding_Problem6Speedoutput
+generate_production_settings_bsc.py | production_settings.py | production_settings_bsc.pdf | production_settings.pdf | https://quantlet.com/NLPDecoding_Productionsettings
+generate_quality_diversity_pareto_bsc.py | quality_diversity_pareto.py | quality_diversity_pareto_bsc.pdf | quality_diversity_pareto.pdf | https://quantlet.com/NLPDecoding_Qualitydiversitypareto
+generate_quality_diversity_scatter_bsc.py | quality_diversity_scatter.py | quality_diversity_scatter_bsc.pdf | quality_diversity_scatter.pdf | https://quantlet.com/NLPDecoding_Qualitydiversityscatter
+generate_quality_diversity_tradeoff_bsc.py | quality_diversity_tradeoff.py | quality_diversity_tradeoff_bsc.pdf | quality_diversity_tradeoff.pdf | https://quantlet.com/NLPDecoding_Qualitydiversitytradeoff
+generate_task_method_decision_tree_bsc.py | task_method_decision_tree.py | task_method_decision_tree_bsc.pdf | task_method_decision_tree.pdf | https://quantlet.com/NLPDecoding_Taskmethoddecisiontree
+generate_task_recommendations_table_bsc.py | task_recommendations_table.py | task_recommendations_table_bsc.pdf | task_recommendations_table.pdf | https://quantlet.com/NLPDecoding_Taskrecommendationstable
+generate_temperature_calculation_bsc.py | temperature_calculation.py | temperature_calculation_bsc.pdf | temperature_calculation.pdf | https://quantlet.com/NLPDecoding_Temperaturecalculation
+generate_temperature_effects_bsc.py | temperature_effects.py | temperature_effects_bsc.pdf | temperature_effects.pdf | https://quantlet.com/NLPDecoding_Temperatureeffects
+generate_topk_example_bsc.py | topk_example.py | topk_example_bsc.pdf | topk_example.pdf | https://quantlet.com/NLPDecoding_Topkexample
+generate_topk_filtering_bsc.py | topk_filtering.py | topk_filtering_bsc.pdf | topk_filtering.pdf | https://quantlet.com/NLPDecoding_Topkfiltering
+generate_vocabulary_probability_bsc.py | vocabulary_probability.py | vocabulary_probability_bsc.pdf | vocabulary_probability.pdf | https://quantlet.com/NLPDecoding_Vocabularyprobability
