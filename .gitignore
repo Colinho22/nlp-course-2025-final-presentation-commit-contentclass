@@ -31,6 +31,7 @@ __pycache__/
 
 # Claude Code settings (local only)
 .claude/
+CLAUDE.md
 
 # OS files
 .DS_Store
