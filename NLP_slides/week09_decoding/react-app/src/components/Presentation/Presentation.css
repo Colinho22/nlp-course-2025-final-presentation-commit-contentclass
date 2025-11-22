@@ -1,0 +1,69 @@
+/* Presentation Container Styles */
+
+.presentation-container {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Slide Viewport - Fixed 16:9 Aspect Ratio */
+.slide-viewport {
+  width: 100%;
+  max-width: 1600px;  /* Maximum width for very large screens */
+  aspect-ratio: 16 / 9;
+}
+
+/* Ensure viewport scales properly */
+@media (max-height: 900px) {
+  .slide-viewport {
+    max-height: calc(100vh - 200px);  /* Leave room for header/footer/controls */
+  }
+}
+
+/* Slide Frame Base Styles */
+.slide-frame {
+  width: 100%;
+  height: 100%;
+  background: white;
+  position: relative;
+}
+
+.slide-frame-plain {
+  width: 100%;
+  height: 100%;
+  background: white;
+}
+
+/* Slide Title - Matches Beamer frametitle */
+.slide-title {
+  /* Will be styled by components */
+}
+
+/* Border bottom (Beamer frametitle underline) */
+.border-b-3 {
+  border-bottom-width: 3px;
+}
+
+/* Print Support */
+@media print {
+  .presentation-container {
+    background: white;
+  }
+
+  .madrid-header,
+  .madrid-footer,
+  .controls {
+    display: none !important;
+  }
+
+  .slide-viewport {
+    max-width: 100%;
+    max-height: none;
+    box-shadow: none;
+    border-radius: 0;
+    page-break-after: always;
+  }
+
+  .slide-frame,
+  .slide-frame-plain {
+    page-break-inside: avoid;
+  }
+}

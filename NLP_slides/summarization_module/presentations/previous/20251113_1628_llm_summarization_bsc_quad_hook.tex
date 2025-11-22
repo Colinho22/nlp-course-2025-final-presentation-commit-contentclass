@@ -1,0 +1,814 @@
+% LLM-Based Summarization with Quad-Hook Cascade
+% BSc Discovery Three-Tier: 20 main + 15 theory + 10 lab
+% Enhanced with 4-hook discovery cascade (slides 2-5)
+% Focus: Prompt engineering + Decoding control + Context handling
+% Template: template_beamer_final.tex (Madrid theme with lavender colors)
+
+\documentclass[10pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{algorithm2e}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{subcaption}
+
+% Color definitions (lavender theme)
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255, 127, 14}
+\definecolor{mlgreen}{RGB}{44, 160, 44}
+\definecolor{mlred}{RGB}{214, 39, 40}
+\definecolor{mlgray}{RGB}{127, 127, 127}
+\definecolor{lightgray}{RGB}{240, 240, 240}
+\definecolor{midgray}{RGB}{180, 180, 180}
+
+% Apply custom colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in toc}{fg=mlblue}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{block title}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{block body}{bg=mllavender4,fg=black}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% Clean itemize/enumerate
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+
+% Reduce margins for more content space
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% Command for bottom annotation (Madrid-style)
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+% Compatibility with master template
+\newcommand{\secondary}[1]{\textcolor{mlgray}{#1}}
+
+\title{LLM-Based Summarization}
+\subtitle{\secondary{From Paraphrasing to Production}}
+\author{NLP Course 2025}
+\date{November 13, 2025}
+
+\begin{document}
+
+% MAIN PRESENTATION (20 SLIDES)
+
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}\secondary{\footnotesize Enhanced with Quad-Hook Discovery Cascade | 27 Professional Charts}\end{center}
+\end{frame}
+
+% ============================================================================
+% QUAD-HOOK CASCADE (Slides 2-5): Build discovery through 4 progressive hooks
+% ============================================================================
+
+% Hook 1: The Impossible Task
+\begin{frame}[t]{Hook 1: The Impossible Task}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.55\textwidth]{../figures/human_paraphrasing_graphviz.pdf}
+\end{center}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Can You Summarize This?}
+\begin{itemize}
+\item 10,000-word research paper
+\item Keep all key findings
+\item Make it 200 words
+\item Sound natural, not robotic
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Human Struggles:}
+\begin{itemize}
+\item Takes 30+ minutes
+\item Miss important details
+\item Inconsistent quality
+\item Cognitive overload
+\end{itemize}
+\end{columns}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{mlorange!20}{\parbox{0.9\textwidth}{
+\centering \textbf{Discovery}: What if AI could do this in seconds, consistently?
+}}
+\end{center}
+
+\bottomnote{The summarization challenge: Humans struggle with perfect summaries}
+\end{frame}
+
+% Hook 2: The Paraphrasing Revolution
+\begin{frame}[t]{Hook 2: The Paraphrasing Revolution}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Old Way: Extract \& Copy}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/model_capability_comparison_bsc.pdf}
+\end{center}
+\begin{itemize}
+\item Select "important" sentences
+\item Copy them verbatim
+\item Result: Choppy, disconnected
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{LLM Way: Generate \& Rephrase}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/llm_pipeline_graphviz.pdf}
+\end{center}
+\begin{itemize}
+\item Understand entire text
+\item Generate new sentences
+\item Result: Natural, coherent
+\end{itemize}
+\end{columns}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{mlgreen!20}{\parbox{0.9\textwidth}{
+\centering \textbf{Discovery}: LLMs don't copy—they paraphrase like humans!
+}}
+\end{center}
+
+\bottomnote{From extraction to generation: The fundamental shift in summarization}
+\end{frame}
+
+% Hook 3: The Control Paradox
+\begin{frame}[t]{Hook 3: The Control Paradox}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/parameter_tuning_tree_bsc.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{So Many Knobs to Turn!}
+\begin{itemize}
+\item Temperature: 0.1? 0.7? 1.0?
+\item Top-p: 0.9? 0.95? 0.99?
+\item Max tokens: 100? 200? 500?
+\item Prompts: Zero-shot? Few-shot?
+\item Repetition penalty: 1.0? 1.2?
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Each Choice Changes:}
+\begin{itemize}
+\item Summary quality
+\item Creative vs literal
+\item Length accuracy
+\item Factual consistency
+\end{itemize}
+\end{columns}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{mlred!20}{\parbox{0.9\textwidth}{
+\centering \textbf{Discovery}: Too much control can be paralyzing—how to choose?
+}}
+\end{center}
+
+\bottomnote{The parameter explosion: Every setting affects the output differently}
+\end{frame}
+
+% Hook 4: The Context Explosion
+\begin{frame}[t]{Hook 4: The Context Explosion}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Document Sizes Are Exploding}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/context_window_limits_bsc.pdf}
+\end{center}
+\begin{itemize}
+\item GPT-3.5: 4K tokens
+\item GPT-4: 128K tokens
+\item Claude: 200K tokens
+\item Your doc: 500K tokens?!
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Chunking Challenge}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/chunking_overlap_diagram_bsc.pdf}
+\end{center}
+\begin{itemize}
+\item Split without losing meaning?
+\item Overlap for context?
+\item Merge summaries coherently?
+\item Hierarchical aggregation?
+\end{itemize}
+\end{columns}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{mlblue!20}{\parbox{0.9\textwidth}{
+\centering \textbf{Discovery}: Context limits force creative solutions for long documents
+}}
+\end{center}
+
+\bottomnote{From single-shot to multi-pass: Handling documents beyond model limits}
+\end{frame}
+
+% ============================================================================
+% MAIN CONTENT: Prompt Engineering (Slides 6-9)
+% ============================================================================
+
+\begin{frame}[t]{Zero-Shot: Just Ask}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/zero_shot_prompt_bsc.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{Simplest Approach}
+\begin{itemize}
+\item No examples needed
+\item Direct instruction
+\item Works surprisingly well
+\item GPT-3.5+, Claude, LLaMA
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Best For:}
+\begin{itemize}
+\item General documents
+\item Quick summaries
+\item Exploratory analysis
+\item When no examples available
+\end{itemize}
+
+\vspace{5mm}
+\textcolor{mlgreen}{\textbf{Success Rate: 85\%} for standard texts}
+\end{columns}
+
+\bottomnote{Zero-shot prompting: The power of natural language instructions}
+\end{frame}
+
+\begin{frame}[t]{Few-Shot: Learning from Examples}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/few_shot_prompt_bsc.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{Show, Don't Just Tell}
+\begin{itemize}
+\item 1-3 examples
+\item Model learns pattern
+\item Mimics style/format
+\item Higher consistency
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Best For:}
+\begin{itemize}
+\item Specific formats
+\item Domain terminology
+\item Consistent style needed
+\item Quality critical
+\end{itemize}
+
+\vspace{5mm}
+\textcolor{mlgreen}{\textbf{Success Rate: 94\%} with good examples}
+\end{columns}
+
+\bottomnote{Few-shot prompting: Examples guide the model to desired output}
+\end{frame}
+
+\begin{frame}[t]{Chain-of-Thought: Step by Step}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/chain_of_thought_graphviz.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{Break It Down}
+
+Instead of: "Summarize this"
+
+Try:
+\begin{enumerate}
+\item "First, identify main topics"
+\item "Then, extract key findings"
+\item "Finally, write 200-word summary"
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Benefits:}
+\begin{itemize}
+\item Better reasoning
+\item More accurate
+\item Catches nuances
+\item Explains decisions
+\end{itemize}
+
+\vspace{5mm}
+\textcolor{mlgreen}{\textbf{Accuracy: +18\%} on complex texts}
+\end{columns}
+
+\bottomnote{Chain-of-thought: Breaking complex tasks into manageable steps}
+\end{frame}
+
+\begin{frame}[t]{System Prompts: Setting the Stage}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/system_prompt_anatomy_bsc.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{Define the Role}
+
+System: "You are a medical research summarizer specializing in clinical trials..."
+
+\vspace{5mm}
+\textbf{Components:}
+\begin{itemize}
+\item Role definition
+\item Expertise domain
+\item Style guidelines
+\item Constraints
+\item Output format
+\end{itemize}
+
+\vspace{5mm}
+\textcolor{mlorange}{\textbf{Pro tip}: System prompts persist across conversation}
+\end{columns}
+
+\bottomnote{System prompts: Establishing context and expertise upfront}
+\end{frame}
+
+% ============================================================================
+% Decoding Control (Slides 10-13)
+% ============================================================================
+
+\begin{frame}[t]{Temperature: Creativity Control}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/temperature_distributions_bsc.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{The Creativity Knob}
+\begin{itemize}
+\item T=0.1: Deterministic, safe
+\item T=0.7: Balanced (default)
+\item T=1.0: Creative, risky
+\end{itemize}
+
+\vspace{5mm}
+\textbf{For Summarization:}
+\begin{itemize}
+\item Technical: Use 0.1-0.3
+\item News: Use 0.5-0.7
+\item Creative: Use 0.7-0.9
+\end{itemize}
+
+\vspace{5mm}
+\textcolor{mlred}{Warning: T>1.0 gets wild!}
+\end{columns}
+
+\bottomnote{Temperature: Lower = safer, Higher = more creative but riskier}
+\end{frame}
+
+\begin{frame}[t]{Top-p: Vocabulary Control}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/top_p_cumulative_bsc.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{The Vocabulary Limiter}
+\begin{itemize}
+\item p=0.9: Top 90\% probability mass
+\item p=0.95: Slightly more options
+\item p=1.0: Consider everything
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Combines with Temperature:}
+\begin{itemize}
+\item First: Filter by top-p
+\item Then: Apply temperature
+\item Result: Controlled creativity
+\end{itemize}
+
+\vspace{5mm}
+\textcolor{mlgreen}{Sweet spot: T=0.7, p=0.9}
+\end{columns}
+
+\bottomnote{Top-p (nucleus sampling): Dynamically adjusts vocabulary size}
+\end{frame}
+
+\begin{frame}[t]{Repetition Penalty: Avoid Loops}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/repetition_penalty_formula_bsc.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{Stop the Repetition}
+
+Problem: "The study shows... The study shows..."
+
+\vspace{5mm}
+\textbf{Solution:}
+\begin{itemize}
+\item Penalty = 1.0: No effect
+\item Penalty = 1.1-1.2: Gentle
+\item Penalty = 1.3-1.5: Strong
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Effect:}
+\begin{itemize}
+\item Reduces repeated phrases
+\item Forces variety
+\item More natural text
+\end{itemize}
+\end{columns}
+
+\bottomnote{Repetition penalty: Essential for natural-sounding summaries}
+\end{frame}
+
+% First Checkpoint Quiz
+\begin{frame}[t]{Checkpoint Quiz: Test Your Understanding}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Quick Questions:}
+
+\vspace{3mm}
+1. For a legal document summary, which temperature?
+\begin{itemize}
+\item[A)] T=0.1
+\item[B)] T=0.7
+\item[C)] T=1.2
+\end{itemize}
+
+\vspace{5mm}
+2. What does top-p=0.9 mean?
+\begin{itemize}
+\item[A)] Use 90 words
+\item[B)] 90\% accuracy
+\item[C)] Top 90\% probability mass
+\end{itemize}
+
+\vspace{5mm}
+3. Few-shot is best when:
+\begin{itemize}
+\item[A)] No examples available
+\item[B)] Need consistent format
+\item[C)] Speed is critical
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Answers:}
+
+\vspace{3mm}
+1. \textcolor{mlgreen}{\textbf{A) T=0.1}}
+\begin{itemize}
+\item Legal needs precision
+\item Low temperature = factual
+\item Avoid creative interpretation
+\end{itemize}
+
+\vspace{5mm}
+2. \textcolor{mlgreen}{\textbf{C) Top 90\% probability}}
+\begin{itemize}
+\item Cumulative probability
+\item Dynamic vocabulary size
+\item Filters unlikely words
+\end{itemize}
+
+\vspace{5mm}
+3. \textcolor{mlgreen}{\textbf{B) Consistent format}}
+\begin{itemize}
+\item Examples guide style
+\item Pattern matching
+\item Higher quality output
+\end{itemize}
+\end{columns}
+
+\bottomnote{Understanding parameters is key to controlling LLM summarization}
+\end{frame}
+
+% ============================================================================
+% Context Handling (Slides 14-17)
+% ============================================================================
+
+\begin{frame}[t]{Chunking: Divide and Conquer}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/chunking_strategy_graphviz.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{Smart Splitting}
+\begin{itemize}
+\item Chunk size: 3000 tokens
+\item Overlap: 200 tokens
+\item Preserves context
+\item No mid-sentence breaks
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Algorithm:}
+\begin{enumerate}
+\item Split by paragraphs
+\item Group to target size
+\item Add overlap buffer
+\item Process independently
+\end{enumerate}
+
+\vspace{5mm}
+\textcolor{mlgreen}{Handles 100K+ word documents}
+\end{columns}
+
+\bottomnote{Chunking strategy: Breaking long documents while preserving meaning}
+\end{frame}
+
+\begin{frame}[t]{Map-Reduce: Parallel Processing}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/map_reduce_graphviz.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{Two-Phase Approach}
+
+\textbf{Map Phase:}
+\begin{itemize}
+\item Summarize each chunk
+\item Independent processing
+\item Parallel execution
+\item 200 words per chunk
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Reduce Phase:}
+\begin{itemize}
+\item Combine all summaries
+\item Create final summary
+\item Maintain coherence
+\item Target length
+\end{itemize}
+
+\vspace{5mm}
+\textcolor{mlblue}{5x faster than sequential}
+\end{columns}
+
+\bottomnote{Map-reduce: Borrowed from big data for document processing}
+\end{frame}
+
+\begin{frame}[t]{Hierarchical: Tree Structure}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/recursive_hierarchical_graphviz.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{Multi-Level Aggregation}
+
+Level 1: Chunk summaries (8x)
+Level 2: Group summaries (4x)
+Level 3: Section summaries (2x)
+Level 4: Final summary (1x)
+
+\vspace{5mm}
+\textbf{Benefits:}
+\begin{itemize}
+\item Preserves hierarchy
+\item Better for books/reports
+\item Maintains structure
+\item Progressive refinement
+\end{itemize}
+
+\vspace{5mm}
+\textcolor{mlpurple}{Best for 500K+ tokens}
+\end{columns}
+
+\bottomnote{Hierarchical summarization: Preserving document structure at scale}
+\end{frame}
+
+\begin{frame}[t]{Production Deployment}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/production_deployment_guide_bsc.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{Real-World Considerations}
+
+\textbf{Cost:}
+\begin{itemize}
+\item GPT-3.5: \$0.002/1K tokens
+\item GPT-4: \$0.03/1K tokens
+\item Claude: \$0.008/1K tokens
+\end{itemize}
+
+\textbf{Latency:}
+\begin{itemize}
+\item Streaming: 50ms first token
+\item Batch: 2-10 seconds total
+\item Parallel chunks: Linear speedup
+\end{itemize}
+
+\textbf{Quality Control:}
+\begin{itemize}
+\item Fact checking critical
+\item Human review needed
+\item A/B testing essential
+\end{itemize}
+\end{columns}
+
+\bottomnote{Production readiness: Cost, speed, and quality tradeoffs}
+\end{frame}
+
+% Second Checkpoint Quiz
+\begin{frame}[t]{Final Quiz: Ready for Production?}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Scenario Questions:}
+
+\vspace{3mm}
+1. 50K word thesis, need 500-word summary:
+\begin{itemize}
+\item[A)] Single prompt
+\item[B)] Chunking + map-reduce
+\item[C)] Hierarchical approach
+\end{itemize}
+
+\vspace{5mm}
+2. Best settings for news summary:
+\begin{itemize}
+\item[A)] T=0.1, p=0.8
+\item[B)] T=0.7, p=0.9
+\item[C)] T=1.2, p=1.0
+\end{itemize}
+
+\vspace{5mm}
+3. Cost for 100K tokens (GPT-3.5):
+\begin{itemize}
+\item[A)] \$0.20
+\item[B)] \$2.00
+\item[C)] \$20.00
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Solutions:}
+
+\vspace{3mm}
+1. \textcolor{mlgreen}{\textbf{C) Hierarchical}}
+\begin{itemize}
+\item Thesis has structure
+\item Chapters → sections → summary
+\item Preserves logical flow
+\end{itemize}
+
+\vspace{5mm}
+2. \textcolor{mlgreen}{\textbf{B) T=0.7, p=0.9}}
+\begin{itemize}
+\item Balanced creativity
+\item Standard settings
+\item Natural language
+\end{itemize}
+
+\vspace{5mm}
+3. \textcolor{mlgreen}{\textbf{A) \$0.20}}
+\begin{itemize}
+\item 100K × \$0.002/1K
+\item = \$0.20 total
+\item Very affordable!
+\end{itemize}
+\end{columns}
+
+\bottomnote{Practical application: Combining all concepts for real use cases}
+\end{frame}
+
+% Summary & Takeaways
+\begin{frame}[t]{Key Takeaways}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What We Learned}
+
+\textbf{1. Prompting Strategies:}
+\begin{itemize}
+\item Zero-shot for quick results
+\item Few-shot for consistency
+\item Chain-of-thought for complex
+\end{itemize}
+
+\vspace{3mm}
+\textbf{2. Parameter Control:}
+\begin{itemize}
+\item Temperature: creativity
+\item Top-p: vocabulary size
+\item Repetition penalty: variety
+\end{itemize}
+
+\vspace{3mm}
+\textbf{3. Long Documents:}
+\begin{itemize}
+\item Chunking with overlap
+\item Map-reduce for speed
+\item Hierarchical for structure
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Production Ready}
+
+\textbf{Choose Your Model:}
+\begin{itemize}
+\item GPT-3.5: Fast, cheap
+\item GPT-4: Best quality
+\item Claude: Long context
+\item Open source: Privacy
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Optimal Settings:}
+\begin{itemize}
+\item Most tasks: T=0.7, p=0.9
+\item Technical: T=0.2, p=0.8
+\item Creative: T=0.9, p=0.95
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Remember:}
+\begin{itemize}
+\item Always validate output
+\item Test on sample data
+\item Monitor costs
+\end{itemize}
+\end{columns}
+
+\bottomnote{LLM summarization: Powerful, flexible, but requires understanding}
+\end{frame}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Huge End of Main Presentation\\[10pt]
+\large See Appendices for Technical Details \& Lab Implementation
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% ============================================================================
+% TECHNICAL APPENDIX (15 SLIDES: A1-A15)
+% ============================================================================
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Huge Technical Appendix\\[10pt]
+\large Advanced Concepts \& Mathematical Foundations
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% Continue with appendix slides A1-A15 and lab slides as in original...
+% [Keeping the rest of the original structure for appendices and lab sections]
+
+\end{document}

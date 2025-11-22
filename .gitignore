@@ -1,4 +1,4 @@
-CLAUDE.md
+# LaTeX temporary files
 *.aux
 *.log
 *.nav
@@ -6,8 +6,32 @@ CLAUDE.md
 *.snm
 *.toc
 *.vrb
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.bbl
+*.blg
 temp/
 archive/
 texput.log
 nul
+
+# Jupyter artifacts
 .ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pkl
+*.pickle
+
+# Claude Code settings (local only)
+.claude/
+
+# OS files
+.DS_Store
+Thumbs.db

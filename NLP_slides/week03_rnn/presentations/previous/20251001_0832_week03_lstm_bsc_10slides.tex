@@ -1,0 +1,509 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+% Packages
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{tcolorbox}
+
+% Math commands
+\newcommand{\given}{\mid}
+
+% BSc Pedagogical boxes
+\newtcolorbox{checkpoint}[1][]{
+    colback=yellow!10!white,
+    colframe=yellow!75!black,
+    title=\textbf{Checkpoint: #1},
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{intuition}[1][]{
+    colback=purple!5!white,
+    colframe=purple!75!black,
+    title=\textbf{Intuition: #1},
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{realworld}[1][]{
+    colback=orange!5!white,
+    colframe=orange!75!black,
+    title=\textbf{Real World: #1},
+    fonttitle=\bfseries
+}
+
+% Title information
+\title{LSTM - Long Short-Term Memory}
+\subtitle{Understanding Through a Complete Example}
+\author{}
+\date{}
+
+\begin{document}
+
+% Slide 1: Title
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Slide 2: THE CORE - Show the Magic First!
+\begin{frame}{Watch LSTM Process a Sentence}
+    \scriptsize
+    \textbf{Sentence:} ``The cat was hungry. The dog was sleeping.''
+
+    \vspace{-0.3em}
+    \begin{center}
+    \renewcommand{\arraystretch}{0.9}
+    \begin{tabular}{|c|l|l|l|l|}
+    \hline
+    \textbf{Word} & \textbf{Forget} & \textbf{Input} & \textbf{Output} & \textbf{Memory} \\
+    \hline
+    ``The'' & 0.9 & 0.3 & 0.2 & [article] \\
+    \hline
+    ``cat'' & 0.8 & 0.9 & 0.8 & [cat] \\
+    \hline
+    ``was'' & 0.9 & 0.7 & 0.9 & [cat, was] \\
+    \hline
+    ``hungry'' & 0.8 & 0.8 & 0.7 & [cat, hungry] \\
+    \hline
+    \rowcolor{yellow!20}
+    ``.'' & \textbf{0.1} & 0.4 & 0.3 & [end] \\
+    \hline
+    ``The'' & 0.1 & 0.8 & 0.2 & [article] \\
+    \hline
+    \rowcolor{green!20}
+    ``dog'' & 0.7 & \textbf{0.9} & 0.9 & [dog] \\
+    \hline
+    ``was'' & 0.9 & 0.8 & \textbf{0.9} & [dog, was] \\
+    \hline
+    \end{tabular}
+    \end{center}
+
+    \vspace{0.1em}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \textbf{Notice:}
+            \begin{itemize}\setlength\itemsep{-0.1em}
+                \item Three mysterious numbers
+                \item Memory changes
+                \item ``cat'' disappears
+                \item ``dog'' appears
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{intuition}[The Magic]
+            How does LSTM know to:
+            \begin{itemize}\setlength\itemsep{-0.1em}
+                \item Forget ``cat''?
+                \item Remember ``dog''?
+                \item Keep right info?
+            \end{itemize}
+            \textbf{Let's find out...}
+            \end{intuition}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 3: The Problem This Solves
+\begin{frame}{Why Do We Need This?}
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{../figures/vanishing_gradient_problem_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.6em}
+    \scriptsize
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{RNN Problem:}
+            \begin{itemize}\setlength\itemsep{-0.1em}
+                \item Gradients vanish
+                \item Forgets early info
+                \item Can't handle long deps
+                \item Loses ``cat''
+            \end{itemize}
+
+            \vspace{0.2em}
+            RNN forgets ``cat'' by ``dog''
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{LSTM Solution:}
+            \begin{itemize}\setlength\itemsep{-0.1em}
+                \item Cell state highway
+                \item Addition not multiply
+                \item Three gates
+                \item Preserves then clears
+            \end{itemize}
+
+            \vspace{0.2em}
+            \begin{checkpoint}[Key]
+            Three columns = \textbf{gates}!
+            \end{checkpoint}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 4: Gate 1 - Forget (Explain Row 5)
+\begin{frame}{Gate 1: Forget - What to Erase?}
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{../figures/forget_gate_detail_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \scriptsize
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Remember Our Table?}
+
+            Row 5: ``.'' had \textbf{Forget = 0.1}
+
+            \vspace{0.3em}
+            \textbf{What This Means:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item 0.0 = forget everything
+                \item 1.0 = keep everything
+                \item 0.1 = forget most things
+            \end{itemize}
+
+            \vspace{0.3em}
+            \textbf{Why at period?}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item New sentence starting
+                \item Old subject no longer relevant
+                \item Clear ``cat'' from memory
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Formula:}
+            \[
+            f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)
+            \]
+
+            \vspace{0.2em}
+            \textbf{How It Decides:}
+            \begin{enumerate}\setlength\itemsep{0em}
+                \item Look at current word (``.'')
+                \item Look at previous output
+                \item Compute: Should we forget?
+                \item Output value 0 to 1
+            \end{enumerate}
+
+            \vspace{0.2em}
+            \textbf{Cell state update:}
+            \[
+            C_t = f_t \odot C_{t-1} + \ldots
+            \]
+            Multiply old memory by 0.1 = mostly erase!
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 5: Gate 2 - Input (Explain Row 7)
+\begin{frame}{Gate 2: Input - What to Add?}
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{../figures/input_gate_detail_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \scriptsize
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Remember Our Table?}
+
+            Row 7: ``dog'' had \textbf{Input = 0.9}
+
+            \vspace{0.3em}
+            \textbf{What This Means:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item 0.0 = add nothing
+                \item 1.0 = add everything
+                \item 0.9 = add most of it
+            \end{itemize}
+
+            \vspace{0.3em}
+            \textbf{Why at ``dog''?}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item New subject appearing
+                \item Important to remember
+                \item Will need it for ``was''
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Formulas (Two Parts):}
+            \[
+            i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i)
+            \]
+            \[
+            \tilde{C}_t = \tanh(W_C \cdot [h_{t-1}, x_t] + b_C)
+            \]
+
+            \vspace{0.2em}
+            \textbf{How It Works:}
+            \begin{enumerate}\setlength\itemsep{0em}
+                \item Create candidate info ($\tilde{C}_t$)
+                \item Decide how much to use ($i_t$)
+                \item Multiply them together
+                \item Add to cell state
+            \end{enumerate}
+
+            \vspace{0.2em}
+            \textbf{Cell state update:}
+            \[
+            C_t = \ldots + i_t \odot \tilde{C}_t
+            \]
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 6: Gate 3 - Output (Explain Row 8)
+\begin{frame}{Gate 3: Output - What to Share?}
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{../figures/output_gate_detail_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \scriptsize
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Remember Our Table?}
+
+            Row 8: ``was'' had \textbf{Output = 0.9}
+
+            \vspace{0.3em}
+            \textbf{What This Means:}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item 0.0 = output nothing
+                \item 1.0 = output everything
+                \item 0.9 = output most of memory
+            \end{itemize}
+
+            \vspace{0.3em}
+            \textbf{Why at ``was''?}
+            \begin{itemize}\setlength\itemsep{0em}
+                \item Need to predict next word
+                \item Subject info is relevant
+                \item ``dog'' determines verb form
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Formulas:}
+            \[
+            o_t = \sigma(W_o \cdot [h_{t-1}, x_t] + b_o)
+            \]
+            \[
+            h_t = o_t \odot \tanh(C_t)
+            \]
+
+            \vspace{0.2em}
+            \textbf{How It Works:}
+            \begin{enumerate}\setlength\itemsep{0em}
+                \item Look at cell state (has ``dog'')
+                \item Decide what's relevant now
+                \item Filter memory through gate
+                \item Send $h_t$ to next layer
+            \end{enumerate}
+
+            \vspace{0.2em}
+            \textbf{Key:} Cell state stays protected, but we share filtered version
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 7: Architecture Overview - How Gates Work Together
+\begin{frame}{The Big Picture: Three Gates + Cell State}
+    \begin{center}
+        \includegraphics[width=0.6\textwidth]{../figures/lstm_architecture_overview_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.6em}
+    \scriptsize
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Cell State Highway:}
+            \begin{itemize}\setlength\itemsep{-0.1em}
+                \item Protected memory
+                \item Info flows easily
+                \item Gates control entry/exit
+                \item Gradients don't vanish!
+            \end{itemize}
+
+            \vspace{0.1em}
+            \begin{intuition}[Analogy]
+            \begin{itemize}\setlength\itemsep{-0.1em}
+                \item \textcolor{red}{Forget} = Eraser
+                \item \textcolor{blue}{Input} = Pen
+                \item \textcolor{green}{Output} = Highlighter
+            \end{itemize}
+            \end{intuition}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{All Three Work Together:}
+
+            At each word:
+            \begin{enumerate}\setlength\itemsep{-0.1em}
+                \item \textbf{Forget:} Remove old (0.1 at ``.'' = erase ``cat'')
+                \item \textbf{Input:} Add new (0.9 at ``dog'' = add subject)
+                \item \textbf{Output:} Share (0.9 at ``was'' = use ``dog'')
+            \end{enumerate}
+
+            \vspace{0.1em}
+            \textbf{Result:} Memory evolves!
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 8: CORE REVISITED - Now You Understand!
+\begin{frame}{Now Let's Look Again - You Understand It!}
+    \textbf{Sentence:} ``The cat was hungry. The dog was sleeping.''
+
+    \vspace{0.3em}
+    \small
+    \begin{center}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|c|l|l|l|l|}
+    \hline
+    \textbf{Word} & \textbf{Forget} & \textbf{Input} & \textbf{Output} & \textbf{Memory} \\
+    \hline
+    ``The'' & 0.9 (keep) & 0.3 (small add) & 0.2 (hide) & [article] \\
+    \hline
+    ``cat'' & 0.8 (keep) & 0.9 (add subject!) & 0.8 (show) & [cat] \\
+    \hline
+    ``was'' & 0.9 (keep) & 0.7 (add verb) & 0.9 (need it!) & [cat, was] \\
+    \hline
+    ``hungry'' & 0.8 (keep) & 0.8 (add state) & 0.7 (show) & [cat, hungry] \\
+    \hline
+    \rowcolor{yellow!20}
+    ``.'' & \textbf{0.1 (ERASE!)} & 0.4 (ending) & 0.3 (hide) & [end] \\
+    \hline
+    ``The'' & 0.1 (clear old) & 0.8 (new start) & 0.2 (hide) & [article] \\
+    \hline
+    \rowcolor{green!20}
+    ``dog'' & 0.7 (keep) & \textbf{0.9 (NEW subject!)} & 0.9 (show) & [dog] \\
+    \hline
+    \rowcolor{blue!20}
+    ``was'' & 0.9 (keep) & 0.8 (add verb) & \textbf{0.9 (USE dog!)} & [dog, was] \\
+    \hline
+    \end{tabular}
+    \end{center}
+
+    \vspace{0.5em}
+    \begin{checkpoint}[The Critical Transition]
+    Watch rows 4-7: ``hungry'' $\rightarrow$ ``.'' $\rightarrow$ ``The'' $\rightarrow$ ``dog''
+
+    \textbf{Memory evolves:} [cat, hungry] $\rightarrow$ \textcolor{red}{FORGET} $\rightarrow$ [end] $\rightarrow$ \textcolor{green}{ADD} $\rightarrow$ [dog]
+
+    This is what RNNs cannot do! LSTM uses gates to control memory intelligently.
+    \end{checkpoint}
+\end{frame}
+
+% Slide 9: Mathematical Detail
+\begin{frame}{The Complete Mathematics}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{All Three Gates:}
+
+            \vspace{0.5em}
+            \textbf{Forget Gate:}
+            \[
+            f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)
+            \]
+
+            \textbf{Input Gate:}
+            \[
+            i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i)
+            \]
+            \[
+            \tilde{C}_t = \tanh(W_C \cdot [h_{t-1}, x_t] + b_C)
+            \]
+
+            \textbf{Output Gate:}
+            \[
+            o_t = \sigma(W_o \cdot [h_{t-1}, x_t] + b_o)
+            \]
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Cell State Update:}
+            \[
+            C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t
+            \]
+
+            \textbf{Output:}
+            \[
+            h_t = o_t \odot \tanh(C_t)
+            \]
+
+            \vspace{1em}
+            \textbf{In Our Example:}
+            \begin{itemize}
+                \item $x_t$ = current word embedding
+                \item $h_{t-1}$ = previous output
+                \item $C_t$ = cell state (memory)
+                \item $\sigma$ = sigmoid (0 to 1)
+                \item $\tanh$ = tanh (-1 to 1)
+                \item $\odot$ = element-wise multiply
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 10: Summary
+\begin{frame}{Summary: LSTM in Practice}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{What We Learned:}
+            \begin{enumerate}
+                \item LSTM uses three gates to control memory
+                \item Forget gate: what to erase (0.1 at ``.'' = erase ``cat'')
+                \item Input gate: what to add (0.9 at ``dog'' = add subject)
+                \item Output gate: what to use (0.9 at ``was'' = use ``dog'')
+                \item Cell state flows information forward
+            \end{enumerate}
+
+            \vspace{1em}
+            \textbf{When to Use LSTM:}
+            \begin{itemize}
+                \item Long sequences (100+ words)
+                \item Long-term dependencies
+                \item Context matters
+                \item Grammar and structure
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{realworld}[Applications]
+            \textbf{Where LSTMs Excel:}
+            \begin{itemize}
+                \item Machine Translation (Google Translate)
+                \item Speech Recognition (Siri, Alexa)
+                \item Text Generation (ChatGPT foundations)
+                \item Video Analysis
+                \item Music Generation
+                \item Handwriting Recognition
+            \end{itemize}
+            \end{realworld}
+
+            \vspace{1em}
+            \textbf{Key Takeaway:}
+
+            The sentence example showed you \textit{exactly} how LSTM gates work in practice. That's the real magic!
+        \end{column}
+    \end{columns}
+
+    \vspace{1em}
+    \begin{center}
+        \Large \textbf{Questions?}
+    \end{center}
+\end{frame}
+
+\end{document}

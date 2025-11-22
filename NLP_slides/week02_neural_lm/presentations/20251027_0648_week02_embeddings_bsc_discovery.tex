@@ -1,0 +1,1124 @@
+% Week 2: Word Embeddings - Neural Language Models
+% BSc Discovery-Based Presentation - Two-Tier Structure
+% 20 concise main slides + 15 deep appendix slides
+
+\input{../../common/master_template.tex}
+
+% Define bottomnote command
+\newcommand{\bottomnote}[1]{%
+    \vspace{0.2cm}
+    \begin{center}
+    \footnotesize\secondary{#1}
+    \end{center}
+}
+
+\title{Word Embeddings}
+\subtitle{\secondary{Week 2 - When Words Became Vectors}}
+\author{NLP Course 2025}
+\date{October 27, 2025}
+
+\begin{document}
+
+% ===== MAIN PRESENTATION (20 SLIDES) =====
+
+% Slide 1: Title
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}
+\secondary{\footnotesize Two-Tier BSc Discovery Presentation}
+\end{center}
+\end{frame}
+
+% ===== OPENING: DISCOVERY HOOK CASCADE (Slides 2-5) =====
+
+% Slide 2: Hook #1 - Word Arithmetic
+\begin{frame}[t]{Hook \#1: Words That Do Algebra}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/word_arithmetic_3d_bsc.pdf}
+\end{center}
+
+\begin{center}
+\Large
+\textbf{king - man + woman = queen}
+\end{center}
+
+\vspace{3mm}
+\begin{center}
+\textbf{Key Insight}: Embeddings capture semantic relationships geometrically
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{How can words do algebra? The answer changes everything in NLP}
+\end{frame}
+
+% Slide 3: Hook #2 - Semantic Similarity
+\begin{frame}[t]{Hook \#2: Similarity That N-grams Miss}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/similarity_clustering_2d_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Similar words cluster together in embedding space
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{N-grams treat all words equally distant - embeddings capture meaning}
+\end{frame}
+
+% Slide 4: Hook #3 - Dimensionality Paradox
+\begin{frame}[t]{Hook \#3: Compression That Improves Quality}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/dimensionality_comparison_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: 50,000 sparse $\rightarrow$ 300 dense with MORE information
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Dense representations are more powerful than sparse ones}
+\end{frame}
+
+% Slide 5: Hook #4 - Context Dependence
+\begin{frame}[t]{Hook \#4: Words With Multiple Meanings}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/context_dependent_bank_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Static embeddings average meanings (limitation to address later)
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{``bank'' has one vector - foreshadows contextualized embeddings (Week 6)}
+\end{frame}
+
+% ===== FOUNDATION (Slides 6-9) =====
+
+% Slide 6: What Are Word Embeddings?
+\begin{frame}[t]{What Are Word Embeddings?}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/word_as_vector_concept_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Definition}: Dense, low-dimensional, continuous vector representations of words
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Words become points in semantic space}
+\end{frame}
+
+% Slide 7: From One-Hot to Dense
+\begin{frame}[t]{From Sparse One-Hot to Dense Embeddings}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{One-Hot Encoding (Old Way)}:
+
+Each word = vector of size $|V|$
+
+\vspace{3mm}
+Example ($V$ = 5):
+\begin{itemize}
+\item ``cat'' = [1, 0, 0, 0, 0]
+\item ``dog'' = [0, 1, 0, 0, 0]
+\item ``mat'' = [0, 0, 1, 0, 0]
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Problems}:
+\begin{itemize}
+\item Huge dimensionality (50K typical)
+\item All words equally distant
+\item No similarity information
+\item Sparse (99.998\% zeros)
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Dense Embeddings (New Way)}:
+
+Each word = vector of size $d$ (300 typical)
+
+\vspace{3mm}
+Example ($d$ = 3):
+\begin{itemize}
+\item ``cat'' = [0.2, 0.8, -0.3]
+\item ``dog'' = [0.1, 0.7, -0.2]
+\item ``mat'' = [-0.5, 0.1, 0.6]
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Advantages}:
+\begin{itemize}
+\item Low dimensionality (100-300)
+\item Similarity encoded (cat $\approx$ dog)
+\item Continuous values
+\item Information-dense
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Dense $<$ Sparse but contains MORE information - this is the magic}
+\end{frame}
+
+% Slide 8: Vector Space Model
+\begin{frame}[t]{The Vector Space Model}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/semantic_space_2d_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Semantic similarity = geometric proximity
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Meaning becomes geometry - we can compute with meaning}
+\end{frame}
+
+% Slide 9: Why Distributed Representations Work
+\begin{frame}[t]{Why Distributed Representations Work}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/distributed_features_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Each dimension captures some semantic feature
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{300 dimensions $=$ 300 semantic features combining to represent meaning}
+\end{frame}
+
+% ===== WORD2VEC (Slides 10-16) - 7 Slides =====
+
+% Slide 10: The Core Idea
+\begin{frame}[t]{Word2Vec: The Core Idea}
+\begin{center}
+\Large
+\textit{``You shall know a word by the company it keeps''}
+
+\vspace{5mm}
+\secondary{- J.R. Firth (1957)}
+\end{center}
+
+\vspace{10mm}
+
+\textbf{Distributional Hypothesis}:
+
+Words appearing in similar contexts have similar meanings
+
+\vspace{5mm}
+\textbf{Word2Vec Approach}:
+
+Learn word vectors by predicting context
+
+\vspace{0.2cm}
+\bottomnote{Context prediction forces similar words to have similar vectors}
+\end{frame}
+
+% Slides 11-12: Skip-gram Architecture (Dual)
+\begin{frame}[t]{Skip-gram: Predict Context from Word}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/skipgram_architecture_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Given center word, predict surrounding words
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{This is the most common Word2Vec variant - simple and effective}
+\end{frame}
+
+\begin{frame}[t]{Skip-gram: The Architecture}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Input}: Center word (one-hot)
+
+$x \in \mathbb{R}^{|V|}$
+
+\vspace{3mm}
+\textbf{Hidden Layer}: Embedding lookup
+
+$h = W^T x \in \mathbb{R}^{d}$
+
+This IS the word embedding!
+
+\vspace{3mm}
+\textbf{Output Layer}: Context predictions
+
+$y = W' h \in \mathbb{R}^{|V|}$
+
+Softmax for probabilities
+
+\vspace{3mm}
+\textbf{Parameters}:
+\begin{itemize}
+\item $W$: $|V| \times d$ (input embeddings)
+\item $W'$: $d \times |V|$ (output weights)
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Training Objective}:
+
+Maximize probability of context words
+
+$$\max \sum_{t=1}^{T} \sum_{-c \leq j \leq c, j \neq 0} \log P(w_{t+j} | w_t)$$
+
+\vspace{3mm}
+\textbf{Example}:
+
+Sentence: ``The cat sat on the mat''
+
+Center: ``cat''
+
+Context window $c=2$:
+
+Predict: ``the'', ``sat''
+
+\vspace{3mm}
+\textbf{Key Trick}:
+
+Share embeddings! $W$ is what we keep after training
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Simple 3-layer network - embeddings are the weights}
+\end{frame}
+
+% Slide 13: Worked Example - Skip-gram
+\begin{frame}[t]{Worked Example: Skip-gram Forward Pass}
+\small
+\textbf{Given}: ``The cat sat'', center = ``cat'', predict ``sat''
+
+\vspace{3mm}
+\textbf{Step 1}: One-hot encode center word
+
+``cat'' = word ID 3797
+
+$x = [0, 0, ..., 1_{3797}, ..., 0] \in \mathbb{R}^{50000}$
+
+\vspace{3mm}
+\textbf{Step 2}: Embedding lookup (hidden layer)
+
+$$h = W^T x = W_{3797} \in \mathbb{R}^{300}$$
+
+This is just row 3797 of $W$! (Lookup, no multiplication needed)
+
+Example: $h = [0.23, -0.41, 0.15, ..., 0.08]$
+
+\vspace{3mm}
+\textbf{Step 3}: Compute output scores
+
+$$score(``sat'') = W'_{sat} \cdot h = 0.85$$
+
+\vspace{3mm}
+\textbf{Step 4}: Softmax over vocabulary
+
+$$P(``sat'' | ``cat'') = \frac{\exp(0.85)}{\sum_{w \in V} \exp(score(w))} = 0.0023$$
+
+\vspace{3mm}
+\textbf{Step 5}: Compute loss
+
+$$Loss = -\log(0.0023) = 6.07$$
+
+\vspace{0.2cm}
+\bottomnote{Backprop updates $W$ to increase P(sat|cat) - embeddings improve}
+\end{frame}
+
+% Slide 14: The Softmax Problem
+\begin{frame}[t]{The Computational Bottleneck}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/softmax_problem_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Computing softmax over 50K words is prohibitively expensive
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Softmax denominator requires summing over entire vocabulary}
+\end{frame}
+
+% Slide 15: Negative Sampling Solution
+\begin{frame}[t]{Negative Sampling: The Trick That Makes It Practical}
+\small
+\textbf{The Problem}: Softmax over 50K words per training example
+
+$$P(context | word) = \frac{\exp(score)}{\sum_{w=1}^{50000} \exp(score_w)}$$
+
+Requires 50K exponentials per example!
+
+\vspace{5mm}
+\textbf{The Solution}: Negative Sampling
+
+\begin{itemize}
+\item 1 positive pair: (``cat'', ``sat'') - actual context
+\item $k$ negative pairs: (``cat'', ``xylophone''), (``cat'', ``democracy''), ... - random words
+\item Typical: $k=5$ for small datasets, $k=2-5$ for large
+\end{itemize}
+
+\vspace{5mm}
+\textbf{New Objective}:
+
+$$\log \sigma(v'_{sat} \cdot v_{cat}) + \sum_{i=1}^{k} \log \sigma(-v'_{w_i} \cdot v_{cat})$$
+
+Only $k+1$ computations instead of 50,000!
+
+\vspace{5mm}
+\textbf{Example}: Positive pair + 5 negatives = 6 computations vs 50,000
+
+Speedup: \textcolor{green}{\textbf{8,333x faster!}}
+
+\vspace{0.2cm}
+\bottomnote{Negative sampling approximates softmax - critical for practical training}
+\end{frame}
+
+% Slide 16: CBOW Architecture
+\begin{frame}[t]{CBOW: The Reverse Approach}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/cbow_architecture_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Predict word from context (reverse of Skip-gram)
+\end{center}
+
+\vspace{3mm}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{CBOW}: Continuous Bag of Words
+
+Given: ``the'', ``sat''
+
+Predict: ``cat''
+
+\textbf{When to use}: Faster, good for frequent words
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Skip-gram}:
+
+Given: ``cat''
+
+Predict: ``the'', ``sat''
+
+\textbf{When to use}: Better for rare words, more common
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Both work - Skip-gram slightly better empirically}
+\end{frame}
+
+% ===== INTEGRATION (Slides 17-20) =====
+
+% Slide 17: Evaluation - Analogy Tasks
+\begin{frame}[t]{Evaluation: Word Analogies}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/analogy_results_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Good embeddings solve analogies via vector arithmetic
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{king:queen :: man:woman achieved 72\% accuracy (Word2Vec, 2013)}
+\end{frame}
+
+% Slide 18: Pre-trained Embeddings
+\begin{frame}[t]{Pre-trained Embeddings}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/pretrained_comparison_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Use pre-trained embeddings as starting point
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Word2Vec, GloVe, FastText - all available pre-trained}
+\end{frame}
+
+% Slide 19: Key Takeaways
+\begin{frame}[t]{Key Takeaways}
+\begin{enumerate}
+\item \textbf{Embeddings as dense vectors}
+
+  Words $\rightarrow$ continuous vectors in $\mathbb{R}^d$ (typically $d=300$)
+
+\item \textbf{Skip-gram predicts context from word}
+
+  Train by predicting surrounding words in large corpus
+
+\item \textbf{Negative sampling enables efficient training}
+
+  Approximate softmax with $k$ negative samples (8000x speedup)
+
+\item \textbf{Geometric semantics}
+
+  Similarity = cosine, analogies = vector arithmetic
+
+\item \textbf{Foundation for neural NLP}
+
+  All neural models start with embedding layer
+\end{enumerate}
+
+\vspace{0.2cm}
+\bottomnote{Embeddings revolutionized NLP in 2013 - still used everywhere today}
+\end{frame}
+
+% Slide 20: Lab Preview
+\begin{frame}[t]{Next: Visual Exploration}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Lab Activities}:
+
+\begin{itemize}
+\item Load pre-trained Word2Vec
+\item Visualize in 2D and 3D
+\item Perform word arithmetic
+\item Find most similar words
+\item Explore semantic clusters
+\item Compare Word2Vec vs GloVe
+\item Visualize training evolution
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Visualizations You'll Create}:
+
+\begin{itemize}
+\item 2D PCA projections
+\item Interactive 3D scatter plots
+\item Analogy arrows in 2D
+\item Similarity heatmaps
+\item Semantic cluster plots
+\item Training convergence
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Goal}: Build intuition through visualization
+
+\end{columns}
+
+\vspace{3mm}
+\begin{center}
+\textbf{See embeddings come alive!}
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Understanding embeddings requires seeing them - lab is essential}
+\end{frame}
+
+% ===== TECHNICAL APPENDIX (15 SLIDES) =====
+
+\begin{frame}[t]{}
+\begin{center}
+\Huge\textbf{Technical Appendix}
+
+\vspace{5mm}
+\Large\secondary{Complete Mathematical Treatment}
+\end{center}
+\end{frame}
+
+% ===== WORD2VEC MATHEMATICS (A1-A5) =====
+
+% Slide A1: Skip-gram Objective Function
+\begin{frame}[t]{Appendix A1: Skip-gram Objective Function}
+\small
+\textbf{Goal}: Maximize probability of context words given center word
+
+\vspace{3mm}
+\textbf{Objective}:
+
+$$\mathcal{L} = \frac{1}{T} \sum_{t=1}^{T} \sum_{\substack{-c \leq j \leq c \\ j \neq 0}} \log P(w_{t+j} | w_t)$$
+
+where:
+\begin{itemize}
+\item $T$: Total words in corpus
+\item $c$: Context window size (typically 5)
+\item $w_t$: Center word at position $t$
+\item $w_{t+j}$: Context word at offset $j$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Conditional Probability (Naive Softmax)}:
+
+$$P(w_O | w_I) = \frac{\exp(v'_{w_O} \cdot v_{w_I})}{\sum_{w=1}^{|V|} \exp(v'_w \cdot v_{w_I})}$$
+
+where $v_{w_I}$ is input embedding, $v'_{w_O}$ is output embedding
+
+\vspace{3mm}
+\textbf{Problem}: Denominator sums over entire vocabulary - $O(|V|)$ per example
+
+For $|V|=50K$, $T=1B$ words, $c=5$: 500 trillion softmax computations!
+
+\vspace{0.2cm}
+\bottomnote{This objective is correct but computationally infeasible}
+\end{frame}
+
+% Slide A2: Negative Sampling Mathematics
+\begin{frame}[t]{Appendix A2: Negative Sampling Mathematics}
+\small
+\textbf{Key Idea}: Binary classification instead of multi-class
+
+\vspace{3mm}
+\textbf{Reformulation}:
+
+Instead of predicting which word from vocabulary,
+
+Predict: Is this word in context (yes/no)?
+
+\vspace{5mm}
+\textbf{Negative Sampling Objective}:
+
+$$\log \sigma(v'_{w_O} \cdot v_{w_I}) + \sum_{i=1}^{k} \mathbb{E}_{w_i \sim P_n(w)} [\log \sigma(-v'_{w_i} \cdot v_{w_I})]$$
+
+where:
+\begin{itemize}
+\item $\sigma(x) = \frac{1}{1+\exp(-x)}$ (sigmoid)
+\item $w_O$: Actual context word (positive example)
+\item $w_i$: Sampled negative words
+\item $P_n(w)$: Noise distribution (typically $P(w)^{0.75}$)
+\item $k$: Number of negative samples (5-20)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Why $P(w)^{0.75}$}?
+
+Raises probability of rare words, lowers frequent words
+
+More balanced negative sampling
+
+\vspace{0.2cm}
+\bottomnote{This approximates softmax with $k$ samples instead of $|V|$ computations}
+\end{frame}
+
+% Slide A3: Hierarchical Softmax
+\begin{frame}[t]{Appendix A3: Hierarchical Softmax Alternative}
+\small
+\textbf{Different Approach}: Binary tree instead of flat softmax
+
+\vspace{3mm}
+\textbf{Key Idea}:
+
+\begin{itemize}
+\item Arrange vocabulary in binary tree
+\item Prediction = path through tree
+\item Each node: Binary decision (left vs right)
+\item Depth: $\log_2 |V|$ decisions instead of $|V|$ computations
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Complexity}:
+
+\begin{itemize}
+\item Naive softmax: $O(|V|)$ per example
+\item Hierarchical softmax: $O(\log |V|)$ per example
+\item For $|V|=50K$: $O(50000)$ vs $O(16)$ - 3000x speedup!
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Trade-offs}:
+
+\begin{itemize}
+\item \textcolor{green}{Faster than naive softmax}
+\item \textcolor{red}{Slower than negative sampling}
+\item \textcolor{green}{Exact (no approximation)}
+\item \textcolor{red}{Tree construction matters}
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Usage}: Less common than negative sampling
+
+\vspace{0.2cm}
+\bottomnote{Hierarchical softmax elegant but negative sampling more practical}
+\end{frame}
+
+% Slide A4: Gradient Descent and Backpropagation
+\begin{frame}[t]{Appendix A4: Training via Gradient Descent}
+\small
+\textbf{Optimization}: Stochastic Gradient Descent (SGD)
+
+\vspace{3mm}
+\textbf{Gradients for Skip-gram with Negative Sampling}:
+
+For positive pair $(w_I, w_O)$:
+
+$$\frac{\partial}{\partial v_{w_I}} = (1 - \sigma(v'_{w_O} \cdot v_{w_I})) v'_{w_O}$$
+
+For negative pairs $(w_I, w_i)$:
+
+$$\frac{\partial}{\partial v_{w_I}} = -\sigma(-v'_{w_i} \cdot v_{w_I}) v'_{w_i}$$
+
+\vspace{5mm}
+\textbf{Update Rule}:
+
+$$v_{w_I}^{new} = v_{w_I}^{old} - \eta \cdot \frac{\partial L}{\partial v_{w_I}}$$
+
+where $\eta$ is learning rate (typically 0.025, decays to 0.0001)
+
+\vspace{5mm}
+\textbf{Training Details}:
+
+\begin{itemize}
+\item Mini-batch size: 100-1000 word pairs
+\item Epochs: 5-15 over corpus
+\item Learning rate decay: Linear
+\item Convergence: 1-3 days on CPU for 1B words
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{Simple SGD - no fancy optimizers needed}
+\end{frame}
+
+% Slide A5: Computational Complexity
+\begin{frame}[t]{Appendix A5: Computational Complexity Analysis}
+\small
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Method} & \textbf{Per Example} & \textbf{Training Time} & \textbf{Quality} \\
+\midrule
+Naive Softmax & $O(|V| \cdot d)$ & Weeks & Best \\
+Hierarchical Softmax & $O(\log |V| \cdot d)$ & Days & Good \\
+Negative Sampling & $O(k \cdot d)$ & Hours & Good \\
+\bottomrule
+\multicolumn{4}{l}{\footnotesize Typical: $|V|=50K$, $d=300$, $k=5$, corpus=1B words} \\
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{Memory Requirements}:
+
+\begin{itemize}
+\item Embeddings: $|V| \times d \times 4$ bytes = 50K $\times$ 300 $\times$ 4 = 60MB
+\item Context matrix: Another 60MB
+\item Total: ~120MB (fits in RAM easily)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Parallelization}:
+
+\begin{itemize}
+\item Word2Vec easily parallelizable (independent windows)
+\item Multi-threading: Near-linear speedup
+\item GPU: 10-50x faster than CPU
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{Efficient algorithm + modern hardware = practical at scale}
+\end{frame}
+
+% ===== GLOVE (A6-A10) =====
+
+% Slide A6: GloVe - Global Vectors
+\begin{frame}[t]{Appendix A6: GloVe - Global Vectors for Word Representation}
+\small
+\textbf{Different Philosophy}: Explicit matrix factorization
+
+\vspace{3mm}
+\textbf{Key Idea}:
+
+\begin{itemize}
+\item Word2Vec: Local context window (implicit matrix factorization)
+\item GloVe: Global co-occurrence statistics (explicit matrix factorization)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Co-occurrence Matrix} $X$:
+
+$$X_{ij} = \text{number of times word } j \text{ appears in context of word } i$$
+
+\vspace{3mm}
+Example snippet: Count how often ``cat'' and ``dog'' appear near each other across entire corpus
+
+\vspace{5mm}
+\textbf{GloVe Objective}:
+
+$$\mathcal{L} = \sum_{i,j=1}^{|V|} f(X_{ij}) (v_i^T v_j + b_i + b_j - \log X_{ij})^2$$
+
+where $f(x)$ is weighting function (down-weight rare co-occurrences)
+
+\vspace{0.2cm}
+\bottomnote{GloVe combines global statistics with local context}
+\end{frame}
+
+% Slide A7: GloVe Objective Explained
+\begin{frame}[t]{Appendix A7: GloVe Objective Function Breakdown}
+\small
+\textbf{Goal}: Dot product of vectors should match log co-occurrence
+
+$$v_i^T v_j \approx \log X_{ij}$$
+
+\vspace{5mm}
+\textbf{Weighted Least Squares}:
+
+$$\min \sum_{i,j=1}^{|V|} f(X_{ij}) (v_i^T v_j + b_i + b_j - \log X_{ij})^2$$
+
+\vspace{3mm}
+\textbf{Weighting Function}:
+
+$$f(x) = \begin{cases}
+(x/x_{max})^\alpha & \text{if } x < x_{max} \\
+1 & \text{otherwise}
+\end{cases}$$
+
+Typical: $x_{max}=100$, $\alpha=0.75$
+
+\vspace{5mm}
+\textbf{Why Weighting Matters}:
+
+\begin{itemize}
+\item Very rare co-occurrences: Noisy, unreliable
+\item Very frequent: Dominate loss (``the the'', ``of the'')
+\item Middle ground: Most informative
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{Weighting function is critical for GloVe performance}
+\end{frame}
+
+% Slide A8: Matrix Factorization Perspective
+\begin{frame}[t]{Appendix A8: Matrix Factorization Connection}
+\small
+\textbf{Insight}: Both Word2Vec and GloVe factorize co-occurrence matrix
+
+\vspace{5mm}
+\textbf{Pointwise Mutual Information (PMI)}:
+
+$$PMI(i,j) = \log \frac{P(i,j)}{P(i)P(j)} = \log \frac{X_{ij} \cdot |X|}{\sum_k X_{ik} \cdot \sum_k X_{kj}}$$
+
+Measures how much more likely words co-occur than by chance
+
+\vspace{5mm}
+\textbf{Connection}:
+
+Word2Vec (Skip-gram with negative sampling) implicitly factorizes shifted PMI matrix:
+
+$$v_i^T v_j \approx PMI(i,j) - \log k$$
+
+GloVe explicitly factorizes log co-occurrence matrix
+
+\vspace{5mm}
+\textbf{Unifying View}:
+
+Both methods learn low-rank approximation of word-context statistics
+
+Different loss functions, similar result
+
+\vspace{0.2cm}
+\bottomnote{This explains why Word2Vec and GloVe produce similar embeddings}
+\end{frame}
+
+% Slide A9: GloVe Training
+\begin{frame}[t]{Appendix A9: GloVe Training Algorithm}
+\small
+\textbf{Steps}:
+
+\begin{enumerate}
+\item Build co-occurrence matrix $X$ from corpus (count pairs within window)
+\item Initialize word vectors $v_i$ and biases $b_i$ randomly
+\item Optimize via AdaGrad:
+
+  For each $(i,j)$ pair with $X_{ij} > 0$:
+
+  $$v_i^{new} = v_i - \eta \frac{\partial L}{\partial v_i}$$
+
+  where gradient includes $f(X_{ij})$ weighting
+
+\item Iterate until convergence (50-100 epochs typical)
+\item Final embeddings: $v_i$ (can optionally average with $v_j$)
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Hyperparameters}:
+
+\begin{itemize}
+\item Embedding dimension $d$: 100-300
+\item Context window: 10-15 (larger than Word2Vec's 5)
+\item $x_{max}$: 100
+\item $\alpha$: 0.75
+\item Learning rate: 0.05 with AdaGrad
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Training Time}: Similar to Word2Vec (hours to days)
+
+\vspace{0.2cm}
+\bottomnote{GloVe implementation simpler than Word2Vec (no neural network)}
+\end{frame}
+
+% Slide A10: Word2Vec vs GloVe Comparison
+\begin{frame}[t]{Appendix A10: Word2Vec vs GloVe - When to Use Each}
+\small
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Aspect} & \textbf{Word2Vec} & \textbf{GloVe} \\
+\midrule
+Method & Local context window & Global co-occurrence \\
+Objective & Predict context & Factorize matrix \\
+Complexity & $O(k \cdot d)$ per pair & $O(nnz)$ total \\
+Training & Online (streaming) & Batch (requires X) \\
+Memory & Low (embeddings only) & High (needs matrix) \\
+Quality & Excellent & Excellent \\
+Speed & Fast & Moderate \\
+Rare words & Better (Skip-gram) & Moderate \\
+Analogies & 72\% & 75\% \\
+Best for & Large corpora, streaming & Small/medium corpora \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{Empirical Results} (on same corpus):
+
+\begin{itemize}
+\item Performance: Nearly identical (GloVe 3-5\% better on some tasks)
+\item Training time: Word2Vec faster (no matrix construction)
+\item Implementation: Word2Vec simpler (fewer hyperparameters)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Recommendation}: Start with Word2Vec, try GloVe if you have time
+
+\vspace{0.2cm}
+\bottomnote{Both are excellent - choice matters less than proper training}
+\end{frame}
+
+% ===== ADVANCED TOPICS (A11-A15) =====
+
+% Slide A11: Implementation Details
+\begin{frame}[t]{Appendix A11: Implementation Details and Best Practices}
+\small
+\textbf{Corpus Preparation}:
+
+\begin{itemize}
+\item Lowercase everything (or preserve case)
+\item Remove rare words (< 5 occurrences)
+\item Subsampling frequent words: $P(w_i) = 1 - \sqrt{t/f(w_i)}$ where $t=10^{-5}$
+\item Helps balance frequent/rare words
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Hyperparameter Choices}:
+
+\begin{center}
+\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Parameter} & \textbf{Small Corpus} & \textbf{Large Corpus} \\
+\midrule
+Embedding dim $d$ & 100-200 & 300-500 \\
+Window size $c$ & 3-5 & 5-10 \\
+Negative samples $k$ & 5-10 & 2-5 \\
+Min word count & 5 & 10 \\
+Learning rate $\eta$ & 0.025 & 0.025 \\
+Epochs & 10-20 & 5-10 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{Debugging Tips}:
+
+\begin{itemize}
+\item Check: Loss should decrease steadily
+\item Test: Run analogies after each epoch
+\item Validate: Hold out 10\% for validation
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{These details matter - bad hyperparameters give poor embeddings}
+\end{frame}
+
+% Slide A12: FastText - Subword Embeddings
+\begin{frame}[t]{Appendix A12: FastText - Character N-grams}
+\small
+\textbf{Motivation}: Word2Vec/GloVe ignore word morphology
+
+\vspace{3mm}
+\textbf{FastText Innovation} (Facebook AI, 2017):
+
+Represent words as bags of character n-grams
+
+\vspace{3mm}
+\textbf{Example}: ``playing'' = <pl, pla, lay, ayi, yin, ing, ng>
+
+\vspace{3mm}
+\textbf{Embedding}:
+
+$$v_{playing} = \sum_{g \in ngrams(``playing'')} v_g$$
+
+Sum of character n-gram embeddings
+
+\vspace{5mm}
+\textbf{Advantages}:
+
+\begin{itemize}
+\item Handle OOV words (unseen in training)
+\item Capture morphology (``play'' in ``playing'', ``player'')
+\item Better for morphologically rich languages
+\item Small vocabulary (can't memorize all words)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Trade-offs}:
+
+\begin{itemize}
+\item \textcolor{green}{Handles rare/unseen words}
+\item \textcolor{red}{More parameters (n-grams)}
+\item \textcolor{green}{Morphological awareness}
+\item \textcolor{red}{Slower training}
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{FastText extends Word2Vec - useful for morphology-heavy tasks}
+\end{frame}
+
+% Slide A13: ELMo - Contextualized Embeddings Preview
+\begin{frame}[t]{Appendix A13: ELMo - Deep Contextualized Embeddings}
+\small
+\textbf{Limitation of Word2Vec/GloVe}: One vector per word (no context)
+
+``bank'' always has same embedding (averages river and money meanings)
+
+\vspace{5mm}
+\textbf{ELMo Solution} (2018):
+
+\begin{itemize}
+\item Embeddings from Language Model (ELMo)
+\item BiLSTM reads sentence
+\item Each word gets different embedding depending on context
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Example}:
+
+\begin{itemize}
+\item ``The bank of the river'' $\rightarrow$ $v_{bank}^{river}$
+\item ``Money in the bank'' $\rightarrow$ $v_{bank}^{money}$
+\item $v_{bank}^{river} \neq v_{bank}^{money}$
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Connection to Week 6}:
+
+ELMo $\rightarrow$ BERT $\rightarrow$ GPT progression
+
+All use context to modify embeddings
+
+\vspace{3mm}
+\textbf{Note}: Static embeddings (Word2Vec/GloVe) still useful for many tasks
+
+\vspace{0.2cm}
+\bottomnote{ELMo bridged static embeddings to contextual (BERT) - important milestone}
+\end{frame}
+
+% Slide A14: Evaluation Metrics
+\begin{frame}[t]{Appendix A14: Evaluation Metrics}
+\small
+\textbf{Intrinsic Evaluation} (embedding quality directly):
+
+\begin{itemize}
+\item \textbf{Word Similarity}: Correlation with human judgments (WordSim-353, SimLex-999)
+\item \textbf{Word Analogies}: Accuracy on a:b :: c:d tasks (Google analogy dataset)
+\item \textbf{Clustering}: Do semantic categories cluster?
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Extrinsic Evaluation} (downstream task performance):
+
+\begin{itemize}
+\item Use embeddings in actual NLP task
+\item Sentiment classification accuracy
+\item Named entity recognition F1
+\item Question answering performance
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Trade-offs}:
+
+\begin{itemize}
+\item Intrinsic: Fast, but doesn't guarantee downstream success
+\item Extrinsic: Slow, but measures real usefulness
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Best Practice}: Use both - intrinsic for development, extrinsic for final validation
+
+\vspace{0.2cm}
+\bottomnote{Good intrinsic scores usually (but not always) lead to good extrinsic performance}
+\end{frame}
+
+% Slide A15: Connection to Modern Transformers
+\begin{frame}[t]{Appendix A15: From Word2Vec to Transformers}
+\small
+\textbf{The Evolution} (2013-2024):
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Year} & \textbf{Model} & \textbf{Innovation} \\
+\midrule
+2013 & Word2Vec & Static distributed representations \\
+2014 & GloVe & Matrix factorization perspective \\
+2017 & FastText & Subword embeddings \\
+2018 & ELMo & Contextualized (BiLSTM) \\
+2018 & BERT & Transformer encoder (Week 6) \\
+2018 & GPT & Transformer decoder (Week 6) \\
+2024 & GPT-4/Claude & 1T+ parameters, multimodal \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{What Stayed from Word2Vec}:
+
+\begin{itemize}
+\item Embedding layer (first layer of all neural models)
+\item Distributional hypothesis
+\item Pre-training on large corpora
+\item Vector arithmetic intuition
+\end{itemize}
+
+\vspace{5mm}
+\textbf{What Changed}:
+
+\begin{itemize}
+\item Static $\rightarrow$ Contextualized
+\item Single vector $\rightarrow$ Different vectors per context
+\item Window $\rightarrow$ Full sentence attention
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{Word2Vec started the revolution - transformers completed it}
+\end{frame}
+
+\end{document}

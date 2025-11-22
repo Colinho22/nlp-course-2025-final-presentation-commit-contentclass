@@ -1,0 +1,431 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+% Packages
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{tcolorbox}
+
+% Custom colors
+\definecolor{mlblue}{RGB}{68,114,196}
+\definecolor{mlpurple}{RGB}{139,90,155}
+\definecolor{mlgreen}{RGB}{68,160,68}
+\definecolor{mlorange}{RGB}{255,127,14}
+\definecolor{mlred}{RGB}{214,39,40}
+
+% Title
+\title{Transformers: Understanding the Pipeline}
+\subtitle{Input → Computation → Output → WHY}
+\author{Week 5: Transformers}
+\date{}
+
+\begin{document}
+
+% Slide 1: Title
+\begin{frame}
+\titlepage
+\end{frame}
+
+% ===========================================
+% PART 1: THE BASICS (4 slides)
+% ===========================================
+
+% Slide 2: The Simple Goal
+\begin{frame}{The Simple Goal}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{INPUT:}
+\begin{itemize}
+\item Text: ``The cat sat on the mat''
+\item 7 words (English)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{OUTPUT:}
+\begin{itemize}
+\item Text: ``Le chat était assis sur le tapis''
+\item 7 words (French)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{THE TASK:}
+\begin{itemize}
+\item Translate
+\item Predict next word
+\item Answer questions
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{../figures/sr_3d_simple_01_pipeline.pdf}
+\end{center}
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY:} We need to understand what each word means in context to produce correct output
+}}
+\end{center}
+\end{frame}
+
+% Slide 3: The Old Way (RNN)
+\begin{frame}{The Old Way: RNN (Sequential Processing)}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/sr_3d_simple_02_sequential_redline.pdf}
+\end{center}
+
+\vspace{3mm}
+\textbf{THE PROBLEM: RED LINE = Sequential Bottleneck}
+\begin{itemize}
+\item Word 1 → process → WAIT
+\item Word 2 → process → WAIT
+\item Word 3 → process → WAIT
+\item Time: 300ms | GPU: 2\% | Training: 90 days
+\end{itemize}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{red!20}{\parbox{0.9\textwidth}{
+\textbf{WHY THIS IS BAD:} Cannot use all GPU cores → 95\% GPU sits idle → Takes forever!
+}}
+\end{center}
+\end{frame}
+
+% Slide 4: The New Way (Transformer)
+\begin{frame}{The New Way: Transformer (Parallel Processing)}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/sr_3d_simple_03_parallel_cube.pdf}
+\end{center}
+
+\vspace{3mm}
+\textbf{THE SOLUTION: NO RED LINE = All Parallel}
+\begin{itemize}
+\item ALL words processed simultaneously
+\item NO waiting between words
+\item Time: 10ms | GPU: 92\% | Training: 1 day
+\end{itemize}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{green!20}{\parbox{0.9\textwidth}{
+\textbf{WHY THIS IS GOOD:} Uses 100\% of GPU → 90x faster (90 days → 1 day)!
+}}
+\end{center}
+\end{frame}
+
+% ===========================================
+% PART 2: STEP-BY-STEP HOW IT WORKS (6 slides)
+% ===========================================
+
+% Slide 5: Step 1 - Words to Numbers
+\begin{frame}{Step 1: Turn Words into Numbers}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/sr_3d_simple_04_word_to_vector.pdf}
+\end{center}
+
+\vspace{3mm}
+\textbf{INPUT → COMPUTATION → OUTPUT:}
+\begin{itemize}
+\item INPUT: ``cat'' (text)
+\item COMPUTATION: Look up in dictionary → get vector [0.2, 0.5, -0.1, ...]
+\item OUTPUT: Numbers the computer can use
+\end{itemize}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY:} Computers only understand numbers, not words!
+}}
+\end{center}
+\end{frame}
+
+% Slide 6: Step 2 - Add Position
+\begin{frame}{Step 2: Add Position Information}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/sr_3d_simple_05_position_addition.pdf}
+\end{center}
+
+\vspace{3mm}
+\textbf{THE PROBLEM:} [cat, sat, the] same as [the, cat, sat]? NO!
+
+\vspace{3mm}
+\textbf{COMPUTATION:} Add position number to each word's vector
+\begin{itemize}
+\item Meaning vector: [2, 1, 0.5]
+\item + Position vector: [0.5, 1.5, 1]
+\item = Combined vector: [2.5, 2.5, 1.5]
+\end{itemize}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY:} Without this, we lose word order!
+}}
+\end{center}
+\end{frame}
+
+% Slide 7: Step 3 - Calculate Attention
+\begin{frame}{Step 3: Calculate Attention (Who Looks at Who)}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/sr_3d_simple_06_attention_network.pdf}
+\end{center}
+
+\vspace{3mm}
+\textbf{COMPUTATION:} For each word, calculate focus percentages
+\begin{itemize}
+\item ``cat'' looks at: ``the'' (50\%), ``sat'' (30\%), ``cat'' (20\%)
+\item Result: Percentage weights for each word pair
+\end{itemize}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY:} Words need context! ``sat'' needs to know WHAT sat
+}}
+\end{center}
+\end{frame}
+
+% Slide 8: Step 4 - Combine Information
+\begin{frame}{Step 4: Combine Information (Weighted Average)}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/sr_3d_simple_07_weighted_combine.pdf}
+\end{center}
+
+\vspace{3mm}
+\textbf{COMPUTATION:} Weighted average - take 50\% of ``the'', 30\% of ``sat'', 20\% of ``cat''
+
+\vspace{3mm}
+\textbf{OUTPUT:} New vector for each word (now includes context!)
+
+\vspace{3mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY:} Each word now knows about relevant other words
+}}
+\end{center}
+\end{frame}
+
+% Slide 9: Step 5 - Multiple Perspectives
+\begin{frame}{Step 5: Multiple Perspectives (Multi-Head Attention)}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/sr_3d_simple_08_multihead_subspaces.pdf}
+\end{center}
+
+\vspace{3mm}
+\textbf{COMPUTATION:} Do Steps 3-4 eight times in parallel
+\begin{itemize}
+\item Head 1: Grammar patterns | Head 2: Meaning relationships
+\item Head 3: Position patterns | Head 4: Global context
+\item ... (8 heads total)
+\end{itemize}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY:} Different types of relationships matter (grammar vs meaning vs position)
+}}
+\end{center}
+\end{frame}
+
+% Slide 10: Step 6 - Final Prediction
+\begin{frame}{Step 6: Final Prediction}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{INPUT:} Context-enriched vectors
+\begin{itemize}
+\item Each word knows about:
+  \begin{itemize}
+  \item Its meaning
+  \item Its position
+  \item Related words (8 perspectives)
+  \end{itemize}
+\end{itemize}
+
+\vspace{5mm}
+\textbf{COMPUTATION:}
+\begin{itemize}
+\item Feed through prediction layer
+\item Calculate probabilities for each possible next word
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{OUTPUT:}
+\begin{itemize}
+\item Next word probabilities:
+  \begin{itemize}
+  \item ``Le'': 85\%
+  \item ``The'': 10\%
+  \item Other: 5\%
+  \end{itemize}
+\item Pick highest: ``Le''
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Result:} Translation complete!
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY:} This is what we wanted all along - accurate prediction from context!
+}}
+\end{center}
+\end{frame}
+
+% ===========================================
+% PART 3: WHY IT'S FAST (2 slides)
+% ===========================================
+
+% Slide 11: The Speed Secret
+\begin{frame}{The Speed Secret: No Red Line!}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/sr_3d_simple_09_speed_comparison.pdf}
+\end{center}
+
+\vspace{3mm}
+\textbf{WHY THIS MATTERS:}
+\begin{itemize}
+\item RNN: 2\% GPU usage, 90 days training, \$45K cost
+\item Transformer: 92\% GPU usage, 1 day training, \$500 cost
+\item \textbf{Result: 90x faster!}
+\end{itemize}
+\end{frame}
+
+% Slide 12: Real Numbers
+\begin{frame}{Real Numbers: The Proof}
+\textbf{Actual Experimental Results (``Attention Is All You Need'', 2017):}
+
+\vspace{5mm}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Model} & \textbf{Training Time} & \textbf{GPU Usage} & \textbf{Quality (BLEU)} \\
+\hline
+RNN & 90 days & 2\% & 24.5 \\
+RNN + Attention & 45 days & 5\% & 28.4 \\
+\textcolor{green}{\textbf{Transformer}} & \textcolor{green}{\textbf{1 day}} & \textcolor{green}{\textbf{92\%}} & \textcolor{green}{\textbf{28.4}} \\
+\hline
+\end{tabular}
+
+\vspace{5mm}
+\textbf{KEY INSIGHT:}
+\begin{itemize}
+\item Same quality in 45x less time
+\item Better GPU utilization (2\% → 92\%)
+\item Enabled modern AI scale
+\end{itemize}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{green!20}{\parbox{0.9\textwidth}{
+\textbf{WHY BELIEVE THIS:} Published results, reproduced worldwide, powers all modern LLMs
+}}
+\end{center}
+\end{frame}
+
+% ===========================================
+% PART 4: IMPACT (3 slides)
+% ===========================================
+
+% Slide 13: What This Enabled
+\begin{frame}{What This Enabled: 2024 Landscape}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/sr_3d_simple_10_application_sphere.pdf}
+\end{center}
+
+\vspace{3mm}
+\textbf{Same architecture, different data:}
+\begin{itemize}
+\item Language: ChatGPT, GPT-4, Claude
+\item Vision: DALL-E, Midjourney, Stable Diffusion
+\item Audio: Whisper, MusicGen
+\item Multimodal: Gemini, GPT-4V
+\end{itemize}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY THIS MATTERS:} Without 100x speedup, GPT-4 training would take 10+ years (impossible!)
+}}
+\end{center}
+\end{frame}
+
+% Slide 14: The Tradeoff
+\begin{frame}{The Tradeoff: What We Gave Up}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Advantages (PRO):}
+\begin{itemize}
+\item \textcolor{green}{100x faster training}
+\item \textcolor{green}{No sequential bottleneck}
+\item \textcolor{green}{92\% GPU utilization}
+\item \textcolor{green}{Works on any data type}
+\item \textcolor{green}{Enabled modern AI}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Disadvantages (CON):}
+\begin{itemize}
+\item \textcolor{red}{More memory (quadratic)}
+\item \textcolor{red}{Needs more data}
+\item \textcolor{red}{Limited sequence length}
+\item \textcolor{red}{More complex to tune}
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{yellow!20}{\parbox{0.9\textwidth}{
+\textbf{THE DECISION:} Speed + quality > memory cost for modern AI
+}}
+\end{center}
+
+\vspace{5mm}
+\textbf{WHY ACCEPT TRADEOFF:} Memory is cheap, time is expensive. Better to train fast even if uses more RAM.
+\end{frame}
+
+% Slide 15: Summary
+\begin{frame}{Summary: The Pipeline Recap}
+\textbf{The 6-Step Pipeline (NO RED LINE!):}
+
+\vspace{3mm}
+\begin{enumerate}
+\item \textbf{Words → Numbers:} Dictionary lookup (embeddings)
+\item \textbf{Add Position:} Vector addition (meaning + position)
+\item \textbf{Calculate Attention:} Who looks at who? (percentage weights)
+\item \textbf{Combine Information:} Weighted average (context-enriched)
+\item \textbf{Multiple Perspectives:} 8 heads in parallel (grammar, meaning, position, ...)
+\item \textbf{Predict Output:} Final layer (translation/next word)
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{KEY INSIGHT: All in parallel - NO RED LINE!}
+\begin{itemize}
+\item Result: 90 days → 1 day (90x speedup)
+\item Enabled: ChatGPT, GPT-4, DALL-E, Whisper, ...
+\end{itemize}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{green!20}{\parbox{0.9\textwidth}{
+\textbf{Next Week:} Pre-training \& Fine-tuning - Now that training is fast, we can train HUGE models!
+}}
+\end{center}
+\end{frame}
+
+% Final slide
+\begin{frame}
+\begin{center}
+{\Huge \textbf{Transformers}}\\
+\vspace{5mm}
+{\Large Understanding the Pipeline}\\
+\vspace{10mm}
+{\large Input → Computation → Output → WHY}\\
+\vspace{10mm}
+{\large Questions?}
+\end{center}
+\end{frame}
+
+\end{document}

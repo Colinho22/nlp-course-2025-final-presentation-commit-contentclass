@@ -1,0 +1,2157 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{amsmath}
+
+% Color definitions
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255, 127, 14}
+\definecolor{mlgreen}{RGB}{44, 160, 44}
+\definecolor{mlred}{RGB}{214, 39, 40}
+\definecolor{mlgray}{RGB}{127, 127, 127}
+
+% Additional colors for template compatibility
+\definecolor{lightgray}{RGB}{240, 240, 240}
+\definecolor{midgray}{RGB}{180, 180, 180}
+
+% Apply custom colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in toc}{fg=mlblue}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{block title}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{block body}{bg=mllavender4,fg=black}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% Clean itemize/enumerate
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+
+% Reduce margins for more content space
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% Command for bottom annotation
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+\title{Week 11: Model Efficiency \& Optimization}
+\subtitle{From 700GB to 40GB: Making AI Deployable}
+\author{BSc Natural Language Processing}
+\institute{Discovery-Based Learning Approach}
+\date{2025}
+
+\begin{document}
+
+% ==================== TITLE SLIDE ====================
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+% ==================== I. OPENING SEQUENCE ====================
+
+% Slide 1: Hook - The 350GB Problem
+\begin{frame}{The 350GB Problem}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Scenario:}
+
+\vspace{3mm}
+You want to run GPT-3 locally for privacy\\
+\vspace{2mm}
+Your laptop has 16GB RAM\\
+\vspace{2mm}
+GPT-3 model size: 350GB\\
+\vspace{2mm}
+
+\vspace{5mm}
+\colorbox{mlred!20}{\parbox{0.9\textwidth}{
+\textbf{The Impossibility:}\\
+Model is 22$\times$ larger than your RAM\\
+Loading would require 175GB of disk swap\\
+Inference: 1 token per minute (unusable)
+}}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/model_size_impossibility.pdf}
+\end{center}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{\parbox{0.9\textwidth}{
+\textbf{The Discovery:}\\
+``The 350GB problem has a 40GB solution''\\
+4-bit quantization: 75\% size reduction\\
+Accuracy loss: only 3\%
+}}
+
+\end{columns}
+
+\bottomnote{Discovery Question: How would YOU make a huge model fit on a small device?}
+\end{frame}
+
+% Slide 2: Paradigm Shift (OLD vs NEW)
+\begin{frame}{Paradigm Shift: From Smaller Models to Compressed Models}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{OLD Approach (2015):}
+
+\vspace{3mm}
+\textbf{Problem:} Large model won't fit
+
+\vspace{2mm}
+\textbf{Solution:} Train a smaller model
+
+\vspace{2mm}
+\textbf{Example:}
+\begin{itemize}
+\item GPT-2: 1.5B params → 117M params
+\item Size: 6GB → 500MB
+\item Accuracy: 85\% → 67\%
+\item Loss: 18 percentage points
+\end{itemize}
+
+\vspace{5mm}
+\colorbox{mlred!20}{\parbox{0.9\textwidth}{
+\textbf{Trade-off:}\\
+Smaller size, much worse performance
+}}
+
+\column{0.48\textwidth}
+\textbf{NEW Approach (2024):}
+
+\vspace{3mm}
+\textbf{Problem:} Large model won't fit
+
+\vspace{2mm}
+\textbf{Solution:} Compress the large model
+
+\vspace{2mm}
+\textbf{Example:}
+\begin{itemize}
+\item GPT-3: 175B params (same capability)
+\item Size: 700GB → 87GB (INT4)
+\item Accuracy: 92\% → 89\%
+\item Loss: 3 percentage points
+\end{itemize}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{\parbox{0.9\textwidth}{
+\textbf{Trade-off:}\\
+Much smaller size, minimal performance loss
+}}
+
+\end{columns}
+
+\bottomnote{Key Insight: Compress post-training preserves learned knowledge better than training smaller}
+\end{frame}
+
+% Slide 3: Real-World Impact 2024
+\begin{frame}{Real-World Deployments in 2024}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{On-Device LLMs:}
+
+\vspace{3mm}
+\textbf{1. LLaMA-2 7B on Phone}
+\begin{itemize}
+\item Original: 28GB (FP32)
+\item Compressed: 3.5GB (4-bit)
+\item Method: Quantization
+\item Performance: 15 tokens/sec
+\end{itemize}
+
+\vspace{3mm}
+\textbf{2. Whisper in Browser}
+\begin{itemize}
+\item Original: 3GB (large model)
+\item Compressed: 150MB (distilled)
+\item Method: Knowledge distillation
+\item Performance: Real-time transcription
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Edge Computing:}
+
+\vspace{3mm}
+\textbf{3. BERT on Arduino}
+\begin{itemize}
+\item Original: 440MB (base)
+\item Compressed: 2MB (pruned + quantized)
+\item Method: 95\% pruning + INT8
+\item Performance: 200ms inference
+\end{itemize}
+
+\vspace{3mm}
+\textbf{4. GPT-4 API Efficiency}
+\begin{itemize}
+\item Latency: 800ms → 150ms
+\item Cost: \$0.03/1K → \$0.006/1K
+\item Method: Mixed precision + distillation
+\item Scale: Billions of requests/day
+\end{itemize}
+
+\end{columns}
+
+\bottomnote{Deployment Reality: Compression enables AI everywhere (phones, browsers, microcontrollers)}
+\end{frame}
+
+% ==================== II. FOUNDATION BUILDING ====================
+
+% Slides 4-5: Model Size Problem (Visual + Detailed)
+\begin{frame}{Foundation 1: Model Size Problem (Visual)}
+
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/model_size_impossibility.pdf}
+\end{center}
+
+\vspace{3mm}
+\colorbox{mllavender4!80}{\parbox{0.9\textwidth}{
+\textbf{The Core Problem:}\\
+Modern models are orders of magnitude larger than deployment memory\\
+\\
+\textbf{Quantification:}
+\begin{itemize}
+\item GPT-3: 175B parameters $\times$ 4 bytes = 700GB (FP32)
+\item Your laptop: 16GB RAM
+\item Ratio: 44$\times$ too large
+\end{itemize}
+}}
+
+\bottomnote{Visualization: Memory hierarchy from L1 cache to disk shows the impossibility gap}
+\end{frame}
+
+\begin{frame}{Foundation 1: Model Size Problem (Detailed)}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Memory Hierarchy:}
+
+\vspace{3mm}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Level} & \textbf{Size} & \textbf{Speed} \\
+\midrule
+L1 Cache & 256KB & 1ns \\
+L2 Cache & 8MB & 5ns \\
+L3 Cache & 32MB & 20ns \\
+RAM & 16GB & 100ns \\
+SSD & 1TB & 100$\mu$s \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+\textbf{Fundamental Constraint:}\\
+\textit{Inference requires entire model in fast memory}
+
+\column{0.48\textwidth}
+\textbf{Model Size Evolution:}
+
+\vspace{3mm}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Model} & \textbf{Params} & \textbf{Size (FP32)} \\
+\midrule
+BERT-Base & 110M & 440MB \\
+BERT-Large & 340M & 1.4GB \\
+GPT-2 & 1.5B & 6GB \\
+GPT-3 & 175B & 700GB \\
+PaLM & 540B & 2.1TB \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+\colorbox{mlorange!20}{\parbox{0.9\textwidth}{
+\textbf{Trend:} Models grow 10$\times$ every 2 years\\
+Hardware grows 2$\times$ every 2 years\\
+Gap widens without compression
+}}
+
+\end{columns}
+
+\bottomnote{Mathematical Reality: 175B params $\times$ 4 bytes/param = 700GB minimum memory}
+\end{frame}
+
+% Slides 6-7: Compression Spectrum (Visual + Detailed)
+\begin{frame}{Foundation 2: Compression Spectrum (Visual)}
+
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/compression_spectrum_visual.pdf}
+\end{center}
+
+\vspace{3mm}
+\colorbox{mllavender4!80}{\parbox{0.9\textwidth}{
+\textbf{The Spectrum:}\\
+Lossless (perfect accuracy, small gains) to Lossy (large gains, small accuracy loss)\\
+\\
+\textbf{Sweet Spot:} 4-bit quantization (75\% reduction, 3\% accuracy loss)
+}}
+
+\bottomnote{Trade-off Visualization: Accuracy vs size reduction across compression methods}
+\end{frame}
+
+\begin{frame}{Foundation 2: Compression Spectrum (Detailed)}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Lossless Methods:}
+
+\vspace{3mm}
+\textbf{1. Weight Sharing}
+\begin{itemize}
+\item Technique: Cluster similar weights
+\item Reduction: 10-20\%
+\item Accuracy: 100\% preserved
+\item Use case: When zero loss required
+\end{itemize}
+
+\vspace{3mm}
+\textbf{2. Low-Rank Factorization}
+\begin{itemize}
+\item Technique: $W = UV^T$ decomposition
+\item Reduction: 30-40\%
+\item Accuracy: 99-100\%
+\item Use case: Dense layers
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Lossy Methods:}
+
+\vspace{3mm}
+\textbf{3. Quantization (INT8)}
+\begin{itemize}
+\item Technique: FP32 $\rightarrow$ 8-bit integers
+\item Reduction: 75\%
+\item Accuracy: 95-99\%
+\item Use case: Most deployments
+\end{itemize}
+
+\vspace{3mm}
+\textbf{4. Quantization (INT4)}
+\begin{itemize}
+\item Technique: FP32 $\rightarrow$ 4-bit integers
+\item Reduction: 87.5\%
+\item Accuracy: 90-97\%
+\item Use case: Mobile/edge devices
+\end{itemize}
+
+\end{columns}
+
+\bottomnote{Design Decision: Choose method based on accuracy tolerance and size requirements}
+\end{frame}
+
+% Slides 8-9: Deployment Platforms (Visual + Detailed)
+\begin{frame}{Foundation 3: Deployment Platforms (Visual)}
+
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/deployment_platforms_comparison.pdf}
+\end{center}
+
+\textbf{Platform Hierarchy:}
+Server (350GB) → Edge (16GB) → Mobile (4GB) → MCU (512KB)
+
+\textbf{Constraint:} Each tier needs 10-100$\times$ more compression
+
+\bottomnote{Platform Requirements: Memory, latency, energy determine compression strategy}
+\end{frame}
+
+\begin{frame}{Foundation 3: Deployment Platforms (Detailed)}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Server (80-512GB RAM):}
+
+\vspace{2mm}
+\textbf{Compression:}
+\begin{itemize}
+\item GPT-3: 700GB $\rightarrow$ 350GB (FP16)
+\item Method: Mixed precision
+\item Latency: $<$100ms
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Edge (4-16GB RAM):}
+
+\vspace{2mm}
+\textbf{Compression:}
+\begin{itemize}
+\item GPT-3: 700GB $\rightarrow$ 87GB (INT4)
+\item Method: Quantization
+\item Latency: $<$500ms
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Mobile (2-4GB RAM):}
+
+\vspace{2mm}
+\textbf{Compression:}
+\begin{itemize}
+\item LLaMA-7B: 28GB $\rightarrow$ 3.5GB
+\item Method: 4-bit + pruning
+\item Battery critical
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Microcontroller (256KB-2MB):}
+
+\vspace{2mm}
+\textbf{Compression:}
+\begin{itemize}
+\item BERT: 440MB $\rightarrow$ 2MB
+\item Method: Prune + distill + INT8
+\item 200$\times$ reduction
+\end{itemize}
+
+\end{columns}
+
+\bottomnote{Deployment Reality: Platform constraints drive compression method selection}
+\end{frame}
+
+% ==================== III. TAXONOMY SECTION ====================
+
+% Slides 10-11: Quantization (FP32 → INT8 → INT4)
+\begin{frame}{Method 1: Quantization (Visual)}
+
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/quantization_comparison.pdf}
+\end{center}
+
+\vspace{3mm}
+\colorbox{mllavender4!80}{\parbox{0.9\textwidth}{
+\textbf{Core Idea:} Reduce numeric precision from 32 bits to 8 or 4 bits\\
+\\
+\textbf{Size Reduction:} FP32 (4 bytes) $\rightarrow$ INT8 (1 byte) = 75\% smaller\\
+\textbf{Accuracy:} BERT-Base: 89.5\% $\rightarrow$ 89.1\% (0.4\% loss)
+}}
+
+\bottomnote{Quantization: Map continuous floating-point values to discrete integer buckets}
+\end{frame}
+
+\begin{frame}{Method 1: Quantization (Detailed Mathematics)}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Quantization Formula:}
+
+\vspace{3mm}
+\textbf{Forward (FP32 $\rightarrow$ INT8):}
+$$q = \text{round}\left(\frac{x - x_{\text{min}}}{s}\right)$$
+
+where $s = \frac{x_{\text{max}} - x_{\text{min}}}{255}$ (scale)
+
+\vspace{5mm}
+\textbf{Inverse (INT8 $\rightarrow$ FP32):}
+$$\hat{x} = q \times s + x_{\text{min}}$$
+
+\vspace{5mm}
+\textbf{Numerical Example:}
+\begin{itemize}
+\item Weight: $x = 0.374$ (FP32)
+\item Range: $[-1.0, 1.0]$
+\item Scale: $s = 2.0/255 = 0.00784$
+\item Zero-point: 127
+\item Quantized: $q = 175$ (INT8)
+\item Recovered: $\hat{x} = 0.376$
+\item Error: 0.002 (0.5\%)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Precision Comparison:}
+
+\vspace{3mm}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Type} & \textbf{Bits} & \textbf{Range} & \textbf{Precision} \\
+\midrule
+FP32 & 32 & $\pm$3.4$\times$10$^{38}$ & 7 digits \\
+FP16 & 16 & $\pm$6.5$\times$10$^{4}$ & 3 digits \\
+INT8 & 8 & -128 to 127 & 256 values \\
+INT4 & 4 & -8 to 7 & 16 values \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+\textbf{Real Results:}
+\begin{itemize}
+\item BERT-Base FP32: 440MB, 89.5\%
+\item BERT-Base INT8: 110MB, 89.1\%
+\item BERT-Base INT4: 55MB, 87.8\%
+\end{itemize}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{\parbox{0.9\textwidth}{
+\textbf{When to Use:}\\
+Default choice for most deployments\\
+Hardware support widely available
+}}
+
+\end{columns}
+
+\bottomnote{Mathematical Foundation: Affine quantization with learned scale and zero-point}
+\end{frame}
+
+% Slides 12-13: Knowledge Distillation
+\begin{frame}{Method 2: Knowledge Distillation (Visual)}
+
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/distillation_architecture.pdf}
+\end{center}
+
+\vspace{3mm}
+\colorbox{mllavender4!80}{\parbox{0.9\textwidth}{
+\textbf{Core Idea:} Train small student model to mimic large teacher model\\
+\\
+\textbf{Size Reduction:} BERT-Large (340M) $\rightarrow$ DistilBERT (66M) = 5$\times$ smaller\\
+\textbf{Accuracy:} 94\% $\rightarrow$ 92\% (2\% loss), 2$\times$ faster inference
+}}
+
+\bottomnote{Knowledge Transfer: Student learns from teacher's soft probabilities, not hard labels}
+\end{frame}
+
+\begin{frame}{Method 2: Knowledge Distillation (Detailed Process)}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Distillation Loss:}
+
+\vspace{3mm}
+$$\mathcal{L} = \alpha \mathcal{L}_{\text{hard}} + (1-\alpha) \mathcal{L}_{\text{soft}}$$
+
+\vspace{3mm}
+\textbf{Hard Loss} (ground truth):
+$$\mathcal{L}_{\text{hard}} = -\sum_i y_i \log p_i^{\text{student}}$$
+
+\vspace{3mm}
+\textbf{Soft Loss} (teacher knowledge):
+$$\mathcal{L}_{\text{soft}} = -\sum_i p_i^{\text{teacher}} \log p_i^{\text{student}}$$
+
+\vspace{3mm}
+Temperature scaling: $p_i = \frac{\exp(z_i/T)}{\sum_j \exp(z_j/T)}$
+
+\vspace{3mm}
+\textbf{Typical Values:}
+\begin{itemize}
+\item $\alpha = 0.5$ (equal weighting)
+\item $T = 3-5$ (temperature)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Concrete Example:}
+
+\vspace{3mm}
+\textbf{Teacher: BERT-Large}
+\begin{itemize}
+\item Parameters: 340M
+\item Size: 1.4GB (FP32)
+\item Accuracy: 94.0\% (GLUE)
+\item Inference: 120ms
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Student: DistilBERT}
+\begin{itemize}
+\item Parameters: 66M (5$\times$ smaller)
+\item Size: 260MB (FP32)
+\item Accuracy: 92.5\% (1.5\% loss)
+\item Inference: 60ms (2$\times$ faster)
+\end{itemize}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{\parbox{0.9\textwidth}{
+\textbf{When to Use:}\\
+When you need $>$5$\times$ compression\\
+When you can retrain the model\\
+For production deployment at scale
+}}
+
+\end{columns}
+
+\bottomnote{Training Process: Student model trained on teacher's logits (soft targets) + true labels}
+\end{frame}
+
+% Slides 14-15: Pruning
+\begin{frame}{Method 3: Pruning (Visual)}
+
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/pruning_strategies.pdf}
+\end{center}
+
+\vspace{3mm}
+\colorbox{mllavender4!80}{\parbox{0.9\textwidth}{
+\textbf{Core Idea:} Remove unimportant weights or neurons from the network\\
+\\
+\textbf{Size Reduction:} 90\% sparsity = 10$\times$ fewer weights\\
+\textbf{Accuracy:} BERT: 89.5\% $\rightarrow$ 87.2\% (2.3\% loss at 90\% sparsity)
+}}
+
+\bottomnote{Pruning Types: Unstructured (individual weights) vs Structured (entire neurons/channels)}
+\end{frame}
+
+\begin{frame}{Method 3: Pruning (Detailed Strategies)}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Unstructured Pruning:}
+
+\vspace{3mm}
+\textbf{Algorithm:}
+\begin{enumerate}
+\item Train full model
+\item Compute weight magnitudes $|w_i|$
+\item Remove smallest $p\%$ weights
+\item Fine-tune remaining weights
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Advantages:}
+\begin{itemize}
+\item Highest compression (90-95\%)
+\item Minimal accuracy loss
+\item Flexible per-layer pruning
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Disadvantages:}
+\begin{itemize}
+\item Irregular sparsity patterns
+\item Requires sparse matrix support
+\item Limited hardware acceleration
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Structured Pruning:}
+
+\vspace{3mm}
+\textbf{Algorithm:}
+\begin{enumerate}
+\item Train full model
+\item Compute neuron/channel importance
+\item Remove entire neurons/channels
+\item Fine-tune remaining network
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Advantages:}
+\begin{itemize}
+\item Direct hardware speedup
+\item No special sparse libraries
+\item Smaller actual model size
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Disadvantages:}
+\begin{itemize}
+\item Lower compression (40-60\%)
+\item More accuracy loss
+\item Coarser granularity
+\end{itemize}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{\parbox{0.9\textwidth}{
+\textbf{When to Use:}\\
+Unstructured: Research, high compression\\
+Structured: Production, guaranteed speedup
+}}
+
+\end{columns}
+
+\bottomnote{Pruning Results: 90\% sparsity achieves 10$\times$ compression with 2-3\% accuracy loss}
+\end{frame}
+
+% Slides 16-17: Low-Rank Factorization
+\begin{frame}{Method 4: Low-Rank Factorization (Visual)}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Matrix Decomposition:}
+
+\vspace{3mm}
+Original weight matrix:
+$$W \in \mathbb{R}^{m \times n}$$
+
+Decomposed form:
+$$W \approx U V^T$$
+
+where $U \in \mathbb{R}^{m \times r}$, $V \in \mathbb{R}^{n \times r}$, $r \ll \min(m,n)$
+
+\vspace{5mm}
+\textbf{Parameter Count:}
+\begin{itemize}
+\item Original: $m \times n$
+\item Factorized: $m \times r + n \times r = r(m+n)$
+\item Reduction: $\frac{mn}{r(m+n)}$
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Numerical Example:}
+
+\vspace{3mm}
+Dense layer: $1024 \times 1024$
+
+\vspace{2mm}
+\textbf{Original:}
+\begin{itemize}
+\item Parameters: $1024^2 = 1,048,576$
+\item Size: 4MB (FP32)
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Factorized ($r=64$):}
+\begin{itemize}
+\item Parameters: $64(1024+1024) = 131,072$
+\item Size: 512KB (FP32)
+\item Reduction: 8$\times$ smaller
+\item Accuracy loss: $<$1\%
+\end{itemize}
+
+\vspace{5mm}
+\colorbox{mllavender4!80}{\parbox{0.9\textwidth}{
+\textbf{SVD Insight:}\\
+Most variance captured by first $r$ singular values\\
+Remaining $(n-r)$ dimensions contribute little
+}}
+
+\end{columns}
+
+\bottomnote{Mathematical Foundation: Singular Value Decomposition (SVD) provides optimal low-rank approximation}
+\end{frame}
+
+\begin{frame}{Method 4: Low-Rank Factorization (Detailed Analysis)}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{SVD Algorithm:}
+
+\vspace{3mm}
+\textbf{Step 1: Compute SVD}
+$$W = U \Sigma V^T$$
+
+where $\Sigma = \text{diag}(\sigma_1, \ldots, \sigma_n)$ with $\sigma_1 \geq \sigma_2 \geq \ldots$
+
+\vspace{3mm}
+\textbf{Step 2: Choose rank $r$}
+
+Energy threshold: $\frac{\sum_{i=1}^r \sigma_i^2}{\sum_{i=1}^n \sigma_i^2} \geq 0.95$
+
+\vspace{3mm}
+\textbf{Step 3: Truncate}
+$$W_r = U_r \Sigma_r V_r^T$$
+
+where $U_r \in \mathbb{R}^{m \times r}$, $\Sigma_r \in \mathbb{R}^{r \times r}$, $V_r \in \mathbb{R}^{n \times r}$
+
+\vspace{3mm}
+\textbf{Step 4: Absorb $\Sigma_r$}
+$$W_r = (U_r \sqrt{\Sigma_r}) (\sqrt{\Sigma_r} V_r^T)$$
+
+\column{0.48\textwidth}
+\textbf{Real Results:}
+
+\vspace{3mm}
+\textbf{BERT Embedding Layer:}
+\begin{itemize}
+\item Original: $30K \times 768 = 23M$ params
+\item Factorized ($r=128$): $128(30K+768) = 4M$
+\item Reduction: 5.8$\times$ smaller
+\item Accuracy: 89.5\% $\rightarrow$ 89.2\%
+\end{itemize}
+
+\vspace{3mm}
+\textbf{GPT-2 Attention:}
+\begin{itemize}
+\item Original: $768 \times 768 = 590K$ params/layer
+\item Factorized ($r=64$): $64 \times 1536 = 98K$
+\item Reduction: 6$\times$ smaller
+\item Accuracy: Minimal loss ($<$0.5\%)
+\end{itemize}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{\parbox{0.9\textwidth}{
+\textbf{When to Use:}\\
+Dense linear layers (embeddings, attention)\\
+When weight matrix has low intrinsic rank\\
+Combined with quantization for best results
+}}
+
+\end{columns}
+
+\bottomnote{Compression Sweet Spot: $r \approx 10-20\%$ of original dimension balances size and accuracy}
+\end{frame}
+
+% Slides 18-19: Weight Sharing
+\begin{frame}{Method 5: Weight Sharing (Visual)}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Clustering Approach:}
+
+\vspace{3mm}
+\textbf{Before:} Each weight is unique
+\begin{itemize}
+\item 175B unique floating-point values
+\item Full precision per weight
+\item High memory requirement
+\end{itemize}
+
+\vspace{5mm}
+\textbf{After:} Weights share codebook
+\begin{itemize}
+\item 256 unique cluster centers
+\item Indices point to codebook
+\item 2-4 bits per weight (index)
+\end{itemize}
+
+\vspace{5mm}
+\colorbox{mllavender4!80}{\parbox{0.9\textwidth}{
+\textbf{Storage:}\\
+Codebook: $k$ values (float)\\
+Indices: $n$ values (2-4 bits)\\
+Total: Much smaller than $n$ floats
+}}
+
+\column{0.48\textwidth}
+\textbf{K-Means Clustering:}
+
+\vspace{3mm}
+\textbf{Algorithm:}
+\begin{enumerate}
+\item Collect all $n$ weights
+\item Run k-means with $k$ clusters
+\item Replace each weight with nearest cluster center
+\item Store: cluster centers + indices
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Numerical Example:}
+\begin{itemize}
+\item Weights: $[0.72, 0.69, -0.31, -0.28, ...]$
+\item Clusters ($k=4$): $[0.7, -0.3, 0.0, 1.2]$
+\item Indices: $[0, 0, 1, 1, ...]$ (2 bits each)
+\item Original: 4 bytes/weight
+\item Compressed: 0.25 bytes/weight
+\item Reduction: 16$\times$ smaller
+\end{itemize}
+
+\end{columns}
+
+\bottomnote{Weight Sharing: Lossless-to-lossy spectrum depending on number of clusters}
+\end{frame}
+
+\begin{frame}{Method 5: Weight Sharing (Detailed Implementation)}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Compression Analysis:}
+
+\vspace{3mm}
+\textbf{Storage Requirements:}
+
+Codebook size: $k$ clusters $\times$ 4 bytes
+
+Index size: $n$ weights $\times$ $\lceil \log_2 k \rceil$ bits
+
+Total: $4k + n\lceil \log_2 k \rceil / 8$ bytes
+
+\vspace{3mm}
+\textbf{Compression Ratio:}
+$$\text{Ratio} = \frac{4n}{4k + n\lceil \log_2 k \rceil / 8}$$
+
+\vspace{3mm}
+\textbf{Example ($n=1M$, $k=256$):}
+\begin{itemize}
+\item Original: $1M \times 4 = 4$MB
+\item Codebook: $256 \times 4 = 1$KB
+\item Indices: $1M \times 1 = 1$MB (8 bits)
+\item Total: 1MB + 1KB $\approx$ 1MB
+\item Ratio: 4$\times$ compression
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Accuracy Trade-offs:}
+
+\vspace{3mm}
+\begin{tabular}{rrr}
+\toprule
+\textbf{Clusters} & \textbf{Compression} & \textbf{Accuracy} \\
+\midrule
+$k=2$ & 32$\times$ & 60-70\% \\
+$k=16$ & 8$\times$ & 85-90\% \\
+$k=256$ & 4$\times$ & 95-99\% \\
+$k=4096$ & 2.7$\times$ & 99-100\% \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+\textbf{Real Results:}
+\begin{itemize}
+\item BERT ($k=256$): 440MB $\rightarrow$ 110MB
+\item Accuracy: 89.5\% $\rightarrow$ 89.3\%
+\item Combined with pruning: 10$\times$ total
+\end{itemize}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{\parbox{0.9\textwidth}{
+\textbf{When to Use:}\\
+When you need lossless compression\\
+Combined with quantization/pruning\\
+For weight-heavy models
+}}
+
+\end{columns}
+
+\bottomnote{Hybrid Approach: Weight sharing + quantization achieves 10-20$\times$ compression}
+\end{frame}
+
+% Slides 20-21: Mixed Precision Training
+\begin{frame}{Method 6: Mixed Precision Training (Visual)}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Precision Strategy:}
+
+\vspace{3mm}
+\textbf{FP32 (Master Weights):}
+\begin{itemize}
+\item High precision for gradients
+\item Prevents underflow
+\item Kept in optimizer state
+\end{itemize}
+
+\vspace{3mm}
+\textbf{FP16 (Forward/Backward):}
+\begin{itemize}
+\item Fast computation (2$\times$)
+\item 50\% memory reduction
+\item Hardware acceleration (Tensor Cores)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{INT8 (Inference):}
+\begin{itemize}
+\item Minimal memory
+\item 4$\times$ faster than FP32
+\item Quantized after training
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Training Loop:}
+
+\vspace{3mm}
+\begin{enumerate}
+\item \textbf{Forward:} FP16 computation
+\item \textbf{Loss:} FP16 calculation
+\item \textbf{Loss Scaling:} Multiply by $2^{14}$
+\item \textbf{Backward:} FP16 gradients
+\item \textbf{Unscale:} Divide by $2^{14}$
+\item \textbf{Update:} FP32 master weights
+\item \textbf{Copy:} FP32 $\rightarrow$ FP16 for next iteration
+\end{enumerate}
+
+\vspace{5mm}
+\colorbox{mllavender4!80}{\parbox{0.9\textwidth}{
+\textbf{Loss Scaling:}\\
+Prevents gradient underflow in FP16\\
+Typical scale: $2^{14}$ to $2^{16}$
+}}
+
+\end{columns}
+
+\bottomnote{Mixed Precision: Best of both worlds (FP32 stability + FP16 speed)}
+\end{frame}
+
+\begin{frame}{Method 6: Mixed Precision Training (Detailed Benefits)}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Speed Improvements:}
+
+\vspace{3mm}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Model} & \textbf{FP32} & \textbf{Mixed} \\
+\midrule
+BERT-Base & 280 samples/s & 560 samples/s \\
+GPT-2 & 120 samples/s & 240 samples/s \\
+ResNet-50 & 340 images/s & 680 images/s \\
+\bottomrule
+\end{tabular}
+
+\vspace{3mm}
+\textbf{Speedup:} Consistent 2$\times$ across models
+
+\vspace{5mm}
+\textbf{Memory Savings:}
+
+\vspace{3mm}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Component} & \textbf{FP32} & \textbf{Mixed} \\
+\midrule
+Activations & 100\% & 50\% \\
+Gradients & 100\% & 50\% \\
+Weights & 100\% & 100\% \\
+Optimizer & 200\% & 200\% \\
+\midrule
+\textbf{Total} & 400\% & 350\% \\
+\bottomrule
+\end{tabular}
+
+\column{0.48\textwidth}
+\textbf{Hardware Support:}
+
+\vspace{3mm}
+\textbf{NVIDIA Tensor Cores:}
+\begin{itemize}
+\item FP16: 125 TFLOPS (V100)
+\item FP32: 15 TFLOPS (V100)
+\item Speedup: 8$\times$ theoretical
+\item Real speedup: 2-3$\times$ (memory bound)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{TPU v4:}
+\begin{itemize}
+\item BF16: 275 TFLOPS
+\item FP32: 68 TFLOPS
+\item Speedup: 4$\times$
+\end{itemize}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{\parbox{0.9\textwidth}{
+\textbf{When to Use:}\\
+Training large models (GPT-3, BERT)\\
+When you have Tensor Core GPUs\\
+Default for modern PyTorch/TensorFlow
+}}
+
+\end{columns}
+
+\bottomnote{Industry Standard: All large model training uses mixed precision (2020+)}
+\end{frame}
+
+% Slides 22-23: Dynamic/Adaptive Computation
+\begin{frame}{Method 7: Dynamic \& Adaptive Computation (Visual)}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Early Exit Strategy:}
+
+\vspace{3mm}
+\textbf{Idea:} Not all inputs need full network
+
+\vspace{3mm}
+Easy examples: Exit after layer 3\\
+Medium examples: Exit after layer 6\\
+Hard examples: Use all 12 layers\\
+
+\vspace{5mm}
+\textbf{Mechanism:}
+\begin{itemize}
+\item Add classifier at each layer
+\item Compute confidence score
+\item If confidence $>$ threshold, exit
+\item Otherwise, continue to next layer
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Average Speedup:}
+\begin{itemize}
+\item Easy: 4$\times$ (3 layers vs 12)
+\item Medium: 2$\times$ (6 layers vs 12)
+\item Hard: 1$\times$ (all 12 layers)
+\item Overall: 2.5$\times$ average
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Adaptive Attention:}
+
+\vspace{3mm}
+\textbf{Idea:} Not all tokens need full attention
+
+\vspace{3mm}
+Important tokens: Full attention\\
+Filler words: Sparse attention\\
+
+\vspace{5mm}
+\textbf{Example (12-word sentence):}
+\begin{itemize}
+\item ``The'': 20\% attention (2 heads)
+\item ``cat'': 100\% attention (8 heads)
+\item ``sat'': 100\% attention (8 heads)
+\item ``on'': 20\% attention (2 heads)
+\item ``the'': 20\% attention (2 heads)
+\item ``mat'': 100\% attention (8 heads)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Computation:}
+\begin{itemize}
+\item Full: $12 \times 8 = 96$ head computations
+\item Adaptive: $48$ head computations
+\item Reduction: 50\%
+\end{itemize}
+
+\end{columns}
+
+\bottomnote{Adaptive Computation: Allocate resources based on input complexity}
+\end{frame}
+
+\begin{frame}{Method 7: Dynamic \& Adaptive Computation (Detailed Results)}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Early Exit Networks:}
+
+\vspace{3mm}
+\textbf{BERT with 3 exits:}
+\begin{itemize}
+\item Exit 1 (Layer 4): 35\% of samples
+\item Exit 2 (Layer 8): 45\% of samples
+\item Exit 3 (Layer 12): 20\% of samples
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Performance:}
+\begin{itemize}
+\item Average layers: 6.8 vs 12
+\item Speedup: 1.76$\times$
+\item Accuracy: 89.5\% $\rightarrow$ 89.1\%
+\item Loss: 0.4 percentage points
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Confidence Threshold:}
+\begin{itemize}
+\item High (0.95): Safe, slower (1.3$\times$)
+\item Medium (0.85): Balanced (1.76$\times$)
+\item Low (0.75): Risky, faster (2.2$\times$)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Adaptive Attention:}
+
+\vspace{3mm}
+\textbf{GPT-2 with Adaptive Heads:}
+\begin{itemize}
+\item Content words: 8 heads (100\%)
+\item Function words: 2 heads (25\%)
+\item Punctuation: 1 head (12.5\%)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Results:}
+\begin{itemize}
+\item Computation: 60\% of full model
+\item Speedup: 1.67$\times$
+\item Perplexity: 18.2 $\rightarrow$ 18.5
+\item Quality: Minimal degradation
+\end{itemize}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{\parbox{0.9\textwidth}{
+\textbf{When to Use:}\\
+Production with varied input complexity\\
+When average-case matters more than worst-case\\
+Combined with other compression methods
+}}
+
+\end{columns}
+
+\bottomnote{Research Frontier: Adaptive methods are active area of research (2023-2025)}
+\end{frame}
+
+% ==================== IV. PROBLEM-SOLUTION SEQUENCE ====================
+
+% Slide 24: Challenge Quantification
+\begin{frame}{The 700GB Challenge}
+
+\begin{center}
+\textbf{GPT-3 Deployment Impossibility}
+\end{center}
+
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Numbers:}
+
+\vspace{3mm}
+\begin{itemize}
+\item Parameters: 175 billion
+\item Precision: FP32 (4 bytes each)
+\item Total size: $175B \times 4 = 700$GB
+\item Typical server RAM: 64-256GB
+\item Your laptop RAM: 16GB
+\end{itemize}
+
+\vspace{5mm}
+\colorbox{mlred!20}{\parbox{0.9\textwidth}{
+\textbf{Impossibility Ratio:}\\
+Model size / Laptop RAM = 44$\times$\\
+\\
+Even high-end servers struggle (3-11$\times$ over capacity)
+}}
+
+\column{0.48\textwidth}
+\textbf{Consequences:}
+
+\vspace{3mm}
+\textbf{Without Compression:}
+\begin{itemize}
+\item Must use disk swap
+\item Inference: 60 seconds per token
+\item Unusable for production
+\item Energy: 500W continuous
+\item Cost: \$10-50 per query
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Business Impact:}
+\begin{itemize}
+\item Cannot deploy locally
+\item Must use cloud APIs
+\item Privacy concerns
+\item Latency issues
+\item Ongoing costs
+\end{itemize}
+
+\end{columns}
+
+\bottomnote{Root Problem: Model capacity requirements exceed deployment hardware by orders of magnitude}
+\end{frame}
+
+% Slide 25: Initial Approach
+\begin{frame}{Initial Approach: Train Smaller Model}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Naive Solution:}
+
+\vspace{3mm}
+``If GPT-3 is too big, train GPT-2 instead''
+
+\vspace{5mm}
+\textbf{GPT-3 175B:}
+\begin{itemize}
+\item Size: 700GB (FP32)
+\item Parameters: 175B
+\item Accuracy: 92\% (few-shot)
+\item Training: \$4.6M
+\end{itemize}
+
+\vspace{3mm}
+$\Downarrow$ Reduce size 100$\times$
+
+\vspace{3mm}
+\textbf{GPT-2 1.5B:}
+\begin{itemize}
+\item Size: 6GB (FP32)
+\item Parameters: 1.5B
+\item Accuracy: 67\% (few-shot)
+\item Training: \$50K
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Problem:}
+
+\vspace{3mm}
+\begin{center}
+\textbf{Accuracy Drop: 25 Percentage Points}
+\end{center}
+
+\vspace{5mm}
+\textbf{Capability Loss:}
+\begin{itemize}
+\item GPT-3: Complex reasoning, analogies
+\item GPT-2: Simple pattern matching
+\item Emergence: Lost at smaller scale
+\end{itemize}
+
+\vspace{5mm}
+\colorbox{mlorange!20}{\parbox{0.9\textwidth}{
+\textbf{Scaling Laws:}\\
+Performance $\propto$ \text{(parameters)}^{0.3}$\\
+\\
+To match GPT-3 at 1.5B params:\\
+Need 1000$\times$ more data (impossible)
+}}
+
+\end{columns}
+
+\bottomnote{Lesson: Model capacity matters - smaller models cannot simply be trained to match larger ones}
+\end{frame}
+
+% Slide 26: Performance Analysis
+\begin{frame}{Performance Analysis: Why Smaller Models Fail}
+
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/accuracy_size_pareto.pdf}
+\end{center}
+
+\vspace{3mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Empirical Findings:}
+
+\vspace{3mm}
+\begin{itemize}
+\item 10$\times$ params $\rightarrow$ +8\% accuracy
+\item 100$\times$ params $\rightarrow$ +15\% accuracy
+\item Diminishing returns, but no plateau
+\item Emergent abilities at scale
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Critical Insight:}
+
+\vspace{3mm}
+\colorbox{mllavender4!80}{\parbox{0.9\textwidth}{
+Model capacity stores knowledge\\
+Compression preserves knowledge\\
+Small models lack capacity\\
+$\Rightarrow$ \textbf{Compress, don't shrink}
+}}
+
+\end{columns}
+
+\bottomnote{Pareto Frontier: No smaller model achieves GPT-3's performance, regardless of training}
+\end{frame}
+
+% Slide 27: Root Cause Diagnosis
+\begin{frame}{Root Cause: The Capacity Hypothesis}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Theoretical Framework:}
+
+\vspace{3mm}
+\textbf{Model Capacity:}
+$$C = f(\text{parameters}, \text{architecture})$$
+
+\vspace{3mm}
+\textbf{Knowledge Stored:}
+$$K \leq C$$
+
+\vspace{3mm}
+\textbf{Performance:}
+$$P \propto K$$
+
+\vspace{5mm}
+\textbf{Implications:}
+\begin{itemize}
+\item Smaller model $\Rightarrow$ Less capacity
+\item Less capacity $\Rightarrow$ Less knowledge
+\item Less knowledge $\Rightarrow$ Worse performance
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Numerical Evidence:}
+
+\vspace{3mm}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Model} & \textbf{Params} & \textbf{Accuracy} \\
+\midrule
+BERT-Tiny & 14M & 78\% \\
+BERT-Small & 28M & 83\% \\
+BERT-Medium & 66M & 86\% \\
+BERT-Base & 110M & 89.5\% \\
+BERT-Large & 340M & 94\% \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{\parbox{0.9\textwidth}{
+\textbf{Solution Requirement:}\\
+Preserve model capacity (parameters)\\
+Reduce storage/memory footprint\\
+$\Rightarrow$ Compression, not replacement
+}}
+
+\end{columns}
+
+\bottomnote{Diagnosis: Performance tied to parameter count - compression must preserve parameters}
+\end{frame}
+
+% Slide 28: Solution Insight
+\begin{frame}{Solution Insight: Compress Post-Training}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Breakthrough Idea:}
+
+\vspace{3mm}
+\textbf{OLD:} Train small model (loses knowledge)
+
+\vspace{2mm}
+$\Downarrow$
+
+\vspace{2mm}
+\textbf{NEW:} Train large, then compress
+
+\vspace{5mm}
+\textbf{Why This Works:}
+\begin{enumerate}
+\item Train full-capacity model
+\item Model learns all knowledge
+\item Compress learned weights
+\item Knowledge preserved (mostly)
+\item Fit in deployment memory
+\end{enumerate}
+
+\vspace{5mm}
+\colorbox{mllavender4!80}{\parbox{0.9\textwidth}{
+\textbf{Key Observation:}\\
+Learned weights have structure\\
+Structure enables compression\\
+Random weights don't compress well
+}}
+
+\column{0.48\textwidth}
+\textbf{Compression Opportunity:}
+
+\vspace{3mm}
+\textbf{Trained Weights Properties:}
+\begin{itemize}
+\item Clustered values (weight sharing)
+\item Low effective rank (factorization)
+\item Many near-zero (pruning)
+\item Narrow range (quantization)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Concrete Example:}
+\begin{itemize}
+\item BERT attention weights
+\item 95\% of weights in [-0.5, 0.5]
+\item Can use 8 bits instead of 32
+\item 4$\times$ compression with 0.4\% loss
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Contrast with Random:}
+\begin{itemize}
+\item Random weights: Uniform distribution
+\item No structure to exploit
+\item Compression hurts accuracy severely
+\end{itemize}
+
+\end{columns}
+
+\bottomnote{Critical Insight: Trained weights have exploitable structure that random weights lack}
+\end{frame}
+
+% Slide 29: Quantization Mechanism
+\begin{frame}{Quantization Mechanism: FP32 $\rightarrow$ INT8}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Math:}
+
+\vspace{3mm}
+\textbf{Quantization Function:}
+$$q = \text{round}\left(\frac{x - x_{\min}}{s}\right)$$
+
+where scale $s = \frac{x_{\max} - x_{\min}}{255}$
+
+\vspace{3mm}
+\textbf{Dequantization Function:}
+$$\hat{x} = q \times s + x_{\min}$$
+
+\vspace{3mm}
+\textbf{Error:}
+$$\epsilon = |\hat{x} - x| \leq \frac{s}{2}$$
+
+\vspace{5mm}
+\textbf{Key Idea:}
+\begin{itemize}
+\item Map range $[x_{\min}, x_{\max}]$ to $[0, 255]$
+\item Store integer index (1 byte)
+\item Recover approximate value
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Numerical Walkthrough:}
+
+\vspace{3mm}
+\textbf{Weight Layer Statistics:}
+\begin{itemize}
+\item Min: $-1.2$
+\item Max: $+0.8$
+\item Range: $2.0$
+\item Scale: $s = 2.0/255 = 0.00784$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Quantize $x = 0.374$:}
+\begin{enumerate}
+\item Shift: $0.374 - (-1.2) = 1.574$
+\item Scale: $1.574 / 0.00784 = 200.76$
+\item Round: $q = 201$ (INT8)
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Dequantize $q = 201$:}
+\begin{enumerate}
+\item Unscale: $201 \times 0.00784 = 1.576$
+\item Unshift: $1.576 + (-1.2) = 0.376$
+\item Error: $|0.376 - 0.374| = 0.002$
+\end{enumerate}
+
+\end{columns}
+
+\bottomnote{Quantization Error: Bounded by half the quantization step (0.00392 in this example)}
+\end{frame}
+
+% Slide 30: Numerical Example
+\begin{frame}{Worked Example: BERT Layer Quantization}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Layer: BERT Attention Weights}
+
+\vspace{3mm}
+\textbf{Original (FP32):}
+\begin{itemize}
+\item Shape: $768 \times 768$
+\item Weights: 590,592
+\item Min: $-0.487$
+\item Max: $+0.512$
+\item Mean: $0.003$
+\item Std: $0.124$
+\item Size: $590K \times 4 = 2.36$MB
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Quantization Parameters:}
+\begin{itemize}
+\item Range: $[-0.487, 0.512]$
+\item Scale: $(0.512-(-0.487))/255 = 0.00392$
+\item Zero-point: 127 (symmetric)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Quantized (INT8):}
+\begin{itemize}
+\item Shape: $768 \times 768$ (unchanged)
+\item Values: INT8 in $[0, 255]$
+\item Size: $590K \times 1 = 590$KB
+\item Reduction: 4$\times$ smaller
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Sample Weights:}
+
+\vspace{2mm}
+\begin{tabular}{rrr}
+\toprule
+\textbf{FP32} & \textbf{INT8} & \textbf{Recovered} \\
+\midrule
+0.374 & 201 & 0.376 \\
+-0.251 & 67 & -0.249 \\
+0.089 & 150 & 0.090 \\
+-0.412 & 25 & -0.413 \\
+0.501 & 255 & 0.512 \\
+\bottomrule
+\end{tabular}
+
+\vspace{3mm}
+\textbf{Accuracy:}
+\begin{itemize}
+\item Original BERT: 89.5\%
+\item Quantized INT8: 89.1\%
+\item Loss: 0.4 percentage points
+\end{itemize}
+
+\end{columns}
+
+\bottomnote{Real Result: 4$\times$ compression with <0.5\% accuracy loss on BERT-Base}
+\end{frame}
+
+% Slide 31: Validation Evidence
+\begin{frame}{Validation: Real Model Compression Results}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{BERT-Base Compression:}
+
+\vspace{3mm}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Method} & \textbf{Size} & \textbf{Accuracy} \\
+\midrule
+FP32 Baseline & 440MB & 89.5\% \\
+FP16 & 220MB & 89.5\% \\
+INT8 & 110MB & 89.1\% \\
+INT4 & 55MB & 87.8\% \\
+INT8 + Pruning & 22MB & 87.5\% \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+\textbf{Best Trade-off:}
+\begin{itemize}
+\item INT8: 4$\times$ smaller, 0.4\% loss
+\item Production standard (2024)
+\item Hardware accelerated
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{GPT-3 Compression:}
+
+\vspace{3mm}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Precision} & \textbf{Size} & \textbf{Quality} \\
+\midrule
+FP32 & 700GB & 100\% \\
+FP16 & 350GB & 100\% \\
+INT8 & 175GB & 98\% \\
+INT4 & 87GB & 95\% \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+\textbf{Deployment Reality:}
+\begin{itemize}
+\item OpenAI API: INT8 (likely)
+\item 4$\times$ memory reduction
+\item 2$\times$ throughput increase
+\item Enables profitable deployment
+\end{itemize}
+
+\end{columns}
+
+\bottomnote{Industry Adoption: All major LLM APIs use INT8 quantization (2024)}
+\end{frame}
+
+% Slide 32: Deployment Decision Tree
+\begin{frame}{Decision Tree: Choosing Compression Method}
+
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/compression_decision_tree.pdf}
+\end{center}
+
+\vspace{3mm}
+\colorbox{mllavender4!80}{\parbox{0.9\textwidth}{
+\textbf{Decision Factors:}\\
+Platform memory → Compression ratio needed → Accuracy tolerance → Method selection
+}}
+
+\bottomnote{Practical Guidance: Platform constraints determine compression strategy}
+\end{frame}
+
+% ==================== V. META-KNOWLEDGE ====================
+
+% Slide 33: When NOT to Use Each Method
+\begin{frame}{Meta-Knowledge: When NOT to Use}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Quantization:}
+
+\vspace{3mm}
+\textbf{Avoid when:}
+\begin{itemize}
+\item Model has high dynamic range
+\item Batch norm layers (unstable)
+\item Small models ($<$100M params)
+\item Research/debugging phase
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Distillation:}
+
+\vspace{3mm}
+\textbf{Avoid when:}
+\begin{itemize}
+\item No budget to retrain
+\item Teacher model unavailable
+\item Task requires all model capacity
+\item Target is $<$5$\times$ compression
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Pruning:}
+
+\vspace{3mm}
+\textbf{Avoid when:}
+\begin{itemize}
+\item No sparse matrix libraries
+\item Model already small
+\item All weights are important
+\item Cannot fine-tune after pruning
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Low-Rank:}
+
+\vspace{3mm}
+\textbf{Avoid when:}
+\begin{itemize}
+\item Weights are full-rank
+\item Convolutional layers (better methods)
+\item Recurrent connections
+\item Model has few dense layers
+\end{itemize}
+
+\end{columns}
+
+\bottomnote{Anti-Patterns: Know when NOT to use each method to avoid wasted effort}
+\end{frame}
+
+% Slide 34: Common Pitfalls
+\begin{frame}{Common Pitfalls and Solutions}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Pitfall 1: Calibration}
+
+\vspace{3mm}
+\textbf{Problem:}
+\begin{itemize}
+\item Quantize with training data ranges
+\item Deploy on different distribution
+\item Activation ranges differ
+\item Severe accuracy drop
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Solution:}
+\begin{itemize}
+\item Calibrate on representative data
+\item 1000+ diverse examples
+\item Measure activation ranges
+\item Use percentile (99\%) not max
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Pitfall 2: INT4 Overflow}
+
+\vspace{3mm}
+\textbf{Problem:}
+\begin{itemize}
+\item INT4 range: $[-8, 7]$
+\item Outlier weights cause clipping
+\item Information loss
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Solution:}
+\begin{itemize}
+\item Per-channel quantization
+\item Mixed INT4/INT8
+\item Outlier preservation
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Pitfall 3: Distillation Failure}
+
+\vspace{3mm}
+\textbf{Problem:}
+\begin{itemize}
+\item Student too small ($>$20$\times$ smaller)
+\item Cannot learn teacher's knowledge
+\item Converges to random baseline
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Solution:}
+\begin{itemize}
+\item Limit compression to 5-10$\times$
+\item Use intermediate layers
+\item Progressive distillation
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Pitfall 4: Compound Methods}
+
+\vspace{3mm}
+\textbf{Problem:}
+\begin{itemize}
+\item Prune + quantize + distill = fail
+\item Errors compound
+\item 10\% + 5\% + 3\% $\neq$ 18\%
+\item Actual: 25\% degradation
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Solution:}
+\begin{itemize}
+\item Combine at most 2 methods
+\item Quantization + (pruning OR distillation)
+\item Validate carefully
+\end{itemize}
+
+\end{columns}
+
+\bottomnote{Practical Wisdom: Avoid these common mistakes that waste weeks of effort}
+\end{frame}
+
+% Slide 35: Success Metrics
+\begin{frame}{Success Metrics: How to Measure}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Primary Metrics:}
+
+\vspace{3mm}
+\textbf{1. Size Reduction}
+$$R = \frac{\text{Original Size}}{\text{Compressed Size}}$$
+
+Target: 4-10$\times$ for deployment
+
+\vspace{3mm}
+\textbf{2. Accuracy Preservation}
+$$A = \frac{\text{Compressed Accuracy}}{\text{Original Accuracy}}$$
+
+Target: $>$95\% (absolute $<$3\% loss)
+
+\vspace{3mm}
+\textbf{3. Latency Improvement}
+$$L = \frac{\text{Original Latency}}{\text{Compressed Latency}}$$
+
+Target: 2-4$\times$ speedup
+
+\vspace{3mm}
+\textbf{4. Energy Efficiency}
+$$E = \frac{\text{Original Energy}}{\text{Compressed Energy}}$$
+
+Target: 3-5$\times$ reduction
+
+\column{0.48\textwidth}
+\textbf{Real Benchmark (BERT):}
+
+\vspace{3mm}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Method} & \textbf{R} & \textbf{A} & \textbf{L} & \textbf{E} \\
+\midrule
+Baseline & 1$\times$ & 100\% & 1$\times$ & 1$\times$ \\
+FP16 & 2$\times$ & 100\% & 1.5$\times$ & 1.8$\times$ \\
+INT8 & 4$\times$ & 99\% & 2.5$\times$ & 3.2$\times$ \\
+INT4 & 8$\times$ & 96\% & 3.5$\times$ & 5.1$\times$ \\
+Pruned & 10$\times$ & 95\% & 1.2$\times$ & 1.5$\times$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+\textbf{Trade-off Analysis:}
+\begin{itemize}
+\item INT8: Best balance (4$\times$, 99\%, 2.5$\times$)
+\item INT4: Maximum compression
+\item Pruning: Size without speedup (need sparse support)
+\end{itemize}
+
+\end{columns}
+
+\bottomnote{Comprehensive Evaluation: Measure size, accuracy, latency, and energy together}
+\end{frame}
+
+% ==================== VI. INTEGRATION ====================
+
+% Slide 36: Unified Framework
+\begin{frame}{Unified Framework: Method Comparison}
+
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/accuracy_size_pareto.pdf}
+\end{center}
+
+\vspace{3mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Method Characteristics:}
+
+\vspace{3mm}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Method} & \textbf{Compress} & \textbf{Accuracy} \\
+\midrule
+Weight Sharing & 2-4$\times$ & 99-100\% \\
+Low-Rank & 3-6$\times$ & 97-99\% \\
+Quantization (INT8) & 4$\times$ & 95-99\% \\
+Pruning & 5-10$\times$ & 93-97\% \\
+Distillation & 5-10$\times$ & 92-98\% \\
+Quantization (INT4) & 8$\times$ & 90-97\% \\
+\bottomrule
+\end{tabular}
+
+\column{0.48\textwidth}
+\textbf{Selection Guide:}
+
+\vspace{3mm}
+\textbf{Need $<$5$\times$ compression?}
+\begin{itemize}
+\item $\rightarrow$ Quantization (INT8)
+\item Fast, hardware supported
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Need 5-10$\times$ compression?}
+\begin{itemize}
+\item $\rightarrow$ Distillation OR Pruning
+\item Distillation if you can retrain
+\item Pruning if post-training only
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Need $>$10$\times$ compression?}
+\begin{itemize}
+\item $\rightarrow$ INT4 + Pruning
+\item Accept 5-10\% accuracy loss
+\item Essential for mobile/edge
+\end{itemize}
+
+\end{columns}
+
+\bottomnote{Unified View: All methods trade accuracy for size on Pareto frontier}
+\end{frame}
+
+% Slide 37: Modern Applications
+\begin{frame}{Modern Applications: On-Device AI Revolution}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Smartphone LLMs (2024):}
+
+\vspace{3mm}
+\textbf{Apple Intelligence (iPhone 15):}
+\begin{itemize}
+\item Model: 3B parameter LLM
+\item Original: 12GB (FP32)
+\item Compressed: 1.5GB (4-bit + pruning)
+\item Methods: INT4 + 50\% pruning
+\item Performance: 30 tokens/sec
+\item Privacy: 100\% on-device
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Google Gemini Nano:}
+\begin{itemize}
+\item Model: 1.8B parameters
+\item Size: 900MB (INT8)
+\item Latency: 40 tokens/sec
+\item Battery: 1\% per 1000 tokens
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Edge Computing:}
+
+\vspace{3mm}
+\textbf{Raspberry Pi 4 (8GB):}
+\begin{itemize}
+\item LLaMA-2 7B quantized (INT4)
+\item Size: 3.5GB
+\item Speed: 2 tokens/sec
+\item Use case: Local assistant
+\end{itemize}
+
+\vspace{3mm}
+\textbf{NVIDIA Jetson (16GB):}
+\begin{itemize}
+\item GPT-J 6B (INT8)
+\item Size: 6GB
+\item Speed: 15 tokens/sec
+\item Use case: Robotics, drones
+\end{itemize}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{\parbox{0.9\textwidth}{
+\textbf{Impact:}\\
+Compression enables privacy-preserving AI\\
+Zero cloud dependency\\
+Millisecond latency
+}}
+
+\end{columns}
+
+\bottomnote{2024 Reality: Compression makes AI ubiquitous (phones, cars, appliances)}
+\end{frame}
+
+% Slide 38: Implementation Code
+\begin{frame}[fragile]{Implementation: PyTorch Quantization in 15 Lines}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Dynamic Quantization:}
+
+\vspace{3mm}
+\begin{verbatim}
+import torch
+
+# Load pre-trained model
+model = BertForSequenceClassification
+   .from_pretrained('bert-base')
+
+# Quantize to INT8
+quantized_model = torch.quantization
+   .quantize_dynamic(
+      model,
+      {torch.nn.Linear},
+      dtype=torch.qint8
+   )
+
+# Save compressed model
+torch.save(quantized_model,
+   'bert_int8.pt')
+\end{verbatim}
+
+\textbf{Result:} 440MB $\rightarrow$ 110MB (4$\times$)
+
+\column{0.48\textwidth}
+\textbf{Static Quantization:}
+
+\vspace{3mm}
+\begin{verbatim}
+# Prepare model
+model.qconfig = torch.quantization
+   .get_default_qconfig('fbgemm')
+torch.quantization.prepare(model)
+
+# Calibrate with data
+for batch in calibration_data:
+   model(batch)
+
+# Convert to INT8
+quantized_model = torch.quantization
+   .convert(model)
+
+# Inference
+with torch.no_grad():
+   output = quantized_model(input)
+\end{verbatim}
+
+\vspace{3mm}
+\textbf{Advantage:} Better accuracy (calibrated ranges)
+
+\end{columns}
+
+\bottomnote{Production Code: PyTorch provides built-in quantization (torch.quantization module)}
+\end{frame}
+
+% ==================== VII. SUMMARY ====================
+
+% Slide 39: Key Takeaways
+\begin{frame}{Key Takeaways: Five Principles}
+
+\begin{center}
+\textbf{Model Efficiency Fundamentals}
+\end{center}
+
+\vspace{5mm}
+\begin{enumerate}
+\item \textbf{Compression Preserves Knowledge}\\
+Train large, compress post-training beats training small\\
+Example: GPT-3 INT4 (87GB) outperforms GPT-2 (6GB)
+
+\vspace{3mm}
+\item \textbf{Quantization is the Default}\\
+4$\times$ reduction, $<$1\% accuracy loss, hardware accelerated\\
+Use INT8 unless you have specific constraints
+
+\vspace{3mm}
+\item \textbf{Platform Drives Strategy}\\
+Server: FP16/INT8 | Edge: INT4 | Mobile: INT4+Pruning | MCU: Distillation+INT8\\
+Deployment memory determines compression needs
+
+\vspace{3mm}
+\item \textbf{Combine Methods Carefully}\\
+Quantization + (Pruning OR Distillation) works\\
+All three together compounds errors
+
+\vspace{3mm}
+\item \textbf{Measure Four Metrics}\\
+Size reduction, accuracy, latency, energy\\
+Optimize for the bottleneck
+\end{enumerate}
+
+\bottomnote{Summary: Compression makes modern AI deployable everywhere}
+\end{frame}
+
+% Slide 40: Lab Preview & Week 12 Connection
+\begin{frame}{Next Steps: Lab \& Week 12}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Week 11 Lab:}
+
+\vspace{3mm}
+\textbf{Hands-On Activities:}
+\begin{enumerate}
+\item Quantize BERT (FP32 $\rightarrow$ INT8)
+\item Measure size, accuracy, latency
+\item Distill GPT-2 (1.5B $\rightarrow$ 300M)
+\item Prune ResNet (90\% sparsity)
+\item Deploy quantized model
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Tools:}
+\begin{itemize}
+\item PyTorch quantization API
+\item Hugging Face transformers
+\item ONNX Runtime
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Deliverable:}\\
+Compress a model 10$\times$ with $<$3\% accuracy loss
+
+\column{0.48\textwidth}
+\textbf{Week 12: Ethics \& Fairness}
+
+\vspace{3mm}
+\textbf{Efficiency $\rightarrow$ Ethics Link:}
+
+\vspace{3mm}
+\textbf{Sustainability:}
+\begin{itemize}
+\item GPT-3 training: 1287 MWh
+\item Carbon: 550 tons CO$_2$
+\item Compression reduces deployment energy 5$\times$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Accessibility:}
+\begin{itemize}
+\item On-device AI: No cloud required
+\item Privacy-preserving inference
+\item Works in low-connectivity regions
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Democratization:}
+\begin{itemize}
+\item Run LLMs on \$200 hardware
+\item No API costs
+\item Open access to AI
+\end{itemize}
+
+\end{columns}
+
+\bottomnote{Bridge to Ethics: Efficiency enables sustainable, accessible, democratized AI}
+\end{frame}
+
+\end{document}

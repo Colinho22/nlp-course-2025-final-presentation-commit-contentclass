@@ -1,0 +1,43 @@
+digraph {
+	bgcolor=white fontsize=18 rankdir=TB
+	node [fontname=Arial shape=plaintext]
+	table [label=<
+    <TABLE BORDER="2" CELLBORDER="1" CELLSPACING="0" CELLPADDING="8">
+    <TR>
+        <TD BGCOLOR="#3333B2"><FONT COLOR="white" POINT-SIZE="22"><B>Task</B></FONT></TD>
+        <TD BGCOLOR="#3333B2"><FONT COLOR="white" POINT-SIZE="22"><B>Method</B></FONT></TD>
+        <TD BGCOLOR="#3333B2"><FONT COLOR="white" POINT-SIZE="22"><B>Parameters</B></FONT></TD>
+    </TR>
+    <TR>
+        <TD><FONT POINT-SIZE="18">Translation</FONT></TD>
+        <TD BGCOLOR="#E8F5E9"><FONT POINT-SIZE="18">Beam Search</FONT></TD>
+        <TD><FONT POINT-SIZE="18">width=3-5</FONT></TD>
+    </TR>
+    <TR>
+        <TD><FONT POINT-SIZE="18">Factual Q&A</FONT></TD>
+        <TD BGCOLOR="#E8F5E9"><FONT POINT-SIZE="18">Greedy</FONT></TD>
+        <TD><FONT POINT-SIZE="18">T=0.1-0.3</FONT></TD>
+    </TR>
+    <TR>
+        <TD><FONT POINT-SIZE="18">Code</FONT></TD>
+        <TD BGCOLOR="#E8F5E9"><FONT POINT-SIZE="18">Greedy/Beam</FONT></TD>
+        <TD><FONT POINT-SIZE="18">T=0, w=3</FONT></TD>
+    </TR>
+    <TR>
+        <TD><FONT POINT-SIZE="18">Dialogue</FONT></TD>
+        <TD BGCOLOR="#FFE6CC"><FONT POINT-SIZE="18">Nucleus</FONT></TD>
+        <TD><FONT POINT-SIZE="18">p=0.9, T=0.8</FONT></TD>
+    </TR>
+    <TR>
+        <TD><FONT POINT-SIZE="18">Creative Writing</FONT></TD>
+        <TD BGCOLOR="#FFE6CC"><FONT POINT-SIZE="18">Nucleus</FONT></TD>
+        <TD><FONT POINT-SIZE="18">p=0.95, T=1.0</FONT></TD>
+    </TR>
+    <TR>
+        <TD><FONT POINT-SIZE="18">Long Stories</FONT></TD>
+        <TD BGCOLOR="#FFE6CC"><FONT POINT-SIZE="18">Contrastive</FONT></TD>
+        <TD><FONT POINT-SIZE="18">α=0.6, k=4</FONT></TD>
+    </TR>
+    </TABLE>
+    >]
+}

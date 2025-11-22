@@ -1,0 +1,475 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+% Packages
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+
+% Math commands
+\newcommand{\given}{\mid}
+
+% BSc Pedagogical boxes
+\newtcolorbox{checkpoint}[1][]{
+    colback=yellow!10!white,
+    colframe=yellow!75!black,
+    title=\textbf{Checkpoint: #1},
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{intuition}[1][]{
+    colback=purple!5!white,
+    colframe=purple!75!black,
+    title=\textbf{Intuition: #1},
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{realworld}[1][]{
+    colback=orange!5!white,
+    colframe=orange!75!black,
+    title=\textbf{Real World: #1},
+    fonttitle=\bfseries
+}
+
+% Title information
+\title{Recurrent Neural Networks (RNNs)}
+\subtitle{Understanding Sequential Data Processing}
+\author{}
+\date{}
+
+\begin{document}
+
+% Slide 1: Title
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Slide 2: The Sequential Data Problem
+\begin{frame}{Why Do We Need RNNs?}
+    \begin{columns}[T]
+        \begin{column}{0.55\textwidth}
+            \textbf{Traditional Neural Networks:}
+            \begin{itemize}
+                \item Process fixed-size inputs
+                \item No memory of previous inputs
+                \item Each prediction is independent
+            \end{itemize}
+
+            \vspace{1em}
+            \textbf{Problem:} Many tasks involve sequences!
+            \begin{itemize}
+                \item Text: Words depend on previous words
+                \item Speech: Sounds form words over time
+                \item Video: Frames are connected
+            \end{itemize}
+
+            \vspace{1em}
+            \begin{intuition}[Key Idea]
+            We need networks that can ``remember'' previous inputs to understand context.
+            \end{intuition}
+        \end{column}
+
+        \begin{column}{0.43\textwidth}
+            \textbf{Examples of Sequential Data:}
+            \begin{enumerate}
+                \item \textbf{Names:} ``Joh'' $\rightarrow$ ``n''
+                \item \textbf{Sentences:} ``The cat is $\ldots$''
+                \item \textbf{Stock prices:} Yesterday $\rightarrow$ Today
+                \item \textbf{Weather:} Past week $\rightarrow$ Tomorrow
+            \end{enumerate}
+
+            \vspace{2em}
+            \centering
+            \includegraphics[width=0.9\textwidth]{../figures/rnn_applications_bsc.pdf}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 3: RNN Basic Architecture
+\begin{frame}{The RNN Solution: Adding Memory}
+    \begin{center}
+        \includegraphics[width=0.95\textwidth]{../figures/rnn_simple_unrolled_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{How RNNs Work:}
+            \begin{enumerate}
+                \item Take current input $x_t$
+                \item Combine with previous memory $h_{t-1}$
+                \item Produce output $h_t$
+                \item Pass memory to next step
+            \end{enumerate}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Key Innovation:}
+            \begin{itemize}
+                \item Same weights at each time step
+                \item Memory flows through time
+                \item Can process any sequence length
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 4: Example 1 - Name Prediction
+\begin{frame}{Example 1: Predicting Names}
+    \begin{center}
+        \includegraphics[width=0.85\textwidth]{../figures/name_prediction_visual_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Task:} Given ``Joh'', predict ``n''
+
+            \vspace{0.5em}
+            \textbf{RNN Process:}
+            \begin{enumerate}
+                \item See ``J'' $\rightarrow$ predict ``o''
+                \item See ``Jo'' $\rightarrow$ predict ``h''
+                \item See ``Joh'' $\rightarrow$ predict ``n''
+            \end{enumerate}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{checkpoint}[Understanding]
+            \textbf{Question:} Why does the RNN need memory?
+
+            \vspace{0.3em}
+            \textbf{Answer:} To remember ``Joh'' when predicting ``n''. Without memory, it only sees one letter at a time!
+            \end{checkpoint}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 5: RNN Equations and Processing
+\begin{frame}{How RNN Processes Sequences}
+    \begin{columns}[T]
+        \begin{column}{0.55\textwidth}
+            \textbf{RNN Equations:}
+
+            \vspace{0.5em}
+            Hidden state update:
+            \[
+            h_t = \tanh(W_x x_t + W_h h_{t-1} + b)
+            \]
+
+            Output:
+            \[
+            y_t = \text{softmax}(W_y h_t + b_y)
+            \]
+
+            \vspace{1em}
+            \textbf{What each part means:}
+            \begin{itemize}
+                \item $x_t$: Current input
+                \item $h_{t-1}$: Previous memory
+                \item $W_x, W_h$: Weight matrices
+                \item $\tanh$: Activation function (-1 to 1)
+                \item $y_t$: Output prediction
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.43\textwidth}
+            \begin{intuition}[Think of it like]
+            A student taking notes:
+            \begin{enumerate}
+                \item Read new information ($x_t$)
+                \item Check your notes ($h_{t-1}$)
+                \item Update your notes ($h_t$)
+                \item Answer question ($y_t$)
+            \end{enumerate}
+            \end{intuition}
+
+            \vspace{1em}
+            \textbf{Key Parameters:}
+            \begin{itemize}
+                \item Input size: 100-300
+                \item Hidden size: 128-512
+                \item Layers: 1-3
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 6: The Memory Problem
+\begin{frame}{Problem: Vanishing Gradient (Memory Fading)}
+    \begin{center}
+        \includegraphics[width=0.9\textwidth]{../figures/vanishing_gradient_telephone_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{The Telephone Game Problem:}
+            \begin{itemize}
+                \item Message gets weaker as it passes
+                \item Early information gets lost
+                \item RNN forgets long-term context
+            \end{itemize}
+
+            \vspace{0.5em}
+            Example: ``The cat that ate the fish \textbf{was} hungry''
+
+            By the time we predict ``was'', RNN forgot ``cat'' (singular)!
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Why This Happens:}
+            \begin{itemize}
+                \item Gradients get multiplied many times
+                \item Small numbers $\times$ small numbers $\rightarrow$ tiny
+                \item Long sequences = many multiplications
+            \end{itemize}
+
+            \vspace{1em}
+            \begin{realworld}[Impact]
+            Standard RNNs struggle with:
+            \begin{itemize}
+                \item Long paragraphs
+                \item Complex sentence structure
+                \item Long-term dependencies
+            \end{itemize}
+            \end{realworld}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 7: Example 2 - Sentiment Analysis
+\begin{frame}[fragile]{Example 2: Sentiment Analysis}
+    \begin{columns}[T]
+        \begin{column}{0.55\textwidth}
+            \textbf{Task:} Classify movie review as positive/negative
+
+            \vspace{0.5em}
+            \textbf{Input Sentence:}
+
+            ``This movie is absolutely fantastic!''
+
+            \vspace{1em}
+            \textbf{RNN Processing:}
+            \begin{enumerate}
+                \item Process ``This'' $\rightarrow$ $h_1$
+                \item Process ``movie'' $\rightarrow$ $h_2$
+                \item Process ``is'' $\rightarrow$ $h_3$
+                \item Process ``absolutely'' $\rightarrow$ $h_4$
+                \item Process ``fantastic'' $\rightarrow$ $h_5$
+            \end{enumerate}
+
+            \vspace{0.5em}
+            Final hidden state $h_5$ contains sentiment info
+
+            \vspace{0.5em}
+            $\rightarrow$ Classify: \textcolor{green}{\textbf{Positive (98\%)}}
+        \end{column}
+
+        \begin{column}{0.43\textwidth}
+            \textbf{PyTorch Code Example:}
+            \begin{lstlisting}[language=Python, basicstyle=\ttfamily\tiny]
+import torch.nn as nn
+
+class SentimentRNN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.embedding = nn.Embedding(
+            num_embeddings=10000,
+            embedding_dim=128
+        )
+        self.rnn = nn.RNN(
+            input_size=128,
+            hidden_size=256,
+            num_layers=2
+        )
+        self.fc = nn.Linear(256, 2)
+
+    def forward(self, x):
+        # x: [seq_len, batch]
+        embedded = self.embedding(x)
+        output, hidden = self.rnn(embedded)
+        # Use final hidden state
+        prediction = self.fc(hidden[-1])
+        return prediction
+\end{lstlisting}
+
+            \vspace{0.5em}
+            \textbf{Output:} [Negative, \textcolor{green}{Positive}]
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 8: LSTM Solution
+\begin{frame}{Solution: LSTM (Long Short-Term Memory)}
+    \begin{center}
+        \includegraphics[width=0.85\textwidth]{../figures/lstm_gates_simple_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Three Smart Gates:}
+            \begin{enumerate}
+                \item \textcolor{red}{\textbf{Forget Gate}}: What to remove?
+                \item \textcolor{blue}{\textbf{Input Gate}}: What to add?
+                \item \textcolor{green}{\textbf{Output Gate}}: What to output?
+            \end{enumerate}
+
+            \vspace{1em}
+            \textbf{Cell State:} Protected memory highway
+            \begin{itemize}
+                \item Information flows with minimal change
+                \item Gradients flow easily backward
+                \item Solves vanishing gradient problem
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{intuition}[Analogy]
+            LSTM is like a smart notebook:
+            \begin{itemize}
+                \item \textcolor{red}{Forget}: Erase outdated notes
+                \item \textcolor{blue}{Input}: Write new important info
+                \item \textcolor{green}{Output}: Show relevant notes
+            \end{itemize}
+            \end{intuition}
+
+            \vspace{1em}
+            \begin{checkpoint}[Key Difference]
+            \textbf{RNN:} Memory fades quickly
+
+            \textbf{LSTM:} Memory preserved by gates
+            \end{checkpoint}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 9: Example 3 - Text Generation
+\begin{frame}[fragile]{Example 3: Text Generation}
+    \begin{columns}[T]
+        \begin{column}{0.55\textwidth}
+            \textbf{Task:} Generate text character by character
+
+            \vspace{0.5em}
+            \textbf{Training Data:} Shakespeare's works
+
+            \vspace{0.5em}
+            \textbf{How it works:}
+            \begin{enumerate}
+                \item Start with seed text: ``To be''
+                \item LSTM predicts next character: `` ''
+                \item Add to sequence: ``To be ''
+                \item Predict next: ``o''
+                \item Continue: ``To be or''
+                \item Keep generating\ldots
+            \end{enumerate}
+
+            \vspace{1em}
+            \textbf{Generated Output:}
+
+            ``To be or not to be, that is the question''
+
+            \vspace{0.5em}
+            LSTM learned:
+            \begin{itemize}
+                \item English grammar
+                \item Shakespeare's style
+                \item Common phrases
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.43\textwidth}
+            \textbf{Simple Generation Code:}
+            \begin{lstlisting}[language=Python, basicstyle=\ttfamily\tiny]
+import torch
+import torch.nn as nn
+
+class CharRNN(nn.Module):
+    def __init__(self, vocab_size):
+        super().__init__()
+        self.lstm = nn.LSTM(
+            input_size=vocab_size,
+            hidden_size=512,
+            num_layers=2
+        )
+        self.fc = nn.Linear(512, vocab_size)
+
+    def generate(self, start_text, length=100):
+        hidden = None
+        chars = [start_text]
+
+        for _ in range(length):
+            # Encode current char
+            x = encode(chars[-1])
+            # LSTM prediction
+            out, hidden = self.lstm(x, hidden)
+            # Sample next char
+            next_char = sample(self.fc(out))
+            chars.append(next_char)
+
+        return ''.join(chars)
+
+# Generate text
+model.generate("To be", length=50)
+\end{lstlisting}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 10: Summary and Applications
+\begin{frame}{Summary: What We Learned}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Key Concepts:}
+            \begin{enumerate}
+                \item \textbf{Sequential Data:} Many tasks involve sequences
+                \item \textbf{RNN:} Networks with memory
+                \item \textbf{Hidden State:} Carries information forward
+                \item \textbf{Vanishing Gradient:} Memory fades over time
+                \item \textbf{LSTM:} Uses gates to preserve memory
+            \end{enumerate}
+
+            \vspace{1em}
+            \textbf{Three Examples We Saw:}
+            \begin{itemize}
+                \item Name prediction (supervised)
+                \item Sentiment analysis (classification)
+                \item Text generation (autoregressive)
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{realworld}[Where RNNs Are Used]
+            \begin{itemize}
+                \item \textbf{ChatGPT:} Text generation
+                \item \textbf{Google Translate:} Language translation
+                \item \textbf{Siri/Alexa:} Speech recognition
+                \item \textbf{YouTube:} Video captioning
+                \item \textbf{Gmail:} Smart compose
+            \end{itemize}
+            \end{realworld}
+
+            \vspace{1em}
+            \textbf{Next Steps:}
+            \begin{itemize}
+                \item Week 4: Sequence-to-Sequence models
+                \item Week 5: Transformers (attention mechanism)
+                \item Lab: Implement your own LSTM
+            \end{itemize}
+        \end{column}
+    \end{columns}
+
+    \vspace{1em}
+    \begin{center}
+        \Large \textbf{Questions?}
+    \end{center}
+\end{frame}
+
+\end{document}

@@ -2,8 +2,60 @@
 % NLP Course 2025
 % Created: 2025-09-28
 % Didactic Framework: Hope → Disappointment → Breakthrough
+% Template: Lavender/Purple styling from template_beamer_final.tex
 
-\input{../../common/master_template.tex}
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+% Color definitions (lavender/purple palette)
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255,127,14}
+\definecolor{mlgreen}{RGB}{44,160,44}
+\definecolor{mlred}{RGB}{214,39,40}
+
+% Apply colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in head/foot}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{item}{fg=mlpurple}
+
+% Custom commands
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+\newcommand{\highlight}[1]{\textcolor{mlpurple}{\textbf{#1}}}
+\newcommand{\success}[1]{\textcolor{mlgreen}{\textbf{#1}}}
+\newcommand{\warning}[1]{\textcolor{mlred}{\textbf{#1}}}
+\newcommand{\keypoint}[1]{\textcolor{mlpurple}{\textbf{#1}}}
+
+% Math and code support
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{mllavender4}
+}
 
 \title{Natural Language Processing}
 \subtitle{Week 5: The Speed Revolution}
@@ -22,6 +74,15 @@
 % ============================================
 
 \section{The Waiting Game}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large The Waiting Game
+\end{beamercolorbox}
+\vfill
+\end{frame}
 
 % Slide 1: The Nightmare Scenario
 \begin{frame}[t]{The Nightmare Scenario}
@@ -49,7 +110,12 @@
 \warning{\textbf{The Waiting Game:} Press ``train'', come back in 2027}
 \end{center}
 
-\secondary{\footnotesize Even with parallelization tricks, you're looking at months of waiting}
+\vspace{5mm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/sr_01_training_time_comparison.pdf}
+\end{center}
+
+\bottomnote{\footnotesize Even with parallelization tricks, you're looking at months of waiting}
 \end{frame}
 
 % Slide 2: Why So Slow?
@@ -77,6 +143,11 @@ Step 3: Wait for $h_2$, process ``sat'' → hidden state $h_3$\\
 \vspace{8mm}
 \begin{center}
 \keypoint{Sequential processing = massive underutilization}
+\end{center}
+
+\vspace{5mm}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/sr_03_sequential_bottleneck.pdf}
 \end{center}
 \end{frame}
 
@@ -117,14 +188,19 @@ Step 3: Wait for $h_2$, process ``sat'' → hidden state $h_3$\\
 
 \vspace{5mm}
 \textbf{Visualization:}\\
-\secondary{\small Imagine 5,120 workers at a factory}\\
-\secondary{\small Only 49 working}\\
-\secondary{\small 5,071 standing around waiting}
+\bottomnote{\small Imagine 5,120 workers at a factory}\\
+\bottomnote{\small Only 49 working}\\
+\bottomnote{\small 5,071 standing around waiting}
 \end{columns}
 
 \vspace{10mm}
 \begin{center}
 \warning{\textbf{The Waste:} This is like hiring 100 people but only giving work to 1}
+\end{center}
+
+\vspace{5mm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/sr_02_gpu_utilization_waste.pdf}
 \end{center}
 \end{frame}
 
@@ -210,6 +286,15 @@ RNN+Attention & 45 & 5\% & 33.2 & \$22,500 \\
 
 \section{The First Attempt}
 
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large The First Attempt
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
 % Slide 6: The Radical Idea
 \begin{frame}[t]{The Radical Idea: Pure Attention}
 \textbf{The Observation:}
@@ -253,7 +338,7 @@ Breaking down RNN+Attention:
 \textbf{Conceptual Diagram:} Every word looks at every other word at the same time
 \end{center}
 
-\secondary{\footnotesize All 5,120 GPU cores can work simultaneously - no waiting!}
+\bottomnote{\footnotesize All 5,120 GPU cores can work simultaneously - no waiting!}
 \end{frame}
 
 % Slide 7: THE FIRST SUCCESS
@@ -301,7 +386,12 @@ Good morning everyone & Bonjour tout le monde & \textcolor{green}{Perfect!} \\
 \success{\textbf{Breakthrough Moment:} Attention works without RNN! And it's FAST!}
 \end{center}
 
-\secondary{\footnotesize The research team was ecstatic - looked like the solution}
+\vspace{5mm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/sr_04_attention_success_short.pdf}
+\end{center}
+
+\bottomnote{\footnotesize The research team was ecstatic - looked like the solution}
 \end{frame}
 
 % Slide 8: THE FAILURE PATTERN EMERGES
@@ -340,7 +430,12 @@ Good morning everyone & Bonjour tout le monde & \textcolor{green}{Perfect!} \\
 \warning{\textbf{The Disappointment:} We traded speed for accuracy on anything useful}
 \end{center}
 
-\secondary{\footnotesize Real-world sentences are often 20-50+ words - this was unusable}
+\vspace{5mm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/sr_05_quality_degradation.pdf}
+\end{center}
+
+\bottomnote{\footnotesize Real-world sentences are often 20-50+ words - this was unusable}
 \end{frame}
 
 % Slide 9: DIAGNOSING THE PROBLEM
@@ -378,7 +473,12 @@ Good morning everyone & Bonjour tout le monde & \textcolor{green}{Perfect!} \\
 \vspace{3mm}
 \warning{\textbf{Attention is permutation invariant} - order doesn't matter!}
 
-\secondary{\footnotesize Without RNN, we lost the sequence information that tells us word order}
+\vspace{5mm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/sr_06_permutation_invariance.pdf}
+\end{center}
+
+\bottomnote{\footnotesize Without RNN, we lost the sequence information that tells us word order}
 \end{frame}
 
 % Slide 10: What Information Got Lost
@@ -472,7 +572,7 @@ Position can be represented as a \textit{signal} added to meaning
 \end{center}
 
 \vspace{5mm}
-\secondary{\footnotesize Like adding a timestamp or GPS coordinate to each word}
+\bottomnote{\footnotesize Like adding a timestamp or GPS coordinate to each word}
 \end{frame}
 
 % ============================================
@@ -480,6 +580,15 @@ Position can be represented as a \textit{signal} added to meaning
 % ============================================
 
 \section{The Positional Encoding Revolution}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large The Positional Encoding Revolution
+\end{beamercolorbox}
+\vfill
+\end{frame}
 
 % Slide 12: HUMAN INTROSPECTION
 \begin{frame}[t]{Human Introspection: How Do YOU Know Order?}
@@ -511,7 +620,7 @@ Position can be represented as a \textit{signal} added to meaning
 \vspace{5mm}
 \textbf{What if we add a ``position number'' to each word's meaning vector?}
 
-\secondary{\footnotesize Like giving each word both ``what it means'' and ``where it is''}
+\bottomnote{\footnotesize Like giving each word both ``what it means'' and ``where it is''}
 \end{frame}
 
 % Slide 13: THE HYPOTHESIS
@@ -610,7 +719,12 @@ Must wait for previous words & All positions computed in parallel \\
 \highlight{This is called ``positional encoding''}
 \end{center}
 
-\secondary{\footnotesize The name makes sense: we're encoding position into the numbers}
+\vspace{5mm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/sr_08_vector_addition.pdf}
+\end{center}
+
+\bottomnote{\footnotesize The name makes sense: we're encoding position into the numbers}
 \end{frame}
 
 % Slide 15: GEOMETRIC INTUITION
@@ -644,7 +758,7 @@ Must wait for previous words & All positions computed in parallel \\
 \textbf{Visualization:}
 
 \vspace{3mm}
-\secondary{\footnotesize Imagine sine wave at different frequencies:}
+\bottomnote{\footnotesize Imagine sine wave at different frequencies:}
 \begin{itemize}
 \item Low frequency: Slow oscillation
 \item High frequency: Fast oscillation
@@ -667,7 +781,12 @@ Must wait for previous words & All positions computed in parallel \\
 \keypoint{Each position gets a unique sine/cosine pattern}
 \end{center}
 
-\secondary{\footnotesize Think of it like a barcode - each position has its own unique pattern}
+\vspace{5mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/sr_07_positional_encoding_waves.pdf}
+\end{center}
+
+\bottomnote{\footnotesize Think of it like a barcode - each position has its own unique pattern}
 \end{frame}
 
 % Slide 16: The Complete Algorithm
@@ -702,7 +821,12 @@ Must wait for previous words & All positions computed in parallel \\
 \end{itemize}
 
 \vspace{8mm}
-\secondary{\footnotesize Notice: All three steps happen for ALL words simultaneously - no sequential processing!}
+\bottomnote{\footnotesize Notice: All three steps happen for ALL words simultaneously - no sequential processing!}
+
+\vspace{5mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/sr_09_self_attention_3steps.pdf}
+\end{center}
 \end{frame}
 
 % Slide 17: FULL NUMERICAL WALKTHROUGH
@@ -745,7 +869,12 @@ When processing ``cat'', compare to all words:
 \end{itemize}
 
 \vspace{5mm}
-\secondary{\footnotesize Interpretation: ``cat'' focuses most on itself, but also incorporates ``sat'' and ``the''}
+\bottomnote{\footnotesize Interpretation: ``cat'' focuses most on itself, but also incorporates ``sat'' and ``the''}
+
+\vspace{5mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/sr_10_numerical_walkthrough.pdf}
+\end{center}
 \end{frame}
 
 % Slide 18: Why "Self-Attention"
@@ -783,7 +912,7 @@ When processing ``cat'', compare to all words:
 \keypoint{Q and K determine focus percentages; V provides the actual information}
 \end{center}
 
-\secondary{\footnotesize The information retrieval analogy: Query searches through Keys to find relevant Values}
+\bottomnote{\footnotesize The information retrieval analogy: Query searches through Keys to find relevant Values}
 \end{frame}
 
 % Slide 19: Multi-Head Attention
@@ -807,7 +936,7 @@ When processing ``cat'', compare to all words:
 \begin{columns}[T]
 \column{0.24\textwidth}
 \textbf{Head 1}\\
-\secondary{\footnotesize Syntax}
+\bottomnote{\footnotesize Syntax}
 \begin{itemize}
 \item bank → the
 \item river → the
@@ -816,7 +945,7 @@ When processing ``cat'', compare to all words:
 
 \column{0.24\textwidth}
 \textbf{Head 2}\\
-\secondary{\footnotesize Semantics}
+\bottomnote{\footnotesize Semantics}
 \begin{itemize}
 \item bank → river
 \item Strong connection
@@ -825,7 +954,7 @@ When processing ``cat'', compare to all words:
 
 \column{0.24\textwidth}
 \textbf{Head 3}\\
-\secondary{\footnotesize Position}
+\bottomnote{\footnotesize Position}
 \begin{itemize}
 \item Adjacent words
 \item Local context
@@ -834,7 +963,7 @@ When processing ``cat'', compare to all words:
 
 \column{0.24\textwidth}
 \textbf{Head 4}\\
-\secondary{\footnotesize Global}
+\bottomnote{\footnotesize Global}
 \begin{itemize}
 \item Sentence-level
 \item Broad attention
@@ -872,10 +1001,10 @@ When processing ``cat'', compare to all words:
 
 \vspace{8mm}
 \textbf{Timeline:}\\
-\secondary{\footnotesize Word 1: [----] (100ms)}\\
-\secondary{\footnotesize Word 2: [----] (100ms)}\\
-\secondary{\footnotesize Word 3: [----] (100ms)}\\
-\secondary{\footnotesize Total: 300ms}
+\bottomnote{\footnotesize Word 1: [----] (100ms)}\\
+\bottomnote{\footnotesize Word 2: [----] (100ms)}\\
+\bottomnote{\footnotesize Word 3: [----] (100ms)}\\
+\bottomnote{\footnotesize Total: 300ms}
 
 \column{0.48\textwidth}
 \textbf{Transformer (Parallel):}
@@ -890,10 +1019,10 @@ When processing ``cat'', compare to all words:
 
 \vspace{8mm}
 \textbf{Timeline:}\\
-\secondary{\footnotesize Word 1: [-] (10ms)}\\
-\secondary{\footnotesize Word 2: [-] (10ms) } \textit{(parallel)}\\
-\secondary{\footnotesize Word 3: [-] (10ms) } \textit{(parallel)}\\
-\secondary{\footnotesize Total: 10ms}
+\bottomnote{\footnotesize Word 1: [-] (10ms)}\\
+\bottomnote{\footnotesize Word 2: [-] (10ms) } \textit{(parallel)}\\
+\bottomnote{\footnotesize Word 3: [-] (10ms) } \textit{(parallel)}\\
+\bottomnote{\footnotesize Total: 10ms}
 \end{columns}
 
 \vspace{10mm}
@@ -948,7 +1077,12 @@ Transformer (big) & \textcolor{green}{\textbf{3.5 days}} & \textcolor{green}{\te
 \success{\textbf{Breakthrough Validated:} Faster training, better quality, full parallelization achieved!}
 \end{center}
 
-\secondary{\footnotesize This was the moment transformers revolutionized NLP}
+\vspace{5mm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/sr_11_speed_vs_quality.pdf}
+\end{center}
+
+\bottomnote{\footnotesize This was the moment transformers revolutionized NLP}
 \end{frame}
 
 % Slide 22: Simple Implementation
@@ -993,7 +1127,7 @@ def self_attention(x):
 \end{lstlisting}
 
 \vspace{5mm}
-\secondary{\footnotesize Key insight: Matrix multiplication enables parallel computation of all word pairs simultaneously}
+\bottomnote{\footnotesize Key insight: Matrix multiplication enables parallel computation of all word pairs simultaneously}
 \end{frame}
 
 % ============================================
@@ -1001,6 +1135,15 @@ def self_attention(x):
 % ============================================
 
 \section{The Revolution Unfolds}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large The Revolution Unfolds
+\end{beamercolorbox}
+\vfill
+\end{frame}
 
 % Slide 23: Complete Architecture
 \begin{frame}[t]{The Complete Transformer Architecture}
@@ -1172,7 +1315,12 @@ All words attend to all words simultaneously
 \keypoint{The speed breakthrough enabled the scale that enabled modern AI}
 \end{center}
 
-\secondary{\footnotesize Without 100x speedup, training GPT-3 would take 10 years}
+\vspace{5mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/sr_12_modern_applications_timeline.pdf}
+\end{center}
+
+\bottomnote{\footnotesize Without 100x speedup, training GPT-3 would take 10 years}
 \end{frame}
 
 % Slide 26: Summary
@@ -1206,7 +1354,7 @@ All words attend to all words simultaneously
 
 \vspace{10mm}
 \textbf{Next Week:} Pre-training and Fine-tuning (BERT, GPT)\\
-\secondary{\footnotesize Now that training is fast, we can train HUGE models}
+\bottomnote{\footnotesize Now that training is fast, we can train HUGE models}
 
 \vspace{5mm}
 \textbf{Lab:} Build a transformer from scratch, visualize attention patterns
@@ -1221,7 +1369,7 @@ All words attend to all words simultaneously
 \vspace{15mm}
 {\large Questions?}\\
 \vspace{10mm}
-\secondary{\footnotesize Next: Lab - Implementing Transformers From Scratch}
+\bottomnote{\footnotesize Next: Lab - Implementing Transformers From Scratch}
 \end{center}
 \end{frame}
 
