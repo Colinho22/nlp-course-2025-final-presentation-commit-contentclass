@@ -1,0 +1,33 @@
+# LaTeX auxiliary files
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+
+# Claude Code settings (local only)
+.claude/
+CLAUDE.md
+
+# Archive folder (old versions)
+archive/
+
+# Old presentation versions (keep only latest)
+presentations/20251128_0915_*
+presentations/20251128_0920_*
+presentations/20251128_0925_*
+presentations/20251128_0930_*
+presentations/20251128_0940_*
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
