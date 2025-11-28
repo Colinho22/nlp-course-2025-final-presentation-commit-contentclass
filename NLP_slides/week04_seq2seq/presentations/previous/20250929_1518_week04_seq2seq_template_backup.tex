@@ -1,0 +1,1936 @@
+% Week 4: Sequence-to-Sequence Models and Attention
+% Using Template Beamer Professional Layout
+% Created: 2025-09-29 15:18
+
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{algorithm2e}
+\usepackage{tcolorbox}
+
+% Color definitions from template_beamer_final
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255, 127, 14}
+\definecolor{mlgreen}{RGB}{44, 160, 44}
+\definecolor{mlred}{RGB}{214, 39, 40}
+\definecolor{mlgray}{RGB}{127, 127, 127}
+\definecolor{lightgray}{RGB}{240, 240, 240}
+\definecolor{midgray}{RGB}{180, 180, 180}
+
+% Apply custom colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in toc}{fg=mlblue}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{block title}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{block body}{bg=mllavender4,fg=black}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% Custom commands
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+\newcommand{\highlight}[1]{\textcolor{mlblue}{\textbf{#1}}}
+\newcommand{\eqbox}[1]{\colorbox{mllavender4}{$\displaystyle #1$}}
+\newcommand{\given}{\mid}
+\newcommand{\prob}[1]{P(#1)}
+\newcommand{\argmax}{\mathrm{argmax}}
+\newcommand{\softmax}{\mathrm{softmax}}
+
+% Code listing settings
+\lstset{
+    backgroundcolor=\color{lightgray},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    commentstyle=\color{mlgreen},
+    keywordstyle=\color{mlblue},
+    stringstyle=\color{mlpurple},
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{midgray},
+    language=Python
+}
+
+\title{Sequence-to-Sequence Models}
+\subtitle{Week 4: The Translation Revolution with Attention}
+\author{NLP Course 2025}
+\institute{Professional Template Edition}
+\date{\today}
+
+\begin{document}
+
+% ==================== TITLE SLIDE ====================
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+% ==================== TABLE OF CONTENTS ====================
+\begin{frame}[t]{Week 4: Journey Through Translation and Attention}
+\tableofcontents
+\vfill
+\footnotesize
+\textbf{Learning Path:} From word-by-word replacement to neural translation. Master encoder-decoder architectures, understand the bottleneck problem, and discover how attention revolutionized machine translation.
+\end{frame}
+
+% ==================== PART 1: TRANSLATION CHALLENGE ====================
+\section{Part 1: Translation Challenge \& Motivation}
+
+% Section divider
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Part 1: Translation Challenge \& Motivation\par
+\end{beamercolorbox}
+\vfill
+\textit{Why Word-by-Word Translation Fails}
+\vfill
+\end{frame}
+
+% Real-world hook
+\begin{frame}[t]{The Google Translate Evolution: A Success Story}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{2006: Statistical MT}
+\begin{itemize}
+\item Word/phrase dictionaries
+\item Counted co-occurrences
+\item ``Reasonable'' translations
+\item Often awkward phrasing
+\end{itemize}
+
+\vspace{5mm}
+\textbf{2016: Neural MT Launch}
+\begin{itemize}
+\item Seq2Seq with attention
+\item Human-quality for some pairs
+\item 60\% error reduction
+\item Revolutionary improvement
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Real Example:}
+
+\vspace{3mm}
+\textit{Chinese Input:} ``There is one cat in station''
+
+\vspace{3mm}
+\textbf{Old:} ``In the station is one cat''
+
+\textbf{New:} ``There is a cat at the station''
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{
+\parbox{\columnwidth}{
+\centering
+\textbf{What changed?}
+Understanding context, not just words
+}
+}
+\end{columns}
+
+\bottomnote{Historical Context: Neural MT reduced translation errors by 60\% overnight - the biggest leap in MT history}
+\end{frame}
+
+% The fundamental problem
+\begin{frame}[t]{The Fundamental Problem: Meaning Across Languages}
+\centering
+\includegraphics[width=0.55\textwidth]{../figures/week4_encoder_decoder_architecture.pdf}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Translation is NOT:}
+\begin{itemize}
+\item Word replacement
+\item Dictionary lookup
+\item Rule application
+\item Pattern matching
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Translation IS:}
+\begin{itemize}
+\item Understanding meaning
+\item Cultural context
+\item Reformulation
+\item Creative generation
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\highlight{Core Challenge:} Extract meaning from source $\rightarrow$ Express meaning in target
+
+\bottomnote{Key Insight: Translation requires understanding, not just mapping words}
+\end{frame}
+
+% Why word-by-word fails
+\begin{frame}[t]{Why Word-by-Word Translation Fails: Concrete Examples}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Problem 1: Word Order}
+\begin{itemize}
+\item English: ``I saw the red house''
+\item Spanish: ``Vi la casa roja''
+\item Literal: ``Saw-I the house red''
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Problem 2: Idioms}
+\begin{itemize}
+\item English: ``It's raining cats and dogs''
+\item French: ``Il pleut des cordes''
+\item Literal: ``It rains ropes''
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Problem 3: Context}
+\begin{itemize}
+\item ``Bank'' $\rightarrow$ ``Banque'' (financial)
+\item ``Bank'' $\rightarrow$ ``Rive'' (river)
+\item Need full sentence to decide
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Problem 4: Grammar}
+\begin{itemize}
+\item German: Verb at end
+\item Japanese: Subject optional
+\item Chinese: No tenses
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\colorbox{mlred!20}{
+\parbox{0.9\textwidth}{
+\centering
+\textbf{Conclusion:} Languages encode meaning differently - translation needs deep understanding
+}
+}
+
+\bottomnote{Language Diversity: Each language has unique ways of expressing ideas}
+\end{frame}
+
+% Information as numbers
+\begin{frame}[t]{Converting Meaning to Numbers: The Core Challenge}
+\textbf{Computers only understand numbers, so:}
+
+\vspace{5mm}
+\begin{center}
+``The cat sat on the mat'' $\rightarrow$ \highlight{[Numbers]} $\rightarrow$ ``Le chat s'est assis sur le tapis''
+\end{center}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Step 1: Words to Vectors}
+\begin{itemize}
+\item ``cat'' $\rightarrow$ [0.2, -0.5, 0.8, ...]
+\item 100-300 dimensional vectors
+\item Learned from context (Word2Vec)
+\item Similar words = nearby vectors
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Step 2: Sentence to Vector}
+\begin{itemize}
+\item Combine word vectors
+\item Build ``context vector''
+\item Fixed size (e.g., 256 dims)
+\item Must capture ALL meaning
+\end{itemize}
+\end{columns}
+
+\vspace{3mm}
+\centering
+\includegraphics[width=0.35\textwidth]{../figures/week4_information_bottleneck_analysis.pdf}
+
+\bottomnote{Information Theory: Compressing variable-length sentences to fixed-size vectors loses information}
+\end{frame}
+
+% The compression challenge
+\begin{frame}[t]{The Compression Challenge: Information Bottleneck}
+\centering
+\includegraphics[width=0.45\textwidth]{../figures/week4_information_bottleneck_analysis.pdf}
+
+\vspace{2mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Compression Ratios:}
+\begin{itemize}
+\item 5 words: 500 dims $\rightarrow$ 256 (2:1)
+\item 20 words: 2000 dims $\rightarrow$ 256 (8:1)
+\item 50 words: 5000 dims $\rightarrow$ 256 (20:1)
+\end{itemize}
+
+\vspace{3mm}
+\highlight{Problem:} More compression = More loss
+
+\column{0.48\textwidth}
+\textbf{What Gets Lost?}
+\begin{itemize}
+\item Specific word choices
+\item Grammatical nuances
+\item Word positions
+\item Long-range dependencies
+\end{itemize}
+
+\vspace{3mm}
+\highlight{Result:} Poor long translations
+\end{columns}
+
+\bottomnote{Critical Limitation: Fixed-size bottleneck forces information loss in longer sentences}
+\end{frame}
+
+% Interactive exercise
+\begin{frame}[t]{Interactive Exercise: Manual Translation Steps}
+\textbf{Task: Translate ``The black cat sat'' to French step-by-step}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Your Steps:}
+\begin{enumerate}
+\item Read entire English sentence
+\item Identify: subject (cat), verb (sat)
+\item Recall French words:
+   \begin{itemize}
+   \item cat $\rightarrow$ chat
+   \item black $\rightarrow$ noir
+   \item sat $\rightarrow$ s'est assis
+   \end{itemize}
+\item Apply French grammar:
+   \begin{itemize}
+   \item Article-Noun-Adjective order
+   \item Gender agreement (le/la)
+   \end{itemize}
+\item Generate: ``Le chat noir s'est assis''
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{What You Actually Did:}
+
+\vspace{3mm}
+\colorbox{lightgray}{
+\parbox{\columnwidth}{
+\footnotesize
+1. \underline{Encoded} English to meaning
+
+2. \underline{Stored} meaning in memory
+
+3. \underline{Decoded} meaning to French
+
+\vspace{3mm}
+This is exactly Seq2Seq!
+}
+}
+
+\vspace{5mm}
+\textbf{Key Observation:}
+
+You didn't translate word-by-word!
+You understood first, then generated.
+\end{columns}
+
+\bottomnote{Human Insight: We naturally use encoder-decoder approach when translating}
+\end{frame}
+
+% Bottleneck calculation
+\begin{frame}[t]{Calculating the Bottleneck: A Mathematical Perspective}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\textbf{Information Content:}
+\begin{align}
+\text{Input} &= n \times d_{\text{embed}} \\
+\text{Context} &= d_{\text{hidden}} \\
+\text{Ratio} &= \frac{n \times d_{\text{embed}}}{d_{\text{hidden}}}
+\end{align}
+
+\vspace{3mm}
+\textbf{Example Calculation:}
+\begin{itemize}
+\item 20 words, 100-dim embeddings
+\item Input: $20 \times 100 = 2000$ values
+\item Context: $256$ values
+\item Compression: $\frac{2000}{256} \approx 8:1$
+\end{itemize}
+
+\column{0.42\textwidth}
+\centering
+\includegraphics[width=\columnwidth]{../figures/week4_context_window_analysis.pdf}
+
+\vspace{3mm}
+\colorbox{mlred!20}{
+\parbox{\columnwidth}{
+\centering
+\textbf{The Problem:}
+
+Cannot fit 2000 numbers
+into 256 without loss!
+}
+}
+\end{columns}
+
+\bottomnote{Mathematical Reality: Information theory limits how much we can compress without loss}
+\end{frame}
+
+% Part 1 Summary
+\begin{frame}[t]{Part 1 Summary: Understanding the Challenge}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What We Learned:}
+\begin{itemize}
+\item Translation $\neq$ word replacement
+\item Languages encode differently
+\item Need meaning understanding
+\item Must convert to numbers
+\item Fixed-size bottleneck problem
+\end{itemize}
+
+\vspace{5mm}
+\textbf{The Challenge:}
+\begin{itemize}
+\item Variable input length
+\item Fixed context size
+\item Information loss inevitable
+\item Longer = worse compression
+\end{itemize}
+
+\column{0.48\textwidth}
+\centering
+\includegraphics[width=0.7\columnwidth]{../figures/week4_encoder_decoder_flow.pdf}
+
+\vspace{3mm}
+\colorbox{mlgreen!20}{
+\parbox{0.9\columnwidth}{
+\centering
+\textbf{Key Question:}
+
+How do we capture all meaning
+in a fixed-size vector?
+}
+}
+\end{columns}
+
+\bottomnote{Next: The encoder-decoder architecture - a first solution to the translation challenge}
+\end{frame}
+
+% ==================== PART 2: ENCODER-DECODER ====================
+\section{Part 2: Encoder-Decoder Architecture}
+
+% Section divider
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Part 2: Encoder-Decoder Architecture\par
+\end{beamercolorbox}
+\vfill
+\textit{Building Understanding, Then Generating}
+\vfill
+\end{frame}
+
+% Two-phase translation
+\begin{frame}[t]{The Two-Phase Translation Intuition}
+\textbf{How humans translate (simplified):}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Phase 1: Understanding}
+\begin{enumerate}
+\item Read entire source sentence
+\item Extract complete meaning
+\item Store in ``mental representation''
+\item Forget specific words
+\item Keep abstract meaning
+\end{enumerate}
+
+\vspace{5mm}
+\highlight{Result:} Language-agnostic meaning
+
+\column{0.48\textwidth}
+\textbf{Phase 2: Generation}
+\begin{enumerate}
+\item Access stored meaning
+\item Apply target grammar
+\item Choose appropriate words
+\item Generate word-by-word
+\item Maintain coherence
+\end{enumerate}
+
+\vspace{5mm}
+\highlight{Result:} Natural target sentence
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{mlblue!20}{
+\parbox{0.8\textwidth}{
+\centering
+\textbf{Neural Equivalent:} Encoder (understanding) + Decoder (generation) = Seq2Seq
+}
+}
+\end{center}
+
+\bottomnote{Cognitive Model: Seq2Seq mimics human two-phase translation process}
+\end{frame}
+
+% Encoder: Reading and understanding
+\begin{frame}[t]{The Encoder: Building Understanding Step-by-Step}
+\centering
+\includegraphics[width=0.55\textwidth]{../figures/week4_encoder_decoder_architecture.pdf}
+
+\vspace{3mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Encoder's Job:}
+\begin{itemize}
+\item Process input sequentially
+\item Build hidden state (memory)
+\item Update with each word
+\item Final state = full understanding
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Mathematical View:}
+\begin{align}
+h_t &= \text{RNN}(x_t, h_{t-1}) \\
+c &= h_{\text{final}}
+\end{align}
+
+\column{0.48\textwidth}
+\textbf{Processing ``The cat sat'':}
+\footnotesize
+\begin{enumerate}
+\item $h_1 = \text{RNN}(\text{``The''}, h_0)$
+\item $h_2 = \text{RNN}(\text{``cat''}, h_1)$
+\item $h_3 = \text{RNN}(\text{``sat''}, h_2)$
+\item Context: $c = h_3$
+\end{enumerate}
+
+\vspace{3mm}
+\normalsize
+\colorbox{mlgreen!20}{
+\parbox{\columnwidth}{
+\centering
+$c$ contains entire sentence meaning
+}
+}
+\end{columns}
+
+\bottomnote{Encoder Design: RNN/LSTM accumulates information into fixed-size context vector}
+\end{frame}
+
+% Decoder: Writing from memory
+\begin{frame}[t]{The Decoder: Generating from Understanding}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Decoder's Job:}
+\begin{itemize}
+\item Start with context vector $c$
+\item Generate one word at a time
+\item Use previous word + context
+\item Stop at end token
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Generation Process:}
+\begin{align}
+s_0 &= c \text{ (initialize)} \\
+s_t &= \text{RNN}(y_{t-1}, s_{t-1}) \\
+\prob{y_t} &= \softmax(W s_t)
+\end{align}
+
+\column{0.48\textwidth}
+\textbf{Generating ``Le chat noir'':}
+\footnotesize
+\begin{enumerate}
+\item Start: $s_0 = c$, $y_0 = $ <START>
+\item Generate ``Le'': $\prob{y_1 \given c}$
+\item Generate ``chat'': $\prob{y_2 \given y_1, c}$
+\item Generate ``noir'': $\prob{y_3 \given y_{1:2}, c}$
+\item Stop: $y_4 = $ <END>
+\end{enumerate}
+
+\vspace{3mm}
+\normalsize
+\highlight{Key:} Each word depends on context + history
+\end{columns}
+
+\vspace{5mm}
+\centering
+\includegraphics[width=0.4\textwidth]{../figures/week4_encoder_decoder_flow.pdf}
+
+\bottomnote{Decoder Design: Conditional language model generating from compressed meaning}
+\end{frame}
+
+% Complete architecture
+\begin{frame}[t]{Complete Seq2Seq Architecture}
+\centering
+\includegraphics[width=0.55\textwidth]{../figures/week4_seq2seq_architecture_minimalist.pdf}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Components:}
+\begin{itemize}
+\item Embedding layers
+\item Encoder RNN
+\item Context vector
+\item Decoder RNN
+\item Output projection
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Training:}
+\begin{itemize}
+\item Teacher forcing
+\item Cross-entropy loss
+\item Backprop through time
+\item End-to-end learning
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Inference:}
+\begin{itemize}
+\item Greedy decoding
+\item Beam search
+\item Length normalization
+\item Coverage penalty
+\end{itemize}
+\end{columns}
+
+\bottomnote{Architecture Overview: Two RNNs connected by fixed-size context vector}
+\end{frame}
+
+% PyTorch implementation
+\begin{frame}[fragile]{Complete Seq2Seq Implementation in PyTorch}
+\begin{columns}[T]
+\column{0.58\textwidth}
+\begin{lstlisting}[language=Python]
+import torch
+import torch.nn as nn
+
+class Seq2Seq(nn.Module):
+    def __init__(self, src_vocab,
+                 tgt_vocab, embed_dim=256,
+                 hidden_dim=512):
+        super().__init__()
+
+        # Embeddings
+        self.src_embed = nn.Embedding(
+            src_vocab, embed_dim
+        )
+        self.tgt_embed = nn.Embedding(
+            tgt_vocab, embed_dim
+        )
+
+        # Encoder & Decoder
+        self.encoder = nn.LSTM(
+            embed_dim, hidden_dim,
+            batch_first=True
+        )
+        self.decoder = nn.LSTM(
+            embed_dim, hidden_dim,
+            batch_first=True
+        )
+
+        # Output projection
+        self.output = nn.Linear(
+            hidden_dim, tgt_vocab
+        )
+\end{lstlisting}
+
+\column{0.40\textwidth}
+\begin{lstlisting}[language=Python]
+    def forward(self, src, tgt):
+        # Encode
+        src_emb = self.src_embed(src)
+        _, (h, c) = self.encoder(
+            src_emb
+        )
+
+        # Decode
+        tgt_emb = self.tgt_embed(tgt)
+        out, _ = self.decoder(
+            tgt_emb, (h, c)
+        )
+
+        # Project
+        logits = self.output(out)
+        return logits
+
+# Usage
+model = Seq2Seq(
+    src_vocab=10000,
+    tgt_vocab=10000
+)
+
+# Training step
+src = torch.randint(0, 10000,
+                   (32, 20))
+tgt = torch.randint(0, 10000,
+                   (32, 15))
+logits = model(src, tgt)
+\end{lstlisting}
+\end{columns}
+
+\bottomnote{Implementation Note: Context vector passed through LSTM initial states (h, c)}
+\end{frame}
+
+% Step-by-step encoding
+\begin{frame}[t]{Encoding Example: ``The black cat sat''}
+\textbf{Watch the hidden state evolve:}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\footnotesize
+\textbf{Step 1: Process ``The''}
+\begin{itemize}
+\item Input: $x_1 = \text{embed}(\text{``The''}) = [0.1, 0.3, ...]$
+\item Hidden: $h_1 = \text{LSTM}(x_1, h_0)$
+\item Memory: ``Determiner seen''
+\end{itemize}
+
+\textbf{Step 2: Process ``black''}
+\begin{itemize}
+\item Input: $x_2 = \text{embed}(\text{``black''})$
+\item Hidden: $h_2 = \text{LSTM}(x_2, h_1)$
+\item Memory: ``Determiner + adjective''
+\end{itemize}
+
+\textbf{Step 3: Process ``cat''}
+\begin{itemize}
+\item Input: $x_3 = \text{embed}(\text{``cat''})$
+\item Hidden: $h_3 = \text{LSTM}(x_3, h_2)$
+\item Memory: ``Black cat (subject)''
+\end{itemize}
+
+\textbf{Step 4: Process ``sat''}
+\begin{itemize}
+\item Input: $x_4 = \text{embed}(\text{``sat''})$
+\item Hidden: $h_4 = \text{LSTM}(x_4, h_3)$
+\item Memory: ``Black cat sat (complete)''
+\end{itemize}
+
+\column{0.42\textwidth}
+\centering
+\includegraphics[width=0.9\columnwidth]{../figures/hidden_state_evolution.pdf}
+
+\vspace{5mm}
+\colorbox{mlgreen!20}{
+\parbox{\columnwidth}{
+\centering
+\textbf{Final Context:}
+
+$c = h_4$ contains:
+- Subject: black cat
+- Action: sat
+- Tense: past
+}
+}
+\end{columns}
+
+\bottomnote{Encoding Process: Each word updates understanding, final state has complete meaning}
+\end{frame}
+
+% Step-by-step decoding
+\begin{frame}[t]{Decoding Example: Generating ``Le chat noir''}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\textbf{Starting from context $c$:}
+
+\vspace{3mm}
+\footnotesize
+\textbf{Step 1: Generate ``Le''}
+\begin{itemize}
+\item State: $s_0 = c$
+\item Input: <START> token
+\item Output: $\prob{\text{``Le''}} = 0.8$
+\item Next: $s_1 = \text{LSTM}(\text{``Le''}, s_0)$
+\end{itemize}
+
+\textbf{Step 2: Generate ``chat''}
+\begin{itemize}
+\item State: $s_1$ (knows ``Le'')
+\item Input: ``Le''
+\item Output: $\prob{\text{``chat''}} = 0.7$
+\item Next: $s_2 = \text{LSTM}(\text{``chat''}, s_1)$
+\end{itemize}
+
+\textbf{Step 3: Generate ``noir''}
+\begin{itemize}
+\item State: $s_2$ (knows ``Le chat'')
+\item Input: ``chat''
+\item Output: $\prob{\text{``noir''}} = 0.6$
+\item Next: $s_3 = \text{LSTM}(\text{``noir''}, s_2)$
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{Probability Distribution:}
+
+\vspace{3mm}
+At each step, model outputs:
+\centering
+\includegraphics[width=0.8\columnwidth]{../figures/generation_probability.pdf}
+
+\vspace{3mm}
+\colorbox{mlblue!20}{
+\parbox{\columnwidth}{
+\centering
+\textbf{Key Point:}
+
+Decoder maintains its own
+hidden state separate from encoder
+}
+}
+\end{columns}
+
+\bottomnote{Decoding Process: Conditional generation using context and previous outputs}
+\end{frame}
+
+% Quiz checkpoint
+\begin{frame}[t]{Quiz Checkpoint: Understanding Seq2Seq}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Questions:}
+
+\vspace{3mm}
+\textbf{Q1:} What is the context vector?
+\begin{enumerate}[a)]
+\item Average of word embeddings
+\item Final encoder hidden state
+\item Sum of all hidden states
+\item Random initialization
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Q2:} Why use two separate networks?
+\begin{enumerate}[a)]
+\item Faster training
+\item Different tasks (read vs write)
+\item More parameters
+\item Requirement of RNNs
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Q3:} Teacher forcing means:
+\begin{enumerate}[a)]
+\item Using true targets during training
+\item Forcing convergence
+\item Teaching the teacher
+\item Forced alignment
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{Answers:}
+
+\vspace{3mm}
+\textbf{A1:} \textcolor{mlgreen}{\textbf{b) Final encoder hidden state}}
+\begin{itemize}
+\item Contains full sentence understanding
+\item Fixed-size representation
+\item Passed to decoder
+\end{itemize}
+
+\vspace{5mm}
+\textbf{A2:} \textcolor{mlgreen}{\textbf{b) Different tasks}}
+\begin{itemize}
+\item Encoder: comprehension
+\item Decoder: generation
+\item Different objectives
+\end{itemize}
+
+\vspace{5mm}
+\textbf{A3:} \textcolor{mlgreen}{\textbf{a) Using true targets}}
+\begin{itemize}
+\item Feed correct previous word
+\item Speeds up training
+\item Avoids error accumulation
+\end{itemize}
+\end{columns}
+
+\bottomnote{Self-Check: Understanding these concepts is crucial for grasping attention mechanism}
+\end{frame}
+
+% Part 2 Summary
+\begin{frame}[t]{Part 2 Summary: The Encoder-Decoder Solution}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Architecture Components:}
+\begin{itemize}
+\item Encoder RNN: reads input
+\item Context vector: compressed meaning
+\item Decoder RNN: generates output
+\item End-to-end training
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Key Equations:}
+\begin{align}
+c &= \text{Encoder}(x_{1:n}) \\
+y_t &= \text{Decoder}(c, y_{<t})
+\end{align}
+
+\column{0.48\textwidth}
+\textbf{Strengths:}
+\begin{itemize}
+\item Variable input/output length
+\item End-to-end learning
+\item No alignment needed
+\item Works for any language pair
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Weakness:}
+\colorbox{mlred!20}{
+\parbox{\columnwidth}{
+\centering
+Fixed-size bottleneck!
+}
+}
+\end{columns}
+
+\vspace{5mm}
+\centering
+\includegraphics[width=0.35\textwidth]{../figures/week4_information_bottleneck_analysis.pdf}
+
+\bottomnote{Critical Limitation: All information must pass through single fixed-size vector}
+\end{frame}
+
+% ==================== PART 3: ATTENTION REVOLUTION ====================
+\section{Part 3: The Attention Revolution}
+
+% Section divider
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Part 3: The Attention Revolution\par
+\end{beamercolorbox}
+\vfill
+\textit{Looking Back at All Hidden States}
+\vfill
+\end{frame}
+
+% The bottleneck problem revisited
+\begin{frame}[t]{The Bottleneck Problem: Why Seq2Seq Fails on Long Sentences}
+\centering
+\includegraphics[width=0.65\textwidth]{../figures/week4_context_window_analysis.pdf}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Performance Degradation:}
+\begin{itemize}
+\item 10 words: BLEU = 35
+\item 20 words: BLEU = 25
+\item 30 words: BLEU = 15
+\item 40+ words: BLEU < 10
+\end{itemize}
+
+\vspace{3mm}
+\highlight{Cause:} Information bottleneck
+
+\column{0.48\textwidth}
+\textbf{What's Lost:}
+\begin{itemize}
+\item Early words forgotten
+\item Specific details blurred
+\item Word positions unclear
+\item Grammatical structure
+\end{itemize}
+
+\vspace{3mm}
+\highlight{Need:} Access to all states
+\end{columns}
+
+\bottomnote{Empirical Evidence: Translation quality drops dramatically after 20 words}
+\end{frame}
+
+% Human attention analogy
+\begin{frame}[t]{Human Translation: The Attention Analogy}
+\textbf{How do humans really translate long sentences?}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Translating Word by Word:}
+
+``The black cat that I saw yesterday sat''
+
+\vspace{3mm}
+When translating ``sat'':
+\begin{enumerate}
+\item Look back at ``cat'' (subject)
+\item Check tense markers
+\item Verify agreement
+\item Generate appropriate form
+\end{enumerate}
+
+\vspace{3mm}
+\highlight{Key:} We don't memorize everything!
+We look back as needed.
+
+\column{0.48\textwidth}
+\centering
+\includegraphics[width=\columnwidth]{../figures/week4_attention_heatmap.pdf}
+
+\vspace{3mm}
+\colorbox{mlgreen!20}{
+\parbox{\columnwidth}{
+\centering
+\textbf{Attention Idea:}
+
+Let decoder look back at
+ALL encoder states!
+}
+}
+\end{columns}
+
+\bottomnote{Human Insight: We dynamically focus on relevant parts when translating}
+\end{frame}
+
+% Attention mechanism visualization
+\begin{frame}[t]{The Attention Mechanism: Dynamic Context}
+\centering
+\includegraphics[width=0.5\textwidth]{../figures/week4_attention_mechanism_minimalist.pdf}
+
+\vspace{1mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Old Way (Seq2Seq):}
+\begin{itemize}
+\item Fixed context $c = h_n$
+\item Same for all decoder steps
+\item Information bottleneck
+\item Forgets early words
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{New Way (Attention):}
+\begin{itemize}
+\item Dynamic context $c_t$
+\item Different for each word
+\item Weighted sum of all states
+\item Remembers everything
+\end{itemize}
+\end{columns}
+
+\vspace{3mm}
+\eqbox{c_t = \sum_{i=1}^n \alpha_{ti} h_i}
+
+where $\alpha_{ti}$ = attention weight for source position $i$ at time $t$
+
+\bottomnote{Key Innovation: Replace fixed context with dynamic weighted combination}
+\end{frame}
+
+% Mathematical formulation - Split into two slides
+\begin{frame}[t]{Attention Mathematics: Computing Weights}
+\textbf{How to calculate attention weights:}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Step 1: Score}
+How relevant is each encoder state?
+$$e_{ti} = \text{score}(s_{t-1}, h_i)$$
+
+\vspace{3mm}
+Common scoring functions:
+\begin{itemize}
+\item \textbf{Dot:} $s_{t-1} \cdot h_i$
+\item \textbf{General:} $s_{t-1} W h_i$
+\item \textbf{Concat:} $v \tanh(W[s_{t-1}; h_i])$
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Step 2: Normalize}
+Convert scores to probabilities:
+$$\alpha_{ti} = \frac{\exp(e_{ti})}{\sum_j \exp(e_{tj})}$$
+
+\vspace{5mm}
+\textbf{Step 3: Weighted Sum}
+Compute dynamic context:
+$$c_t = \sum_{i=1}^n \alpha_{ti} h_i$$
+\end{columns}
+
+\vspace{5mm}
+Each decoder step gets its own custom-weighted view of the source!
+
+\bottomnote{Mathematical Core: Three simple steps that revolutionized machine translation}
+\end{frame}
+
+\begin{frame}[t]{Attention Mathematics: Query-Key-Value Intuition}
+\textbf{Understanding the QKV Framework:}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Components:}
+\begin{itemize}
+\item \textbf{Query} ($s_{t-1}$): What I'm looking for
+\item \textbf{Keys} ($h_i$): What's available
+\item \textbf{Values} ($h_i$): What to retrieve
+\item \textbf{Weights} ($\alpha_{ti}$): Relevance scores
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Analogy:}
+\begin{itemize}
+\item Query = Search term
+\item Keys = Document titles
+\item Values = Document content
+\item Attention = Search relevance
+\end{itemize}
+
+\column{0.48\textwidth}
+\vspace{10mm}
+\colorbox{mlblue!20}{
+\parbox{\columnwidth}{
+\centering
+\Large
+\textbf{Critical Insight:}
+
+\vspace{5mm}
+This simple mechanism\\
+is the foundation of\\
+\textbf{ALL} modern transformers!
+
+\vspace{5mm}
+\small
+GPT, BERT, T5, ChatGPT...\\
+all use this QKV attention
+}
+}
+\end{columns}
+
+\bottomnote{Foundation: Attention as learned information retrieval - the key to modern AI}
+\end{frame}
+
+% Attention weights heatmap
+\begin{frame}[t]{Visualizing Attention: What the Model Focuses On}
+\centering
+\includegraphics[width=0.55\textwidth]{../figures/week4_attention_heatmap_colorful.pdf}
+
+\vspace{2mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Reading the Heatmap:}
+\begin{itemize}
+\item Rows: Target (French)
+\item Columns: Source (English)
+\item Brightness: Weight
+\item Diagonal: Alignment
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Example Weights:}
+\begin{itemize}
+\item ``chat'' → ``cat'' (0.8)
+\item ``noir'' → ``black'' (0.7)
+\item Reordering visible
+\end{itemize}
+\end{columns}
+
+\bottomnote{Interpretability: Attention weights show what model ``looks at'' for each word}
+\end{frame}
+
+% Complete attention implementation
+\begin{frame}[fragile]{Implementing Attention: Score Calculation}
+\footnotesize
+\begin{lstlisting}[language=Python]
+def attention_score(decoder_hidden, encoder_outputs):
+    # Step 1: Expand decoder hidden to match encoder length
+    seq_len = encoder_outputs.size(1)
+    hidden = decoder_hidden.repeat(1, seq_len, 1)
+
+    # Step 2: Concatenate and score
+    concat = torch.cat((hidden, encoder_outputs), dim=2)
+    scores = self.v(torch.tanh(self.attn(concat)))
+
+    # Step 3: Apply softmax to get weights
+    weights = F.softmax(scores.squeeze(2), dim=1)
+    return weights
+\end{lstlisting}
+
+\bottomnote{Key: Score function determines which encoder states to focus on}
+\end{frame}
+
+\begin{frame}[fragile]{Implementing Attention: Context Computation}
+\footnotesize
+\begin{lstlisting}[language=Python]
+def compute_context(weights, encoder_outputs):
+    # Weighted sum of encoder states
+    # weights: [batch, seq_len]
+    # encoder_outputs: [batch, seq_len, hidden]
+    context = torch.bmm(
+        weights.unsqueeze(1),  # [batch, 1, seq_len]
+        encoder_outputs        # [batch, seq_len, hidden]
+    )  # Result: [batch, 1, hidden]
+    return context
+\end{lstlisting}
+
+\bottomnote{Context vector: Weighted combination of all encoder hidden states}
+\end{frame}
+
+\begin{frame}[fragile]{Implementing Attention: Decoder Integration}
+\footnotesize
+\begin{lstlisting}[language=Python]
+class AttentionDecoder(nn.Module):
+    def forward(self, input_token, hidden, encoder_outputs):
+        # 1. Embed input token
+        embedded = self.embedding(input_token)
+
+        # 2. Compute attention
+        context, weights = self.attention(hidden, encoder_outputs)
+
+        # 3. Combine embedding + context
+        lstm_input = torch.cat([embedded, context], dim=2)
+
+        # 4. LSTM step
+        output, hidden = self.lstm(lstm_input, hidden)
+
+        # 5. Predict next word
+        predictions = self.output(output)
+
+        return predictions, hidden, weights
+\end{lstlisting}
+
+\bottomnote{Each decoder step: Attention determines what to focus on from source}
+\end{frame}
+
+% Interactive exercise
+\begin{frame}[t]{Interactive Exercise: Calculate Attention Weights}
+\textbf{Task: Compute attention for generating ``noir'' (black)}
+
+\vspace{5mm}
+Given decoder state $s_2$ after generating ``Le chat'':
+
+\vspace{3mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Encoder states:}
+\begin{itemize}
+\item $h_1$: ``The'' = [0.1, 0.2]
+\item $h_2$: ``black'' = [0.8, 0.9]
+\item $h_3$: ``cat'' = [0.5, 0.4]
+\item $h_4$: ``sat'' = [0.3, 0.1]
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Decoder query:}
+\begin{itemize}
+\item $s_2$ = [0.7, 0.8]
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Your calculations:}
+
+\colorbox{lightgray}{
+\parbox{\columnwidth}{
+\footnotesize
+1. Scores (dot product):
+   \begin{itemize}
+   \item $e_1 = s_2 \cdot h_1 = $ \underline{\hspace{1cm}}
+   \item $e_2 = s_2 \cdot h_2 = $ \underline{\hspace{1cm}}
+   \item $e_3 = s_2 \cdot h_3 = $ \underline{\hspace{1cm}}
+   \item $e_4 = s_2 \cdot h_4 = $ \underline{\hspace{1cm}}
+   \end{itemize}
+
+2. Softmax weights:
+   \begin{itemize}
+   \item $\alpha_2 = $ \underline{\hspace{1cm}} (highest!)
+   \end{itemize}
+
+3. Context: weighted sum
+}
+}
+\end{columns}
+
+\bottomnote{Hands-On: Computing attention manually builds intuition for the mechanism}
+\end{frame}
+
+% Before/after comparison
+\begin{frame}[t]{Impact of Attention: BLEU Score Improvements}
+\centering
+\includegraphics[width=0.65\textwidth]{../figures/week4_bleu_comparison_minimalist.pdf}
+
+\vspace{2mm}
+\textbf{BLEU Score Improvements by Sentence Length:}
+\begin{itemize}
+\item Short (< 10 words): +5 points
+\item Medium (10-20): +10 points
+\item Long (20-30): +15 points
+\item Very long (30+): +20 points
+\end{itemize}
+
+\bottomnote{Empirical Success: Attention solved the long sentence problem completely}
+\end{frame}
+
+\begin{frame}[t]{Impact of Attention: Why It Works}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Technical Advantages:}
+\begin{itemize}
+\item No information bottleneck
+\item Direct access to all source words
+\item Handles word reordering naturally
+\item Resolves lexical ambiguity
+\item Maintains word alignment
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Practical Impact:}
+\begin{itemize}
+\item Production-ready quality
+\item Handles complex languages
+\item Works for long documents
+\item Interpretable alignments
+\item Foundation for transformers
+\end{itemize}
+\end{columns}
+
+\vspace{3mm}
+\centering
+\colorbox{mlgreen!20}{\parbox{0.7\textwidth}{\centering\textbf{Game-changing improvement that enabled modern NMT}}}
+
+\bottomnote{Historical Impact: This innovation directly led to transformer architecture}
+\end{frame}
+
+% Part 3 Summary
+\begin{frame}[t]{Part 3 Summary: The Attention Revolution}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Innovation:}
+\begin{itemize}
+\item Dynamic context vectors
+\item Look at all encoder states
+\item Weighted by relevance
+\item Different for each word
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Mathematical Core:}
+\begin{align}
+\alpha_{ti} &= \softmax(\text{score}(s_t, h_i)) \\
+c_t &= \sum_i \alpha_{ti} h_i
+\end{align}
+
+\column{0.48\textwidth}
+\centering
+\includegraphics[width=\columnwidth]{../figures/week4_attention_comprehensive_analysis.pdf}
+
+\vspace{3mm}
+\colorbox{mlgreen!20}{
+\parbox{\columnwidth}{
+\centering
+\textbf{Impact:}
+
+Attention mechanism became
+foundation of all modern NLP
+}
+}
+\end{columns}
+
+\bottomnote{Historical Significance: Attention paper (2014) revolutionized entire field}
+\end{frame}
+
+% ==================== PART 4: IMPLEMENTATION & APPLICATIONS ====================
+\section{Part 4: Implementation \& Applications}
+
+% Section divider
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Part 4: Implementation \& Applications\par
+\end{beamercolorbox}
+\vfill
+\textit{From Research to Production}
+\vfill
+\end{frame}
+
+% Complete implementation
+\begin{frame}[fragile]{Complete Seq2Seq with Attention}
+\begin{columns}[T]
+\column{0.58\textwidth}
+\begin{lstlisting}[language=Python]
+class AttentionSeq2Seq(nn.Module):
+    def __init__(self, src_vocab,
+                 tgt_vocab, dim=512):
+        super().__init__()
+
+        # Components
+        self.encoder = Encoder(
+            src_vocab, dim
+        )
+        self.decoder = DecoderWithAttn(
+            tgt_vocab, dim
+        )
+        self.attention = Attention(dim)
+
+    def forward(self, src, tgt,
+                teacher_forcing=0.5):
+        # Encode all at once
+        enc_out, (h, c) = self.encoder(src)
+
+        batch = src.size(0)
+        max_len = tgt.size(1)
+        vocab = self.decoder.vocab_size
+
+        # Store outputs
+        outputs = torch.zeros(
+            batch, max_len, vocab
+        )
+
+        # First input
+        input = tgt[:, 0]
+\end{lstlisting}
+
+\column{0.40\textwidth}
+\begin{lstlisting}[language=Python]
+        for t in range(1, max_len):
+            # Attention context
+            context, weights =
+                self.attention(
+                    h, enc_out
+                )
+
+            # Decode one step
+            output, (h, c) =
+                self.decoder(
+                    input, (h, c),
+                    context
+                )
+
+            outputs[:, t] = output
+
+            # Teacher forcing
+            use_teacher = random.random()
+                < teacher_forcing
+
+            if use_teacher:
+                input = tgt[:, t]
+            else:
+                input = output.argmax(1)
+
+        return outputs
+\end{lstlisting}
+\end{columns}
+
+\bottomnote{Production Ready: This architecture powers many real translation systems}
+\end{frame}
+
+% Training dynamics
+\begin{frame}[t]{Training Dynamics: Loss Curves}
+\centering
+\includegraphics[width=0.7\textwidth]{../figures/readability_training_dashboard.pdf}
+
+\vspace{3mm}
+\textbf{Three Phases of Training:}
+\begin{itemize}
+\item \textbf{Phase 1 (0-10k steps):} Rapid initial learning, vocabulary acquisition
+\item \textbf{Phase 2 (10k-50k):} Grammar and alignment patterns emerge
+\item \textbf{Phase 3 (50k+):} Fine-tuning, rare words, style
+\end{itemize}
+
+\bottomnote{Observation: Attention weights become interpretable after ~20k steps}
+\end{frame}
+
+\begin{frame}[t]{Training Dynamics: What Model Learns When}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Early (0-20k steps):}
+\begin{itemize}
+\item Basic vocabulary
+\item Word copying
+\item Common phrases
+\item Simple alignment
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Middle (20k-80k):}
+\begin{itemize}
+\item Grammar rules
+\item Word reordering
+\item Multi-word expressions
+\item Context sensitivity
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Late (80k+):}
+\begin{itemize}
+\item Rare words
+\item Idioms
+\item Style transfer
+\item Long dependencies
+\end{itemize}
+\end{columns}
+
+\vspace{3mm}
+\centering
+\colorbox{mllavender!20}{\parbox{0.8\textwidth}{\centering\textbf{Key: Attention alignment emerges without explicit supervision}}}
+
+\bottomnote{Training Strategy: Patient training (100k+ steps) crucial for quality}
+\end{frame}
+
+% Additional training insights slide
+\begin{frame}[t]{Training Best Practices}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Hyperparameters That Matter:}
+\begin{itemize}
+\item \textbf{Learning rate:} Start 0.001, decay after epoch 10
+\item \textbf{Teacher forcing:} 0.5 → 0 over training
+\item \textbf{Gradient clip:} Essential (1.0 works well)
+\item \textbf{Batch size:} 32-64 optimal for GPU
+\item \textbf{Hidden size:} 512 is sweet spot
+\item \textbf{Layers:} 2-3 LSTM layers sufficient
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Common Issues \& Solutions:}
+\begin{itemize}
+\item \textbf{Exploding loss:} → Reduce learning rate
+\item \textbf{Mode collapse:} → Add dropout (0.3)
+\item \textbf{Poor rare words:} → Increase min frequency
+\item \textbf{Slow training:} → Use GPU, reduce batch size
+\item \textbf{Overfitting:} → More data, regularization
+\item \textbf{Underfitting:} → Bigger model, longer training
+\end{itemize}
+\end{columns}
+
+\bottomnote{Pro Tip: Start simple, add complexity gradually, monitor validation metrics closely}
+\end{frame}
+
+% Beam search
+\begin{frame}[t]{Beam Search: Better Decoding Strategy}
+\centering
+\includegraphics[width=0.5\textwidth]{../figures/week4_beam_search_algorithm.pdf}
+
+\vspace{2mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Greedy vs Beam:}
+\begin{itemize}
+\item Greedy: Best at each step
+\item Beam: Keep top-k paths
+\item Better final result
+\end{itemize}
+
+\textbf{Beam size:}
+\begin{itemize}
+\item k=5: Good balance
+\item k=10: Slightly better
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Example (beam=3):}
+\footnotesize
+\begin{itemize}
+\item Step 1: ``Le'', ``Un'', ``Les''
+\item Step 2: ``Le chat'', ``Un chat''
+\item Step 3: Keep expanding top-3
+\end{itemize}
+\normalsize
+
+\vspace{2mm}
+\highlight{Pick best complete path}
+\end{columns}
+
+\bottomnote{Beam search explores multiple hypotheses for better translations}
+\end{frame}
+
+% Real 2024 applications - Split into two slides
+\begin{frame}[t]{Modern Applications: Direct Descendants (2024)}
+\centering
+\includegraphics[width=0.5\textwidth]{../figures/week4_modern_applications_ecosystem.pdf}
+
+\vspace{2mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Production Systems:}
+\begin{itemize}
+\item Google Translate (1B+ users)
+\item DeepL (quality leader)
+\item Facebook M2M-100
+\item Microsoft Translator
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Capabilities:}
+\begin{itemize}
+\item 100+ language pairs
+\item Document translation
+\item Real-time speech
+\item Context awareness
+\end{itemize}
+\end{columns}
+
+\bottomnote{Industry Impact: Seq2Seq+Attention powers billion-scale translation services}
+\end{frame}
+
+\begin{frame}[t]{Modern Applications: Beyond Translation}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Attention Everywhere:}
+\begin{itemize}
+\item ChatGPT/Claude (attention-based)
+\item Image captioning
+\item Video understanding
+\item Code generation
+\item Music composition
+\item Speech recognition
+\item Medical diagnosis
+\end{itemize}
+
+\column{0.48\textwidth}
+\vspace{10mm}
+\colorbox{mlgreen!20}{
+\parbox{\columnwidth}{
+\centering
+\Large
+\textbf{Foundation Truth:}
+
+\vspace{5mm}
+Seq2Seq + Attention \\
+= \\
+Modern AI Backbone
+
+\vspace{5mm}
+\small
+Every modern language model\\
+builds on this architecture
+}
+}
+\end{columns}
+
+\bottomnote{Attention mechanism is the foundation of the entire AI revolution}
+\end{frame}
+
+% Lab preview
+\begin{frame}[t]{Lab Preview: Build Your Own Translator}
+\textbf{Week 4 Lab: English-French Neural Machine Translation}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What You'll Build:}
+\begin{enumerate}
+\item Load parallel corpus
+\item Tokenize and preprocess
+\item Implement encoder-decoder
+\item Add attention mechanism
+\item Train on GPU
+\item Visualize attention weights
+\item Compare with/without attention
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Dataset:}
+\begin{itemize}
+\item 10,000 sentence pairs
+\item English $\rightarrow$ French
+\item Average 15 words/sentence
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Expected Results:}
+
+\vspace{3mm}
+\includegraphics[width=\columnwidth]{../figures/week4_bleu_scores.pdf}
+
+\vspace{3mm}
+\textbf{Bonus Challenges:}
+\begin{itemize}
+\item Multi-head attention
+\item Bidirectional encoder
+\item Coverage mechanism
+\item Back-translation
+\end{itemize}
+\end{columns}
+
+\bottomnote{Practical Experience: Implementing attention from scratch solidifies understanding}
+\end{frame}
+
+% Debugging exercise
+\begin{frame}[t]{Interactive Debugging: Common Training Issues}
+\textbf{Your model isn't learning. Debug these issues:}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Issue 1: Attention all uniform}
+
+Symptoms:
+\begin{itemize}
+\item All weights $\approx$ 1/n
+\item Poor translation quality
+\item Not improving
+\end{itemize}
+
+\colorbox{lightgray}{
+\parbox{\columnwidth}{
+\footnotesize
+Your fix: \underline{\hspace{3cm}}
+
+Hint: Check score function
+}
+}
+
+\vspace{5mm}
+\textbf{Issue 2: Mode collapse}
+
+Symptoms:
+\begin{itemize}
+\item Always generates ``the the the''
+\item Loss plateaus high
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Common Fixes:}
+
+\vspace{3mm}
+\textbf{Fix 1: Initialize properly}
+\begin{itemize}
+\item Use Xavier initialization
+\item Scale attention scores
+\item Add small epsilon to softmax
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Fix 2: Teacher forcing}
+\begin{itemize}
+\item Start with 100\% teacher forcing
+\item Gradually reduce ratio
+\item Scheduled sampling
+\end{itemize}
+
+\vspace{3mm}
+\colorbox{mlgreen!20}{
+\parbox{\columnwidth}{
+\centering
+Debug systematically!
+}
+}
+\end{columns}
+
+\bottomnote{Debugging Skills: Most issues come from initialization or training schedule}
+\end{frame}
+
+% Performance benchmarks - Split into two slides
+\begin{frame}[t]{Performance Evolution Timeline}
+\centering
+\includegraphics[width=0.6\textwidth]{../figures/week4_performance_evolution_timeline.pdf}
+
+\vspace{3mm}
+\textbf{Three Years That Changed Everything}
+
+\vspace{3mm}
+The journey from seq2seq to attention represents\\one of AI's most rapid improvements
+
+\bottomnote{BLEU scores on WMT'14 English-German benchmark}
+\end{frame}
+
+\begin{frame}[t]{Performance Metrics by Year}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{2014: Seq2Seq}
+\begin{itemize}
+\item BLEU: 20-25
+\item Simple, elegant
+\item Length problems
+\item 2-3 days training
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Impact:}
+\begin{itemize}
+\item First neural MT
+\item Proof of concept
+\item Beat phrase-based
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{2015: + Attention}
+\begin{itemize}
+\item BLEU: 30-35
+\item Handles length
+\item Interpretable
+\item 4-5 days training
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Impact:}
+\begin{itemize}
+\item Production ready
+\item Google adoption
+\item 40\% improvement
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{2017: Transformer}
+\begin{itemize}
+\item BLEU: 40+
+\item All attention
+\item Parallel training
+\item 12 hours training!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Impact:}
+\begin{itemize}
+\item New paradigm
+\item Enables GPT/BERT
+\item 10x faster training
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\colorbox{mlblue!20}{
+\parbox{0.95\textwidth}{
+\centering
+\textbf{Key Insight:} Each innovation built on the previous - attention was THE breakthrough
+}
+}
+
+\bottomnote{Historical Progression: From RNN to attention to transformer architecture}
+\end{frame}
+
+% Connection to transformers
+\begin{frame}[t]{The Bridge to Transformers (Week 5 Preview)}
+\textbf{From Seq2Seq+Attention to Transformers:}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What We Keep:}
+\begin{itemize}
+\item Attention mechanism
+\item Query-Key-Value
+\item Position awareness
+\item Encoder-decoder structure
+\end{itemize}
+
+\vspace{5mm}
+\textbf{What We Remove:}
+\begin{itemize}
+\item RNN/LSTM cells
+\item Sequential processing
+\item Recurrent connections
+\item Hidden state passing
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{What We Add:}
+\begin{itemize}
+\item Self-attention
+\item Multi-head attention
+\item Position encodings
+\item Layer normalization
+\item Parallel processing
+\end{itemize}
+
+\vspace{5mm}
+\centering
+\includegraphics[width=0.8\columnwidth]{../figures/week4_architecture_evolution.pdf}
+\end{columns}
+
+\vspace{3mm}
+\colorbox{mlgreen!20}{
+\parbox{0.9\textwidth}{
+\centering
+\textbf{Key Insight:} Attention is all you need! (Literally the paper title)
+}
+}
+
+\bottomnote{Next Week: Transformers take attention to its logical conclusion}
+\end{frame}
+
+% Final summary
+\begin{frame}[t]{Week 4 Complete: From Translation to Attention}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Part 1: Challenge}
+\begin{itemize}
+\item Translation $\neq$ word replacement
+\item Need meaning understanding
+\item Information bottleneck problem
+\end{itemize}
+
+\textbf{Part 2: Seq2Seq}
+\begin{itemize}
+\item Encoder-decoder architecture
+\item Fixed context vector
+\item Works but limited by bottleneck
+\end{itemize}
+
+\textbf{Part 3: Attention}
+\begin{itemize}
+\item Dynamic context vectors
+\item Look at all encoder states
+\item Massive performance improvement
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Part 4: Applications}
+\begin{itemize}
+\item Complete implementation
+\item Beam search decoding
+\item Powers modern translation
+\item Foundation for transformers
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Key Takeaways:}
+\colorbox{mlgreen!20}{
+\parbox{\columnwidth}{
+1. Context vectors compress meaning
+
+2. Attention removes bottleneck
+
+3. Foundation of modern NLP
+
+4. Bridge to transformers
+}
+}
+\end{columns}
+
+\vspace{5mm}
+\centering
+\textbf{Next Week: Transformers - Attention Without RNNs!}
+
+\bottomnote{Achievement Unlocked: You understand the foundation of all modern language AI!}
+\end{frame}
+
+\end{document}

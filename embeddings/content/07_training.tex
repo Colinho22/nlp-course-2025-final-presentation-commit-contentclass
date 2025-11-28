@@ -1,0 +1,192 @@
+% Chapter 7: Training Dynamics
+
+\section{Training Dynamics}
+
+% Training Phase 1 - Gradient Dynamics
+\begin{frame}{Rapid Learning: Gradient Dynamics (Epochs 0-20)}
+\textbf{Why Training Starts Fast}
+
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/embeddings/training_process_theory.pdf}
+\end{center}
+
+\textbf{Gradient Behavior in Early Training:}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Initial State:}
+\begin{itemize}
+    \item Random initialization: $\mathcal{N}(0, 0.01)$
+    \item Gradient norm: $||\nabla L|| \approx \sqrt{d}$
+    \item All words equally wrong
+    \item Maximum confusion = maximum signal
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Update Characteristics:}
+\begin{itemize}
+    \item Step size: $\eta ||\nabla L|| \approx 0.01\sqrt{d}$
+    \item Direction changes: frequent
+    \item Batch variance: $\sigma^2 \approx 1.0$
+    \item Effective learning rate: high
+\end{itemize}
+\end{columns}
+
+\end{frame}
+
+% Training Loss Dynamics with Chart
+\begin{frame}{Training Loss Dynamics}
+\formulaWithChartWide{
+\textbf{Loss Evolution:}
+$$L(t) = L_0 \cdot e^{-\alpha t} + \epsilon(t)$$
+
+\textbf{Parameters:}
+\begin{itemize}
+    \item $L_0$: initial loss (8-10 for 10K vocab)
+    \item $\alpha$: decay rate (0.02-0.1)
+    \item $\epsilon(t)$: SGD noise (decreases over time)
+\end{itemize}
+}{training_loss_formula}{Three phases of training with different dynamics}
+\end{frame}
+
+% Training Phase 1 - Embedding Space Formation
+\begin{frame}{Rapid Learning: Space Formation (Epochs 0-20)}
+\textbf{How Random Vectors Become Meaningful}
+
+\textbf{Timeline of Structure Emergence:}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Epochs 0-5:}
+\begin{itemize}
+    \item Frequency clustering begins
+    \item Top 100 words separate
+    \item Function vs content words split
+    \item Loss drops 30-40\%
+\end{itemize}
+
+\textbf{Epochs 5-10:}
+\begin{itemize}
+    \item Syntactic groups form
+    \item Nouns, verbs, adjectives cluster
+    \item Basic semantic regions appear
+    \item Loss drops another 20\%
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Epochs 10-20:}
+\begin{itemize}
+    \item Semantic refinement
+    \item Animals, places, actions separate
+    \item Relationships start working
+    \item Loss reduction slows
+\end{itemize}
+
+\textbf{Visual Progress:}
+\begin{itemize}
+    \item t-SNE at epoch 1: random cloud
+    \item t-SNE at epoch 5: blobs forming
+    \item t-SNE at epoch 10: clear clusters
+    \item t-SNE at epoch 20: fine structure
+\end{itemize}
+\end{columns}
+
+\vspace{0.3cm}
+\textbf{Key Metrics:}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Metric} & \textbf{Epoch 0} & \textbf{Epoch 5} & \textbf{Epoch 10} & \textbf{Epoch 20} \\
+\hline
+Loss & 9.21 & 5.84 & 4.12 & 3.45 \\
+Similarity Correlation & 0.00 & 0.35 & 0.58 & 0.72 \\
+Analogy Accuracy & 0\% & 12\% & 31\% & 48\% \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% Training Phase 2 - Fine-Tuning
+\begin{frame}{Training Phase 2: Fine-Tuning (Epochs 20-60)}
+\textbf{Refining Semantic Relationships}
+
+\textbf{The Refinement Process:}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{What Gets Learned:}
+\begin{itemize}
+    \item Semantic relationships solidify
+    \item Analogies start working
+    \item Rare words find their place
+    \item Polysemy partially resolves
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Optimization Dynamics:}
+\begin{itemize}
+    \item Gradient norm: $||\nabla L|| \approx O(1)$
+    \item Updates become targeted
+    \item Learning rate often decayed
+    \item Loss reduction slows
+\end{itemize}
+\end{columns}
+
+\textbf{Key Metrics During Fine-Tuning:}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Metric} & \textbf{Epoch 20} & \textbf{Epoch 40} & \textbf{Epoch 60} \\
+\hline
+Loss reduction/epoch & 5\% & 2\% & 0.5\% \\
+Analogy accuracy & 40\% & 65\% & 72\% \\
+Semantic similarity & 0.5 & 0.7 & 0.75 \\
+Cluster purity & 60\% & 80\% & 85\% \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Mathematical Characterization:}
+$$L(t) \approx L_{20} \cdot (1 - \beta \log(t/20)) \quad \text{for } t \in [20, 60]$$
+
+Logarithmic improvement phase
+\end{frame}
+
+% Training Phase 3 - Convergence
+\begin{frame}{Training Phase 3: Convergence (Epochs 60+)}
+\textbf{The Final Polish and Saturation}
+
+\textbf{Convergence Characteristics:}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{What Happens:}
+\begin{itemize}
+    \item Gradient norm: $||\nabla L|| < 0.1$
+    \item Minor adjustments only
+    \item Risk of overfitting increases
+    \item Validation loss may increase
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Stopping Criteria:}
+\begin{itemize}
+    \item Loss change < 0.1\% per epoch
+    \item Validation performance plateaus
+    \item Gradient norm below threshold
+    \item Fixed epoch budget reached
+\end{itemize}
+\end{columns}
+
+\textbf{Complete Loss Function Evolution:}
+$$L(t) = \begin{cases}
+L_0 \cdot e^{-\alpha t} & t \in [0, 20] \text{ (rapid)} \\
+L_{20} \cdot (1 - \beta \log(t/20)) & t \in [20, 60] \text{ (fine-tune)} \\
+L_{60} + \epsilon(t) & t > 60 \text{ (converged)}
+\end{cases}$$
+
+where $\epsilon(t)$ represents noise around minimum
+
+\begin{center}
+\colorbox{green!10}{\parbox{0.8\textwidth}{
+\textbf{Key Insight:} 90\% of performance comes from first 60 epochs;
+longer training mainly helps rare words and edge cases.
+}}
+\end{center}
+\end{frame}

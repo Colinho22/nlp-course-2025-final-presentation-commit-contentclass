@@ -1,0 +1,1412 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm2e}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{subfigure}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+\usepackage{colortbl}
+\usepackage{array}
+\usepackage{booktabs}
+
+% Theme settings
+\usetheme{Frankfurt}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[subsections numbered]
+
+% Custom colors
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{173,216,230}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codegray}{RGB}{150,150,150}
+\definecolor{codepurple}{RGB}{128,0,128}
+\definecolor{backcolor}{RGB}{245,245,245}
+
+% Pedagogical boxes
+\newtcolorbox{checkpoint}{
+    colback=yellow!10,
+    colframe=yellow!50!black,
+    title={\textbf{Checkpoint}},
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{intuition}{
+    colback=purple!10,
+    colframe=purple!50!black,
+    title={\textbf{Intuition}},
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{keyinsight}{
+    colback=blue!10,
+    colframe=blue!50!black,
+    title={\textbf{Key Insight}},
+    fonttitle=\bfseries
+}
+
+% Code listing settings
+\lstset{
+    backgroundcolor=\color{backcolor},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    showstringspaces=false,
+    frame=single,
+    numbers=left,
+    language=Python
+}
+
+% Include slide layouts
+\input{../slide_layouts.tex}
+
+\title[Week 6: Pre-trained Models]{Natural Language Processing}
+\subtitle{Week 6: Pre-trained Language Models in 4 Parts}
+\author{Joerg R. Osterrieder \\ \url{www.joergosterrieder.com}}
+\date{}
+
+\begin{document}
+
+% Title page
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Table of Contents
+\begin{frame}{Roadmap: Your Journey Through Pre-training}
+    \tableofcontents
+\end{frame}
+
+% ===============================================
+% OPENING POWER VISUALIZATION
+% ===============================================
+
+\begin{frame}[t]{The Paradigm Shift That Changed Everything}
+    \begin{center}
+    \includegraphics[width=0.95\textwidth]{../figures/paradigm_shift_impact.pdf}
+    \end{center}
+    
+    \vspace{-0.5em}
+    \begin{keyinsight}
+    Pre-training created a 100x efficiency gain, transforming AI from elite labs to everyone's toolkit
+    \end{keyinsight}
+\end{frame}
+
+% ===============================================
+% PART 1: THE REVOLUTION
+% ===============================================
+
+\section{Part 1: The Revolution - Why Pre-training Changed Everything}
+
+\begin{frame}
+    \centering
+    \vspace{2cm}
+    {\huge \textbf{Part 1}}\\
+    \vspace{0.5cm}
+    {\Large \textbf{The Revolution}}\\
+    \vspace{0.3cm}
+    {\large Why Pre-training Changed Everything}
+\end{frame}
+
+% The Waste Problem
+\begin{frame}[t]{The \$10 Million Waste Problem}
+    \textbf{Before 2018: Every Team Starting from Zero}
+    
+    \vspace{0.5em}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Company A: Sentiment Analysis}
+    \begin{itemize}
+        \item Cost: \$500,000 in compute
+        \item Time: 2 weeks on 64 GPUs
+        \item Learns: Grammar, syntax, sentiment
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Company B: Question Answering}
+    \begin{itemize}
+        \item Cost: \$500,000 in compute
+        \item Time: 2 weeks on 64 GPUs
+        \item Learns: Grammar, syntax... again!
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{The Insanity:}
+    \begin{itemize}
+        \item 20 companies = \$10 million wasted
+        \item Each re-learning what ``the'' means
+        \item 90\% duplicate effort
+        \item Only 10\% on actual task
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{tcolorbox}[colback=red!10,colframe=red!50!black]
+    \textbf{Reality Check:} \\
+    Imagine teaching every medical student the alphabet before medicine!
+    \end{tcolorbox}
+    \end{columns}
+\end{frame}
+
+% The Breakthrough Insight
+\begin{frame}[t]{The Breakthrough: Learning from Computer Vision}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{2012: ImageNet Moment in Vision}
+    \begin{itemize}
+        \item Pre-train on millions of images
+        \item Learn edges, shapes, objects
+        \item Fine-tune for specific tasks
+        \item 10x performance improvement
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{2018: The NLP Awakening}
+    \begin{itemize}
+        \item ``Why not do this for language?''
+        \item Pre-train on all of Wikipedia
+        \item Learn grammar, facts, reasoning
+        \item Fine-tune for any language task
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \begin{center}
+    \includegraphics[width=\textwidth]{../figures/knowledge_transfer_mountain.pdf}
+    \end{center}
+    
+    \begin{intuition}
+    Like learning to read once, then applying to any book!
+    \end{intuition}
+    \end{columns}
+\end{frame}
+
+% Timeline of Revolution
+\begin{frame}[t]{Timeline: The Pre-training Revolution}
+    \begin{center}
+    \includegraphics[width=0.9\textwidth]{../figures/performance_timeline.pdf}
+    \end{center}
+    
+    \textbf{Key Milestones:}
+    \begin{itemize}
+        \item \textbf{2018}: BERT proves the concept - beats 11 benchmarks
+        \item \textbf{2019}: GPT-2 shows generation capabilities
+        \item \textbf{2020}: GPT-3 demonstrates few-shot learning
+        \item \textbf{2023}: ChatGPT brings AI to billions
+    \end{itemize}
+\end{frame}
+
+% Scale of Change
+\begin{frame}[t]{The Scale of Transformation}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Before Pre-training (2017)}
+    \begin{itemize}
+        \item Training cost: \$500K per task
+        \item Training time: 2 weeks
+        \item Data needed: 100K+ labeled examples
+        \item Performance: 70-80\% accuracy
+        \item Accessibility: PhD required
+        \item Deployment: Months
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{With Pre-training (2024)}
+    \begin{itemize}
+        \item Training cost: \$1K per task
+        \item Training time: 2 hours
+        \item Data needed: 1K examples
+        \item Performance: 95\%+ accuracy
+        \item Accessibility: API call
+        \item Deployment: Minutes
+    \end{itemize}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \begin{tcolorbox}[colback=green!10,colframe=green!50!black,width=0.8\textwidth]
+    \centering
+    \textbf{Impact: 100x cost reduction, 100x speed increase, 10x performance gain}
+    \end{tcolorbox}
+    \end{center}
+\end{frame}
+
+% Democratization
+\begin{frame}[t]{Democratization: From Elite Labs to Everyone}
+    \begin{columns}
+    \column{0.6\textwidth}
+    \textbf{The Old World (Pre-2018)}
+    \begin{itemize}
+        \item Only Google, Facebook, Microsoft
+        \item Requires ML PhD team
+        \item Millions in infrastructure
+        \item Months to deploy
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{The New World (Post-2018)}
+    \begin{itemize}
+        \item Any developer with an API key
+        \item No ML expertise needed
+        \item \$20/month subscription
+        \item Deploy in minutes
+    \end{itemize}
+    
+    \column{0.4\textwidth}
+    \textbf{Who Benefits:}
+    \begin{itemize}
+        \item Startups
+        \item Students
+        \item Researchers
+        \item Small businesses
+        \item Non-profits
+        \item Individual developers
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{checkpoint}
+    Can you explain why pre-training is like teaching someone to read?
+    \end{checkpoint}
+    \end{columns}
+\end{frame}
+
+% Part 1 Summary
+\begin{frame}[t]{Part 1 Summary: The Revolution}
+    \textbf{Key Takeaways:}
+    \begin{enumerate}
+        \item \textbf{The Problem}: Every team re-learning language basics = \$10M waste
+        \item \textbf{The Insight}: Pre-train once on everything, fine-tune for specific tasks
+        \item \textbf{The Impact}: 100x efficiency gain across cost, time, and accessibility
+        \item \textbf{The Timeline}: 2018 BERT → 2023 ChatGPT = 5 years to change the world
+        \item \textbf{The Democratization}: From PhD labs to every developer
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \begin{tcolorbox}[colback=blue!10,colframe=blue!50!black,width=0.9\textwidth]
+    \centering
+    \textbf{Next: How do models actually learn from raw text?}
+    \end{tcolorbox}
+    \end{center}
+\end{frame}
+
+% ===============================================
+% PART 2: UNDERSTANDING PRE-TRAINING
+% ===============================================
+
+\section{Part 2: Understanding Pre-training - How Models Learn from Raw Text}
+
+\begin{frame}
+    \centering
+    \vspace{2cm}
+    {\huge \textbf{Part 2}}\\
+    \vspace{0.5cm}
+    {\Large \textbf{Understanding Pre-training}}\\
+    \vspace{0.3cm}
+    {\large How Models Learn from Raw Text}
+\end{frame}
+
+% Self-Supervised Learning
+\begin{frame}[t]{The Magic: Self-Supervised Learning}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Traditional Supervised Learning}
+    \begin{itemize}
+        \item Need: (text, label) pairs
+        \item Example: (``I love this!'', positive)
+        \item Problem: Expensive to label
+        \item Scale: Thousands of examples
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Self-Supervised Learning}
+    \begin{itemize}
+        \item Need: Just raw text
+        \item Example: ``The cat sat on the [?]''
+        \item Advantage: Free labels from text itself
+        \item Scale: Billions of examples
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \begin{center}
+    \textbf{Creating Labels from Text}
+    
+    \vspace{0.5em}
+    Original: ``The quick brown fox jumps''
+    
+    \vspace{0.3em}
+    $\downarrow$ Hide words
+    
+    \vspace{0.3em}
+    Input: ``The [MASK] brown fox jumps''
+    
+    \vspace{0.3em}
+    Target: ``quick''
+    
+    \vspace{0.5em}
+    \begin{intuition}
+    The text teaches itself! Every sentence becomes a training example.
+    \end{intuition}
+    \end{center}
+    \end{columns}
+\end{frame}
+
+% BERT's Approach: MLM
+\begin{frame}[t]{BERT's Approach: Masked Language Modeling}
+    \begin{center}
+    \includegraphics[width=0.95\textwidth]{../figures/mlm_interactive_animation.pdf}
+    \end{center}
+    
+    \textbf{The Process:}
+    \begin{enumerate}
+        \item Randomly mask 15\% of words
+        \item Use bidirectional context to predict
+        \item Learn from prediction errors
+        \item Repeat billions of times
+    \end{enumerate}
+\end{frame}
+
+% MLM Interactive Example
+\begin{frame}[fragile,t]{Try It Yourself: Fill in the Blanks}
+    \textbf{BERT's Training Game - You Try:}
+    
+    \begin{enumerate}
+        \item The capital of France is [MASK].
+        \begin{itemize}
+            \item Your guess: \underline{\hspace{3cm}}
+            \item Answer: Paris
+        \end{itemize}
+        
+        \item The [MASK] rises in the east.
+        \begin{itemize}
+            \item Your guess: \underline{\hspace{3cm}}
+            \item Answer: sun
+        \end{itemize}
+        
+        \item She [MASK] to the store yesterday.
+        \begin{itemize}
+            \item Your guess: \underline{\hspace{3cm}}
+            \item Answer: went
+        \end{itemize}
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \begin{lstlisting}[language=Python]
+# BERT learns by playing this game billions of times
+def train_bert(text):
+    masked_text = randomly_mask(text, rate=0.15)
+    prediction = bert_model(masked_text)
+    loss = compare(prediction, original_text)
+    update_weights(loss)
+    \end{lstlisting}
+\end{frame}
+
+% GPT's Approach
+\begin{frame}[t]{GPT's Approach: Next Token Prediction}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Autoregressive Learning}
+    \begin{itemize}
+        \item Predict next word given previous
+        \item Left-to-right processing
+        \item Natural for generation
+        \item Simpler than BERT's MLM
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Training Example:}
+    \begin{itemize}
+        \item Input: ``The cat sat''
+        \item Target: ``on''
+        \item Next: ``The cat sat on''
+        \item Target: ``the''
+        \item Continue for all text...
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{Interactive Example:}
+    
+    Complete these sentences:
+    \begin{enumerate}
+        \item ``Once upon a...'' $\rightarrow$ \underline{\hspace{2cm}}
+        \item ``To be or not to...'' $\rightarrow$ \underline{\hspace{2cm}}
+        \item ``The weather today is...'' $\rightarrow$ \underline{\hspace{2cm}}
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \begin{keyinsight}
+    GPT learns to write by predicting what comes next, just like you just did!
+    \end{keyinsight}
+    \end{columns}
+\end{frame}
+
+% Scale Matters
+\begin{frame}[t]{Scale Matters: The Power of Big}
+    \begin{center}
+    \includegraphics[width=0.9\textwidth]{../figures/scale_comparison_chart.pdf}
+    \end{center}
+    
+    \textbf{Why Bigger is Better:}
+    \begin{itemize}
+        \item More parameters = More knowledge capacity
+        \item More data = Better understanding
+        \item More compute = Deeper patterns
+    \end{itemize}
+\end{frame}
+
+% What Models Learn
+\begin{frame}[t]{What Do Models Actually Learn?}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Layer 1-4: Syntax \& Grammar}
+    \begin{itemize}
+        \item Parts of speech
+        \item Word order rules
+        \item Basic grammar patterns
+    \end{itemize}
+    
+    \textbf{Layer 5-8: Semantics}
+    \begin{itemize}
+        \item Word meanings
+        \item Concept relationships
+        \item Context understanding
+    \end{itemize}
+    
+    \textbf{Layer 9-12: High-level Reasoning}
+    \begin{itemize}
+        \item World knowledge
+        \item Logical relationships
+        \item Abstract concepts
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{Emergent Abilities:}
+    \begin{itemize}
+        \item Translation (never explicitly taught!)
+        \item Summarization
+        \item Question answering
+        \item Code generation
+        \item Mathematical reasoning
+        \item Creative writing
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{intuition}
+    Like a child learning language: first sounds, then words, then meaning, then reasoning
+    \end{intuition}
+    \end{columns}
+\end{frame}
+
+% Part 2 Summary
+\begin{frame}[t]{Part 2 Summary: Understanding Pre-training}
+    \textbf{Key Concepts:}
+    \begin{enumerate}
+        \item \textbf{Self-Supervised}: Text provides its own labels - no manual annotation!
+        \item \textbf{BERT's MLM}: Fill in the blanks using bidirectional context
+        \item \textbf{GPT's Autoregressive}: Predict next word from previous words
+        \item \textbf{Scale Advantage}: Billions of parameters + terabytes of text = intelligence
+        \item \textbf{Emergent Learning}: Models learn tasks they were never explicitly taught
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \begin{checkpoint}
+    Can you explain the difference between BERT's and GPT's training approach?
+    \end{checkpoint}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \begin{tcolorbox}[colback=blue!10,colframe=blue!50!black,width=0.9\textwidth]
+    \centering
+    \textbf{Next: Deep dive into BERT vs GPT architectures}
+    \end{tcolorbox}
+    \end{center}
+\end{frame}
+
+% ===============================================
+% PART 3: ARCHITECTURE DEEP DIVE
+% ===============================================
+
+\section{Part 3: Architecture Deep Dive - BERT vs GPT}
+
+\begin{frame}
+    \centering
+    \vspace{2cm}
+    {\huge \textbf{Part 3}}\\
+    \vspace{0.5cm}
+    {\Large \textbf{Architecture Deep Dive}}\\
+    \vspace{0.3cm}
+    {\large BERT vs GPT - Two Paradigms}
+\end{frame}
+
+% BERT Architecture
+\begin{frame}[t]{BERT: Bidirectional Encoder Representations}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Architecture Components:}
+    \begin{itemize}
+        \item \textbf{Input}: Token + Position + Segment embeddings
+        \item \textbf{Core}: 12/24 Transformer encoder layers
+        \item \textbf{Attention}: Bidirectional self-attention
+        \item \textbf{Output}: Contextualized representations
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Key Innovation:}
+    \begin{itemize}
+        \item Sees both left AND right context
+        \item Example: ``The [MASK] barked loudly''
+        \item Uses: ``The'' + ``barked loudly''
+        \item Better understanding than left-only
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \begin{center}
+    \includegraphics[width=\textwidth]{../figures/bert_vs_gpt_architecture.pdf}
+    \end{center}
+    
+    \textbf{BERT Sizes:}
+    \begin{itemize}
+        \item BERT-Base: 110M parameters
+        \item BERT-Large: 340M parameters
+    \end{itemize}
+    \end{columns}
+\end{frame}
+
+% BERT Training Process
+\begin{frame}[t]{BERT Training: Two Objectives}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{1. Masked Language Model (MLM)}
+    \begin{itemize}
+        \item 15\% tokens masked
+        \item 80\% replaced with [MASK]
+        \item 10\% replaced with random word
+        \item 10\% kept unchanged
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Why the 80-10-10 split?}
+    \begin{itemize}
+        \item Prevents overfitting to [MASK]
+        \item Forces robust representations
+        \item Handles noise in real data
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{2. Next Sentence Prediction (NSP)}
+    \begin{itemize}
+        \item Input: Sentence A + Sentence B
+        \item Task: Are they consecutive?
+        \item 50\% true next sentence
+        \item 50\% random sentence
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Example:}
+    \begin{itemize}
+        \item A: ``The weather is nice.''
+        \item B: ``Let's go for a walk.'' $\checkmark$
+        \item B: ``Cats like fish.'' $\times$
+    \end{itemize}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \begin{keyinsight}
+    MLM teaches word understanding, NSP teaches sentence relationships
+    \end{keyinsight}
+\end{frame}
+
+% GPT Architecture
+\begin{frame}[t]{GPT: Generative Pre-trained Transformer}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Architecture Components:}
+    \begin{itemize}
+        \item \textbf{Input}: Token + Position embeddings
+        \item \textbf{Core}: 12/24/48 Transformer decoder layers
+        \item \textbf{Attention}: Causal (left-to-right) mask
+        \item \textbf{Output}: Next token predictions
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Key Design:}
+    \begin{itemize}
+        \item Only sees previous tokens
+        \item Natural for generation
+        \item Autoregressive decoding
+        \item Simpler training objective
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{GPT Evolution:}
+    \begin{itemize}
+        \item GPT-1 (2018): 117M parameters
+        \item GPT-2 (2019): 1.5B parameters
+        \item GPT-3 (2020): 175B parameters
+        \item GPT-4 (2023): 1.76T parameters*
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Training Process:}
+    \begin{enumerate}
+        \item Input: ``The cat sat''
+        \item Predict: ``on''
+        \item Input: ``The cat sat on''
+        \item Predict: ``the''
+        \item Continue...
+    \end{enumerate}
+    \end{columns}
+\end{frame}
+
+% Comparison Chart
+\begin{frame}[t]{BERT vs GPT: When to Use Which?}
+    \begin{center}
+    \begin{tabular}{|l|c|c|}
+    \hline
+    \textbf{Aspect} & \textbf{BERT} & \textbf{GPT} \\
+    \hline
+    \hline
+    Context & Bidirectional & Left-to-right \\
+    \hline
+    Best for & Understanding & Generation \\
+    \hline
+    Training & MLM + NSP & Next token \\
+    \hline
+    Speed & Faster inference & Slower (autoregressive) \\
+    \hline
+    \hline
+    \multicolumn{3}{|c|}{\textbf{Use Cases}} \\
+    \hline
+    Classification & \textbf{Excellent} & Good \\
+    \hline
+    NER & \textbf{Excellent} & Good \\
+    \hline
+    QA & \textbf{Excellent} & Good \\
+    \hline
+    Generation & Poor & \textbf{Excellent} \\
+    \hline
+    Translation & Good & \textbf{Excellent} \\
+    \hline
+    Summarization & Good & \textbf{Excellent} \\
+    \hline
+    \end{tabular}
+    \end{center}
+    
+    \vspace{0.5em}
+    \begin{intuition}
+    BERT reads the whole page to understand, GPT writes one word at a time
+    \end{intuition}
+\end{frame}
+
+% Tokenization Strategies
+\begin{frame}[fragile,t]{Tokenization: Breaking Text into Pieces}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{BERT: WordPiece Tokenization}
+    \begin{itemize}
+        \item Vocabulary: 30,000 tokens
+        \item Subword units
+        \item Handles unknown words
+    \end{itemize}
+    
+    \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+"unbelievable" -> 
+["un", "##believ", "##able"]
+
+"COVID-19" -> 
+["COVID", "-", "19"]
+    \end{lstlisting}
+    
+    \column{0.5\textwidth}
+    \textbf{GPT: Byte-Pair Encoding (BPE)}
+    \begin{itemize}
+        \item Vocabulary: 50,000+ tokens
+        \item Learned from frequency
+        \item Efficient for generation
+    \end{itemize}
+    
+    \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+"unbelievable" -> 
+["un", "believ", "able"]
+
+"COVID-19" -> 
+["COVID", "-19"]
+    \end{lstlisting}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \textbf{Why Subword Tokenization?}
+    \begin{itemize}
+        \item Handles any word (even made-up ones)
+        \item Reduces vocabulary size
+        \item Captures morphology (prefixes, suffixes)
+    \end{itemize}
+\end{frame}
+
+% Input Representations
+\begin{frame}[t]{Input Representations: More Than Just Words}
+    \textbf{BERT's Three-Part Input:}
+    
+    \begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    \textbf{Token} & [CLS] & The & cat & sat & [SEP] \\
+    \hline
+    Token Emb & $E_{CLS}$ & $E_{the}$ & $E_{cat}$ & $E_{sat}$ & $E_{SEP}$ \\
+    \hline
+    Position Emb & $E_0$ & $E_1$ & $E_2$ & $E_3$ & $E_4$ \\
+    \hline
+    Segment Emb & $E_A$ & $E_A$ & $E_A$ & $E_A$ & $E_A$ \\
+    \hline
+    \hline
+    \textbf{Final Input} & \multicolumn{5}{c|}{Sum of all three embeddings} \\
+    \hline
+    \end{tabular}
+    \end{center}
+    
+    \vspace{0.5em}
+    \textbf{Special Tokens:}
+    \begin{itemize}
+        \item [CLS]: Classification token (sentence representation)
+        \item [SEP]: Separator between sentences
+        \item [MASK]: Masked token for MLM
+        \item [PAD]: Padding for batch processing
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{keyinsight}
+    Position embeddings tell the model word order, segment embeddings separate sentences
+    \end{keyinsight}
+\end{frame}
+
+% Part 3 Summary
+\begin{frame}[t]{Part 3 Summary: Architecture Insights}
+    \textbf{BERT (Bidirectional)}
+    \begin{itemize}
+        \item Sees full context (left + right)
+        \item Best for understanding tasks
+        \item Two training objectives (MLM + NSP)
+        \item Cannot generate text naturally
+    \end{itemize}
+    
+    \textbf{GPT (Autoregressive)}
+    \begin{itemize}
+        \item Sees only previous context
+        \item Best for generation tasks
+        \item Single training objective (next token)
+        \item Scales to trillions of parameters
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{checkpoint}
+    Why can't BERT generate text as naturally as GPT?
+    \end{checkpoint}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \begin{tcolorbox}[colback=blue!10,colframe=blue!50!black,width=0.9\textwidth]
+    \centering
+    \textbf{Next: How to adapt these models to your specific tasks}
+    \end{tcolorbox}
+    \end{center}
+\end{frame}
+
+% ===============================================
+% PART 4: FINE-TUNING AND APPLICATIONS
+% ===============================================
+
+\section{Part 4: Fine-tuning and Applications}
+
+\begin{frame}
+    \centering
+    \vspace{2cm}
+    {\huge \textbf{Part 4}}\\
+    \vspace{0.5cm}
+    {\Large \textbf{Fine-tuning and Applications}}\\
+    \vspace{0.3cm}
+    {\large From Foundation to Task-Specific Excellence}
+\end{frame}
+
+% Fine-tuning Strategies
+\begin{frame}[t]{Fine-tuning Strategy Decision Tree}
+    \begin{center}
+    \includegraphics[width=0.95\textwidth]{../figures/finetuning_strategy_flowchart.pdf}
+    \end{center}
+\end{frame}
+
+% Task-Specific Heads
+\begin{frame}[fragile,t]{Task-Specific Heads: Adapting to Your Task}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Classification Head}
+    \begin{lstlisting}[basicstyle=\ttfamily\tiny,language=Python]
+# Sentiment analysis
+bert_output = bert(text)
+cls_token = bert_output[0]  # [CLS]
+logits = linear(cls_token)
+class = softmax(logits)
+# Output: positive/negative
+    \end{lstlisting}
+    
+    \textbf{Token Classification (NER)}
+    \begin{lstlisting}[basicstyle=\ttfamily\tiny,language=Python]
+# Named entity recognition
+bert_output = bert(tokens)
+token_logits = linear(bert_output)
+entities = softmax(token_logits)
+# Output: PER, ORG, LOC per token
+    \end{lstlisting}
+    
+    \column{0.5\textwidth}
+    \textbf{Question Answering}
+    \begin{lstlisting}[basicstyle=\ttfamily\tiny,language=Python]
+# Extract answer span
+bert_output = bert(question, context)
+start_logits = linear_start(bert_output)
+end_logits = linear_end(bert_output)
+answer = context[start:end]
+    \end{lstlisting}
+    
+    \textbf{Sequence-to-Sequence}
+    \begin{lstlisting}[basicstyle=\ttfamily\tiny,language=Python]
+# Summarization, translation
+encoder_out = bert_encoder(source)
+summary = gpt_decoder(encoder_out)
+# Output: Generated text
+    \end{lstlisting}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \begin{keyinsight}
+    The pre-trained model stays mostly the same, only the task head changes!
+    \end{keyinsight}
+\end{frame}
+
+% Fine-tuning Process
+\begin{frame}[t]{The Fine-tuning Process: Step by Step}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Step 1: Choose Pre-trained Model}
+    \begin{itemize}
+        \item BERT for understanding
+        \item GPT for generation
+        \item T5 for any text-to-text
+    \end{itemize}
+    
+    \textbf{Step 2: Prepare Task Data}
+    \begin{itemize}
+        \item Format: (input, label) pairs
+        \item Quality > Quantity
+        \item 1K-10K examples usually enough
+    \end{itemize}
+    
+    \textbf{Step 3: Add Task Head}
+    \begin{itemize}
+        \item Classification: Linear + Softmax
+        \item NER: Token classifier
+        \item QA: Span predictor
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{Step 4: Fine-tune}
+    \begin{itemize}
+        \item Lower learning rate (2e-5)
+        \item Few epochs (2-4)
+        \item Watch for overfitting
+    \end{itemize}
+    
+    \textbf{Step 5: Evaluate}
+    \begin{itemize}
+        \item Hold-out test set
+        \item Task-specific metrics
+        \item Compare to baseline
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{intuition}
+    Like teaching a well-educated person a new skill - they learn fast!
+    \end{intuition}
+    \end{columns}
+\end{frame}
+
+% Few-shot and Zero-shot
+\begin{frame}[t]{Few-shot and Zero-shot: Learning Without Training}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Zero-shot (No Examples)}
+    \begin{itemize}
+        \item Just describe the task
+        \item Works with large models (GPT-3+)
+        \item Example prompt:
+    \end{itemize}
+    
+    \small
+    ``Classify sentiment: 'This movie is amazing!' \\
+    Answer: Positive''
+    
+    \normalsize
+    \vspace{0.5em}
+    \textbf{Few-shot (1-10 Examples)}
+    \begin{itemize}
+        \item Provide examples in prompt
+        \item No actual training
+        \item In-context learning
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{Few-shot Example:}
+    
+    \small
+    ``Translate English to French:\\
+    sea otter → loutre de mer\\
+    cheese → fromage\\
+    airplane → avion\\
+    teacher → ?''
+    
+    \normalsize
+    \vspace{0.5em}
+    Answer: professeur
+    
+    \vspace{0.5em}
+    \begin{keyinsight}
+    Large models can learn new tasks just from instructions!
+    \end{keyinsight}
+    \end{columns}
+\end{frame}
+
+% Real-world Applications
+\begin{frame}[t]{Real-world Success Stories}
+    \begin{center}
+    \includegraphics[width=0.95\textwidth]{../figures/application_ecosystem_map.pdf}
+    \end{center}
+\end{frame}
+
+% Environmental Considerations
+\begin{frame}[t]{Environmental Considerations}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{The Carbon Cost}
+    \begin{itemize}
+        \item GPT-3 training: 1,287 MWh
+        \item = 552 tons CO2
+        \item = 120 cars for a year
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{But Consider:}
+    \begin{itemize}
+        \item Train once, use millions of times
+        \item Replaces thousands of task-specific models
+        \item Net positive if widely used
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{Efficiency Improvements}
+    \begin{itemize}
+        \item LoRA: 1\% of parameters
+        \item Quantization: 4-bit models
+        \item Distillation: Smaller models
+        \item Better hardware: TPUs, H100s
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{checkpoint}
+    How does fine-tuning reduce environmental impact compared to training from scratch?
+    \end{checkpoint}
+    \end{columns}
+\end{frame}
+
+% Efficient Fine-tuning
+\begin{frame}[fragile,t]{Modern Efficiency: LoRA and PEFT}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{LoRA (Low-Rank Adaptation)}
+    \begin{itemize}
+        \item Only train 1\% of parameters
+        \item Add small matrices to layers
+        \item Same performance as full fine-tuning
+        \item 100x less memory
+    \end{itemize}
+    
+    \begin{lstlisting}[basicstyle=\ttfamily\tiny,language=Python]
+# Instead of updating W (d x d)
+# Add low-rank matrices A (d x r) and B (r x d)
+# where r << d
+W_new = W + A @ B
+# Only train A and B!
+    \end{lstlisting}
+    
+    \column{0.5\textwidth}
+    \textbf{Benefits:}
+    \begin{itemize}
+        \item Fine-tune GPT-3 on single GPU
+        \item Switch tasks by swapping LoRA weights
+        \item Merge multiple adaptations
+        \item Deploy efficiently
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Other PEFT Methods:}
+    \begin{itemize}
+        \item Prefix Tuning
+        \item Prompt Tuning
+        \item Adapter Layers
+        \item BitFit
+    \end{itemize}
+    \end{columns}
+\end{frame}
+
+% Part 4 Summary
+\begin{frame}[t]{Part 4 Summary: Practical Applications}
+    \textbf{Key Takeaways:}
+    \begin{enumerate}
+        \item \textbf{Fine-tuning Strategy}: Choose based on data size and compute budget
+        \item \textbf{Task Heads}: Simple additions for specific tasks
+        \item \textbf{Few-shot Magic}: Large models learn from just examples
+        \item \textbf{Applications}: 100+ tasks enabled by pre-training
+        \item \textbf{Environmental}: Consider efficiency methods like LoRA
+        \item \textbf{Modern Methods}: 1\% parameters, 100\% performance
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \begin{tcolorbox}[colback=green!10,colframe=green!50!black,width=0.9\textwidth]
+    \centering
+    \textbf{You now understand the complete pre-training pipeline!}
+    \end{tcolorbox}
+    \end{center}
+\end{frame}
+
+% ===============================================
+% APPENDIX
+% ===============================================
+
+\section{Appendix: Resources and Advanced Topics}
+
+\begin{frame}
+    \centering
+    \vspace{2cm}
+    {\huge \textbf{Appendix}}\\
+    \vspace{0.5cm}
+    {\Large \textbf{Resources and Advanced Topics}}\\
+    \vspace{0.3cm}
+    {\large Your Toolkit for Getting Started}
+\end{frame}
+
+% Model Zoo
+\begin{frame}[t]{Model Zoo: Available Pre-trained Models}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Hugging Face Hub}
+    \begin{itemize}
+        \item 500,000+ models
+        \item All major architectures
+        \item Easy to use API
+        \item Community contributed
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Popular Models:}
+    \begin{itemize}
+        \item \textbf{BERT}: bert-base-uncased
+        \item \textbf{RoBERTa}: roberta-large
+        \item \textbf{GPT-2}: gpt2-medium
+        \item \textbf{T5}: t5-base
+        \item \textbf{BART}: facebook/bart-large
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{Specialized Models:}
+    \begin{itemize}
+        \item \textbf{Code}: Codex, CodeBERT
+        \item \textbf{Science}: SciBERT, BioBERT
+        \item \textbf{Legal}: LegalBERT
+        \item \textbf{Finance}: FinBERT
+        \item \textbf{Multilingual}: mBERT, XLM-R
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Access Methods:}
+    \begin{itemize}
+        \item Hugging Face Transformers
+        \item OpenAI API
+        \item Google Vertex AI
+        \item AWS SageMaker
+    \end{itemize}
+    \end{columns}
+\end{frame}
+
+% Computational Requirements
+\begin{frame}[t]{Computational Requirements}
+    \begin{center}
+    \small
+    \begin{tabular}{|l|c|c|c|}
+    \hline
+    \textbf{Model} & \textbf{Parameters} & \textbf{Memory} & \textbf{Fine-tune GPU} \\
+    \hline
+    \hline
+    BERT-Base & 110M & 440MB & GTX 1080 (8GB) \\
+    \hline
+    BERT-Large & 340M & 1.3GB & RTX 3090 (24GB) \\
+    \hline
+    GPT-2 & 1.5B & 6GB & A100 (40GB) \\
+    \hline
+    GPT-3 & 175B & 700GB & 8x A100 (320GB) \\
+    \hline
+    \hline
+    \multicolumn{4}{|c|}{\textbf{With LoRA (1\% parameters):}} \\
+    \hline
+    GPT-3 + LoRA & 1.75B & 7GB & RTX 4090 (24GB) \\
+    \hline
+    \end{tabular}
+    \end{center}
+    
+    \vspace{0.5em}
+    \textbf{Cost Estimates (2024):}
+    \begin{itemize}
+        \item Cloud GPU (A100): \$3-5/hour
+        \item Fine-tuning BERT: \$10-50
+        \item Fine-tuning GPT-3 with LoRA: \$100-500
+        \item API calls: \$0.002 per 1K tokens
+    \end{itemize}
+\end{frame}
+
+% Latest Developments
+\begin{frame}[t]{Latest Developments (2024)}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{New Models:}
+    \begin{itemize}
+        \item \textbf{GPT-4}: Multimodal, 1.76T params
+        \item \textbf{Claude 3}: Constitutional AI
+        \item \textbf{Gemini}: Google's unified model
+        \item \textbf{Llama 3}: Open-source 405B
+        \item \textbf{Mistral}: Efficient 7B model
+    \end{itemize}
+    
+    \textbf{Trends:}
+    \begin{itemize}
+        \item Mixture of Experts (MoE)
+        \item Multimodal (text + image + audio)
+        \item Longer context (1M+ tokens)
+        \item Tool use and function calling
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{Research Directions:}
+    \begin{itemize}
+        \item Constitutional AI
+        \item Chain-of-thought reasoning
+        \item Retrieval-augmented generation
+        \item Sparse models
+        \item Continuous learning
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Open Problems:}
+    \begin{itemize}
+        \item Hallucination
+        \item Bias and fairness
+        \item Interpretability
+        \item Efficiency at scale
+    \end{itemize}
+    \end{columns}
+\end{frame}
+
+% Quick Implementation
+\begin{frame}[fragile,t]{Quick Start: Your First Fine-tuning}
+    \textbf{5-Minute Setup with Hugging Face:}
+    
+    \begin{lstlisting}[language=Python,basicstyle=\ttfamily\scriptsize]
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
+from transformers import TrainingArguments, Trainer
+import torch
+
+# 1. Load pre-trained model
+model = AutoModelForSequenceClassification.from_pretrained(
+    "bert-base-uncased", num_labels=2
+)
+tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+
+# 2. Prepare your data
+texts = ["I love this!", "This is terrible."]
+labels = [1, 0]  # positive, negative
+
+# 3. Tokenize
+inputs = tokenizer(texts, padding=True, truncation=True, return_tensors="pt")
+inputs["labels"] = torch.tensor(labels)
+
+# 4. Fine-tune
+training_args = TrainingArguments(
+    output_dir="./results",
+    num_train_epochs=3,
+    per_device_train_batch_size=16,
+)
+trainer = Trainer(model=model, args=training_args, train_dataset=inputs)
+trainer.train()
+    \end{lstlisting}
+\end{frame}
+
+% Best Practices
+\begin{frame}[t]{Best Practices and Tips}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Data Preparation:}
+    \begin{itemize}
+        \item Quality > Quantity
+        \item Balance your classes
+        \item Clean and consistent formatting
+        \item Augment if needed
+    \end{itemize}
+    
+    \textbf{Training Tips:}
+    \begin{itemize}
+        \item Start with small learning rate (2e-5)
+        \item Use warmup steps
+        \item Monitor validation loss
+        \item Early stopping to prevent overfit
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{Common Pitfalls:}
+    \begin{itemize}
+        \item Overfitting on small data
+        \item Wrong tokenizer for model
+        \item Catastrophic forgetting
+        \item Ignoring class imbalance
+    \end{itemize}
+    
+    \textbf{Debugging:}
+    \begin{itemize}
+        \item Start with tiny dataset
+        \item Verify input shapes
+        \item Check gradient flow
+        \item Visualize attention weights
+    \end{itemize}
+    \end{columns}
+\end{frame}
+
+% Resources
+\begin{frame}[t]{Learning Resources}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Papers to Read:}
+    \begin{itemize}
+        \item BERT: Devlin et al. (2018)
+        \item GPT-3: Brown et al. (2020)
+        \item T5: Raffel et al. (2019)
+        \item LoRA: Hu et al. (2021)
+    \end{itemize}
+    
+    \textbf{Courses:}
+    \begin{itemize}
+        \item Hugging Face Course (free)
+        \item CS224N Stanford NLP
+        \item Fast.ai Practical Deep Learning
+        \item Coursera NLP Specialization
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{Tools and Libraries:}
+    \begin{itemize}
+        \item Hugging Face Transformers
+        \item LangChain
+        \item OpenAI API
+        \item Weights \& Biases
+    \end{itemize}
+    
+    \textbf{Communities:}
+    \begin{itemize}
+        \item Hugging Face Forums
+        \item r/MachineLearning
+        \item Twitter ML Community
+        \item Local AI Meetups
+    \end{itemize}
+    \end{columns}
+\end{frame}
+
+% Quick Reference
+\begin{frame}[fragile,t]{Quick Reference Card}
+    \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Model Selection:}
+    \begin{itemize}
+        \item Understanding $\rightarrow$ BERT
+        \item Generation $\rightarrow$ GPT
+        \item Both $\rightarrow$ T5
+        \item Efficiency $\rightarrow$ DistilBERT
+    \end{itemize}
+    
+    \textbf{Data Requirements:}
+    \begin{itemize}
+        \item Few-shot: 1-10 examples
+        \item LoRA: 100-1K examples
+        \item Full fine-tune: 1K-10K examples
+        \item From scratch: 100K+ examples
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{Key Commands:}
+    
+    \begin{lstlisting}[basicstyle=\ttfamily\scriptsize,language=Python]
+# Install
+pip install transformers
+
+# Load model
+from transformers import AutoModel
+model = AutoModel.from_pretrained("bert-base")
+
+# Fine-tune
+trainer.train()
+
+# Inference
+outputs = model(**inputs)
+    \end{lstlisting}
+    \end{columns}
+\end{frame}
+
+% Final Slide
+\begin{frame}[t]{Congratulations! You're Ready to Build}
+    \begin{center}
+    \Large
+    \textbf{What You've Learned:}
+    \end{center}
+    
+    \begin{enumerate}
+        \item Why pre-training revolutionized NLP (100x efficiency)
+        \item How models learn from raw text (self-supervised)
+        \item BERT vs GPT architectures (bidirectional vs autoregressive)
+        \item Fine-tuning strategies (full, LoRA, few-shot)
+        \item Real-world applications (100+ tasks)
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \begin{tcolorbox}[colback=green!10,colframe=green!50!black,width=0.9\textwidth]
+    \centering
+    \Large
+    \textbf{You now have the knowledge to use pre-trained models!}\\
+    \vspace{0.3em}
+    \normalsize
+    Start with the Jupyter notebook exercises
+    \end{tcolorbox}
+    \end{center}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \textbf{Questions?}
+    \end{center}
+\end{frame}
+
+\end{document}

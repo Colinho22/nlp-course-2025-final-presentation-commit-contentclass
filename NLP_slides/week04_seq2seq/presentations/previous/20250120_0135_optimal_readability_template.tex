@@ -1,0 +1,379 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\setbeamertemplate{navigation symbols}{}
+
+% Optimal Readability Color Scheme
+\definecolor{PureBlack}{HTML}{000000}
+\definecolor{DeepBlue}{HTML}{003D7A}
+\definecolor{DarkGray}{HTML}{4A4A4A}
+\definecolor{LightGray}{HTML}{E5E5E5}
+\definecolor{ChartBlue}{HTML}{0066CC}
+\definecolor{ChartOrange}{HTML}{FF8800}
+\definecolor{ChartTeal}{HTML}{00A0A0}
+\definecolor{ChartPurple}{HTML}{8B4789}
+\definecolor{DarkGreen}{HTML}{228B22}
+\definecolor{DarkRed}{HTML}{CC0000}
+
+% Apply high contrast colors - WHITE BACKGROUNDS ONLY
+\setbeamercolor{structure}{fg=PureBlack}
+\setbeamercolor{frametitle}{fg=PureBlack,bg=white}
+\setbeamercolor{title}{fg=PureBlack,bg=white}
+\setbeamercolor{subtitle}{fg=DarkGray}
+\setbeamercolor{author}{fg=DarkGray}
+\setbeamercolor{date}{fg=DarkGray}
+\setbeamercolor{institute}{fg=DarkGray}
+
+% Blocks with maximum readability
+\setbeamercolor{block title}{fg=PureBlack,bg=white}
+\setbeamercolor{block body}{fg=PureBlack,bg=white}
+\setbeamercolor{block title example}{fg=DarkGreen,bg=white}
+\setbeamercolor{block body example}{fg=PureBlack,bg=white}
+\setbeamercolor{block title alerted}{fg=DarkRed,bg=white}
+\setbeamercolor{block body alerted}{fg=PureBlack,bg=white}
+
+% Items with high contrast
+\setbeamercolor{item}{fg=DeepBlue}
+\setbeamercolor{subitem}{fg=ChartBlue}
+\setbeamercolor{enumerate item}{fg=DeepBlue}
+\setbeamercolor{enumerate subitem}{fg=ChartBlue}
+
+% Text colors for maximum readability
+\setbeamercolor{normal text}{fg=PureBlack,bg=white}
+\setbeamercolor{alerted text}{fg=DarkRed}
+\setbeamercolor{example text}{fg=DarkGreen}
+
+% Footer with high contrast
+\setbeamercolor{footline}{fg=DarkGray,bg=white}
+\setbeamercolor{page number in head/foot}{fg=DarkGray}
+
+% Remove decorations for clarity
+\setbeamertemplate{blocks}[default]
+\setbeamertemplate{title page}[default][colsep=-4bp,rounded=false]
+
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+
+% Custom commands for readability
+\newcommand{\highlight}[1]{\textcolor{DeepBlue}{\textbf{#1}}}
+\newcommand{\secondary}[1]{\textcolor{DarkGray}{#1}}
+\newcommand{\success}[1]{\textcolor{DarkGreen}{#1}}
+\newcommand{\warning}[1]{\textcolor{DarkRed}{#1}}
+\newcommand{\data}[1]{\textcolor{ChartBlue}{#1}}
+
+% Larger default font for better readability
+\setbeamerfont{normal text}{size=\normalsize}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{title}{size=\huge,series=\bfseries}
+
+\title{Optimal Readability Template}
+\subtitle{\secondary{High Contrast, Maximum Clarity, Extensive Charts}}
+\author{Sequence-to-Sequence Models}
+\date{\today}
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}
+\secondary{\footnotesize Designed for maximum readability with WCAG AAA contrast ratios}
+\end{center}
+\end{frame}
+
+% Color Palette with Contrast Ratios
+\begin{frame}{High Contrast Color System}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{\Large Text Colors} \\[3mm]
+\begin{tabular}{lll}
+\textcolor{PureBlack}{\rule{8mm}{4mm}} & Pure Black & 21:1 ratio \\
+\textcolor{DeepBlue}{\rule{8mm}{4mm}} & Deep Blue & 12.6:1 ratio \\
+\textcolor{DarkGray}{\rule{8mm}{4mm}} & Dark Gray & 9.7:1 ratio \\
+\end{tabular}
+
+\vspace{5mm}
+\textbf{\Large Alert Colors} \\[3mm]
+\begin{tabular}{lll}
+\textcolor{DarkGreen}{\rule{8mm}{4mm}} & Success & 7.5:1 ratio \\
+\textcolor{DarkRed}{\rule{8mm}{4mm}} & Warning & 8.3:1 ratio \\
+\end{tabular}
+
+\column{0.48\textwidth}
+\textbf{\Large Chart Palette} \\[3mm]
+\secondary{Colorblind-safe combinations}\\[2mm]
+\begin{tabular}{ll}
+\textcolor{ChartBlue}{\rule{8mm}{4mm}} & Primary Data \\
+\textcolor{ChartOrange}{\rule{8mm}{4mm}} & Secondary Data \\
+\textcolor{ChartTeal}{\rule{8mm}{4mm}} & Tertiary Data \\
+\textcolor{ChartPurple}{\rule{8mm}{4mm}} & Fourth Series \\
+\end{tabular}
+
+\vspace{5mm}
+\secondary{\small All colors meet WCAG AAA standards\\for text on white background}
+\end{columns}
+\end{frame}
+
+% Chart Gallery Overview
+\begin{frame}{Comprehensive Chart Gallery}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Analysis Charts}
+\begin{itemize}
+\item Attention heatmaps
+\item Weight distributions
+\item Gradient flow
+\item Activation patterns
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Performance Charts}
+\begin{itemize}
+\item Model comparison
+\item Learning curves
+\item Resource usage
+\item Speed benchmarks
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Architecture Charts}
+\begin{itemize}
+\item Flow diagrams
+\item Component breakdown
+\item Layer visualization
+\item Connection maps
+\end{itemize}
+\end{columns}
+
+\vfill
+\begin{center}
+\highlight{6 comprehensive multi-panel visualizations included}
+\end{center}
+\end{frame}
+
+% Attention Visualization
+\begin{frame}{Chart Example: Attention Analysis}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/readability_attention_comprehensive.pdf}
+\end{center}
+\secondary{\footnotesize High-contrast heatmap with clear annotations and statistical summary}
+\end{frame}
+
+% Model Comparison Dashboard
+\begin{frame}{Chart Example: Model Comparison Dashboard}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/readability_model_comparison.pdf}
+\end{center}
+\secondary{\footnotesize 6-panel comparison including radar chart and scatter plots}
+\end{frame}
+
+% Typography Demonstration
+\begin{frame}{Typography for Maximum Readability}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{\huge Level 1 Header}\\[2mm]
+\textbf{\Large Level 2 Subheader}\\[2mm]
+\textbf{Level 3 Bold Text}\\[2mm]
+Regular body text with optimal spacing\\[2mm]
+\secondary{Secondary information in gray}\\[2mm]
+
+\vspace{5mm}
+\textbf{Mathematical Clarity}
+\begin{align*}
+E = mc^2 \quad &\text{(Einstein)} \\
+F = ma \quad &\text{(Newton)} \\
+\nabla \cdot \mathbf{E} = \frac{\rho}{\epsilon_0} \quad &\text{(Gauss)}
+\end{align*}
+
+\column{0.48\textwidth}
+\textbf{List Hierarchy}
+\begin{enumerate}
+\item \highlight{Primary point} with emphasis
+\item Regular enumeration item
+    \begin{itemize}
+    \item Sub-point with bullet
+    \item \data{Data reference} inline
+    \end{itemize}
+\item \success{Positive outcome}
+\item \warning{Important warning}
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Inline Elements}\\[2mm]
+Use \highlight{highlighting} sparingly\\
+Include \data{data references} clearly\\
+Mark \success{successes} and \warning{warnings}
+\end{columns}
+\end{frame}
+
+% Training Dashboard
+\begin{frame}{Chart Example: Training Monitoring Dashboard}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/readability_training_dashboard.pdf}
+\end{center}
+\secondary{\footnotesize Real-time monitoring with confidence bands and multiple metrics}
+\end{frame}
+
+% Architecture Flow
+\begin{frame}{Chart Example: Architecture Flow Diagram}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/readability_architecture_flow.pdf}
+\end{center}
+\secondary{\footnotesize Clear component separation with data flow annotations}
+\end{frame}
+
+% Table Example
+\begin{frame}{Data Tables with High Readability}
+\begin{center}
+\Large
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{l|ccc|c}
+\toprule
+\textbf{Model} & \textbf{BLEU} & \textbf{Speed} & \textbf{Memory} & \textbf{Overall} \\
+\midrule
+RNN & 65.2 & \success{Fast} & \success{Low} & \data{72\%} \\
+LSTM & 72.8 & Medium & Medium & \data{78\%} \\
+GRU & 74.1 & \success{Fast} & Medium & \data{80\%} \\
+Attention & 89.3 & Slow & \warning{High} & \data{85\%} \\
+\textbf{Transformer} & \success{95.7} & \success{Fast}* & \warning{High} & \highlight{92\%} \\
+\bottomrule
+\multicolumn{5}{l}{\secondary{\footnotesize *Fast inference, slow training}}
+\end{tabular}
+\end{center}
+
+\vfill
+\secondary{Clear borders, adequate spacing, and semantic color coding}
+\end{frame}
+
+% Performance Breakdown
+\begin{frame}{Chart Example: Performance Breakdown}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/readability_performance_breakdown.pdf}
+\end{center}
+\secondary{\footnotesize Task-specific analysis with error breakdown}
+\end{frame}
+
+% Beam Search
+\begin{frame}{Chart Example: Beam Search Visualization}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/readability_beam_search.pdf}
+\end{center}
+\secondary{\footnotesize Tree structure with probability evolution}
+\end{frame}
+
+% Code Display
+\begin{frame}[fragile]{Code Display with Syntax Clarity}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{\large Python Implementation}
+\begin{verbatim}
+def attention(Q, K, V):
+    # Compute attention scores
+    scores = torch.matmul(Q, K.T)
+    scores = scores / sqrt(d_k)
+
+    # Apply softmax
+    weights = F.softmax(scores, dim=-1)
+
+    # Weighted sum of values
+    output = torch.matmul(weights, V)
+    return output, weights
+\end{verbatim}
+
+\column{0.48\textwidth}
+\textbf{\large Key Concepts}
+\begin{itemize}
+\item \highlight{Q}: Query matrix
+\item \highlight{K}: Key matrix
+\item \highlight{V}: Value matrix
+\item \data{d\_k}: Key dimension
+\item Scores: $QK^T / \sqrt{d_k}$
+\item Weights: $\text{softmax}(\text{scores})$
+\item Output: Weighted values
+\end{itemize}
+
+\vspace{5mm}
+\secondary{\small Clear variable names and spacing}
+\end{columns}
+\end{frame}
+
+% Best Practices
+\begin{frame}{Readability Best Practices}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{\Large Design Principles}
+\begin{enumerate}
+\item \textbf{High contrast} ratios (>7:1)
+\item \textbf{Large fonts} (min 8pt)
+\item \textbf{Clear hierarchy} with size/weight
+\item \textbf{White space} for separation
+\item \textbf{Consistent} color usage
+\item \textbf{Minimal} decoration
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{\Large Chart Guidelines}
+\begin{enumerate}
+\item \data{Colorblind-safe} palettes
+\item \textbf{Bold} axis labels
+\item \secondary{Grid lines} for reference
+\item \highlight{Direct labeling} when possible
+\item \textbf{High DPI} export (300+)
+\item \warning{Avoid} 3D effects
+\end{enumerate}
+\end{columns}
+
+\vfill
+\begin{center}
+\Large
+\highlight{Readability} > \secondary{Aesthetics} > Decoration
+\end{center}
+\end{frame}
+
+% Summary
+\begin{frame}{Template Summary}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{\Large Included}
+\begin{itemize}
+\item 6 chart types
+\item 30+ visualizations
+\item Color system
+\item Typography scales
+\item Table formats
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{\Large Features}
+\begin{itemize}
+\item WCAG AAA compliant
+\item Colorblind-safe
+\item Print-friendly
+\item Screen-optimized
+\item Minimal design
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{\Large Benefits}
+\begin{itemize}
+\item \success{Maximum clarity}
+\item \success{Reduced eye strain}
+\item \success{Better retention}
+\item \success{Professional look}
+\item \success{Accessibility}
+\end{itemize}
+\end{columns}
+
+\vfill
+\begin{center}
+\Large
+\textbf{Optimal Readability Template}\\[2mm]
+\secondary{Ready for professional presentations}
+\end{center}
+\end{frame}
+
+\end{document}

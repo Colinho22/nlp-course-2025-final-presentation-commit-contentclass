@@ -1,0 +1,309 @@
+% Act III: The Breakthrough Years
+\begin{frame}{Act III: The Breakthrough Years}
+\begin{center}
+{\Large \textbf{1998-2012: From Digits to ImageNet}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{1998 - LeNet: First Success}
+\begin{itemize}
+\item Yann LeCun's CNN for digits
+\item 32$\times$32 pixels $\rightarrow$ 10 classes
+\item 60,000 parameters
+\item Banks adopt for check reading
+\end{itemize}
+
+\textbf{Key Innovation: Convolutions}
+\begin{itemize}
+\item Share weights across image
+\item Detect features anywhere
+\item Build complexity layer by layer
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{2012 - AlexNet: The Revolution}
+\begin{itemize}
+\item 1000 ImageNet classes
+\item 60 million parameters
+\item GPUs enable training
+\item Error rate: 26\% $\rightarrow$ 16\%
+\end{itemize}
+
+\textbf{What Changed:}
+\begin{itemize}
+\item Big Data (millions of images)
+\item GPU computing (100x faster)
+\item ReLU activation
+\item Dropout regularization
+\end{itemize}
+\end{columns}
+\bottomnote{ This victory ended the second AI winter permanently}
+\end{frame}
+
+% Understanding Convolutions
+\begin{frame}{The Convolution Innovation: See Like Humans Do}
+\begin{center}
+\textbf{How We Actually Recognize Objects}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Human Vision Process:}
+\begin{enumerate}
+\item Detect edges
+\item Find shapes
+\item Identify parts
+\item Recognize object
+\end{enumerate}
+
+\textbf{CNN Mimics This:}
+\begin{itemize}
+\item Layer 1: Edge detectors
+\item Layer 2: Corner/curve detectors
+\item Layer 3: Part detectors
+\item Layer 4: Object detectors
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/cnn_feature_hierarchy.pdf}
+\end{center}
+\textbf{Key Insight:}
+\begin{itemize}
+\item A "wheel detector" works anywhere in image
+\item Share the same detector across positions
+\item Reduces parameters dramatically
+\item Makes network translation-invariant
+\end{itemize}
+\end{columns}
+\bottomnote{ This is why CNNs dominate computer vision}
+\end{frame}
+
+% The Mathematics of Learning
+\begin{frame}{The Mathematics of Learning: Gradient Descent}
+\begin{center}
+\textbf{Finding the Best Weights: Like Hiking Down a Mountain}
+\end{center}
+\vspace{2mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Optimization Problem:}
+\begin{itemize}
+\item Millions of weights to adjust
+\item Each affects the error
+\item Need to find best combination
+\end{itemize}
+
+\textbf{Gradient Descent:}
+\begin{enumerate}
+\item Calculate error (loss)
+\item Find slope (gradient) for each weight
+\item Step downhill: $w = w - \alpha \cdot \nabla L$
+  \plainmath{New weight = old weight - (step size times slope)}
+\item Repeat until bottom
+\end{enumerate}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/gradient_descent.pdf}
+\end{center}
+\textbf{Learning Rate ($\alpha$):}
+\begin{itemize}
+\item Too small: takes forever
+\item Too large: overshoot minimum
+\item Just right: smooth convergence
+\end{itemize}
+\end{columns}
+\bottomnote{ Modern optimizers like Adam adapt the learning rate automatically}
+\end{frame}
+
+% Types of Learning
+\begin{frame}{Types of Learning: Different Problems, Different Approaches}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Supervised Learning:}
+\begin{itemize}
+\item Have input-output pairs
+\item Learn mapping function
+\item Examples: Classification, Regression
+\end{itemize}
+
+\textbf{Unsupervised Learning:}
+\begin{itemize}
+\item Only have inputs
+\item Find patterns/structure
+\item Examples: Clustering, Compression
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Reinforcement Learning:}
+\begin{itemize}
+\item Learn through trial/error
+\item Maximize reward signal
+\item Examples: Games, Robotics
+\end{itemize}
+
+\textbf{Self-Supervised (Modern):}
+\begin{itemize}
+\item Create labels from data itself
+\item Predict next word, masked words
+\item Examples: GPT, BERT
+\end{itemize}
+\end{columns}
+\bottomnote{ Self-supervised learning powers all modern language models}
+\end{frame}
+
+% NEW: Understanding Checkpoint - Types of Learning
+\begin{frame}{Check Your Understanding: Learning Types}
+\begin{center}
+\textbf{\checkpoint{Can You Match These Examples?}}
+\end{center}
+\vspace{5mm}
+\tryit{Match each scenario to a learning type: Supervised, Unsupervised, Reinforcement, Self-Supervised}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Scenarios:}
+\begin{enumerate}
+\item Teaching a robot to walk by giving rewards for standing
+\item Showing 1000 cat photos labeled "cat"
+\item Giving GPT text with words masked out
+\item Finding groups in customer data
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{Answers:}
+\begin{enumerate}
+\item Reinforcement (trial and error)
+\item Supervised (labeled examples)
+\item Self-supervised (creates own labels)
+\item Unsupervised (finds patterns)
+\end{enumerate}
+
+\confusion{Self-supervised IS supervised learning - we just create the labels automatically from the data itself!}
+\end{columns}
+\bottomnote{ Understanding these differences helps you choose the right approach}
+\end{frame}
+
+% Overfitting Problem
+\begin{frame}{The Overfitting Problem: When Learning Goes Too Far}
+\begin{center}
+\textbf{Memorization vs. Understanding}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Problem:}
+\begin{itemize}
+\item Network memorizes training data
+\item Fails on new, unseen data
+\item Like student memorizing answers
+\end{itemize}
+
+\textbf{Signs of Overfitting:}
+\begin{itemize}
+\item Training accuracy: 99\%
+\item Test accuracy: 60\%
+\item Complex decision boundaries
+\item High variance
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/overfitting_visualization.pdf}
+\end{center}
+\textbf{Solutions:}
+\begin{itemize}
+\item \textbf{More data:} Can't memorize everything
+\item \textbf{Dropout:} Randomly disable neurons
+\item \textbf{Regularization:} Penalize complexity
+\item \textbf{Early stopping:} Stop before overfitting
+\end{itemize}
+\end{columns}
+\bottomnote{ "With four parameters I can fit an elephant, with five I can make him wiggle his trunk" - von Neumann}
+\end{frame}
+
+% NEW: Feature Hierarchy Progression
+\begin{frame}{How Deep Networks See: Building Features Layer by Layer}
+\begin{center}
+\textbf{From Pixels to Concepts: The Hierarchy of Understanding}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/feature_hierarchy_progression.pdf}
+
+\textbf{What Each Layer Learns:}
+\begin{itemize}
+\item \textbf{Layer 1:} Edges, colors, gradients
+\item \textbf{Layer 2:} Corners, textures, curves
+\item \textbf{Layer 3:} Parts (eyes, wheels, patterns)
+\item \textbf{Layer 4:} Objects (faces, cars, scenes)
+\item \textbf{Layer 5:} Concepts (identity, style, context)
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{Why Hierarchy Matters:}
+\begin{itemize}
+\item Reusable features
+\item Efficient representation
+\item Transfer learning works
+\item Mimics visual cortex
+\end{itemize}
+
+\textbf{Discovered Automatically:}
+\begin{itemize}
+\item No manual feature engineering
+\item Emerges from data
+\item Different tasks, same hierarchy
+\item Universal pattern
+\end{itemize}
+\end{columns}
+\bottomnote{ Each layer combines features from the previous layer into more abstract concepts}
+\end{frame}
+
+% NEW: Training Dynamics Dashboard
+\begin{frame}{Training Dynamics: Watching Networks Learn}
+\begin{center}
+\textbf{Real-Time Monitoring: The Training Dashboard}
+\end{center}
+\vspace{1mm}
+\begin{columns}
+\column{0.55\textwidth}
+\includegraphics[width=0.9\textwidth]{../figures/training_dynamics_dashboard.pdf}
+
+\textbf{Key Metrics to Track:}
+\begin{itemize}
+\item \textbf{Loss Curves:} Training vs validation
+\item \textbf{Accuracy:} How often we're right
+\item \textbf{Learning Rate:} Speed of updates
+\item \textbf{Gradient Norm:} Update magnitude
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{Warning Signs:}
+\begin{itemize}
+\item Gap = Overfitting
+\item Flat = Learning stopped
+\item Spikes = Instability
+\item NaN = Numerical issues
+\end{itemize}
+
+\textbf{Healthy Training:}
+\begin{itemize}
+\item Smooth decrease
+\item Val follows train
+\item Gradients stable
+\item LR decays properly
+\end{itemize}
+
+\textbf{When to Stop:}
+\begin{itemize}
+\item Validation plateaus
+\item Gap increasing
+\item Diminishing returns
+\end{itemize}
+\end{columns}
+\bottomnote{ Modern training requires constant monitoring - it's more art than science}
+\end{frame}

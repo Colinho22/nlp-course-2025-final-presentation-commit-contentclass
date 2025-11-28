@@ -1,0 +1,86 @@
+% Appendix B: Skip-gram Training Visual Guide
+
+\section{Skip-gram Training: Visual Guide}
+
+% Skip-gram Architecture Overview
+\begin{frame}{Skip-gram Neural Network Architecture}
+\textbf{How the Network Processes Words}
+
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/embeddings/skipgram/skipgram_architecture.pdf}
+\end{center}
+
+\textbf{Key Components:}
+\begin{itemize}
+    \item \textbf{Input:} One-hot word (V dimensions)
+    \item \textbf{Hidden:} No activation - linear projection to D dims
+    \item \textbf{W:} V×D embedding matrix
+    \item \textbf{W':} D×V output matrix
+\end{itemize}
+
+\textbf{Key:} Embedding is just a row lookup in W!
+\end{frame}
+
+% Creating Training Pairs
+\begin{frame}{From Text to Training Data}
+\textbf{Extracting (Center, Context) Pairs}
+
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/embeddings/skipgram/skipgram_training_pairs.pdf}
+\end{center}
+
+\textbf{Training Process:}
+\begin{itemize}
+    \item Predict surrounding words for each center word
+    \item Window size = context range
+    \item Each pair = one training example
+\end{itemize}
+\end{frame}
+
+% Forward Pass
+\begin{frame}{Forward Pass: Computing Context Probabilities}
+
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/embeddings/skipgram/skipgram_forward_pass.pdf}
+\end{center}
+
+\textbf{Steps:}
+\begin{enumerate}
+    \item One-hot selects embedding from W
+    \item W' × embedding = scores
+    \item Softmax → probabilities
+    \item Loss = -log P(context)
+\end{enumerate}
+\end{frame}
+
+% Backpropagation
+\begin{frame}{Backpropagation: Learning the Embeddings}
+
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/embeddings/skipgram/skipgram_backprop.pdf}
+\end{center}
+
+\textbf{Updates:}
+\begin{itemize}
+    \item \textbf{Positive:} Pull together
+    \item \textbf{Negative:} Push apart
+    \item Update both W and W'
+    \item LR: 0.025 → 0
+\end{itemize}
+\end{frame}
+
+% Evolution During Training
+\begin{frame}{How Embeddings Evolve}
+
+\begin{center}
+\includegraphics[width=0.8\textwidth]{../figures/embeddings/skipgram/skipgram_evolution.pdf}
+\end{center}
+
+\textbf{Epochs:}
+\begin{itemize}
+    \item \textbf{0:} Random
+    \item \textbf{10:} Clusters form
+    \item \textbf{50:} Semantic groups
+    \item \textbf{100:} Analogies work!
+\end{itemize}
+\end{frame}

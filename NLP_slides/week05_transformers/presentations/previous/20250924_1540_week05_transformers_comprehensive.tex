@@ -1,0 +1,1621 @@
+% Chapter 5: The Transformer Architecture - Comprehensive Presentation
+% NLP Course 2025
+% Created: 2025-09-24
+
+\input{../../common/master_template.tex}
+
+\title{The Transformer Architecture}
+\subtitle{\secondary{Chapter 5: Attention Is All You Need - Complete Guide}}
+\author{NLP Course 2025}
+\date{\today}
+
+\begin{document}
+
+% ============================================
+% PART 1: INTRODUCTION & MOTIVATION
+% ============================================
+
+% Slide 1: Title
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}
+\secondary{\footnotesize Comprehensive Coverage of Transformer Architecture}\\
+\secondary{\footnotesize 45 slides covering theory, implementation, and applications}
+\end{center}
+\end{frame}
+
+% Slide 2: Learning Objectives
+\begin{frame}{Learning Objectives}
+\begin{center}
+{\Large \textbf{What You Will Master Today}}
+\end{center}
+
+\vspace{8mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Theoretical Understanding}
+\begin{itemize}
+\item Self-attention mechanism
+\item Multi-head attention
+\item Positional encoding
+\item Layer normalization
+\item Complete architecture
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Practical Skills}
+\begin{itemize}
+\item Implement attention from scratch
+\item Build a mini-transformer
+\item Debug attention weights
+\item Optimize for performance
+\item Apply to real problems
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{By the end: You'll understand how ChatGPT, BERT, and all modern LLMs work}
+\end{frame}
+
+% Slide 3: The Journey So Far
+\begin{frame}{The Journey to Transformers}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/architecture_evolution.pdf}
+\end{center}
+
+\vspace{5mm}
+\begin{itemize}
+\item \textbf{1990s}: Simple RNNs - vanishing gradients
+\item \textbf{1997}: LSTMs - better memory but still sequential
+\item \textbf{2014}: Seq2Seq - encoder-decoder paradigm
+\item \textbf{2015}: Attention mechanism - focus on relevance
+\item \textbf{2017}: \highlight{Transformers} - parallel processing revolution
+\item \textbf{2018+}: BERT, GPT - the LLM era begins
+\end{itemize}
+
+\secondary{\footnotesize Each step solved a problem but created new limitations}
+\end{frame}
+
+% Slide 4: The RNN Bottleneck
+\begin{frame}{The Sequential Processing Problem}
+\textbf{Why RNNs Hit a Wall:}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Sequential Processing}
+\begin{itemize}
+\item Must process word 1 before word 2
+\item Can't parallelize across sequence
+\item Training time: $O(T)$ where $T$ = length
+\item GPUs sit idle most of the time
+\end{itemize}
+
+\vspace{5mm}
+\warning{Result: Weeks to train large models}
+
+\column{0.48\textwidth}
+\textbf{Information Bottleneck}
+\begin{itemize}
+\item All history compressed into one vector
+\item Long sequences lose information
+\item Gradient vanishing/exploding
+\item Can't capture long-range dependencies
+\end{itemize}
+
+\vspace{5mm}
+\warning{Result: Poor performance on long texts}
+\end{columns}
+
+\vspace{8mm}
+\begin{center}
+\keypoint{We needed a completely different approach}
+\end{center}
+\end{frame}
+
+% Slide 5: The Transformer Impact
+\begin{frame}{The Transformer Revolution (2017-2024)}
+\begin{center}
+{\Large \textbf{One Architecture Changed Everything}}
+\end{center}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Training Speed}
+\begin{itemize}
+\item \success{100x faster} than RNNs
+\item Full parallelization
+\item Days not weeks
+\item Scales with hardware
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Performance}
+\begin{itemize}
+\item SOTA on all benchmarks
+\item Better long-range deps
+\item Transfer learning works
+\item Multimodal capabilities
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Applications}
+\begin{itemize}
+\item ChatGPT (175B params)
+\item Google Search (BERT)
+\item GitHub Copilot
+\item DALL-E, Whisper, etc.
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/week5_benchmark_timeline.pdf}
+\end{center}
+
+\secondary{\footnotesize Transformers now power 98\% of state-of-the-art NLP systems}
+\end{frame}
+
+% ============================================
+% PART 2: CORE CONCEPTS
+% ============================================
+
+% Slide 6: Section Divider
+\begin{frame}
+\begin{center}
+{\Huge \textbf{Part 2}}\\
+\vspace{5mm}
+{\Large Core Concepts}\\
+\vspace{10mm}
+{\large Understanding Self-Attention}
+\end{center}
+\end{frame}
+
+% Slide 7: Self-Attention Intuition
+\begin{frame}{Self-Attention: The Core Innovation}
+\textbf{The Brilliant Insight:}
+
+\vspace{5mm}
+"Let every word directly look at every other word to decide what's relevant"
+
+\vspace{10mm}
+\textbf{Example:} "The cat sat on the mat because it was tired"
+
+\vspace{8mm}
+When processing "it":
+\begin{itemize}
+\item Traditional RNN: Only sees previous hidden states sequentially
+\item \highlight{Self-attention}: Directly examines all words:
+\begin{itemize}
+\item "it" strongly attends to "cat" (0.7 weight)
+\item "it" weakly attends to "mat" (0.1 weight)
+\item "it" moderately attends to "tired" (0.2 weight)
+\end{itemize}
+\end{itemize}
+
+\vspace{8mm}
+\keypoint{Every word builds its representation by looking at all other words}
+
+\secondary{\footnotesize This happens for ALL words SIMULTANEOUSLY - that's the magic!}
+\end{frame}
+
+% Slide 8: Mathematical Foundation
+\begin{frame}{The Attention Formula}
+\begin{center}
+{\Large \textbf{Scaled Dot-Product Attention}}
+\end{center}
+
+\vspace{8mm}
+\formula{\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V}
+
+\vspace{10mm}
+\textbf{Step-by-step computation:}
+\begin{enumerate}
+\item \textbf{Create Q, K, V:} Linear projections of input embeddings
+\[Q = XW^Q, \quad K = XW^K, \quad V = XW^V\]
+\item \textbf{Compute attention scores:} How much should word $i$ attend to word $j$?
+\[\text{score}(i,j) = \frac{q_i \cdot k_j}{\sqrt{d_k}}\]
+\item \textbf{Apply softmax:} Convert scores to probability distribution
+\[\alpha_{ij} = \frac{\exp(\text{score}(i,j))}{\sum_k \exp(\text{score}(i,k))}\]
+\item \textbf{Weighted sum:} Combine values using attention weights
+\[\text{output}_i = \sum_j \alpha_{ij} v_j\]
+\end{enumerate}
+
+\secondary{\footnotesize The $\sqrt{d_k}$ scaling prevents softmax saturation for large dimensions}
+\end{frame}
+
+% Slide 9: Query, Key, Value Explained
+\begin{frame}{Understanding Query, Key, and Value}
+\textbf{The Information Retrieval Analogy:}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Query (Q)}
+\begin{itemize}
+\item "What am I looking for?"
+\item The current word's search vector
+\item Dimension: $d_k$
+\item Learned through $W^Q$
+\end{itemize}
+
+\vspace{5mm}
+\secondary{\small Example: "bank" asks "Am I financial or river-related?"}
+
+\column{0.32\textwidth}
+\textbf{Key (K)}
+\begin{itemize}
+\item "What do I contain?"
+\item Each word's content descriptor
+\item Dimension: $d_k$
+\item Learned through $W^K$
+\end{itemize}
+
+\vspace{5mm}
+\secondary{\small Example: "river" advertises "I'm about water"}
+
+\column{0.32\textwidth}
+\textbf{Value (V)}
+\begin{itemize}
+\item "What information do I provide?"
+\item The actual content to aggregate
+\item Dimension: $d_v$
+\item Learned through $W^V$
+\end{itemize}
+
+\vspace{5mm}
+\secondary{\small Example: "river" provides its semantic content}
+\end{columns}
+
+\vspace{10mm}
+\keypoint{Q and K determine attention weights; V provides the actual information}
+\end{frame}
+
+% Slide 10: Attention Matrix Visualization
+\begin{frame}{Visualizing Attention Patterns}
+\begin{center}
+\textbf{Attention Weights for: "The cat sat on the mat"}
+\end{center}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/week5_attention_matrix.pdf}
+\end{center}
+
+\column{0.45\textwidth}
+\textbf{What the Matrix Shows:}
+\begin{itemize}
+\item Darker = stronger attention
+\item Row $i$ = where word $i$ looks
+\item Column $j$ = who attends to word $j$
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Key Observations:}
+\begin{itemize}
+\item "cat" and "sat" strongly connected
+\item "on" attends to "mat"
+\item Articles attend broadly
+\item Diagonal = self-attention
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{Attention patterns reveal semantic relationships}
+
+\secondary{\footnotesize Real transformers have multiple attention heads capturing different relationships}
+\end{frame}
+
+% Slide 11: Multi-Head Attention
+\begin{frame}{Multi-Head Attention: Multiple Perspectives}
+\textbf{Why One Head Isn't Enough:}
+
+\vspace{5mm}
+Different heads capture different relationships:
+\begin{itemize}
+\item Head 1: Syntactic dependencies (subject-verb)
+\item Head 2: Coreference resolution (pronouns)
+\item Head 3: Semantic similarity
+\item Head 4: Positional patterns
+\item ...
+\end{itemize}
+
+\vspace{8mm}
+\formula{\text{MultiHead}(Q,K,V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O}
+
+where each head is:
+\[\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)\]
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Typical Configuration:}
+\begin{itemize}
+\item 8-16 heads in practice
+\item Each head: $d_k = d_{model}/h$
+\item Parallel computation
+\item Concatenated and projected
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Benefits:}
+\begin{itemize}
+\item Richer representations
+\item Redundancy and robustness
+\item Different abstraction levels
+\item Better generalization
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Slide 12: Why Multiple Heads Matter
+\begin{frame}{Multi-Head Attention in Action}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/multihead_attention.pdf}
+\end{center}
+
+\textbf{Example:} "The bank by the river"
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.24\textwidth}
+\textbf{Head 1}\\
+\secondary{\small Syntax}
+\begin{itemize}
+\item bank → the
+\item river → the
+\item by → bank
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Head 2}\\
+\secondary{\small Semantics}
+\begin{itemize}
+\item bank → river
+\item river → bank
+\item Strong connection
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Head 3}\\
+\secondary{\small Position}
+\begin{itemize}
+\item Sequential focus
+\item Local context
+\item Adjacent words
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Head 4}\\
+\secondary{\small Global}
+\begin{itemize}
+\item Broad attention
+\item Sentence-level
+\item Context gathering
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{Different heads learn complementary attention patterns}
+\end{frame}
+
+% Slide 13: Positional Encoding Necessity
+\begin{frame}{The Position Problem}
+\textbf{Attention Has No Notion of Order!}
+
+\vspace{8mm}
+Without position information, these are identical to self-attention:
+\begin{itemize}
+\item "The cat chased the mouse"
+\item "The mouse chased the cat"
+\item "Cat the chased mouse the"
+\end{itemize}
+
+\vspace{8mm}
+\warning{Self-attention is permutation invariant - order doesn't matter!}
+
+\vspace{10mm}
+\textbf{The Solution: Positional Encoding}
+\begin{itemize}
+\item Add position information to embeddings
+\item Must be deterministic and smooth
+\item Should generalize to unseen lengths
+\item Preserve relative position information
+\end{itemize}
+
+\vspace{8mm}
+\keypoint{We inject position information before attention computation}
+\end{frame}
+
+% Slide 14: Positional Encoding Mathematics
+\begin{frame}{Positional Encoding: Sinusoidal Functions}
+\textbf{The Elegant Solution:}
+
+\vspace{8mm}
+\formula{
+\begin{aligned}
+PE_{(pos, 2i)} &= \sin\left(\frac{pos}{10000^{2i/d_{model}}}\right)\\
+PE_{(pos, 2i+1)} &= \cos\left(\frac{pos}{10000^{2i/d_{model}}}\right)
+\end{aligned}
+}
+
+\vspace{8mm}
+where:
+\begin{itemize}
+\item $pos$ = position in sequence (0, 1, 2, ...)
+\item $i$ = dimension index
+\item $d_{model}$ = model dimension (e.g., 512)
+\end{itemize}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Why Sinusoids?}
+\begin{itemize}
+\item Unique pattern for each position
+\item Smooth interpolation
+\item Can extrapolate to longer sequences
+\item Relative positions computable
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/positional_encoding.pdf}
+\end{center}
+\end{columns}
+
+\secondary{\footnotesize Modern models sometimes learn positional embeddings instead}
+\end{frame}
+
+% Slide 15: Layer Normalization
+\begin{frame}{Layer Normalization: Stabilizing Training}
+\textbf{Why Normalization is Critical:}
+
+\vspace{8mm}
+\begin{itemize}
+\item Deep networks suffer from internal covariate shift
+\item Attention can produce varying magnitude outputs
+\item Gradients can vanish or explode
+\item Training becomes unstable
+\end{itemize}
+
+\vspace{10mm}
+\textbf{Layer Normalization:}
+\formula{\text{LayerNorm}(x) = \gamma \cdot \frac{x - \mu}{\sigma + \epsilon} + \beta}
+
+where:
+\begin{itemize}
+\item $\mu$ = mean across features for each sample
+\item $\sigma$ = standard deviation across features
+\item $\gamma, \beta$ = learned scale and shift parameters
+\item $\epsilon$ = small constant for numerical stability
+\end{itemize}
+
+\vspace{8mm}
+\keypoint{Applied after each sub-layer (attention and feed-forward)}
+\end{frame}
+
+% Slide 16: Residual Connections
+\begin{frame}[fragile]{Residual Connections: Highway for Gradients}
+\textbf{The Deep Network Challenge:}
+
+\vspace{5mm}
+Transformers are DEEP (12-24+ layers). Without residuals:
+\begin{itemize}
+\item Gradients vanish exponentially
+\item Information gets lost
+\item Training becomes impossible
+\end{itemize}
+
+\vspace{10mm}
+\textbf{Residual Connections to the Rescue:}
+\formula{\text{Output} = \text{LayerNorm}(x + \text{Sublayer}(x))}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Benefits:}
+\begin{itemize}
+\item Direct gradient path
+\item Preserves information
+\item Enables very deep networks
+\item Faster convergence
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Implementation:}
+\begin{lstlisting}[language=Python]
+# Attention with residual
+attn_out = attention(x)
+x = layer_norm(x + attn_out)
+
+# FFN with residual
+ffn_out = feed_forward(x)
+x = layer_norm(x + ffn_out)
+\end{lstlisting}
+\end{columns}
+
+\secondary{\footnotesize Every sublayer in the transformer has a residual connection}
+\end{frame}
+
+% Slide 17: Complete Transformer Architecture
+\begin{frame}{The Complete Transformer Architecture}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/architecture_evolution.pdf}
+\end{center}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Encoder (Left):}
+\begin{itemize}
+\item 6 identical layers
+\item Multi-head self-attention
+\item Position-wise feed-forward
+\item Residuals \& LayerNorm
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Decoder (Right):}
+\begin{itemize}
+\item 6 identical layers
+\item Masked self-attention
+\item Encoder-decoder attention
+\item Position-wise feed-forward
+\end{itemize}
+\end{columns}
+
+\keypoint{Most modern models use only encoder (BERT) or decoder (GPT)}
+\end{frame}
+
+% Slide 18: Encoder Stack Details
+\begin{frame}[fragile]{Inside the Encoder}
+\textbf{Each Encoder Layer Contains:}
+
+\vspace{8mm}
+\begin{enumerate}
+\item \textbf{Multi-Head Self-Attention}
+\begin{itemize}
+\item All positions attend to all positions
+\item Parallel computation for all words
+\item 8-16 attention heads typically
+\end{itemize}
+
+\vspace{5mm}
+\item \textbf{Position-wise Feed-Forward Network}
+\begin{lstlisting}[language=Python]
+FFN(x) = max(0, xW1 + b1)W2 + b2
+\end{lstlisting}
+\begin{itemize}
+\item Applied to each position separately
+\item Hidden dimension typically 4x model dimension
+\item ReLU or GELU activation
+\end{itemize}
+
+\vspace{5mm}
+\item \textbf{Residual Connections} around each sublayer
+\item \textbf{Layer Normalization} after each sublayer
+\end{enumerate}
+
+\vspace{8mm}
+\textbf{Dimensions (BERT-base example):}
+\begin{itemize}
+\item Model dimension: 768
+\item Feed-forward dimension: 3072
+\item Attention heads: 12
+\item Layers: 12
+\end{itemize}
+\end{frame}
+
+% Slide 19: Decoder Stack Details
+\begin{frame}{Inside the Decoder}
+\textbf{Three Sublayers per Decoder Layer:}
+
+\vspace{8mm}
+\begin{enumerate}
+\item \textbf{Masked Multi-Head Self-Attention}
+\begin{itemize}
+\item Prevents looking at future tokens
+\item Ensures autoregressive property
+\item Critical for generation tasks
+\end{itemize}
+
+\vspace{5mm}
+\item \textbf{Encoder-Decoder Attention}
+\begin{itemize}
+\item Queries from decoder
+\item Keys and Values from encoder output
+\item Allows decoder to focus on relevant input
+\end{itemize}
+
+\vspace{5mm}
+\item \textbf{Position-wise Feed-Forward}
+\begin{itemize}
+\item Same as encoder FFN
+\item Independent processing per position
+\end{itemize}
+\end{enumerate}
+
+\vspace{8mm}
+\warning{Masking ensures we can't "cheat" during training by looking ahead}
+
+\secondary{\footnotesize GPT models are decoder-only with masked self-attention}
+\end{frame}
+
+% Slide 20: Encoder-Decoder Attention
+\begin{frame}{Cross-Attention: Connecting Encoder and Decoder}
+\textbf{How Decoder Attends to Encoder:}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Mechanism:}
+\begin{itemize}
+\item \highlight{Q} comes from decoder
+\item \highlight{K, V} come from encoder
+\item Each decoder position can attend to all encoder positions
+\item No masking needed here
+\end{itemize}
+
+\vspace{8mm}
+\formula{\text{CrossAttn}(Q_{dec}, K_{enc}, V_{enc})}
+
+\column{0.48\textwidth}
+\textbf{Translation Example:}
+\begin{itemize}
+\item Input (English): "I love cats"
+\item Generating (French): "J'aime les..."
+\item When generating "chats":
+\begin{itemize}
+\item Q from "les" position
+\item Attends strongly to "cats"
+\item Weakly to other words
+\end{itemize}
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\keypoint{Cross-attention allows decoder to focus on relevant input parts}
+
+\secondary{\footnotesize This is how the model aligns source and target sequences}
+\end{frame}
+
+% ============================================
+% PART 3: IMPLEMENTATION DETAILS
+% ============================================
+
+% Slide 21: Section Divider
+\begin{frame}
+\begin{center}
+{\Huge \textbf{Part 3}}\\
+\vspace{5mm}
+{\Large Implementation Details}\\
+\vspace{10mm}
+{\large Building Transformers in Practice}
+\end{center}
+\end{frame}
+
+% Slide 22: Self-Attention Implementation
+\begin{frame}[fragile]{Implementing Self-Attention from Scratch}
+\begin{lstlisting}[language=Python]
+import torch
+import torch.nn.functional as F
+
+class SelfAttention(torch.nn.Module):
+    def __init__(self, d_model, d_k):
+        super().__init__()
+        self.W_q = torch.nn.Linear(d_model, d_k)
+        self.W_k = torch.nn.Linear(d_model, d_k)
+        self.W_v = torch.nn.Linear(d_model, d_k)
+        self.scale = d_k ** 0.5
+
+    def forward(self, x):
+        # x shape: (batch_size, seq_len, d_model)
+        Q = self.W_q(x)  # (batch, seq_len, d_k)
+        K = self.W_k(x)
+        V = self.W_v(x)
+
+        # Compute attention scores
+        scores = torch.matmul(Q, K.transpose(-2, -1)) / self.scale
+        # scores shape: (batch, seq_len, seq_len)
+
+        # Apply softmax to get weights
+        attn_weights = F.softmax(scores, dim=-1)
+
+        # Apply weights to values
+        output = torch.matmul(attn_weights, V)
+        return output, attn_weights
+\end{lstlisting}
+
+\secondary{\footnotesize Key insight: Matrix multiplication enables parallel computation}
+\end{frame}
+
+% Slide 23: Multi-Head Attention Implementation
+\begin{frame}[fragile]{Implementing Multi-Head Attention}
+\begin{lstlisting}[language=Python]
+class MultiHeadAttention(torch.nn.Module):
+    def __init__(self, d_model, n_heads):
+        super().__init__()
+        assert d_model % n_heads == 0
+        self.d_k = d_model // n_heads
+        self.n_heads = n_heads
+
+        # Linear projections for all heads at once
+        self.W_q = torch.nn.Linear(d_model, d_model)
+        self.W_k = torch.nn.Linear(d_model, d_model)
+        self.W_v = torch.nn.Linear(d_model, d_model)
+        self.W_o = torch.nn.Linear(d_model, d_model)
+
+    def forward(self, x, mask=None):
+        batch_size, seq_len, d_model = x.shape
+
+        # Project and reshape for multi-head
+        Q = self.W_q(x).view(batch_size, seq_len, self.n_heads, self.d_k)
+        K = self.W_k(x).view(batch_size, seq_len, self.n_heads, self.d_k)
+        V = self.W_v(x).view(batch_size, seq_len, self.n_heads, self.d_k)
+
+        # Transpose for attention: (batch, n_heads, seq_len, d_k)
+        Q = Q.transpose(1, 2)
+        K = K.transpose(1, 2)
+        V = V.transpose(1, 2)
+
+        # Attention for all heads in parallel
+        attn_output = scaled_dot_product_attention(Q, K, V, mask)
+
+        # Concatenate heads and project
+        concat = attn_output.transpose(1, 2).reshape(batch_size, seq_len, d_model)
+        output = self.W_o(concat)
+        return output
+\end{lstlisting}
+\end{frame}
+
+% Slide 24: Positional Encoding Implementation
+\begin{frame}[fragile]{Implementing Positional Encoding}
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+class PositionalEncoding(torch.nn.Module):
+    def __init__(self, d_model, max_seq_len=5000):
+        super().__init__()
+
+        # Create positional encoding matrix
+        pe = torch.zeros(max_seq_len, d_model)
+        position = torch.arange(0, max_seq_len).unsqueeze(1).float()
+
+        # Create div_term for the sinusoidal pattern
+        div_term = torch.exp(torch.arange(0, d_model, 2).float() *
+                           -(np.log(10000.0) / d_model))
+
+        # Apply sin to even indices
+        pe[:, 0::2] = torch.sin(position * div_term)
+        # Apply cos to odd indices
+        pe[:, 1::2] = torch.cos(position * div_term)
+
+        # Register as buffer (not a parameter)
+        self.register_buffer('pe', pe.unsqueeze(0))
+
+    def forward(self, x):
+        # x shape: (batch_size, seq_len, d_model)
+        seq_len = x.size(1)
+        # Add positional encoding
+        x = x + self.pe[:, :seq_len]
+        return x
+\end{lstlisting}
+
+\secondary{\footnotesize The sinusoidal pattern allows the model to extrapolate to longer sequences}
+\end{frame}
+
+% Slide 25: Feed-Forward Network
+\begin{frame}[fragile]{The Feed-Forward Network}
+\textbf{Position-wise FFN: Simple but Crucial}
+
+\vspace{8mm}
+\begin{lstlisting}[language=Python]
+class FeedForward(torch.nn.Module):
+    def __init__(self, d_model, d_ff, dropout=0.1):
+        super().__init__()
+        self.linear1 = torch.nn.Linear(d_model, d_ff)
+        self.linear2 = torch.nn.Linear(d_ff, d_model)
+        self.dropout = torch.nn.Dropout(dropout)
+        self.activation = torch.nn.ReLU()
+
+    def forward(self, x):
+        # Expand to higher dimension
+        x = self.linear1(x)      # (batch, seq_len, d_ff)
+        x = self.activation(x)    # Non-linearity
+        x = self.dropout(x)       # Regularization
+        # Project back to model dimension
+        x = self.linear2(x)       # (batch, seq_len, d_model)
+        return x
+\end{lstlisting}
+
+\vspace{8mm}
+\textbf{Why Important:}
+\begin{itemize}
+\item Adds non-linearity (attention is linear)
+\item Increases model capacity
+\item Applied independently to each position
+\item Typically $d_{ff} = 4 \times d_{model}$
+\end{itemize}
+\end{frame}
+
+% Slide 26: Training Considerations
+\begin{frame}{Training Transformers: Key Considerations}
+\textbf{Optimization Challenges:}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Learning Rate Schedule}
+\begin{itemize}
+\item Warmup is critical
+\item Linear increase for first steps
+\item Then decay by $1/\sqrt{step}$
+\item Prevents early instability
+\end{itemize}
+
+\vspace{8mm}
+\formula{lr = d_{model}^{-0.5} \cdot \min(step^{-0.5}, step \cdot warmup^{-1.5})}
+
+\column{0.48\textwidth}
+\textbf{Regularization}
+\begin{itemize}
+\item Dropout (typically 0.1)
+\item Weight decay
+\item Label smoothing
+\item Gradient clipping
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Batch Size}
+\begin{itemize}
+\item Larger is better (if fits)
+\item Gradient accumulation
+\item Typically 4k-64k tokens
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\warning{Training is unstable without proper warmup and initialization}
+\end{frame}
+
+% Slide 27: Computational Complexity
+\begin{frame}{Computational Complexity Analysis}
+\textbf{Time and Space Complexity:}
+
+\vspace{8mm}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Component} & \textbf{Time} & \textbf{Space} & \textbf{Bottleneck} \\
+\hline
+Self-Attention & $O(n^2 \cdot d)$ & $O(n^2)$ & Quadratic in length \\
+Feed-Forward & $O(n \cdot d^2)$ & $O(1)$ & Linear in length \\
+Multi-Head Proj & $O(n \cdot d^2)$ & $O(1)$ & Model dimension \\
+\hline
+Total per Layer & $O(n^2 \cdot d + n \cdot d^2)$ & $O(n^2)$ & \\
+\hline
+\end{tabular}
+\end{center}
+
+where $n$ = sequence length, $d$ = model dimension
+
+\vspace{10mm}
+\textbf{Practical Implications:}
+\begin{itemize}
+\item Memory grows quadratically with sequence length
+\item Long sequences (>2k tokens) become problematic
+\item Modern solutions: Sparse attention, Flash Attention
+\item Trade-off: Parallelization vs memory usage
+\end{itemize}
+
+\vspace{8mm}
+\keypoint{The $O(n^2)$ attention is both the strength and limitation}
+\end{frame}
+
+% Slide 28: Memory Requirements
+\begin{frame}{Memory Requirements in Practice}
+\textbf{Where Does the Memory Go?}
+
+\vspace{8mm}
+For BERT-base (110M parameters):
+\begin{itemize}
+\item \textbf{Model Parameters:} 440 MB (fp32)
+\item \textbf{Optimizer States:} 880 MB (Adam - 2x params)
+\item \textbf{Gradients:} 440 MB
+\item \textbf{Activations:} Depends on batch size and sequence length
+\end{itemize}
+
+\vspace{10mm}
+\textbf{Activation Memory for Batch Size 32, Seq Length 512:}
+\begin{itemize}
+\item Attention matrices: $32 \times 12 \times 512 \times 512 \times 4$ bytes = 402 MB
+\item FFN activations: $32 \times 512 \times 3072 \times 4$ bytes = 201 MB
+\item Per layer: ~600 MB
+\item 12 layers: ~7.2 GB just for activations!
+\end{itemize}
+
+\vspace{8mm}
+\warning{Memory, not compute, is often the limiting factor}
+
+\secondary{\footnotesize Techniques: Gradient checkpointing, mixed precision, model parallelism}
+\end{frame}
+
+% Slide 29: Attention Patterns Visualization
+\begin{frame}{Debugging Attention Patterns}
+\textbf{What Should Attention Look Like?}
+
+\vspace{5mm}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/attention_visualization.pdf}
+\end{center}
+
+\vspace{5mm}
+\textbf{Common Patterns to Check:}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Good Patterns:}
+\begin{itemize}
+\item Diagonal for local context
+\item Specific word alignments
+\item Syntax dependencies visible
+\item Diverse across heads
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Problems to Watch:}
+\begin{itemize}
+\item Uniform attention (not learning)
+\item Only attending to [CLS]/[SEP]
+\item Completely random patterns
+\item All heads look identical
+\end{itemize}
+\end{columns}
+
+\keypoint{Visualizing attention helps debug training issues}
+\end{frame}
+
+% Slide 30: Common Implementation Pitfalls
+\begin{frame}{Common Implementation Pitfalls}
+\textbf{Mistakes That Cost Days of Debugging:}
+
+\vspace{8mm}
+\begin{enumerate}
+\item \textbf{Forgetting the Scaling Factor}
+\begin{itemize}
+\item Without $1/\sqrt{d_k}$: Softmax saturates
+\item Gradients vanish, model doesn't learn
+\end{itemize}
+
+\vspace{5mm}
+\item \textbf{Wrong Mask Implementation}
+\begin{itemize}
+\item Must add -inf BEFORE softmax
+\item Boolean mask vs additive mask confusion
+\end{itemize}
+
+\vspace{5mm}
+\item \textbf{Positional Encoding Bugs}
+\begin{itemize}
+\item Not adding to embeddings
+\item Wrong dimension ordering
+\item Not handling variable lengths
+\end{itemize}
+
+\vspace{5mm}
+\item \textbf{Layer Norm Placement}
+\begin{itemize}
+\item Pre-norm vs post-norm matters
+\item Modern models use pre-norm for stability
+\end{itemize}
+\end{enumerate}
+
+\vspace{8mm}
+\warning{Always verify shapes and attention patterns early in training}
+\end{frame}
+
+% ============================================
+% PART 4: APPLICATIONS & IMPACT
+% ============================================
+
+% Slide 31: Section Divider
+\begin{frame}
+\begin{center}
+{\Huge \textbf{Part 4}}\\
+\vspace{5mm}
+{\Large Applications \& Impact}\\
+\vspace{10mm}
+{\large From BERT to GPT-4}
+\end{center}
+\end{frame}
+
+% Slide 32: BERT Architecture
+\begin{frame}{BERT: Bidirectional Encoder Representations}
+\textbf{The Encoder-Only Revolution (2018):}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Architecture:}
+\begin{itemize}
+\item Encoder-only transformer
+\item Bidirectional context
+\item 12/24 layers (Base/Large)
+\item 110M/340M parameters
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Training Objective:}
+\begin{itemize}
+\item Masked Language Modeling (MLM)
+\item Randomly mask 15\% of tokens
+\item Predict masked tokens
+\item Next Sentence Prediction (NSP)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Key Innovations:}
+\begin{itemize}
+\item Bidirectional pre-training
+\item Fine-tuning paradigm
+\item [CLS] token for classification
+\item Segment embeddings
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Impact:}
+\begin{itemize}
+\item SOTA on 11 NLP tasks
+\item Powers Google Search
+\item Started fine-tuning era
+\item 50,000+ citations
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{BERT showed that pre-training + fine-tuning is incredibly powerful}
+\end{frame}
+
+% Slide 33: GPT Architecture
+\begin{frame}{GPT: The Decoder-Only Approach}
+\textbf{Generative Pre-trained Transformer Evolution:}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Architecture:}
+\begin{itemize}
+\item Decoder-only (masked attention)
+\item Autoregressive generation
+\item Left-to-right only
+\item Scales to extreme sizes
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Model Progression:}
+\begin{itemize}
+\item GPT (2018): 117M params
+\item GPT-2 (2019): 1.5B params
+\item GPT-3 (2020): 175B params
+\item GPT-4 (2023): ~1.7T params*
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Training Approach:}
+\begin{itemize}
+\item Next token prediction
+\item Massive text corpora
+\item No fine-tuning needed
+\item In-context learning
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Capabilities:}
+\begin{itemize}
+\item Text generation
+\item Few-shot learning
+\item Code generation
+\item Reasoning tasks
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{GPT proved that scale + simple objective = emergent abilities}
+
+\secondary{\footnotesize *Estimated; OpenAI hasn't disclosed GPT-4 size}
+\end{frame}
+
+% Slide 34: Encoder vs Decoder Comparison
+\begin{frame}{Encoder-Only vs Decoder-Only vs Both}
+\begin{center}
+\textbf{Which Architecture When?}
+\end{center}
+
+\vspace{8mm}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Aspect} & \textbf{Encoder-Only} & \textbf{Decoder-Only} & \textbf{Both} \\
+\hline
+Example & BERT, RoBERTa & GPT, LLaMA & T5, BART \\
+\hline
+Context & Bidirectional & Left-to-right & Flexible \\
+Best for & Understanding & Generation & Translation \\
+Training & MLM & Next token & Varies \\
+Fine-tuning & Required & Optional & Optional \\
+Speed & Fast inference & Slower (sequential) & Slowest \\
+Parameters & Smaller & Can be huge & Medium \\
+\hline
+\end{tabular}
+
+\vspace{10mm}
+\textbf{Use Cases:}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Encoder-Only:}
+\begin{itemize}
+\item Classification
+\item NER, POS tagging
+\item Sentiment analysis
+\item Search/retrieval
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Decoder-Only:}
+\begin{itemize}
+\item Text generation
+\item Dialogue systems
+\item Code completion
+\item Creative writing
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Encoder-Decoder:}
+\begin{itemize}
+\item Translation
+\item Summarization
+\item Question answering
+\item Text-to-text tasks
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Slide 35: Vision Transformers
+\begin{frame}{Beyond Text: Vision Transformers (ViT)}
+\textbf{Transformers Conquer Computer Vision (2020):}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Key Idea:}
+\begin{itemize}
+\item Divide image into patches (16x16)
+\item Treat patches as "tokens"
+\item Add positional embeddings
+\item Standard transformer encoder
+\item [CLS] token for classification
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Results:}
+\begin{itemize}
+\item Beats CNNs at scale
+\item ImageNet: 88.5\% accuracy
+\item Needs lots of data
+\item Better transfer learning
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why It Works:}
+\begin{itemize}
+\item Global receptive field from start
+\item Flexible attention patterns
+\item No inductive bias of convolution
+\item Scales better than CNNs
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Extensions:}
+\begin{itemize}
+\item CLIP: Vision + Language
+\item DALL-E: Text to Image
+\item Flamingo: Visual QA
+\item SAM: Segmentation
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{Transformers are becoming the universal architecture for all modalities}
+\end{frame}
+
+% Slide 36: Multimodal Transformers
+\begin{frame}{Multimodal Transformers: Unified Architecture}
+\textbf{One Architecture to Process Everything:}
+
+\vspace{8mm}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{../figures/speed_comparison.pdf}
+\end{center}
+
+\vspace{8mm}
+\textbf{Current Multimodal Models:}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{CLIP (OpenAI)}
+\begin{itemize}
+\item Text + Image
+\item Contrastive learning
+\item Zero-shot classification
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Flamingo (DeepMind)}
+\begin{itemize}
+\item Vision + Language
+\item Few-shot learning
+\item Visual QA
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Gato (DeepMind)}
+\begin{itemize}
+\item Text, images, games
+\item Single model
+\item General agent
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{Transformers enable true multimodal AI systems}
+\end{frame}
+
+% Slide 37: Performance Benchmarks
+\begin{frame}{Performance Evolution: Transformers Dominate}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/week5_benchmark_timeline.pdf}
+\end{center}
+
+\textbf{Key Benchmarks Conquered:}
+\begin{itemize}
+\item \textbf{GLUE/SuperGLUE:} Human performance surpassed (2019)
+\item \textbf{SQuAD 2.0:} Reading comprehension solved (2019)
+\item \textbf{WMT Translation:} Near-human quality (2020)
+\item \textbf{ImageNet:} ViT beats ResNet (2021)
+\item \textbf{HumanEval:} Code generation >80\% (2023)
+\end{itemize}
+
+\secondary{\footnotesize Every major NLP benchmark is now led by transformer models}
+\end{frame}
+
+% Slide 38: Scaling Laws
+\begin{frame}{Scaling Laws: Bigger is (Usually) Better}
+\textbf{The Kaplan Scaling Laws (2020):}
+
+\vspace{8mm}
+\formula{\text{Loss} = aN^{-\alpha} + bD^{-\beta} + c}
+
+where $N$ = parameters, $D$ = data, $\alpha \approx 0.076$, $\beta \approx 0.095$
+
+\vspace{10mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Key Findings:}
+\begin{itemize}
+\item Performance improves predictably
+\item No plateau in sight
+\item Data and compute equally important
+\item Optimal model size grows with budget
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/week5_efficiency_comparison.pdf}
+\end{center}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{Scaling laws justify the race to build larger models}
+
+\secondary{\footnotesize Chinchilla showed we also need proportionally more data}
+\end{frame}
+
+% Slide 39: Modern Variants
+\begin{frame}{Modern Transformer Variants}
+\textbf{Innovations to Address Limitations:}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Efficiency Improvements:}
+\begin{itemize}
+\item \textbf{Flash Attention:} 2-4x faster, less memory
+\item \textbf{Sparse Transformers:} $O(n\sqrt{n})$ complexity
+\item \textbf{Linformer:} $O(n)$ attention
+\item \textbf{Performer:} Kernel-based attention
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Architectural Changes:}
+\begin{itemize}
+\item \textbf{Mixture of Experts:} Conditional computation
+\item \textbf{Retrieval-Augmented:} External memory
+\item \textbf{Toolformer:} API calling ability
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Training Innovations:}
+\begin{itemize}
+\item \textbf{RoPE:} Better positional encoding
+\item \textbf{ALiBi:} Extrapolate to longer sequences
+\item \textbf{FlashAttention-2:} Even faster
+\item \textbf{GQA:} Grouped query attention
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Current State-of-the-Art:}
+\begin{itemize}
+\item LLaMA 2 architecture
+\item RMSNorm instead of LayerNorm
+\item SwiGLU activation
+\item Rotary embeddings
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{Innovation continues at breakneck pace}
+\end{frame}
+
+% Slide 40: Real-World Applications
+\begin{frame}{Real-World Impact: Transformers Everywhere}
+\textbf{Applications Powered by Transformers (2024):}
+
+\vspace{8mm}
+\begin{columns}[T]
+\column{0.24\textwidth}
+\textbf{Language:}
+\begin{itemize}
+\item ChatGPT
+\item Google Bard
+\item Claude
+\item DeepL
+\item Grammarly
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Code:}
+\begin{itemize}
+\item GitHub Copilot
+\item Replit AI
+\item Amazon CodeWhisperer
+\item Tabnine
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Creative:}
+\begin{itemize}
+\item DALL-E 3
+\item Midjourney
+\item Stable Diffusion
+\item MuseNet
+\end{itemize}
+
+\column{0.24\textwidth}
+\textbf{Science:}
+\begin{itemize}
+\item AlphaFold
+\item ESMFold
+\item Galactica
+\item BioGPT
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\textbf{Industry Adoption:}
+\begin{itemize}
+\item \textbf{Microsoft:} Copilot in Office 365
+\item \textbf{Google:} Bard, Search, Workspace
+\item \textbf{Meta:} LLaMA, Make-A-Video
+\item \textbf{Every Tech Company:} Building transformer-based products
+\end{itemize}
+
+\vspace{8mm}
+\keypoint{Transformers are the foundation of the AI revolution}
+\end{frame}
+
+% ============================================
+% PART 5: HANDS-ON & SUMMARY
+% ============================================
+
+% Slide 41: Section Divider
+\begin{frame}
+\begin{center}
+{\Huge \textbf{Part 5}}\\
+\vspace{5mm}
+{\Large Hands-On \& Summary}\\
+\vspace{10mm}
+{\large Bringing It All Together}
+\end{center}
+\end{frame}
+
+% Slide 42: Building a Mini-Transformer
+\begin{frame}[fragile]{Let's Build a Complete Mini-Transformer}
+\begin{lstlisting}[language=Python, basicstyle=\tiny]
+class TransformerBlock(nn.Module):
+    def __init__(self, d_model, n_heads, d_ff, dropout=0.1):
+        super().__init__()
+        self.attention = MultiHeadAttention(d_model, n_heads)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.ff = FeedForward(d_model, d_ff, dropout)
+        self.norm2 = nn.LayerNorm(d_model)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x, mask=None):
+        # Self-attention with residual
+        attn_out = self.attention(x, mask)
+        x = self.norm1(x + self.dropout(attn_out))
+        # Feed-forward with residual
+        ff_out = self.ff(x)
+        x = self.norm2(x + self.dropout(ff_out))
+        return x
+
+class MiniTransformer(nn.Module):
+    def __init__(self, vocab_size, d_model, n_layers, n_heads, max_len=5000):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, d_model)
+        self.pos_encoding = PositionalEncoding(d_model, max_len)
+        self.blocks = nn.ModuleList([
+            TransformerBlock(d_model, n_heads, d_model*4)
+            for _ in range(n_layers)
+        ])
+        self.ln_f = nn.LayerNorm(d_model)
+        self.output = nn.Linear(d_model, vocab_size)
+
+    def forward(self, x):
+        x = self.embedding(x)
+        x = self.pos_encoding(x)
+        for block in self.blocks:
+            x = block(x)
+        x = self.ln_f(x)
+        return self.output(x)
+\end{lstlisting}
+
+\secondary{\footnotesize This is essentially GPT-2 architecture!}
+\end{frame}
+
+% Slide 43: Key Takeaways
+\begin{frame}{Key Takeaways}
+\begin{center}
+{\Large \textbf{What to Remember}}
+\end{center}
+
+\vspace{10mm}
+\begin{enumerate}
+\item \textbf{Core Innovation:} Self-attention enables parallel processing
+\vspace{3mm}
+\item \textbf{Key Components:}
+\begin{itemize}
+\item Multi-head attention (different relationships)
+\item Positional encoding (order information)
+\item FFN (non-linearity and capacity)
+\item Residuals \& LayerNorm (training stability)
+\end{itemize}
+\vspace{3mm}
+\item \textbf{Advantages:} Parallelization, long-range dependencies, transfer learning
+\vspace{3mm}
+\item \textbf{Limitations:} Quadratic complexity, memory intensive
+\vspace{3mm}
+\item \textbf{Impact:} Powers essentially all modern NLP and beyond
+\vspace{3mm}
+\item \textbf{Future:} Longer context, efficiency, multimodal, reasoning
+\end{enumerate}
+
+\vspace{10mm}
+\keypoint{Transformers are the foundation you need to understand modern AI}
+\end{frame}
+
+% Slide 44: Common Misconceptions
+\begin{frame}{Common Misconceptions}
+\textbf{Let's Clear These Up:}
+
+\vspace{10mm}
+\begin{enumerate}
+\item \misconception{"Transformers are just attention"}\\
+\success{Reality:} FFN, residuals, and layer norm are equally critical
+
+\vspace{5mm}
+\item \misconception{"Bigger is always better"}\\
+\success{Reality:} Depends on task, data, and computational budget
+
+\vspace{5mm}
+\item \misconception{"Transformers understand language"}\\
+\success{Reality:} They learn statistical patterns, not meaning
+
+\vspace{5mm}
+\item \misconception{"Attention weights show what the model thinks"}\\
+\success{Reality:} They're one part of a complex computation
+
+\vspace{5mm}
+\item \misconception{"Transformers made RNNs obsolete"}\\
+\success{Reality:} RNNs still useful for streaming, small models
+\end{enumerate}
+
+\vspace{10mm}
+\warning{Understanding limitations is as important as understanding capabilities}
+\end{frame}
+
+% Slide 45: Practice Problems
+\begin{frame}{Practice Problems}
+\textbf{Test Your Understanding:}
+
+\vspace{8mm}
+\begin{enumerate}
+\item \textbf{Computation:} For sequence length 100, model dimension 512, 8 heads:
+\begin{itemize}
+\item What's the dimension of each head?
+\item How many parameters in multi-head attention?
+\item Memory for attention matrices?
+\end{itemize}
+
+\vspace{5mm}
+\item \textbf{Architecture:} Why do we need positional encoding? What happens without it?
+
+\vspace{5mm}
+\item \textbf{Implementation:} Write the attention masking for decoder self-attention
+
+\vspace{5mm}
+\item \textbf{Analysis:} Why is the scaling factor $\sqrt{d_k}$ and not $d_k$?
+
+\vspace{5mm}
+\item \textbf{Design:} How would you modify transformers for 10k+ token sequences?
+\end{enumerate}
+
+\vspace{10mm}
+\secondary{\footnotesize Solutions will be discussed in the lab session}
+\end{frame}
+
+% Slide 46: Resources and References
+\begin{frame}{Resources for Deep Dive}
+\textbf{Essential Papers:}
+\begin{itemize}
+\item Vaswani et al. (2017): "Attention Is All You Need" - The original
+\item Devlin et al. (2018): "BERT: Pre-training of Deep Bidirectional Transformers"
+\item Radford et al. (2019): "Language Models are Unsupervised Multitask Learners" (GPT-2)
+\item Brown et al. (2020): "Language Models are Few-Shot Learners" (GPT-3)
+\item Dosovitskiy et al. (2020): "An Image is Worth 16x16 Words" (ViT)
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Implementation Resources:}
+\begin{itemize}
+\item \textbf{The Annotated Transformer:} Harvard NLP's line-by-line implementation
+\item \textbf{HuggingFace Transformers:} Industry standard library
+\item \textbf{nanoGPT:} Karpathy's minimal GPT implementation
+\item \textbf{x-transformers:} Cutting-edge variants
+\end{itemize}
+
+\vspace{8mm}
+\textbf{Visualization Tools:}
+\begin{itemize}
+\item BertViz: Attention visualization
+\item Tensor2Tensor: Interactive transformer
+\item Papers with Code: Benchmark tracking
+\end{itemize}
+\end{frame}
+
+% Final slide
+\begin{frame}
+\begin{center}
+{\Huge \textbf{Thank You!}}\\
+\vspace{10mm}
+{\Large Questions?}\\
+\vspace{15mm}
+{\large Next: Lab Session - Implementing Transformers}\\
+\vspace{5mm}
+\secondary{\footnotesize We'll build and train a transformer from scratch}
+\end{center}
+\end{frame}
+
+\end{document}

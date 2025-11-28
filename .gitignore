@@ -1,4 +1,4 @@
-# LaTeX auxiliary files
+# LaTeX auxiliary/temporary files
 *.aux
 *.log
 *.nav
@@ -9,6 +9,25 @@
 *.synctex.gz
 *.fdb_latexmk
 *.fls
+*.bbl
+*.blg
+temp/
+texput.log
+nul
+
+# Jupyter artifacts
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pkl
+*.pickle
+*.pyc
 
 # Claude Code settings (local only)
 .claude/
@@ -23,10 +42,6 @@ presentations/20251128_0920_*
 presentations/20251128_0925_*
 presentations/20251128_0930_*
 presentations/20251128_0940_*
-
-# Python cache
-__pycache__/
-*.pyc
 
 # OS files
 .DS_Store

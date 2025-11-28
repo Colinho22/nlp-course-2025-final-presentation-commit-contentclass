@@ -1,0 +1,719 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Color definitions
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{173,216,230}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codegray}{RGB}{150,150,150}
+\definecolor{backcolor}{RGB}{245,245,245}
+\definecolor{checkpointYellow}{RGB}{255,217,61}
+\definecolor{prerequisiteBlue}{RGB}{76,201,240}
+\definecolor{misconceptionRed}{RGB}{255,107,107}
+\definecolor{intuitionPurple}{RGB}{155,89,182}
+\definecolor{realworldOrange}{RGB}{255,159,64}
+
+% Code listing setup
+\lstset{
+    backgroundcolor=\color{backcolor},
+    basicstyle=\ttfamily\tiny,
+    breaklines=true,
+    language=Python
+}
+
+% Custom commands
+\newcommand{\given}{\mid}
+\newcommand{\highlight}[1]{\textcolor{red}{\textbf{#1}}}
+\newcommand{\eqbox}[1]{\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]#1\end{tcolorbox}}
+
+% BSc pedagogical elements
+\newcommand{\checkpoint}[1]{%
+    \begin{tcolorbox}[colback=checkpointYellow!20,colframe=checkpointYellow!80!black,
+                      title=\textbf{Checkpoint},fonttitle=\bfseries]
+    #1
+    \end{tcolorbox}
+}
+
+\newcommand{\prereq}[1]{%
+    \begin{tcolorbox}[colback=prerequisiteBlue!15,colframe=prerequisiteBlue!80!black,
+                      title=\textbf{Prerequisite},fonttitle=\bfseries]
+    #1
+    \end{tcolorbox}
+}
+
+\newcommand{\misconception}[1]{%
+    \begin{tcolorbox}[colback=misconceptionRed!15,colframe=misconceptionRed!80!black,
+                      title=\textbf{Common Misconception},fonttitle=\bfseries]
+    #1
+    \end{tcolorbox}
+}
+
+\newcommand{\intuition}[1]{%
+    \begin{tcolorbox}[colback=intuitionPurple!15,colframe=intuitionPurple!80!black,
+                      title=\textbf{Intuition},fonttitle=\bfseries]
+    #1
+    \end{tcolorbox}
+}
+
+\newcommand{\realworld}[1]{%
+    \begin{tcolorbox}[colback=realworldOrange!15,colframe=realworldOrange!80!black,
+                      title=\textbf{Real-World Application},fonttitle=\bfseries]
+    #1
+    \end{tcolorbox}
+}
+
+\title[Week 8: Tokenization]{Natural Language Processing}
+\subtitle{Week 8: Breaking Words into Pieces\\ The Tokenization Revolution}
+\author{NLP Course 2025}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Learning Objectives}
+    \textbf{By the end of this lecture, you will understand:}
+    \begin{enumerate}
+        \item Why simple word-level tokenization fails (OOV problem)
+        \item How subword tokenization preserves meaning for rare words
+        \item The BPE algorithm and why it learns from frequency
+        \item Why WordPiece and SentencePiece improve on BPE
+        \item How tokenization impacts multilingual models
+    \end{enumerate}
+
+    \vspace{1em}
+    \prereq{
+        \textbf{From previous weeks:}
+        \begin{itemize}
+            \item Word embeddings represent words as vectors (Week 2)
+            \item Transformers process sequences of tokens (Week 5)
+            \item Vocabulary size affects model size and training
+        \end{itemize}
+    }
+\end{frame}
+
+\begin{frame}{Table of Contents}
+    \tableofcontents
+\end{frame}
+
+\section{The Word Tokenization Problem}
+
+\begin{frame}[t]{Act 1: The Out-of-Vocabulary Crisis}
+    \textbf{Imagine you're building a translator...}
+
+    \vspace{0.5em}
+    You train on common English words: cat, dog, run, happy, etc.
+
+    \vspace{0.5em}
+    \textbf{Then a user types:}
+    \begin{center}
+    ``I feel \highlight{unhappiness} about this situation''
+    \end{center}
+
+    \vspace{0.5em}
+    \textbf{Your model's vocabulary:}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{Known words:}
+        \begin{itemize}
+            \item happy
+            \item happiness
+            \item sad
+            \item unhappy
+        \end{itemize}
+
+        \column{0.5\textwidth}
+        \textbf{Unknown word:}
+        \begin{itemize}
+            \item \textcolor{red}{unhappiness} $\rightarrow$ \texttt{<UNK>}
+            \item \textcolor{red}{All meaning lost!}
+            \item Model has no idea what user meant
+        \end{itemize}
+    \end{columns}
+
+    \vspace{1em}
+    \textbf{The Dilemma:} Can't memorize every possible word. English has millions!
+\end{frame}
+
+\begin{frame}[t]{Why Word-Level Tokenization Fails}
+    \realworld{
+        \textbf{Real scenario from GPT-2 (2019):}\\
+        Vocabulary size: 50,257 words\\
+        Reddit training data: Millions of rare words\\
+        Problem: 5-15\% of test words were out-of-vocabulary!
+    }
+
+    \vspace{1em}
+    \textbf{Three approaches to consider:}
+
+    \begin{columns}[T]
+        \column{0.33\textwidth}
+        \textbf{1. Character-Level}
+        \begin{itemize}
+            \item[\textcolor{green}{+}] Never OOV
+            \item[\textcolor{red}{-}] Too many tokens
+            \item[\textcolor{red}{-}] ``the'' = 3 tokens
+        \end{itemize}
+
+        \column{0.33\textwidth}
+        \textbf{2. Word-Level}
+        \begin{itemize}
+            \item[\textcolor{green}{+}] Natural units
+            \item[\textcolor{red}{-}] High OOV rate
+            \item[\textcolor{red}{-}] Huge vocabulary
+        \end{itemize}
+
+        \column{0.33\textwidth}
+        \textbf{3. Subword-Level?}
+        \begin{itemize}
+            \item[\textcolor{green}{+}] Best of both?
+            \item[\textcolor{green}{+}] Balanced tokens
+            \item[\textcolor{green}{+}] Rare words OK
+        \end{itemize}
+    \end{columns}
+
+    \vspace{1em}
+    \textbf{Key Question:} How do we automatically find meaningful subword units?
+\end{frame}
+
+\begin{frame}[t]{Visual: The Tokenization Spectrum}
+    \begin{center}
+    \includegraphics[width=0.9\textwidth]{../figures/tokenization_comparison_visual.pdf}
+    \end{center}
+
+    \intuition{
+        \textbf{Think of it like data compression:}\\
+        Character-level = uncompressed (lots of redundancy)\\
+        Word-level = over-compressed (lossy, information lost)\\
+        Subword-level = optimal compression (preserves information)
+    }
+\end{frame}
+
+\section{Byte Pair Encoding (BPE)}
+
+\begin{frame}[t]{Act 2: The BPE Solution}
+    \textbf{Core Insight:} Learn subword units from frequency patterns
+
+    \vspace{0.5em}
+    \textbf{The Algorithm (simplified):}
+    \begin{enumerate}
+        \item Start with character vocabulary: \{a, b, c, ..., z\}
+        \item Count all adjacent character pairs in corpus
+        \item Merge the most frequent pair into a new token
+        \item Repeat until vocabulary reaches target size
+    \end{enumerate}
+
+    \vspace{0.5em}
+    \misconception{
+        \textbf{``BPE needs linguistic knowledge to find morphemes''}\\
+        \textcolor{red}{FALSE!} BPE is purely statistical. It discovers that ``un-'', ``-ing'', ``-ness'' are common patterns automatically, without knowing they're prefixes/suffixes.
+    }
+
+    \vspace{0.5em}
+    \textbf{Key Properties:}
+    \begin{itemize}
+        \item Language-agnostic (works for any language)
+        \item Data-driven (learns from your corpus)
+        \item Vocabulary size is a hyperparameter (typically 30K-50K)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{BPE Example: Step-by-Step}
+    \textbf{Let's walk through a tiny example...}
+
+    \vspace{0.5em}
+    \textbf{Training corpus:}
+    \begin{lstlisting}
+low low low
+lower lower
+newest newest newest newest
+\end{lstlisting}
+
+    \vspace{0.5em}
+    \textbf{Initial representation (character + word boundary):}
+    \begin{lstlisting}
+l o w </w>  (appears 3 times)
+l o w e r </w>  (appears 2 times)
+n e w e s t </w>  (appears 4 times)
+\end{lstlisting}
+
+    \vspace{0.5em}
+    \textbf{Count all pairs:}
+    \begin{center}
+    \begin{tabular}{ll}
+        \toprule
+        Pair & Frequency \\
+        \midrule
+        (e, s) & 4 \\
+        (l, o) & 5 \\
+        (o, w) & 5 \\
+        (n, e) & 4 \\
+        \bottomrule
+    \end{tabular}
+    \end{center}
+
+    \textbf{Merge most frequent:} (l, o) $\rightarrow$ lo OR (o, w) $\rightarrow$ ow
+\end{frame}
+
+\begin{frame}[t]{Visual: BPE Merge Detail}
+    \begin{center}
+    \includegraphics[width=0.95\textwidth]{../figures/bpe_merge_detail_visual.pdf}
+    \end{center}
+\end{frame}
+
+\begin{frame}[t]{Visual: BPE Algorithm Progression}
+    \begin{center}
+    \includegraphics[width=0.85\textwidth]{../figures/bpe_progression_visual.pdf}
+    \end{center}
+
+    \textbf{Observation:} As vocabulary grows, tokens become longer and more meaningful
+\end{frame}
+
+\begin{frame}[t]{Checkpoint 1: Understanding BPE}
+    \checkpoint{
+        \textbf{Test your understanding:}
+
+        \vspace{0.3em}
+        \textbf{Question 1:} What does BPE merge at each iteration?
+        \begin{itemize}
+            \item[A)] Random character pairs
+            \item[B)] Linguistically meaningful morphemes
+            \item[C)] Most frequent adjacent pairs
+            \item[D)] Longest possible substrings
+        \end{itemize}
+
+        \vspace{0.5em}
+        \textbf{Answer:} \textcolor{green}{C - Most frequent adjacent pairs}\\
+        BPE is purely frequency-based. It doesn't know about linguistics!
+
+        \vspace{0.5em}
+        \textbf{Question 2:} Why does BPE never produce out-of-vocabulary tokens?
+        \begin{itemize}
+            \item[A)] It memorizes all possible words
+            \item[B)] It can always fall back to character-level
+            \item[C)] It uses a special UNK token
+        \end{itemize}
+
+        \vspace{0.5em}
+        \textbf{Answer:} \textcolor{green}{B - Falls back to character-level}\\
+        Since characters are always in vocabulary, any word can be decomposed.
+    }
+\end{frame}
+
+\section{Rare Word Handling}
+
+\begin{frame}[t]{Act 3: The Rare Word Advantage}
+    \textbf{Remember our ``unhappiness'' problem?}
+
+    \vspace{0.5em}
+    Let's see how BPE handles it...
+
+    \vspace{0.5em}
+    \textbf{After BPE training, vocabulary contains:}
+    \begin{itemize}
+        \item ``un'' (common prefix in: unable, unhappy, unknown, etc.)
+        \item ``happi'' (appears in: happy, happiness, unhappy, etc.)
+        \item ``ness'' (common suffix in: happiness, sadness, kindness, etc.)
+    \end{itemize}
+
+    \vspace{0.5em}
+    \textbf{At test time:}
+    \begin{center}
+    \Large
+    ``unhappiness'' $\rightarrow$ [un] [happi] [ness]
+    \end{center}
+
+    \vspace{0.5em}
+    \textbf{Model can now understand:}
+    \begin{itemize}
+        \item \textcolor{green}{``un''} = negation prefix
+        \item \textcolor{green}{``happi''} = emotional state (positive)
+        \item \textcolor{green}{``ness''} = quality/state suffix
+        \item Combined: \textcolor{green}{negated positive emotional state = negative feeling}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Visual: Rare Word Handling Comparison}
+    \begin{center}
+    \includegraphics[width=0.95\textwidth]{../figures/rare_word_handling_visual.pdf}
+    \end{center}
+
+    \realworld{
+        \textbf{Medical domain example:}\\
+        Word: ``pneumonoultramicroscopicsilicovolcanoconiosis'' (lung disease)\\
+        BPE: [pneum] [ono] [ultra] [micro] [scop] [ic] [silic] [o] [volcano] [coni] [osis]\\
+        Model understands: lung + small + viewing + volcano + condition
+    }
+\end{frame}
+
+\section{Vocabulary Size and OOV}
+
+\begin{frame}[t]{The Vocabulary Size Trade-off}
+    \textbf{How large should our vocabulary be?}
+
+    \vspace{0.5em}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{Small vocabulary (5K-10K):}
+        \begin{itemize}
+            \item[\textcolor{green}{+}] Fast training
+            \item[\textcolor{green}{+}] Memory efficient
+            \item[\textcolor{red}{-}] Many subword splits
+            \item[\textcolor{red}{-}] Longer sequences
+        \end{itemize}
+
+        \column{0.5\textwidth}
+        \textbf{Large vocabulary (50K-100K):}
+        \begin{itemize}
+            \item[\textcolor{green}{+}] Fewer splits
+            \item[\textcolor{green}{+}] More ``whole words''
+            \item[\textcolor{red}{-}] Slower training
+            \item[\textcolor{red}{-}] More parameters
+        \end{itemize}
+    \end{columns}
+
+    \vspace{1em}
+    \textbf{Industry standard:} 30K-50K tokens (sweet spot)
+
+    \vspace{0.5em}
+    \intuition{
+        Think of it like image compression: Higher compression ratio = faster but lower quality. Lower compression = slower but better quality. Subword tokenization finds the optimal balance.
+    }
+\end{frame}
+
+\begin{frame}[t]{Visual: Vocabulary Size vs OOV Rate}
+    \begin{center}
+    \includegraphics[width=0.85\textwidth]{../figures/vocab_size_oov_visual.pdf}
+    \end{center}
+
+    \textbf{Key Observation:} Subword methods (BPE, WordPiece) achieve near-zero OOV with 30K vocabulary, while word-level still has 4\% OOV even at 50K!
+\end{frame}
+
+\section{WordPiece and SentencePiece}
+
+\begin{frame}[t]{Act 4: Improvements on BPE}
+    \textbf{BPE was just the beginning...}
+
+    \vspace{0.5em}
+    \textbf{1. WordPiece (Google, 2016):}
+    \begin{itemize}
+        \item Used in BERT, T5, many Google models
+        \item \textbf{Key difference:} Merges based on likelihood increase (not just frequency)
+        \item Formula: Choose merge that maximizes $P(\text{corpus})$
+        \item \textbf{Result:} Slightly better language model perplexity
+    \end{itemize}
+
+    \vspace{0.5em}
+    \textbf{2. SentencePiece (Google, 2018):}
+    \begin{itemize}
+        \item Works on raw text (no pre-tokenization needed)
+        \item Language-agnostic (handles Chinese, Japanese, Arabic, etc.)
+        \item Treats spaces as tokens (e.g., ``\textvisiblespace hello'')
+        \item Used in: XLNet, ALBERT, T5, many multilingual models
+    \end{itemize}
+
+    \vspace{0.5em}
+    \misconception{
+        \textbf{``BPE is outdated, everyone uses WordPiece now''}\\
+        \textcolor{red}{FALSE!} GPT-2, GPT-3, GPT-4, RoBERTa, and many others still use BPE. Choice depends on specific use case.
+    }
+\end{frame}
+
+\begin{frame}[t]{Comparison: BPE vs WordPiece vs SentencePiece}
+    \begin{center}
+    \small
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Property} & \textbf{BPE} & \textbf{WordPiece} & \textbf{SentencePiece} \\
+        \midrule
+        Merge criterion & Frequency & Likelihood & Both supported \\
+        Pre-tokenization & Required & Required & Not required \\
+        Space handling & Special char & Special char & Treated as token \\
+        Multilingual & Good & Good & Excellent \\
+        Used in & GPT-2/3/4 & BERT & XLNet, T5 \\
+        \bottomrule
+    \end{tabular}
+    \end{center}
+
+    \vspace{1em}
+    \realworld{
+        \textbf{Why does GPT-4 use BPE while BERT uses WordPiece?}\\
+        BPE: Simpler, faster training, good for autoregressive models\\
+        WordPiece: Better perplexity, good for masked language modeling\\
+        Both work well - choice is often historical/engineering preference
+    }
+\end{frame}
+
+\section{Multilingual Tokenization}
+
+\begin{frame}[t]{The Multilingual Challenge}
+    \textbf{Different languages have different characteristics...}
+
+    \vspace{0.5em}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{English:}
+        \begin{itemize}
+            \item Space-separated words
+            \item Moderate morphology
+            \item ``running'' = run + ing
+        \end{itemize}
+
+        \textbf{German:}
+        \begin{itemize}
+            \item Compound words
+            \item Rich morphology
+            \item ``Donaudampfschifffahrtsgesellschaftskapitan''
+        \end{itemize}
+
+        \column{0.5\textwidth}
+        \textbf{Chinese:}
+        \begin{itemize}
+            \item No spaces between words
+            \item Character-based writing
+            \item Each character has meaning
+        \end{itemize}
+
+        \textbf{Finnish:}
+        \begin{itemize}
+            \item Extremely complex morphology
+            \item 15 grammatical cases
+            \item ``talossanikinko'' = ``in my house too?''
+        \end{itemize}
+    \end{columns}
+
+    \vspace{1em}
+    \textbf{Challenge:} How can one tokenization scheme work for all languages?
+
+    \vspace{0.5em}
+    \textbf{Answer:} Subword tokenization adapts automatically! Languages with complex morphology get more subword splits, languages with simpler structure get fewer splits.
+\end{frame}
+
+\begin{frame}[t]{Visual: Multilingual Tokenization Efficiency}
+    \begin{center}
+    \includegraphics[width=0.85\textwidth]{../figures/multilingual_efficiency_visual.pdf}
+    \end{center}
+
+    \intuition{
+        Finnish needs more tokens because of complex morphology. This is actually good - the model learns Finnish morphological patterns automatically through subword units!
+    }
+\end{frame}
+
+\begin{frame}[t]{Checkpoint 2: Multilingual Understanding}
+    \checkpoint{
+        \textbf{Test your understanding:}
+
+        \vspace{0.3em}
+        \textbf{Question 1:} Why does Finnish need more BPE tokens than English for the same text?
+        \begin{itemize}
+            \item[A)] Finnish words are longer
+            \item[B)] Finnish has complex morphology requiring more subword units
+            \item[C)] BPE doesn't work well for Finnish
+            \item[D)] Finnish has a larger alphabet
+        \end{itemize}
+
+        \vspace{0.5em}
+        \textbf{Answer:} \textcolor{green}{B - Complex morphology}\\
+        Finnish words encode grammatical information through suffixes, so need more subword splits. This is a feature, not a bug - the model learns morphological patterns!
+
+        \vspace{0.5em}
+        \textbf{Question 2:} What's the main advantage of SentencePiece over BPE for Chinese?
+        \begin{itemize}
+            \item[A)] It understands Chinese grammar
+            \item[B)] No pre-tokenization needed (no spaces in Chinese)
+            \item[C)] It produces shorter sequences
+        \end{itemize}
+
+        \vspace{0.5em}
+        \textbf{Answer:} \textcolor{green}{B - No pre-tokenization needed}\\
+        Chinese doesn't use spaces between words, so SentencePiece's raw text approach is ideal.
+    }
+\end{frame}
+
+\section{Impact on Model Performance}
+
+\begin{frame}[t]{Does Tokenization Really Matter?}
+    \textbf{Yes! Tokenization significantly impacts model performance...}
+
+    \realworld{
+        \textbf{Case study: GPT-2 (2019)}\\
+        OpenAI experimented with different tokenization schemes:\\
+        Character-level: Perplexity = 85, Training time = 2.5x\\
+        Word-level: Perplexity = 120 (OOV problems!)\\
+        BPE (50K vocab): Perplexity = 45, Training time = 1.3x\\
+        Result: BPE became standard for GPT series
+    }
+
+    \vspace{1em}
+    \textbf{Three key metrics affected:}
+    \begin{enumerate}
+        \item \textbf{Model quality:} Better tokenization = lower perplexity
+        \item \textbf{Training efficiency:} Balanced sequence length = faster training
+        \item \textbf{Memory usage:} Smaller vocabulary = fewer parameters
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}[t]{Visual: Tokenization Impact on Performance}
+    \begin{center}
+    \includegraphics[width=0.95\textwidth]{../figures/tokenization_performance_visual.pdf}
+    \end{center}
+
+    \textbf{Key Takeaway:} WordPiece and BPE achieve best balance across all three metrics
+\end{frame}
+
+\section{Practical Considerations}
+
+\begin{frame}[t,fragile]{Implementing BPE in Practice}
+    \textbf{Good news: You don't need to implement BPE yourself!}
+
+    \vspace{0.5em}
+    \textbf{Popular libraries:}
+
+    \vspace{0.5em}
+    \textbf{1. Hugging Face Tokenizers (Fast Rust implementation):}
+    \begin{lstlisting}[language=Python]
+from tokenizers import Tokenizer
+from tokenizers.models import BPE
+from tokenizers.trainers import BpeTrainer
+
+tokenizer = Tokenizer(BPE())
+trainer = BpeTrainer(vocab_size=30000, special_tokens=["<PAD>", "<UNK>"])
+tokenizer.train(files=["corpus.txt"], trainer=trainer)
+
+# Use it
+output = tokenizer.encode("unhappiness")
+print(output.tokens)  # ['un', 'happi', 'ness']
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[t,fragile]{Implementing BPE in Practice (continued)}
+    \textbf{2. SentencePiece (Google):}
+    \begin{lstlisting}[language=Python]
+import sentencepiece as spm
+
+# Train SentencePiece model
+spm.SentencePieceTrainer.train(
+    input='corpus.txt',
+    model_prefix='tokenizer',
+    vocab_size=30000,
+    model_type='bpe'  # or 'unigram'
+)
+
+# Load and use
+sp = spm.SentencePieceProcessor()
+sp.load('tokenizer.model')
+tokens = sp.encode_as_pieces("unhappiness")
+print(tokens)  # ['un', 'happi', 'ness']
+    \end{lstlisting}
+
+    \vspace{0.5em}
+    \textbf{3. tiktoken (OpenAI - for GPT models):}
+    \begin{lstlisting}[language=Python]
+import tiktoken
+
+enc = tiktoken.get_encoding("cl100k_base")  # GPT-4 encoding
+tokens = enc.encode("unhappiness")
+print([enc.decode_single_token_bytes(t) for t in tokens])
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[t]{Common Pitfalls and Best Practices}
+    \misconception{
+        \textbf{``I should train a new tokenizer for every task''}\\
+        \textcolor{red}{Usually FALSE!} Use pre-trained tokenizers when fine-tuning models. Only train new tokenizer if: (1) New language not in pre-trained vocab, or (2) Highly specialized domain (medical, legal) with unique terminology
+    }
+
+    \vspace{1em}
+    \textbf{Best Practices:}
+    \begin{enumerate}
+        \item \textbf{Vocabulary size:} Start with 30K-50K (industry standard)
+        \item \textbf{Special tokens:} Always include PAD, UNK, BOS, EOS tokens
+        \item \textbf{Normalization:} Decide on casing (lowercase vs mixed case)
+        \item \textbf{Pre-tokenization:} For English/European languages, split on spaces first
+        \item \textbf{Corpus representativeness:} Train on data similar to inference data
+    \end{enumerate}
+
+    \vspace{0.5em}
+    \realworld{
+        \textbf{Real mistake:} A company trained a tokenizer on formal business emails, then deployed it for social media text. Result: Poor performance due to emoji, slang, abbreviations being split into too many tokens. Lesson: Match training data to use case!
+    }
+\end{frame}
+
+\section{Summary and Looking Ahead}
+
+\begin{frame}[t]{Summary: The Tokenization Journey}
+    \textbf{What we learned today:}
+
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item \textbf{The Problem:} Word-level tokenization fails due to OOV (out-of-vocabulary)
+        \item \textbf{The Solution:} Subword tokenization (BPE, WordPiece, SentencePiece)
+        \item \textbf{The Algorithm:} BPE iteratively merges most frequent adjacent pairs
+        \item \textbf{The Advantage:} Rare words decompose into meaningful subword units
+        \item \textbf{The Trade-off:} Vocabulary size balances efficiency vs granularity
+        \item \textbf{The Impact:} Tokenization significantly affects model performance
+    \end{enumerate}
+
+    \vspace{1em}
+    \textbf{Key Insight:} Tokenization is not a preprocessing afterthought - it's a fundamental design choice that affects model architecture, training, and performance!
+\end{frame}
+
+\begin{frame}[t]{Final Checkpoint: Complete Understanding}
+    \checkpoint{
+        \textbf{Final self-assessment:}
+
+        \vspace{0.5em}
+        Can you explain these to a friend?
+        \begin{itemize}
+            \item Why does GPT-4 split ``unhappiness'' into [un][happi][ness]?
+            \item What's the difference between BPE and WordPiece?
+            \item Why do multilingual models need larger vocabularies?
+            \item How does tokenization affect training speed?
+        \end{itemize}
+
+        \vspace{0.5em}
+        If you can answer these, you understand tokenization!
+
+        \vspace{0.5em}
+        \textbf{Challenge:} Try encoding ``supercalifragilisticexpialidocious'' with BPE. How many subword units do you think it would produce? (Answer: Depends on vocabulary, but typically 8-12 units that capture phonetic patterns)
+    }
+\end{frame}
+
+\begin{frame}[t]{Looking Ahead: Week 9}
+    \textbf{Now that we have tokens, how do we generate text?}
+
+    \vspace{0.5em}
+    \textbf{Next week: Decoding Strategies}
+    \begin{itemize}
+        \item Greedy decoding (simple but flawed)
+        \item Beam search (better but still limited)
+        \item Sampling methods (temperature, top-k, top-p)
+        \item Why do chatbots sometimes repeat themselves?
+        \item How to control creativity vs coherence
+    \end{itemize}
+
+    \vspace{1em}
+    \realworld{
+        \textbf{Teaser:} Have you noticed ChatGPT sometimes gives boring responses and sometimes creative ones? That's decoding strategy at work! Next week we'll learn how to control this.
+    }
+
+    \vspace{1em}
+    \begin{center}
+    \textbf{See you next week!}
+    \end{center}
+\end{frame}
+
+\end{document}

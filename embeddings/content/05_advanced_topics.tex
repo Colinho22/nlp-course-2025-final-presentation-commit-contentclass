@@ -1,0 +1,242 @@
+% Chapter 5: Advanced Topics in Embeddings
+
+\section{Advanced Topics}
+
+% Character vs Embedding Representation
+\begin{frame}{Beyond ASCII: From Characters to Meaning}
+\textbf{How Computers See Text: Three Approaches}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/embeddings/ascii_vs_embedding.pdf}
+\end{center}
+
+\begin{columns}
+\column{0.33\textwidth}
+\textbf{ASCII:}
+\begin{itemize}
+    \item Each character = number
+    \item 'c'=99, 'a'=97, 't'=116
+    \item No semantic information
+\end{itemize}
+
+\column{0.33\textwidth}
+\textbf{One-hot:}
+\begin{itemize}
+    \item Each word = sparse vector
+    \item 99.9\% zeros
+    \item All words equally different
+\end{itemize}
+
+\column{0.34\textwidth}
+\textbf{Dense Embedding:}
+\begin{itemize}
+    \item Each word = dense vector
+    \item All values meaningful
+    \item Similar words $\rightarrow$ similar vectors
+\end{itemize}
+\end{columns}
+
+\vspace{0.2cm}
+\begin{center}
+\colorbox{green!10}{\parbox{0.8\textwidth}{
+\textbf{Key:} Embeddings encode meaning, not just identity!
+}}
+\end{center}
+\end{frame}
+
+% Sparsity Analysis
+\begin{frame}[fragile]{The Sparsity Problem}
+\textbf{Why One-hot Encoding is Inefficient}
+
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/embeddings/sparsity_analysis.pdf}
+\end{center}
+
+\textbf{Mathematical Analysis:}
+\begin{itemize}
+    \item Sparsity = $\frac{V-1}{V} \times 100\%$ where V = vocabulary size
+    \item For V = 50,000: Sparsity = 99.998\%
+    \item Each word needs V dimensions but uses only 1
+\end{itemize}
+
+\textbf{Key Insight:}
+\begin{center}
+\colorbox{yellow!20}{\parbox{0.7\textwidth}{
+As vocabulary grows, sparsity approaches 100\%\\
+This wastes computational resources!
+}}
+\end{center}
+\end{frame}
+
+% Cosine Similarity - Geometric Interpretation
+\begin{frame}[fragile]{Cosine Similarity: Geometric Interpretation}
+\textbf{Understanding Similarity Through Angles}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/embeddings/cosine_similarity_geometry.pdf}
+\end{center}
+
+\textbf{The Geometric Intuition:}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Angle Interpretation:}
+\begin{itemize}
+    \item Words are vectors in space
+    \item Similarity = angle between vectors
+    \item Smaller angle = more similar
+    \item Independent of vector length
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Key Angles:}
+\begin{itemize}
+    \item $\theta = 0^{\circ}$: Identical meaning
+    \item $\theta = 30^{\circ}$: Very similar
+    \item $\theta = 90^{\circ}$: Unrelated
+    \item $\theta = 180^{\circ}$: Opposite meaning
+\end{itemize}
+\end{columns}
+
+\vspace{0.3cm}
+\textbf{Visual Example:}
+\begin{center}
+``cat" and ``kitten": $\theta \approx 15^{\circ}$ (cos = 0.97) \\
+``cat" and ``computer": $\theta \approx 85^{\circ}$ (cos = 0.09)
+\end{center}
+\end{frame}
+
+% Cosine Similarity - Mathematical Properties
+\begin{frame}[fragile]{Cosine Similarity: Mathematical Properties}
+\textbf{Why Cosine Similarity Works for Embeddings}
+
+\textbf{The Formula:}
+$$\text{similarity}(\vec{a}, \vec{b}) = \cos(\theta) = \frac{\vec{a} \cdot \vec{b}}{||\vec{a}|| \times ||\vec{b}||} = \frac{\sum_{i=1}^{d} a_i b_i}{\sqrt{\sum_{i=1}^{d} a_i^2} \times \sqrt{\sum_{i=1}^{d} b_i^2}}$$
+
+\textbf{Key Properties:}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Scale Invariance:}
+\begin{itemize}
+    \item $\cos(\vec{a}, \vec{b}) = \cos(k\vec{a}, \vec{b})$
+    \item Magnitude doesn't matter
+    \item Only direction counts
+    \item Perfect for normalized embeddings
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Computational Benefits:}
+\begin{itemize}
+    \item Range: [-1, 1] always
+    \item Efficient dot product computation
+    \item Works in any dimension
+    \item Symmetric: $\cos(a,b) = \cos(b,a)$
+\end{itemize}
+\end{columns}
+
+\vspace{0.3cm}
+\textbf{Applications in NLP:}
+\begin{itemize}
+    \item Document similarity: Compare entire documents as vectors
+    \item Word sense disambiguation: Find most similar context
+    \item Information retrieval: Rank documents by query similarity
+\end{itemize}
+\end{frame}
+
+% Context Windows Explained
+\begin{frame}[fragile]{Context Windows: Learning from Neighbors}
+\textbf{How Words Learn from Their Surroundings}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/embeddings/context_window_theory.pdf}
+\end{center}
+
+\textbf{Context Window Theory:}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Window Size Impact:}
+\begin{itemize}
+    \item Small (1-2): Syntactic relations
+    \item Medium (3-5): Local semantics
+    \item Large (5-10): Topic associations
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Training Pairs Formula:}
+For sentence of length $n$, window size $w$:
+$$\text{Pairs} = \sum_{i=1}^{n} \min(2w, n-1)$$
+
+\textbf{Trade-off:}
+\begin{itemize}
+    \item Larger window $\rightarrow$ more context
+    \item More pairs $\rightarrow$ slower training
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Vector Arithmetic - The Surprising Discovery
+\begin{frame}[fragile]{Vector Arithmetic: The Surprising Discovery}
+\textbf{Embeddings Can Do Analogies!}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/embeddings/vector_arithmetic_theory.pdf}
+\end{center}
+
+\textbf{The Famous Discovery (Mikolov et al., 2013):}
+$$\vec{king} - \vec{man} + \vec{woman} \approx \vec{queen}$$
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{What This Means:}
+\begin{itemize}
+    \item Relationships are vectors!
+    \item Gender: $\vec{woman} - \vec{man}$
+    \item Royalty: $\vec{king} - \vec{man}$
+    \item Can compose relationships
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Discovery Impact:}
+\begin{itemize}
+    \item Not programmed - emerged from data
+    \item Shows semantic structure
+    \item Linear relationships in high-D space
+    \item Revolutionized NLP understanding
+\end{itemize}
+\end{columns}
+
+\vspace{0.3cm}
+\begin{center}
+\colorbox{yellow!20}{\parbox{0.8\textwidth}{
+\textbf{Key Insight:} Word embeddings automatically learn that relationships\\between concepts can be represented as vector operations!
+}}
+\end{center}
+\end{frame}
+
+% Vector Arithmetic - Mathematical Proof
+\begin{frame}[fragile]{Vector Arithmetic: Mathematical Proof}
+\textbf{Why Does Vector Arithmetic Work? The Linear Substructure}
+
+\textbf{Mathematical Foundation:}
+\begin{itemize}
+    \item Embeddings form a linear subspace where relationships are directions
+    \item Gender vector: $\vec{g} = \vec{woman} - \vec{man}$
+    \item Royalty vector: $\vec{r} = \vec{king} - \vec{man}$
+\end{itemize}
+
+\textbf{Step-by-Step Derivation:}
+\begin{align}
+\vec{king} &= \vec{man} + \vec{r} \quad \text{(man + royalty = king)} \\
+\vec{queen} &= \vec{woman} + \vec{r} \quad \text{(woman + royalty = queen)} \\
+\therefore \vec{queen} &= \vec{woman} + (\vec{king} - \vec{man}) \\
+&= \vec{king} - \vec{man} + \vec{woman}
+\end{align}
+
+\textbf{Why Linear Structure Emerges:}
+\begin{itemize}
+    \item Co-occurrence patterns are approximately linear
+    \item Skip-gram objective encourages linear relationships
+    \item High-dimensional spaces tend toward linearity (concentration of measure)
+\end{itemize}
+
+\textbf{Verification:} Nearest neighbor to result vector is "queen" in 60-70\% of cases
+\end{frame}

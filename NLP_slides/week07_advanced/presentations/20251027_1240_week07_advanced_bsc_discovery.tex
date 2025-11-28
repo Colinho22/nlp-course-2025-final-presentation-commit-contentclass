@@ -1,0 +1,1310 @@
+% Week 7: Advanced Transformers
+% BSc Discovery-Based Presentation - Two-Tier Structure
+% 20 concise main + 15 deep appendix focused on scaling laws
+
+\input{../../common/master_template.tex}
+
+% Define bottomnote
+\newcommand{\bottomnote}[1]{%
+    \vspace{0.2cm}
+    \begin{center}
+    \footnotesize\secondary{#1}
+    \end{center}
+}
+
+\title{Advanced Transformers}
+\subtitle{\secondary{Week 7 - The Predictable Path to Intelligence}}
+\author{NLP Course 2025}
+\date{October 27, 2025}
+
+\begin{document}
+
+% ===== MAIN PRESENTATION (20 SLIDES) =====
+
+% Slide 1: Title
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}
+\secondary{\footnotesize Two-Tier BSc Discovery Presentation}
+\end{center}
+\end{frame}
+
+% ===== OPENING: SCALING LAWS PARADOX (Slides 2-3) =====
+
+% Slide 2: Discovery Hook
+\begin{frame}[t]{The Scaling Laws Paradox}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/scaling_laws_loglog_bsc.pdf}
+\end{center}
+
+\begin{center}
+\Large
+\textbf{Why is AI progress so predictable?}
+\end{center}
+
+\vspace{3mm}
+\begin{center}
+\textbf{Key Insight}: Performance follows power laws - we can predict the future
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Bigger models are better in predictable, measurable ways}
+\end{frame}
+
+% Slide 3: Three Paths Forward
+\begin{frame}[t]{Three Paths to Better Transformers}
+\small
+\begin{columns}[T]
+\column{0.32\textwidth}
+\raggedright
+\textbf{Path 1: Bigger}
+
+\vspace{3mm}
+GPT-3 (2020)
+
+\begin{itemize}
+\item 175B parameters
+\item $1000\times$ GPT-1
+\item Emergent abilities
+\item \$4.6M training cost
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Bet}: Scale alone works
+
+\column{0.32\textwidth}
+\raggedright
+\textbf{Path 2: Smarter}
+
+\vspace{3mm}
+Mixture of Experts
+
+\begin{itemize}
+\item 1.6T parameters
+\item Only 10B active
+\item Sparse activation
+\item Same cost as 100B
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Bet}: Efficiency matters
+
+\column{0.32\textwidth}
+\raggedright
+\textbf{Path 3: Efficient}
+
+\vspace{3mm}
+Reformer, Linformer
+
+\begin{itemize}
+\item Reduce $O(n^2)$
+\item Long sequences
+\item Lower memory
+\item Practical deployment
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Bet}: Algorithms matter
+
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\textbf{All three work!} Next 17 slides explore each path
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Different paths for different constraints - no single winner}
+\end{frame}
+
+% ===== SCALING LAWS (Slides 4-8) =====
+
+% Slide 4: Visual - Kaplan Scaling Laws
+\begin{frame}[t]{The Kaplan Scaling Laws (2020)}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/kaplan_scaling_laws_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Loss decreases as power law with parameters, data, compute
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Three independent power laws - all perfectly smooth}
+\end{frame}
+
+% Slide 5: Detail - Power Law Mathematics
+\begin{frame}[t]{Scaling Laws: The Mathematics}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Three Power Laws}:
+
+$$L(N) = (N_c / N)^{\alpha_N}$$
+$$L(D) = (D_c / D)^{\alpha_D}$$
+$$L(C) = (C_c / C)^{\alpha_C}$$
+
+where:
+\begin{itemize}
+\item $N$: Number of parameters
+\item $D$: Dataset size (tokens)
+\item $C$: Compute (FLOPs)
+\item $\alpha_N \approx 0.076$
+\item $\alpha_D \approx 0.095$
+\item $\alpha_C \approx 0.050$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Key Discovery}:
+
+Smooth, predictable improvement
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Worked Example}:
+
+GPT-3: $N = 175$B, $L = 2.1$ nats
+
+\vspace{3mm}
+Predict GPT-4 ($N = 500$B hypothetical):
+
+\begin{align*}
+L(500B) &= L(175B) \times (175B / 500B)^{0.076} \\
+&= 2.1 \times (0.35)^{0.076} \\
+&= 2.1 \times 0.92 \\
+&= 1.93 \text{ nats}
+\end{align*}
+
+\vspace{3mm}
+\textbf{Interpretation}:
+
+8\% loss reduction from 3x parameters
+
+Matches observed scaling!
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{These laws held from 1M to 175B parameters - remarkable consistency}
+\end{frame}
+
+% Slide 6: Visual - Emergent Abilities
+\begin{frame}[t]{Emergent Abilities at Scale}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/emergent_abilities_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: New capabilities appear suddenly at threshold model sizes
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Not gradual improvement - discontinuous jumps in ability}
+\end{frame}
+
+% Slide 7: Detail - Compute-Optimal Training
+\begin{frame}[t]{Chinchilla: Most Models Are Undertrained}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Discovery (2022)}:
+
+GPT-3: 175B params, 300B tokens
+
+\vspace{3mm}
+Chinchilla: 70B params, 1.4T tokens
+
+\vspace{3mm}
+\textbf{Result}: Chinchilla beats GPT-3!
+
+\vspace{5mm}
+\textbf{The Rule}:
+
+$$\text{Optimal tokens} \approx 20 \times \text{parameters}$$
+
+\vspace{3mm}
+GPT-3 should have seen:
+
+$175B \times 20 = 3.5T$ tokens
+
+Actually saw: 300B (9\% of optimal!)
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Why This Matters}:
+
+\begin{itemize}
+\item Most large models undertrained
+\item Training longer is cheaper than bigger model
+\item Compute allocation matters
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Practical Impact}:
+
+\begin{itemize}
+\item LLaMA-2 (70B): Trained on 2T tokens
+\item Follows Chinchilla scaling
+\item Outperforms GPT-3 with 2.5x fewer params
+\item Cheaper to run, same quality
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Lesson}:
+
+Don't just make models bigger - train them longer!
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Chinchilla changed how we think about model training}
+\end{frame}
+
+% Slide 8: Worked Example - Compute-Optimal Sizing
+\begin{frame}[t]{Worked Example: Compute-Optimal Model}
+\small
+\textbf{Given}: Fixed compute budget $C = 10^{23}$ FLOPs
+
+\vspace{3mm}
+\textbf{Question}: How many parameters $N$ and tokens $D$ to use?
+
+\vspace{5mm}
+\textbf{Chinchilla Formula}:
+
+For optimal allocation:
+
+$$N_{opt} \approx 0.73 \times C^{0.37}$$
+$$D_{opt} \approx 1.45 \times C^{0.37}$$
+
+\vspace{5mm}
+\textbf{Calculate}:
+
+\begin{align*}
+N_{opt} &= 0.73 \times (10^{23})^{0.37} = 0.73 \times 1.86 \times 10^{8} \\
+&\approx 136M \text{ parameters}
+\end{align*}
+
+\begin{align*}
+D_{opt} &= 1.45 \times (10^{23})^{0.37} \approx 270M \text{ tokens}
+\end{align*}
+
+\vspace{3mm}
+\textbf{Verification}: $D_{opt} / N_{opt} = 270M / 136M \approx 2$ (roughly $20\times$ rule)
+
+\vspace{0.2cm}
+\bottomnote{Optimal compute allocation: Balance parameters and training data}
+\end{frame}
+
+% ===== GPT-3 SECTION (Slides 9-13) =====
+
+% Slide 9: Visual - GPT-3 Scale
+\begin{frame}[t]{GPT-3: The Scale Breakthrough}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/gpt3_scale_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: 175 billion parameters - 1000× GPT-1
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Training: 300B tokens, 3640 petaflop-days, \$4.6M cost}
+\end{frame}
+
+% Slide 10: Detail - GPT-3 Architecture
+\begin{frame}[t]{GPT-3 Architecture Details}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Specifications}:
+
+\begin{itemize}
+\item \textbf{Layers}: 96 decoder layers
+\item \textbf{Hidden size}: 12,288 dimensions
+\item \textbf{Attention heads}: 96 (128 dim each)
+\item \textbf{Context window}: 2048 tokens
+\item \textbf{Parameters}: 175 billion
+\item \textbf{Vocabulary}: 50,257 (BPE)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Why So Big}:
+
+Scale enables emergent abilities
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Training}:
+
+\begin{itemize}
+\item \textbf{Dataset}: Common Crawl (570GB)
+\item \textbf{Tokens}: 300 billion
+\item \textbf{Batch size}: 3.2M tokens
+\item \textbf{Hardware}: 10,000+ GPUs
+\item \textbf{Time}: Several months
+\item \textbf{Cost}: \$4.6 million
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Notable}:
+
+8 different model sizes tested (125M to 175B)
+
+All follow same scaling law!
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Largest dense transformer ever trained (as of 2020)}
+\end{frame}
+
+% Slide 11: Visual - Few-Shot Emergence
+\begin{frame}[t]{Few-Shot Learning: Emergent at Scale}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/fewshot_emergence_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Capabilities emerge suddenly above threshold sizes
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Few-shot learning doesn't work below ~13B parameters - then suddenly does}
+\end{frame}
+
+% Slide 12: Detail - Cost-Performance Tradeoffs
+\begin{frame}[t]{The Cost of Scale}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Training Cost Escalation}:
+
+\begin{center}
+\begin{tabular}{lr}
+Model & Cost \\
+\hline
+GPT-1 (117M) & \$50K \\
+GPT-2 (1.5B) & \$500K \\
+GPT-3 (175B) & \$4.6M \\
+GPT-4 (est 1.7T) & \$50M+ \\
+\end{tabular}
+\end{center}
+
+\vspace{3mm}
+100× parameters $\approx$ 1000× cost
+
+\vspace{5mm}
+\textbf{Diminishing Returns}:
+
+Each 10× scale:
+\begin{itemize}
+\item Cost: $10\times$ increase
+\item Loss: $0.076$ decrease (8\%)
+\item Linear cost, log gains
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Why Continue Scaling}:
+
+\begin{itemize}
+\item Emergent abilities worth the cost
+\item Few-shot learning transforms UX
+\item Reasoning capabilities
+\item Multimodal integration (GPT-4)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Alternative Strategies}:
+
+\begin{itemize}
+\item Chinchilla: Train longer, not bigger
+\item MoE: Sparse activation
+\item Efficient: Reduce $O(n^2)$
+\item Distillation: Compress after training
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Tension}:
+
+Better models vs affordable training
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Scaling works but is expensive - motivates smarter approaches}
+\end{frame}
+
+% Slide 13: Worked Example - Scaling Prediction
+\begin{frame}[t]{Worked Example: Predicting Future Performance}
+\small
+\textbf{Given}: GPT-3 at 175B params has loss $L = 2.1$ nats
+
+\vspace{3mm}
+\textbf{Question}: What loss would 500B parameter model achieve?
+
+\vspace{5mm}
+\textbf{Using Scaling Law}: $L(N) = L_0 \times (N_0 / N)^{\alpha}$ where $\alpha = 0.076$
+
+\vspace{3mm}
+\textbf{Step 1}: Set up equation
+
+$$L(500B) = 2.1 \times (175B / 500B)^{0.076}$$
+
+\vspace{3mm}
+\textbf{Step 2}: Calculate ratio
+
+$$\frac{175}{500} = 0.35$$
+
+\vspace{3mm}
+\textbf{Step 3}: Apply exponent
+
+$$0.35^{0.076} \approx 0.92$$
+
+\vspace{3mm}
+\textbf{Step 4}: Final loss
+
+$$L(500B) = 2.1 \times 0.92 = 1.93 \text{ nats}$$
+
+\vspace{5mm}
+\textbf{Interpretation}: 3× parameters → 8\% loss reduction (diminishing returns!)
+
+\vspace{0.2cm}
+\bottomnote{We can predict GPT-5 performance before training it}
+\end{frame}
+
+% ===== MoE SECTION (Slides 14-17) =====
+
+% Slide 14: Visual - MoE Concept
+\begin{frame}[t]{Mixture of Experts: Sparse Activation}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/moe_architecture_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Train 1T parameters, activate only 10B per example
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Sparse models: Capacity of large, cost of small}
+\end{frame}
+
+% Slide 15: Detail - MoE Architecture
+\begin{frame}[t]{Mixture of Experts: How It Works}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Components}:
+
+\begin{itemize}
+\item \textbf{Router}: Gating network (small NN)
+\item \textbf{Experts}: $E$ specialist FFNs
+\item \textbf{Top-k selection}: Use best $k$ experts
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Forward Pass}:
+
+\begin{enumerate}
+\item Router computes scores for all experts
+\item Select top-$k$ (typically $k=2$)
+\item Activate only selected experts
+\item Weighted sum of expert outputs
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Example}:
+
+\begin{itemize}
+\item 128 experts total
+\item Top-2 selection
+\item Activate: 2/128 = 1.6\%
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Gating Function}:
+
+$$G(x) = \softmax(\text{KeepTopK}(W_g \cdot x, k))$$
+
+\vspace{3mm}
+\textbf{Output}:
+
+$$y = \sum_{i \in \text{Top-k}} G(x)_i \cdot E_i(x)$$
+
+\vspace{3mm}
+\textbf{Load Balancing}:
+
+Auxiliary loss ensures experts used equally
+
+$$L_{aux} = \alpha \times \sum_{i=1}^{E} f_i \times P_i$$
+
+where $f_i$ = fraction routed to expert $i$
+
+\vspace{3mm}
+\textbf{Benefits}:
+
+\begin{itemize}
+\item $100\times$ parameters at $2\times$ cost
+\item Experts specialize (syntax, semantics, etc.)
+\item Conditional computation
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{MoE is how to scale beyond dense models}
+\end{frame}
+
+% Slide 16: Worked Example - MoE Routing
+\begin{frame}[t]{Worked Example: MoE Router Computation}
+\small
+\textbf{Given}: Input token $x$, 8 experts, top-2 selection
+
+\vspace{3mm}
+\textbf{Step 1}: Router computes logits
+
+$$\text{logits} = W_g \cdot x = [2.1, 0.3, 1.8, 0.1, 3.2, 0.5, 1.1, 0.8]$$
+
+\vspace{3mm}
+\textbf{Step 2}: Select top-2
+
+Top-2 experts: Expert 5 (3.2) and Expert 1 (2.1)
+
+\vspace{3mm}
+\textbf{Step 3}: Softmax over top-2 only
+
+$$G_5 = \frac{\exp(3.2)}{\exp(3.2) + \exp(2.1)} = \frac{24.5}{32.6} = 0.75$$
+
+$$G_1 = \frac{\exp(2.1)}{\exp(3.2) + \exp(2.1)} = \frac{8.17}{32.6} = 0.25$$
+
+\vspace{3mm}
+\textbf{Step 4}: Weighted sum
+
+$$y = 0.75 \times E_5(x) + 0.25 \times E_1(x)$$
+
+\vspace{5mm}
+\textbf{Sparsity}: Only 2/8 experts activated = 75\% reduction in computation!
+
+\vspace{0.2cm}
+\bottomnote{Router learns which experts are relevant for which inputs}
+\end{frame}
+
+% Slide 17: Visual - Switch Transformer Results
+\begin{frame}[t]{Switch Transformer: 1.6 Trillion Parameters}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/switch_transformer_results_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: MoE (1.6T params) beats dense (100B) at same compute cost
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Google's Switch Transformer (2021) - largest model at the time}
+\end{frame}
+
+% ===== EFFICIENT TRANSFORMERS (Slides 18-20) =====
+
+% Slide 18: Visual - Attention Complexity Crisis
+\begin{frame}[t]{The Attention Complexity Problem}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/attention_complexity_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Standard attention is $O(n^2)$ - memory explodes for long sequences
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{$n=512$ fine, $n=8192$ impossible on most GPUs}
+\end{frame}
+
+% Slide 19: Detail - Efficient Attention Variants
+\begin{frame}[t]{Efficient Transformers: Reducing Complexity}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Reformer} (LSH Attention):
+
+\begin{itemize}
+\item Locality-Sensitive Hashing
+\item Group similar queries/keys
+\item Attend only within groups
+\item Complexity: $O(n \log n)$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Linformer}:
+
+\begin{itemize}
+\item Low-rank projection
+\item Project $n \times n$ to $n \times k$
+\item $k \ll n$ (e.g., 256)
+\item Complexity: $O(n)$
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Linear Attention}:
+
+\begin{itemize}
+\item Kernel trick
+\item Reorder operations
+\item Never compute $n \times n$ matrix
+\item Complexity: $O(n)$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{When to Use}:
+
+\begin{itemize}
+\item \textbf{Long documents}: $n > 4096$
+\item \textbf{Limited memory}: Consumer GPUs
+\item \textbf{Real-time}: Latency critical
+\item \textbf{Edge deployment}: Mobile, IoT
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Multiple approaches to same problem - choose based on use case}
+\end{frame}
+
+% Slide 20: Worked Example - Complexity Savings
+\begin{frame}[t]{Worked Example: Memory Savings from Efficient Attention}
+\small
+\textbf{Given}: Sequence length $n = 4096$, hidden dim $d = 512$
+
+\vspace{5mm}
+\textbf{Standard Attention Memory}:
+
+Attention matrix: $n \times n = 4096 \times 4096 = 16.8M$ floats
+
+Memory: $16.8M \times 4$ bytes $= 67$ MB per attention head
+
+With 16 heads: $67 \times 16 = 1$ GB just for attention!
+
+\vspace{5mm}
+\textbf{Linformer Memory} ($k = 256$):
+
+Projected matrix: $n \times k = 4096 \times 256 = 1M$ floats
+
+Memory: $1M \times 4$ bytes $= 4$ MB per head
+
+With 16 heads: $4 \times 16 = 64$ MB
+
+\vspace{5mm}
+\textbf{Savings}: $\frac{1GB}{64MB} = 16\times$ memory reduction!
+
+\vspace{5mm}
+\textbf{Impact}: Can process 4x longer sequences on same hardware
+
+\vspace{0.2cm}
+\bottomnote{Efficient attention enables long-context applications}
+\end{frame}
+
+% ===== TECHNICAL APPENDIX (15 SLIDES) =====
+
+\begin{frame}[t]{}
+\begin{center}
+\Huge\textbf{Technical Appendix}
+
+\vspace{5mm}
+\Large\secondary{Deep Dive: GPT-3, MoE, Efficient Transformers}
+\end{center}
+\end{frame}
+
+% ===== GPT-3 TECHNICAL (A1-A5) =====
+
+% Slide A1: GPT-3 Complete Specifications
+\begin{frame}[t]{Appendix A1: GPT-3 Complete Specifications}
+\small
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Component} & \textbf{Small} & \textbf{Medium} & \textbf{Large} & \textbf{175B} \\
+\midrule
+Parameters & 125M & 350M & 1.3B & 175B \\
+Layers & 12 & 24 & 24 & 96 \\
+Hidden Size & 768 & 1024 & 2048 & 12,288 \\
+Heads & 12 & 16 & 16 & 96 \\
+Head Dimension & 64 & 64 & 128 & 128 \\
+Context & 2048 & 2048 & 2048 & 2048 \\
+Batch Size & 0.5M & 0.5M & 1M & 3.2M \\
+Learning Rate & 6e-4 & 3e-4 & 2.5e-4 & 1.2e-4 \\
+\midrule
+\textbf{Performance} & & & & \\
+LAMBADA (acc) & 42.7 & 54.3 & 63.6 & 76.2 \\
+HellaSwag (acc) & 43.6 & 54.7 & 67.4 & 78.9 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{3mm}
+\textbf{Key Pattern}: Consistent scaling across all metrics
+
+\vspace{0.2cm}
+\bottomnote{Every metric improves smoothly with size}
+\end{frame}
+
+% Slide A2: GPT-3 Training Infrastructure
+\begin{frame}[t]{Appendix A2: GPT-3 Training Infrastructure}
+\small
+\textbf{Hardware}:
+
+\begin{itemize}
+\item 10,000+ NVIDIA V100 GPUs (32GB each)
+\item 285,000 CPU cores
+\item 400 Gbps network interconnect
+\item Custom Microsoft Azure infrastructure
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Training Details}:
+
+\begin{itemize}
+\item Distributed across thousands of nodes
+\item Model parallelism: Split model across GPUs
+\item Data parallelism: Different batches per GPU
+\item Pipeline parallelism: Layer-wise distribution
+\item Mixed precision training (FP16/FP32)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Challenges}:
+
+\begin{itemize}
+\item Synchronization overhead
+\item Gradient accumulation across devices
+\item Fault tolerance (GPU failures during training)
+\item Checkpointing (model state = 350GB)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Training Time}: Several months wall-clock time
+
+\vspace{0.2cm}
+\bottomnote{Training GPT-3 requires infrastructure beyond most organizations}
+\end{frame}
+
+% Slide A3: Few-Shot Prompting Techniques
+\begin{frame}[t]{Appendix A3: Few-Shot Prompting Best Practices}
+\small
+\textbf{Prompt Engineering for GPT-3}:
+
+\vspace{3mm}
+\textbf{Zero-Shot}:
+
+\texttt{Translate to French: Hello} → Bonjour
+
+\vspace{3mm}
+\textbf{One-Shot}:
+
+\texttt{English: Hello, French: Bonjour}
+
+\texttt{English: Goodbye, French:} → Au revoir
+
+\vspace{3mm}
+\textbf{Few-Shot (Optimal)}:
+
+\texttt{Translate English to French:}
+
+\texttt{English: Hello / French: Bonjour}
+
+\texttt{English: Goodbye / French: Au revoir}
+
+\texttt{English: Thank you / French: Merci}
+
+\texttt{English: Please / French:} → S'il vous plaît
+
+\vspace{5mm}
+\textbf{Best Practices}:
+
+\begin{itemize}
+\item Use 3-10 examples (more doesn't always help)
+\item Examples should be diverse
+\item Format consistency critical
+\item Order matters (recency bias)
+\item Few-shot $>$ fine-tuning for small datasets (< 100 examples)
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{Prompting is an art - small changes yield large effects}
+\end{frame}
+
+% Slide A4: GPT-3 API Usage
+\begin{frame}[t]{Appendix A4: GPT-3 API and Pricing}
+\small
+\textbf{API Access}:
+
+\begin{itemize}
+\item No model download (too large)
+\item API calls only (OpenAI servers)
+\item Multiple model sizes available
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Pricing (2024)}:
+
+\begin{center}
+\begin{tabular}{lrr}
+Model & Input (per 1M tokens) & Output \\
+\hline
+GPT-3.5-turbo & \$0.50 & \$1.50 \\
+GPT-4-turbo & \$10.00 & \$30.00 \\
+GPT-4 (8K) & \$30.00 & \$60.00 \\
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{Rate Limits}:
+
+\begin{itemize}
+\item Free tier: 3 requests/minute
+\item Paid tier: 3500 requests/minute
+\item Tokens per minute: 90K-2M depending on tier
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Business Model}: Amortize \$4.6M training cost across millions of users
+
+\vspace{0.2cm}
+\bottomnote{API pricing reflects compute cost and value delivered}
+\end{frame}
+
+% Slide A5: GPT-4 Evolution
+\begin{frame}[t]{Appendix A5: GPT-3 to GPT-4 Evolution}
+\small
+\textbf{GPT-4 Improvements (2023)}:
+
+\begin{itemize}
+\item \textbf{Multimodal}: Images + text input
+\item \textbf{Larger context}: 32K tokens (16× GPT-3)
+\item \textbf{Better reasoning}: Chain-of-thought, mathematical
+\item \textbf{RLHF}: Reinforcement learning from human feedback
+\item \textbf{Parameters}: Rumored 1.7T (unconfirmed)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Performance Gains}:
+
+\begin{itemize}
+\item Bar exam: 10th percentile → 90th percentile
+\item Coding: HumanEval 48\% → 67\%
+\item MMLU (general knowledge): 70\% → 86\%
+\item Reduced hallucinations by 40\%
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Architecture Speculation}:
+
+\begin{itemize}
+\item Likely MoE (not confirmed)
+\item Multiple expert models combined
+\item Compute-optimal training (Chinchilla-informed)
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{GPT-4 shows continued scaling + better training}
+\end{frame}
+
+% ===== MoE DEEP DIVE (A6-A10) =====
+
+% Slide A6: Router Network Mathematics
+\begin{frame}[t]{Appendix A6: MoE Router Network Mathematics}
+\small
+\textbf{Router Architecture}:
+
+$$h = W_g x \in \mathbb{R}^E$$
+
+where $E$ = number of experts
+
+\vspace{5mm}
+\textbf{Top-k Gating}:
+
+$$G(x) = \softmax(\text{KeepTopK}(h, k))$$
+
+KeepTopK sets all but top-$k$ values to $-\infty$ before softmax
+
+\vspace{5mm}
+\textbf{Sparse Gating Properties}:
+
+\begin{itemize}
+\item Only $k$ experts get non-zero weight
+\item Weights sum to 1 (softmax)
+\item Differentiable (can train with backprop)
+\item Gradient flows only through selected experts
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Sparsity Benefit}:
+
+$k=2$, $E=128$: Activate $2/128 = 1.6\%$ of parameters
+
+$100\times$ parameters at $2\times$ compute!
+
+\vspace{0.2cm}
+\bottomnote{Sparsity is key - conditional computation based on input}
+\end{frame}
+
+% Slide A7: Load Balancing Algorithms
+\begin{frame}[t]{Appendix A7: Load Balancing in MoE}
+\small
+\textbf{Problem}: Some experts get all traffic, others unused
+
+\vspace{5mm}
+\textbf{Auxiliary Loss}:
+
+$$L_{aux} = \alpha \times \text{CV}(f_1, f_2, ..., f_E)^2$$
+
+where $\text{CV}$ = coefficient of variation, $f_i$ = fraction routed to expert $i$
+
+\vspace{3mm}
+Penalizes imbalanced routing
+
+\vspace{5mm}
+\textbf{Capacity Factor}:
+
+Limit tokens per expert:
+
+$$\text{capacity}_i = \frac{\text{total tokens}}{E} \times \text{capacity factor}$$
+
+Typical capacity factor = 1.25
+
+\vspace{5mm}
+\textbf{Expert Choice Routing} (alternative):
+
+Experts choose tokens instead of tokens choosing experts
+
+Better load balance, more stable training
+
+\vspace{0.2cm}
+\bottomnote{Load balancing critical for effective expert utilization}
+\end{frame}
+
+% Slide A8: Switch Transformer Architecture
+\begin{frame}[t]{Appendix A8: Switch Transformer Details}
+\small
+\textbf{Google's Switch Transformer (2021)}:
+
+\begin{itemize}
+\item 1.6 trillion parameters (largest at time)
+\item Top-1 routing (simplest form of MoE)
+\item 2048 experts per layer
+\item Trained on C4 dataset (750GB)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Key Innovation}: Simplified MoE
+
+\begin{itemize}
+\item Top-1 instead of top-2 (simpler)
+\item Expert capacity (limit tokens per expert)
+\item Smaller routers (reduced overhead)
+\item Better scaling than previous MoE
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Results}:
+
+\begin{itemize}
+\item 4× faster pre-training than T5-XXL (same quality)
+\item 7× faster fine-tuning
+\item Outperforms dense models at matched compute
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{Largest model trained demonstrates MoE viability}
+\end{frame}
+
+% Slide A9: MoE Training Dynamics
+\begin{frame}[t]{Appendix A9: Training Dynamics and Expert Specialization}
+\small
+\textbf{What Do Experts Learn}?
+
+Empirical findings:
+
+\begin{itemize}
+\item Some experts specialize by syntax
+\item Some by semantics
+\item Some by domain (code, math, language)
+\item Specialization emerges during training
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Training Challenges}:
+
+\begin{itemize}
+\item \textbf{Mode collapse}: All traffic to few experts
+\item \textbf{Instability}: Router can oscillate
+\item \textbf{Expert imbalance}: Uneven utilization
+\item \textbf{Gradient noise}: Discrete routing not smooth
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Solutions}:
+
+\begin{itemize}
+\item Strong auxiliary losses
+\item Careful initialization
+\item Dropout on router
+\item Expert capacity constraints
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{MoE training trickier than dense - but rewards are huge}
+\end{frame}
+
+% Slide A10: MoE vs Dense Comparison
+\begin{frame}[t]{Appendix A10: MoE vs Dense - Complete Comparison}
+\small
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Aspect} & \textbf{Dense (GPT-3)} & \textbf{MoE (Switch)} \\
+\midrule
+Active Parameters & 175B & 10B \\
+Total Parameters & 175B & 1600B \\
+Sparsity & 0\% & 99.4\% \\
+Memory (inference) & 350GB & 20GB \\
+Training Time & Baseline & 4× faster \\
+Fine-tuning Time & Baseline & 7× faster \\
+Quality (matched compute) & Good & Better \\
+Implementation & Simpler & Complex \\
+Deployment & Standard GPUs & Needs coordination \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{When to Use MoE}:
+
+\begin{itemize}
+\item Want massive capacity
+\item Have coordination infrastructure
+\item Training cost constrained
+\item Serving many requests (can batch)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{When to Use Dense}:
+
+\begin{itemize}
+\item Simpler deployment
+\item Low latency critical
+\item Small-scale serving
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{MoE trades implementation complexity for computational efficiency}
+\end{frame}
+
+% ===== EFFICIENT TRANSFORMERS (A11-A15) =====
+
+% Slide A11: Reformer - LSH Attention
+\begin{frame}[t]{Appendix A11: Reformer and LSH Attention}
+\small
+\textbf{Locality-Sensitive Hashing (LSH)}:
+
+\begin{itemize}
+\item Hash queries and keys to buckets
+\item Similar vectors $\rightarrow$ same bucket (high probability)
+\item Attend only within bucket
+\end{itemize}
+
+\vspace{5mm}
+\textbf{LSH Function}:
+
+$$h(x) = \argmax([x \cdot r_1, x \cdot r_2, ..., x \cdot r_b])$$
+
+where $r_i$ are random projection vectors
+
+\vspace{5mm}
+\textbf{Complexity}:
+
+Standard: $O(n^2)$
+
+Reformer: $O(n \log n)$
+
+\vspace{5mm}
+\textbf{Trade-offs}:
+
+\begin{itemize}
+\item \textcolor{green}{Much faster for $n > 4096$}
+\item \textcolor{red}{Approximate (misses some attention pairs)}
+\item \textcolor{green}{Enables sequences up to 64K tokens}
+\item \textcolor{red}{More complex implementation}
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{Reformer enables long-context applications (books, long documents)}
+\end{frame}
+
+% Slide A12: Linformer - Low-Rank Attention
+\begin{frame}[t]{Appendix A12: Linformer Low-Rank Approximation}
+\small
+\textbf{Key Idea}: Attention matrix is approximately low-rank
+
+\vspace{5mm}
+\textbf{Standard Attention}:
+
+$$\text{Attention}(Q, K, V) = \softmax(\frac{QK^T}{\sqrt{d}})V$$
+
+where $QK^T \in \mathbb{R}^{n \times n}$
+
+\vspace{5mm}
+\textbf{Linformer Modification}:
+
+Project keys and values to lower dimension $k$:
+
+$$K' = KE_k \in \mathbb{R}^{n \times k}$$
+$$V' = VF_k \in \mathbb{R}^{n \times k}$$
+
+\vspace{3mm}
+Then: $QK'^T \in \mathbb{R}^{n \times k}$ instead of $\mathbb{R}^{n \times n}$
+
+\vspace{5mm}
+\textbf{Complexity}:
+
+Standard: $O(n^2 d)$
+
+Linformer: $O(nkd)$ where $k=256$ typical
+
+\vspace{3mm}
+For $n=8192$, $k=256$: $32\times$ speedup!
+
+\vspace{0.2cm}
+\bottomnote{Simple idea, dramatic impact - linear complexity}
+\end{frame}
+
+% Slide A13: Linear Attention - Kernel Methods
+\begin{frame}[t]{Appendix A13: Linear Attention via Kernel Trick}
+\small
+\textbf{Kernel Reformulation}:
+
+Standard: $\text{Attention}(Q,K,V) = \softmax(QK^T)V$
+
+\vspace{3mm}
+Rewrite softmax as kernel: $\phi(q)^T \phi(k)$
+
+\vspace{5mm}
+\textbf{Key Trick}: Reorder operations
+
+$$\text{Attention} = \phi(Q)(\phi(K)^T V)$$
+
+Compute $\phi(K)^T V$ first! This is $k \times d$ (small)
+
+\vspace{5mm}
+\textbf{Complexity}:
+
+\begin{itemize}
+\item Standard: $(n \times n) \times (n \times d) = O(n^2 d)$
+\item Linear: $(n \times k) \times (k \times d) = O(nkd)$
+\item With $k=d$: $O(nd^2)$ - linear in $n$!
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Approximation Quality}:
+
+Not exact, but empirically good
+
+Works well for long sequences
+
+\vspace{0.2cm}
+\bottomnote{Kernel trick enables true linear attention}
+\end{frame}
+
+% Slide A14: FlashAttention - IO Optimization
+\begin{frame}[t]{Appendix A14: FlashAttention - GPU Optimization}
+\small
+\textbf{Problem}: Standard attention is IO-bound, not compute-bound
+
+\vspace{3mm}
+GPU memory hierarchy:
+\begin{itemize}
+\item SRAM (on-chip): Fast but tiny (20MB)
+\item HBM (GPU RAM): Slow but large (40GB)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Standard Attention IO}:
+
+\begin{enumerate}
+\item Load $Q, K$ from HBM
+\item Compute $S = QK^T$ (write to HBM)
+\item Load $S$ from HBM
+\item Apply softmax (write to HBM)
+\item Load $P, V$ from HBM
+\item Compute $PV$ (write to HBM)
+\end{enumerate}
+
+Multiple slow HBM reads/writes!
+
+\vspace{3mm}
+\textbf{FlashAttention Optimization}:
+
+\begin{itemize}
+\item Fuse operations (compute in SRAM)
+\item Tiling (process in blocks)
+\item Never materialize full $n \times n$ matrix
+\item 2-4× faster, less memory
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{Algorithm innovation - same math, better hardware utilization}
+\end{frame}
+
+% Slide A15: Efficient Variants Comparison
+\begin{frame}[t]{Appendix A15: Choosing Efficient Transformer Variant}
+\small
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Variant} & \textbf{Complexity} & \textbf{Exact} & \textbf{Max n} & \textbf{Use Case} \\
+\midrule
+Standard & $O(n^2)$ & Yes & 2K-4K & Default \\
+Reformer & $O(n \log n)$ & No & 64K & Long docs \\
+Linformer & $O(n)$ & No & 32K & Fast training \\
+Linear Attn & $O(n)$ & No & 16K & Real-time \\
+FlashAttention & $O(n^2)$ & Yes & 8K & GPU-optimized \\
+\midrule
+\textbf{Best for:} & & & & \\
+Books (100K+) & Reformer & & & \\
+Articles (8-16K) & Linformer & & & \\
+Production (2-4K) & FlashAttn & & & \\
+Mobile/Edge & Linear Attn & & & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{Recommendation}:
+
+\begin{itemize}
+\item Start with FlashAttention (better standard)
+\item Use Linformer if need $n > 4K$
+\item Reformer for extreme lengths ($n > 32K$)
+\item Linear attention for edge deployment
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{Choose based on sequence length and deployment constraints}
+\end{frame}
+
+\end{document}

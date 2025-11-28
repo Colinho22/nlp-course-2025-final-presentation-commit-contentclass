@@ -1,0 +1,483 @@
+\documentclass[10pt,a4paper,landscape]{article}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+
+% Define colors
+\definecolor{lightblue}{RGB}{173,216,230}
+\definecolor{lightgreen}{RGB}{144,238,144}
+\definecolor{lightyellow}{RGB}{255,255,224}
+
+% Custom commands
+\newcommand{\highlight}[1]{\textbf{\color{blue}#1}}
+\newcommand{\eqbox}[1]{\colorbox{lightblue!50}{\parbox{0.9\linewidth}{\centering $#1$}}}
+\newcommand{\conceptbox}[2]{\colorbox{#1!20}{\parbox{0.9\linewidth}{\textbf{#2}}}}
+
+% Compact environments
+\newtcolorbox{compactbox}[2][]{
+    colback=#2!10!white,
+    colframe=#2!75!black,
+    fonttitle=\bfseries\small,
+    title=#1,
+    boxsep=2pt,
+    left=3pt,
+    right=3pt,
+    top=3pt,
+    bottom=3pt
+}
+
+% Code style
+\lstset{
+    basicstyle=\ttfamily\tiny,
+    breaklines=true,
+    frame=single,
+    language=Python
+}
+
+\title{\textbf{Week 4 Quick Reference: Sequence-to-Sequence Models}\\
+\large Essential Concepts, Equations, and Code Patterns}
+\author{NLP Course 2025}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{multicols}{3}
+
+\section*{Core Problem \& Solution}
+
+\begin{compactbox}[Variable-Length Challenge]{orange}
+\textbf{Problem:} Traditional RNNs require fixed input-output mapping
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item Each input → exactly one output
+    \item Translation needs variable lengths
+    \item Summarization: long → short
+    \item Code generation: comment → function
+\end{itemize}
+\end{compactbox}
+
+\begin{compactbox}[Encoder-Decoder Solution]{green}
+\textbf{Innovation:} Separate encoding from decoding
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item \textbf{Encoder:} Input sequence → context vector
+    \item \textbf{Decoder:} Context vector → output sequence
+    \item \textbf{Result:} Variable input/output lengths
+\end{itemize}
+\end{compactbox}
+
+\section*{Key Equations}
+
+\subsection*{Basic Seq2Seq}
+\textbf{Encoder:}
+\eqbox{h_t = \text{LSTM}(h_{t-1}, x_t)}
+\eqbox{c = h_T \text{ (context vector)}}
+
+\textbf{Decoder:}
+\eqbox{s_t = \text{LSTM}(s_{t-1}, y_{t-1}, c)}
+\eqbox{P(y_t|y_{<t}, x) = \text{softmax}(W_s s_t + b)}
+
+\subsection*{Attention Mechanism}
+\textbf{Alignment Score:}
+\eqbox{e_{t,i} = \text{align}(s_{t-1}, h_i)}
+
+\textbf{Attention Weights:}
+\eqbox{\alpha_{t,i} = \frac{\exp(e_{t,i})}{\sum_{j=1}^T \exp(e_{t,j})}}
+
+\textbf{Context Vector:}
+\eqbox{c_t = \sum_{i=1}^T \alpha_{t,i} h_i}
+
+\subsection*{Attention Types}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item \textbf{Dot Product:} $e_{t,i} = s_t \cdot h_i$
+    \item \textbf{Scaled Dot:} $e_{t,i} = \frac{s_t \cdot h_i}{\sqrt{d}}$
+    \item \textbf{Additive:} $e_{t,i} = v^T \tanh(W_s s_t + W_h h_i)$
+\end{itemize}
+
+\section*{PyTorch Implementation}
+
+\subsection*{Basic Encoder}
+\begin{lstlisting}
+class Encoder(nn.Module):
+    def __init__(self, vocab_size, embed_size, hidden_size):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.lstm = nn.LSTM(embed_size, hidden_size, batch_first=True)
+    
+    def forward(self, x):
+        embedded = self.embedding(x)
+        output, (h_n, c_n) = self.lstm(embedded)
+        return output, h_n, c_n  # All states + final states
+\end{lstlisting}
+
+\subsection*{Attention Module}
+\begin{lstlisting}
+class Attention(nn.Module):
+    def __init__(self, hidden_size):
+        super().__init__()
+        self.W_a = nn.Linear(hidden_size, hidden_size)
+        self.U_a = nn.Linear(hidden_size, hidden_size)
+        self.v_a = nn.Linear(hidden_size, 1)
+    
+    def forward(self, decoder_hidden, encoder_outputs):
+        # decoder_hidden: [batch, hidden_size]
+        # encoder_outputs: [batch, seq_len, hidden_size]
+        seq_len = encoder_outputs.size(1)
+        decoder_hidden = decoder_hidden.unsqueeze(1).repeat(1, seq_len, 1)
+        
+        energy = torch.tanh(self.W_a(decoder_hidden) + self.U_a(encoder_outputs))
+        attention_scores = self.v_a(energy).squeeze(2)
+        attention_weights = F.softmax(attention_scores, dim=1)
+        
+        context = torch.bmm(attention_weights.unsqueeze(1), encoder_outputs).squeeze(1)
+        return context, attention_weights
+\end{lstlisting}
+
+\subsection*{Beam Search}
+\begin{lstlisting}
+def beam_search(model, input_seq, beam_size=4, max_length=20):
+    beams = [{'seq': [START_TOKEN], 'score': 0.0}]
+    
+    for step in range(max_length):
+        candidates = []
+        for beam in beams:
+            if beam['seq'][-1] == END_TOKEN:
+                candidates.append(beam)
+                continue
+            
+            probs = model.predict_next(beam['seq'])
+            for word, prob in probs.top_k(beam_size):
+                new_score = beam['score'] + log(prob)
+                new_seq = beam['seq'] + [word]
+                candidates.append({'seq': new_seq, 'score': new_score})
+        
+        beams = sorted(candidates, key=lambda x: x['score'])[-beam_size:]
+    
+    return beams[0]['seq']
+\end{lstlisting}
+
+\columnbreak
+
+\section*{Key Concepts}
+
+\begin{compactbox}[Information Bottleneck]{red}
+\textbf{Problem:} Single context vector can't hold all information
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item Fixed size (e.g., 256 dimensions)
+    \item Variable input length
+    \item Information loss for long sequences
+    \item Quality degrades with length
+\end{itemize}
+\textbf{Solution:} Attention mechanism
+\end{compactbox}
+
+\begin{compactbox}[Teacher Forcing]{blue}
+\textbf{Training:} Use true target tokens as decoder input
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item Faster convergence
+    \item Stable gradients
+    \item Parallel computation possible
+\end{itemize}
+\textbf{Problem:} Exposure bias (training $\neq$ inference)
+\end{compactbox}
+
+\begin{compactbox}[Beam Search vs Greedy]{purple}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Method} & \textbf{Quality} & \textbf{Speed} \\
+\hline
+Greedy & Low & Fast \\
+\hline
+Beam (k=4) & High & Medium \\
+\hline
+Beam (k=20) & Highest & Slow \\
+\hline
+\end{tabular}
+\end{compactbox}
+
+\section*{Common Issues \& Solutions}
+
+\begin{compactbox}[Repetitive Output]{red}
+\textbf{Symptoms:} ``The cat the cat the cat''
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item \textbf{Cause:} Beam search stuck in loops
+    \item \textbf{Fix:} Add repetition penalty
+    \item \textbf{Fix:} Increase beam diversity
+    \item \textbf{Fix:} Coverage mechanisms
+\end{itemize}
+\end{compactbox}
+
+\begin{compactbox}[Poor Long Sequences]{orange}
+\textbf{Symptoms:} Quality drops after 20+ words
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item \textbf{Cause:} Information bottleneck
+    \item \textbf{Fix:} Add attention mechanism
+    \item \textbf{Fix:} Increase context vector size
+    \item \textbf{Prevention:} Use attention from start
+\end{itemize}
+\end{compactbox}
+
+\begin{compactbox}[Training Issues]{purple}
+\textbf{Symptoms:} Model not learning
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item \textbf{Check:} Teacher forcing implementation
+    \item \textbf{Check:} Gradient clipping (RNN vanishing gradients)
+    \item \textbf{Check:} Learning rate schedule
+    \item \textbf{Check:} Sequence length distribution
+\end{itemize}
+\end{compactbox}
+
+\section*{Attention Variants}
+
+\begin{tabular}{|l|p{4cm}|l|}
+\hline
+\textbf{Type} & \textbf{Formula} & \textbf{Used In} \\
+\hline
+Dot Product & $s_t \cdot h_i$ & Simple models \\
+\hline
+Scaled Dot & $\frac{s_t \cdot h_i}{\sqrt{d_k}}$ & Transformers \\
+\hline
+Additive & $v^T \tanh(W_s s_t + W_h h_i)$ & Bahdanau (2015) \\
+\hline
+Multiplicative & $s_t^T W h_i$ & Luong (2015) \\
+\hline
+\end{tabular}
+
+\section*{Performance Metrics}
+
+\begin{compactbox}[BLEU Score]{green}
+\textbf{Translation Quality Metric:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item 0-100 scale (higher = better)
+    \item Based on n-gram precision
+    \item Industry standard for translation
+    \item Typical scores:
+    \begin{itemize}
+        \item Poor: 0-20
+        \item Acceptable: 20-40
+        \item Good: 40-60
+        \item Excellent: 60+
+    \end{itemize}
+\end{itemize}
+\end{compactbox}
+
+\section*{Historical Timeline}
+
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Year} & \textbf{Innovation} & \textbf{BLEU} \\
+\hline
+2014 & Vanilla Seq2Seq & 25 \\
+\hline
+2015 & Attention Added & 35 \\
+\hline
+2016 & Google NMT & 45 \\
+\hline
+2017 & Transformer & 52 \\
+\hline
+2024 & Modern LLMs & 68+ \\
+\hline
+\end{tabular}
+
+\columnbreak
+
+\section*{Modern Applications (2024)}
+
+\begin{compactbox}[Translation Systems]{blue}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item \textbf{Google Translate:} 1B+ daily translations
+    \item \textbf{DeepL:} 1B people served monthly
+    \item \textbf{Architecture:} Transformer encoder-decoder
+    \item \textbf{Languages:} 100+ language pairs
+\end{itemize}
+\end{compactbox}
+
+\begin{compactbox}[Code Generation]{green}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item \textbf{GitHub Copilot:} 1M+ developers
+    \item \textbf{Task:} Comment → code function
+    \item \textbf{Productivity:} 40\% faster development
+    \item \textbf{Architecture:} GPT-based encoder-decoder
+\end{itemize}
+\end{compactbox}
+
+\begin{compactbox}[Text Summarization]{orange}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item \textbf{Email Apps:} Outlook, Gmail auto-summaries
+    \item \textbf{News:} Automatic headline generation
+    \item \textbf{Research:} Paper → abstract
+    \item \textbf{Architecture:} Encoder-decoder with attention
+\end{itemize}
+\end{compactbox}
+
+\begin{compactbox}[Conversational AI]{purple}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item \textbf{ChatGPT:} 100M+ users
+    \item \textbf{Task:} Context → response
+    \item \textbf{Architecture:} Transformer decoder (GPT)
+    \item \textbf{Innovation:} Self-attention evolution
+\end{itemize}
+\end{compactbox}
+
+\section*{Implementation Checklist}
+
+\subsection*{Building Encoder}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item[$\square$] Embedding layer for input tokens
+    \item[$\square$] LSTM/GRU for sequence processing
+    \item[$\square$] Return all hidden states (for attention)
+    \item[$\square$] Return final state (for decoder init)
+\end{itemize}
+
+\subsection*{Building Decoder}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item[$\square$] Embedding layer for output tokens
+    \item[$\square$] LSTM/GRU initialized with encoder state
+    \item[$\square$] Linear layer for vocabulary projection
+    \item[$\square$] Softmax for probability distribution
+\end{itemize}
+
+\subsection*{Adding Attention}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item[$\square$] Alignment function (dot product/additive)
+    \item[$\square$] Softmax normalization
+    \item[$\square$] Weighted context computation
+    \item[$\square$] Concatenate context with decoder input
+\end{itemize}
+
+\subsection*{Training Setup}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item[$\square$] Teacher forcing during training
+    \item[$\square$] Cross-entropy loss
+    \item[$\square$] Gradient clipping (important for RNNs)
+    \item[$\square$] Learning rate scheduling
+\end{itemize}
+
+\section*{Hyperparameters}
+
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Parameter} & \textbf{Typical Range} & \textbf{Notes} \\
+\hline
+Hidden Size & 128-512 & Larger for complex tasks \\
+\hline
+Embed Size & 128-300 & Often = hidden size \\
+\hline
+Num Layers & 1-4 & Deeper = more capacity \\
+\hline
+Dropout & 0.1-0.3 & Prevent overfitting \\
+\hline
+Learning Rate & 1e-4 to 1e-3 & Adam optimizer \\
+\hline
+Beam Size & 4-8 & Quality vs speed trade-off \\
+\hline
+Max Length & 50-200 & Task dependent \\
+\hline
+\end{tabular}
+
+\section*{Troubleshooting Guide}
+
+\begin{compactbox}[Model Not Learning]{red}
+\textbf{Check:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item Learning rate too high/low
+    \item Gradient clipping threshold
+    \item Teacher forcing ratio
+    \item Sequence length handling
+\end{itemize}
+\end{compactbox}
+
+\begin{compactbox}[Poor Attention]{orange}
+\textbf{Check:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item Attention weights visualization
+    \item Alignment function choice
+    \item Hidden size compatibility
+    \item Training data quality
+\end{itemize}
+\end{compactbox}
+
+\begin{compactbox}[Bad Beam Search]{purple}
+\textbf{Check:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item Beam size vs vocabulary size
+    \item Length normalization
+    \item Repetition penalty
+    \item End token handling
+\end{itemize}
+\end{compactbox}
+
+\section*{Key Papers \& Resources}
+
+\subsection*{Foundational Papers}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item Sutskever et al. (2014): ``Sequence to Sequence Learning with Neural Networks''
+    \item Bahdanau et al. (2015): ``Neural Machine Translation by Jointly Learning to Align and Translate''
+    \item Luong et al. (2015): ``Effective Approaches to Attention-based Neural Machine Translation''
+\end{itemize}
+
+\subsection*{Modern Context}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item Wu et al. (2016): ``Google's Neural Machine Translation System''
+    \item Vaswani et al. (2017): ``Attention Is All You Need'' (Transformer)
+\end{itemize}
+
+\subsection*{Visualization Resources}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item Jay Alammar: ``Visualizing A Neural Machine Translation Model''
+    \item The Illustrated Transformer
+    \item Hugging Face Transformers documentation
+\end{itemize}
+
+\end{multicols}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+\section*{Connection to Week 5: Transformers Preview}
+
+\begin{center}
+\begin{tcolorbox}[colback=lightgreen!30,colframe=green!75!black,width=0.9\textwidth]
+\textbf{Next Week Preview: From Seq2Seq to ``Attention Is All You Need''}
+
+\begin{multicols}{2}
+\textbf{What Transformers Keep:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item Encoder-decoder architecture
+    \item Attention mechanism
+    \item Variable-length I/O
+    \item Teacher forcing training
+\end{itemize}
+
+\textbf{What Transformers Change:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item Remove RNNs entirely
+    \item Add self-attention
+    \item Enable parallelization
+    \item Multi-head attention
+\end{itemize}
+\end{multicols}
+
+\vspace{0.5em}
+\textbf{The Evolution:} Seq2Seq (2014) → Attention (2015) → Transformer (2017) → GPT/BERT (2018+) → ChatGPT (2022) → Modern AI (2024)
+
+\textbf{Your Journey:} Master seq2seq this week → Understand transformers next week → Comprehend modern AI architecture!
+\end{tcolorbox}
+\end{center}
+
+\vspace{1em}
+
+\begin{center}
+\textbf{Quick Reference Complete} | \textit{Keep this handy during lab sessions!} | \textbf{NLP Course 2025}
+\end{center}
+
+\end{document}

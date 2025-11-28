@@ -1,0 +1,45 @@
+% Enhanced Preamble for Word Embeddings Presentation
+% Document class is defined in main.tex
+
+% Essential packages
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{algorithm2e}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+\usepackage{fontawesome}  % For icons
+\usepackage{xcolor}       % Extended colors
+\usepackage{pgfplots}     % For charts
+\usepackage{multicol}     % Multi-column layouts
+\usepackage{adjustbox}    % Box adjustments
+
+% TikZ libraries
+\usetikzlibrary{shapes,arrows,positioning,calc,patterns,decorations.pathreplacing,shadows,backgrounds}
+
+% PGFPlots setup
+\pgfplotsset{compat=1.17}
+
+% Beamer configuration
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Include style files
+\input{styles/colors}
+\input{styles/commands}
+\input{styles/listings}
+\input{styles/visual_theme}  % New visual consistency framework
+
+% Additional configuration for enhanced features
+\tcbuselibrary{skins,breakable,theorems}
+
+% Counter for total sections (for progress tracking)
+\newcounter{totalsections}
+\setcounter{totalsections}{12}  % Update based on actual sections

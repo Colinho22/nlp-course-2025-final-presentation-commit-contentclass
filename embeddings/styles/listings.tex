@@ -1,0 +1,37 @@
+% Code Listing Styles for Word Embeddings Presentation
+
+\lstset{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    language=Python
+}
+
+% Define additional languages if needed
+\lstdefinestyle{numpy}{
+    language=Python,
+    morekeywords={numpy,np,array,zeros,ones,dot,reshape,transpose}
+}
+
+\lstdefinestyle{pytorch}{
+    language=Python,
+    morekeywords={torch,nn,functional,optim,tensor,cuda,device}
+}
+
+\lstdefinestyle{output}{
+    basicstyle=\ttfamily\scriptsize,
+    backgroundcolor=\color{lightgray!10},
+    frame=single,
+    numbers=none
+}

@@ -1,0 +1,924 @@
+% LSTM Primer: BSc 10-Page Version
+% Zero Prerequisites - All Notation Explained
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+
+% Color definitions
+\definecolor{mainGray}{RGB}{64,64,64}
+\definecolor{annotGray}{RGB}{180,180,180}
+\definecolor{backGray}{RGB}{240,240,240}
+\definecolor{forgetRed}{RGB}{231,76,60}
+\definecolor{inputGreen}{RGB}{46,204,113}
+\definecolor{outputBlue}{RGB}{52,152,219}
+\definecolor{cellYellow}{RGB}{241,196,15}
+\definecolor{checkpointBlue}{RGB}{70,130,180}
+\definecolor{glossaryPurple}{RGB}{155,89,182}
+\definecolor{successGreen}{RGB}{34,139,34}
+
+% BSc pedagogical boxes
+\newcommand{\termbox}[2]{\colorbox{glossaryPurple!15}{\parbox{0.45\textwidth}{\footnotesize\textbf{#1:} #2}}}
+\newcommand{\plainenglish}[1]{\colorbox{backGray}{\parbox{0.9\textwidth}{\footnotesize\textit{In plain English: #1}}}}
+\newcommand{\checkpoint}[1]{\colorbox{checkpointBlue!15}{\parbox{0.9\textwidth}{\small\textbf{Checkpoint:} #1}}}
+
+\newcommand{\given}{\mid}
+
+\title{LSTM Networks: Teaching Machines Long-Term Memory}
+\subtitle{BSc Enhanced Version with Full Formula Explanations}
+\author{NLP Course 2025}
+\date{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+
+% PAGE 1: The Autocomplete Challenge
+\begin{frame}[t]{Page 1: The Autocomplete Challenge}
+\begin{center}
+\textbf{The Problem: Predicting What Comes Next}
+\end{center}
+\vspace{2mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/autocomplete_screenshot.pdf}
+
+\vspace{2mm}
+\textbf{What You Type:}
+
+\textit{``I grew up in Paris. I went to school there for 12 years. I learned to speak fluent \_\_\_''}
+
+\vspace{2mm}
+\textbf{The Challenge:}
+\begin{itemize}
+\item Need to remember ``Paris'' (18 words back!)
+\item Ignore recent irrelevant words
+\item Connect city to language
+\item Answer: \textbf{French}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Technical Terms Explained:}
+
+\vspace{2mm}
+\colorbox{glossaryPurple!15}{\parbox{0.45\textwidth}{\footnotesize\textbf{Sequence Modeling:} Predicting the next element based on all previous elements in a sequence (like words in a sentence)}}
+
+\vspace{2mm}
+\colorbox{glossaryPurple!15}{\parbox{0.45\textwidth}{\footnotesize\textbf{Context:} The previous words that give meaning to what comes next}}
+
+\vspace{2mm}
+\colorbox{glossaryPurple!15}{\parbox{0.45\textwidth}{\footnotesize\textbf{Long-term Dependency:} When information from far back (like ``Paris'') is needed to make a prediction now}}
+
+\vspace{3mm}
+\textbf{Why It's Hard:}
+\begin{itemize}
+\item Context can be 50-100+ words long
+\item Only some words matter (``Paris'')
+\item Others are noise (``there'', ``for'', ``12'')
+\item Need selective memory
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This is the problem LSTMs were invented to solve}
+
+\end{columns}
+\end{frame}
+
+% PAGE 2: Why Simple Approaches Fail
+\begin{frame}[t]{Page 2: Why Simple Approaches Fail}
+\begin{center}
+\textbf{N-gram Models: The Baseline (And Why They Don't Work)}
+\end{center}
+\vspace{2mm}
+
+\begin{columns}[t]
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/context_window_comparison.pdf}
+
+\vspace{2mm}
+\textbf{What N-grams Do:}
+\begin{itemize}
+\item Count word sequences in training data
+\item Look at last 1-2 words only
+\item Pick most common next word
+\end{itemize}
+
+\vspace{2mm}
+\plainenglish{If you've seen ``speak fluent'' 100 times in training, and ``English'' came next 60 times, predict ``English'' (even though ``French'' is correct here)}
+
+\column{0.42\textwidth}
+\textbf{Notation Explained:}
+
+\vspace{2mm}
+\colorbox{glossaryPurple!15}{\parbox{0.4\textwidth}{\footnotesize\textbf{N-gram:} A sequence of N words. Bigram = 2 words (``I love''), Trigram = 3 words (``I love chocolate'')}}
+
+\vspace{2mm}
+\colorbox{glossaryPurple!15}{\parbox{0.4\textwidth}{\footnotesize\textbf{$P(w_t \given w_{t-1})$:} Probability of word $w_t$ given previous word $w_{t-1}$. The vertical bar means ``given''}}
+
+\vspace{3mm}
+\textbf{Fatal Limitations:}
+
+\vspace{2mm}
+\textbf{1. Fixed Window:}
+\begin{itemize}
+\item Can only see 1-2 words back
+\item ``Paris'' is 18 words away
+\item Impossible to capture!
+\end{itemize}
+
+\vspace{2mm}
+\textbf{2. No Understanding:}
+\begin{itemize}
+\item Pure counting, no meaning
+\item Can't generalize patterns
+\item Needs to see exact sequence
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}We need a model with variable-length memory}
+
+\end{columns}
+\end{frame}
+
+% PAGE 3: The Memory Problem
+\begin{frame}[t]{Page 3: The Memory Problem - What We Need}
+\begin{center}
+\textbf{Insight from Human Reading}
+\end{center}
+\vspace{2mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Human Memory Example:}
+
+\vspace{2mm}
+\textit{Chapter 1: ``Alice was born in London in 1985. She had a happy childhood.''}
+
+\textit{Chapter 3: ``After graduating from university, Alice moved to New York.''}
+
+\textit{Chapter 7: ``Now 38 years old, Alice reflected on her life in \_\_\_''}
+
+\vspace{2mm}
+\textbf{What You Remember:}
+\begin{itemize}
+\item Alice (main character) [YES]
+\item Born in London [YES]
+\item Moved to New York [YES]
+\item Currently 38 [YES]
+\end{itemize}
+
+\vspace{2mm}
+\textbf{What You Forgot:}
+\begin{itemize}
+\item ``had a happy childhood'' [NO]
+\item ``graduating from university'' [NO]
+\item Exact wording [NO]
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Three Mechanisms We Need:}
+
+\vspace{3mm}
+\colorbox{forgetRed!15}{\parbox{0.45\textwidth}{\small\textbf{\color{forgetRed}1. Forget Gate:} Decide what to remove from memory\\
+\textit{Example: Forget ``chocolate'' after period}}}
+
+\vspace{2mm}
+\colorbox{inputGreen!15}{\parbox{0.45\textwidth}{\small\textbf{\color{inputGreen}2. Input Gate:} Decide what to store\\
+\textit{Example: Store ``Paris'' strongly}}}
+
+\vspace{2mm}
+\colorbox{outputBlue!15}{\parbox{0.45\textwidth}{\small\textbf{\color{outputBlue}3. Output Gate:} Decide what to use now\\
+\textit{Example: Recall ``Paris'' when predicting language}}}
+
+\vspace{3mm}
+\textbf{Technical Terms:}
+
+\vspace{2mm}
+\colorbox{glossaryPurple!15}{\parbox{0.45\textwidth}{\footnotesize\textbf{Gate:} A learned decision mechanism that outputs values between 0 (block) and 1 (allow). Acts like a controllable valve}}
+
+\vspace{2mm}
+\colorbox{glossaryPurple!15}{\parbox{0.45\textwidth}{\footnotesize\textbf{Memory Cell:} A storage unit that holds information across time. Can be updated or erased by gates}}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This is exactly what LSTMs implement with math!}
+
+\end{columns}
+\end{frame}
+
+% CHECKPOINT 1: Test Problem Understanding
+\begin{frame}[t]{Checkpoint 1: Do You Understand the Problem?}
+\begin{center}
+\textbf{Quick Self-Test Before Moving Forward}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Question 1:} Why can't N-grams solve the Paris problem?
+
+\vspace{2mm}
+A) They're too slow\\
+B) They can only see 1-2 words back\\
+C) They require too much memory\\
+D) They don't understand French
+}}
+
+\vspace{3mm}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Question 2:} What are the three memory mechanisms we need?
+
+\vspace{2mm}
+A) Read, Write, Delete\\
+B) Store, Retrieve, Process\\
+C) Forget, Input, Output\\
+D) Encode, Decode, Transform
+}}
+
+\vspace{3mm}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Question 3:} How far back do we need to remember?
+
+\vspace{2mm}
+A) 1-2 words\\
+B) 5-10 words\\
+C) 50-100 words\\
+D) Infinite words
+}}
+
+\column{0.48\textwidth}
+\textbf{Answers \& Explanations:}
+
+\vspace{3mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{Answer 1: B}
+
+N-grams use a fixed window of 1-2 words. In ``I grew up in Paris... speak fluent \_\_\_'', Paris is 18 words back - completely invisible to trigrams!
+}}
+
+\vspace{3mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{Answer 2: C}
+
+We need: \textbf{Forget} (remove old info), \textbf{Input} (add new info), \textbf{Output} (reveal info when needed). Just like human selective memory!
+}}
+
+\vspace{3mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{Answer 3: C}
+
+Real sentences can have important information 50-100 words back. LSTMs can handle this, but N-grams (1-2) and RNNs (5-10) both fail.
+}}
+
+\vspace{3mm}
+\textbf{Key Insight:}
+
+If you got these right, you understand WHY we need LSTMs! The next pages show HOW they work.
+
+\end{columns}
+\end{frame}
+
+% PAGE 4: LSTM Architecture Overview
+\begin{frame}[t]{Page 4: LSTM Architecture - The Complete Solution}
+\begin{center}
+\textbf{Long Short-Term Memory: Gated Memory Cells}
+\end{center}
+\vspace{2mm}
+
+\begin{columns}[t]
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/lstm_architecture.pdf}
+
+\vspace{2mm}
+\textbf{Key Components:}
+
+\vspace{2mm}
+\colorbox{cellYellow!15}{\parbox{0.5\textwidth}{\small\textbf{\color{cellYellow}Cell State $C_t$:} Long-term memory highway. Information flows through with minimal transformation}}
+
+\vspace{2mm}
+\colorbox{mainGray!15}{\parbox{0.5\textwidth}{\small\textbf{Hidden State $h_t$:} Short-term working memory. Used for predictions}}
+
+\column{0.42\textwidth}
+\textbf{Notation Glossary:}
+
+\vspace{2mm}
+\begin{itemize}
+\item \textbf{$t$:} Time step (current word position)
+\item \textbf{$t-1$:} Previous time step
+\item \textbf{$x_t$:} Input at time $t$ (current word)
+\item \textbf{$h_t$:} Hidden state at time $t$
+\item \textbf{$C_t$:} Cell state at time $t$
+\item \textbf{$\sigma$:} Sigmoid function (outputs 0 to 1)
+\item \textbf{$\tanh$:} Tanh function (outputs -1 to 1)
+\item \textbf{$\odot$:} Element-wise multiplication
+\item \textbf{$W$:} Weight matrix (learned parameters)
+\item \textbf{$b$:} Bias vector (learned parameters)
+\item \textbf{$[a, b]$:} Concatenation (stick vectors together)
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Why Two States?}
+\begin{itemize}
+\item $C_t$: Long-term storage (like hard drive)
+\item $h_t$: Current focus (like RAM)
+\item Gates control information flow
+\end{itemize}
+
+\vspace{2mm}
+{\footnotesize\color{annotGray}This dual-state design is the key innovation}
+
+\end{columns}
+\end{frame}
+
+% PAGE 5: The Three Gates Explained
+\begin{frame}[t]{Page 5: The Three Gates - How They Work}
+\begin{center}
+\textbf{Gate Mechanisms with Concrete Examples}
+\end{center}
+\vspace{2mm}
+
+\begin{columns}[t]
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/gate_activation_heatmap.pdf}
+
+\vspace{2mm}
+\textbf{What This Chart Shows:}
+\begin{itemize}
+\item Real gate values over sentence
+\item Darker = higher (close to 1)
+\item Lighter = lower (close to 0)
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Key Patterns:}
+\begin{itemize}
+\item \textbf{Forget gate:} High throughout, drops at period
+\item \textbf{Input gate:} Peaks on content words
+\item \textbf{Output gate:} High when predicting
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{{\color{forgetRed}Forget Gate} $f_t$:}
+
+$$f_t = \sigma(W_f [h_{t-1}, x_t] + b_f)$$
+
+\plainenglish{Look at previous state and current word. Decide how much of old memory to keep (0 = forget all, 1 = keep all)}
+
+\vspace{2mm}
+\textbf{Example:} At period: $f_t = 0.1$ (forget 90\%)
+
+\vspace{3mm}
+\textbf{{\color{inputGreen}Input Gate} $i_t$:}
+
+$$i_t = \sigma(W_i [h_{t-1}, x_t] + b_i)$$
+$$\tilde{C}_t = \tanh(W_C [h_{t-1}, x_t] + b_C)$$
+
+\plainenglish{Create new candidate memory $\tilde{C}_t$. Gate $i_t$ decides how much to store (0 = ignore, 1 = fully store)}
+
+\vspace{2mm}
+\textbf{Example:} At ``Paris'': $i_t = 0.95$ (store 95\%)
+
+\vspace{3mm}
+\textbf{{\color{outputBlue}Output Gate} $o_t$:}
+
+$$o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)$$
+
+\plainenglish{Decide how much memory to reveal for current prediction (0 = hide, 1 = expose all)}
+
+\vspace{2mm}
+\textbf{Example:} At ``fluent'': $o_t = 0.9$ (use 90\%)
+
+\end{columns}
+\end{frame}
+
+% NEW PAGE: Visual Math Breakdown
+\begin{frame}[t]{Understanding the Math: Visual Explanations}
+\begin{center}
+\textbf{What Do These Symbols Actually DO?}
+\end{center}
+\vspace{2mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{1. Sigmoid Function $\sigma$:}
+
+$$\sigma(z) = \frac{1}{1 + e^{-z}}$$
+
+\vspace{2mm}
+\plainenglish{Takes ANY number and squashes it to between 0 and 1. Used for gates because 0 = fully close, 1 = fully open}
+
+\vspace{2mm}
+\textbf{Visual Examples:}
+\begin{itemize}
+\item Input: $z = -5$ → $\sigma(-5) = 0.007$ ≈ 0 (CLOSE gate)
+\item Input: $z = 0$ → $\sigma(0) = 0.5$ (HALF open)
+\item Input: $z = +5$ → $\sigma(+5) = 0.993$ ≈ 1 (OPEN gate)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{2. Tanh Function:}
+
+$$\tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}}$$
+
+\vspace{2mm}
+\plainenglish{Like sigmoid but outputs -1 to +1. Used for cell state because memory can be positive or negative}
+
+\vspace{2mm}
+\textbf{Visual Examples:}
+\begin{itemize}
+\item Input: $z = -3$ → $\tanh(-3) = -0.995$ ≈ -1
+\item Input: $z = 0$ → $\tanh(0) = 0$
+\item Input: $z = +3$ → $\tanh(+3) = +0.995$ ≈ +1
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{3. Element-wise Multiplication $\odot$:}
+
+\vspace{2mm}
+\plainenglish{Multiply each number separately, not matrix multiplication!}
+
+\vspace{2mm}
+\textbf{Example with actual numbers:}
+
+\colorbox{backGray}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{Gate values:} $f_t = [0.9, 0.5, 0.1]$\\
+\textbf{Old memory:} $C_{t-1} = [0.8, 0.6, 0.4]$\\
+\vspace{1mm}
+\textbf{Result:} $f_t \odot C_{t-1} = [0.9 \times 0.8, 0.5 \times 0.6, 0.1 \times 0.4]$\\
+\textbf{= [0.72, 0.30, 0.04]}\\
+\vspace{1mm}
+Each position multiplied independently!
+}}
+
+\vspace{3mm}
+\textbf{4. Concatenation $[a, b]$:}
+
+\vspace{2mm}
+\plainenglish{Stick two vectors together end-to-end}
+
+\vspace{2mm}
+\textbf{Example:}
+
+\colorbox{backGray}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{Previous state:} $h_{t-1} = [0.5, 0.3]$ (size 2)\\
+\textbf{Current word:} $x_t = [0.7]$ (size 1)\\
+\vspace{1mm}
+\textbf{Concatenated:} $[h_{t-1}, x_t] = [0.5, 0.3, 0.7]$ (size 3)\\
+\vspace{1mm}
+Just glued together!
+}}
+
+\vspace{3mm}
+\textbf{Why This Matters:}
+
+These operations are the BUILDING BLOCKS of every gate equation. Once you understand these 4 operations, the LSTM equations become much easier!
+
+\end{columns}
+\end{frame}
+
+% PAGE 6: How Cell State Works
+\begin{frame}[t]{Page 6: Cell State - The Memory Highway}
+\begin{center}
+\textbf{Why LSTMs Can Remember 50-100+ Steps}
+\end{center}
+\vspace{2mm}
+
+\begin{columns}[t]
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/gradient_flow_comparison.pdf}
+
+\vspace{2mm}
+\textbf{The Update Equation:}
+
+$$C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$$
+
+\vspace{2mm}
+\plainenglish{New memory = (keep some old) + (add some new). The $\odot$ means multiply each number separately}
+
+\vspace{2mm}
+\textbf{Why Addition is Magic:}
+\begin{itemize}
+\item Old $C_{t-1}$ directly adds to new $C_t$
+\item No matrix multiplication!
+\item Information preserved unchanged
+\item Gradients flow backward easily
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{Comparison - RNN vs LSTM:}
+
+\vspace{2mm}
+\textbf{RNN (Multiplicative):}
+$$h_t = \tanh(W_h h_{t-1} + ...)$$
+
+After 50 steps:
+\begin{itemize}
+\item Signal: $0.5^{50} \approx 10^{-15}$
+\item Information lost!
+\end{itemize}
+
+\vspace{2mm}
+\textbf{LSTM (Additive):}
+$$C_t = f_t \odot C_{t-1} + ...$$
+
+After 50 steps (with $f_t = 0.95$):
+\begin{itemize}
+\item Signal: $0.95^{50} \approx 0.08$
+\item Still usable!
+\end{itemize}
+
+\vspace{2mm}
+\colorbox{backGray}{\parbox{0.4\textwidth}{\footnotesize\textbf{10 billion times better!} This is why LSTMs work where RNNs fail}}
+
+\vspace{2mm}
+\textbf{Technical Terms:}
+
+\vspace{2mm}
+\colorbox{glossaryPurple!15}{\parbox{0.4\textwidth}{\footnotesize\textbf{Gradient:} How much to update weights during training. Vanishes in RNNs, preserved in LSTMs}}
+
+\vspace{2mm}
+{\footnotesize\color{annotGray}Addition creates a gradient highway}
+
+\end{columns}
+\end{frame}
+
+% CHECKPOINT 2: Test Cell State Understanding
+\begin{frame}[t]{Checkpoint 2: Do You Understand Cell State?}
+\begin{center}
+\textbf{Test Your Understanding of the Memory Highway}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Question 1:} Why is addition better than multiplication for memory?
+
+\vspace{2mm}
+A) It's faster to compute\\
+B) It preserves gradients across many steps\\
+C) It uses less memory\\
+D) It's easier to learn
+}}
+
+\vspace{3mm}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Question 2:} What does the cell state equation $C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$ do?
+
+\vspace{2mm}
+A) Forgets everything and starts fresh\\
+B) Keeps some old + adds some new\\
+C) Only stores new information\\
+D) Copies the previous state exactly
+}}
+
+\vspace{3mm}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Question 3:} After 50 steps with $f_t = 0.95$, how much signal remains?
+
+\vspace{2mm}
+A) Almost zero ($10^{-15}$)\\
+B) About 8\% (0.08)\\
+C) About 50\% (0.5)\\
+D) Almost all (0.95)
+}}
+
+\column{0.48\textwidth}
+\textbf{Answers \& Explanations:}
+
+\vspace{3mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{Answer 1: B}
+
+Addition creates a direct path for gradients! In RNNs, gradients multiply through many matrices and vanish ($0.5^{50} \approx 10^{-15}$). With addition, gradients flow directly backward unchanged.
+}}
+
+\vspace{3mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{Answer 2: B}
+
+First term ($f_t \odot C_{t-1}$) keeps SOME of the old memory (controlled by forget gate). Second term ($i_t \odot \tilde{C}_t$) adds SOME new information (controlled by input gate). Perfect blend!
+}}
+
+\vspace{3mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{Answer 3: B (0.08)}
+
+$0.95^{50} = 0.077$ ≈ 8\%. Still usable! Compare to RNN: $0.5^{50} \approx 10^{-15}$ (effectively zero). This 10 billion factor difference is why LSTMs work!
+}}
+
+\vspace{3mm}
+\textbf{Visual Check:}
+
+Can you explain to a friend how $C_t$ updates? If yes, you're ready for the full equations!
+
+\end{columns}
+\end{frame}
+
+% PAGE 7: Complete LSTM Equations
+\begin{frame}[t]{Page 7: Complete LSTM Equations - All Together}
+\begin{center}
+\textbf{The Full Forward Pass (One Time Step)}
+\end{center}
+\vspace{2mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{All Six Equations:}
+
+\vspace{2mm}
+\begin{align*}
+f_t &= \sigma(W_f [h_{t-1}, x_t] + b_f) && \text{{\color{forgetRed}Forget gate}}\\
+i_t &= \sigma(W_i [h_{t-1}, x_t] + b_i) && \text{{\color{inputGreen}Input gate}}\\
+\tilde{C}_t &= \tanh(W_C [h_{t-1}, x_t] + b_C) && \text{{\color{inputGreen}Candidate}}\\
+C_t &= f_t \odot C_{t-1} + i_t \odot \tilde{C}_t && \text{{\color{cellYellow}Cell update}}\\
+o_t &= \sigma(W_o [h_{t-1}, x_t] + b_o) && \text{{\color{outputBlue}Output gate}}\\
+h_t &= o_t \odot \tanh(C_t) && \text{Hidden state}
+\end{align*}
+
+\vspace{2mm}
+\textbf{Activation Functions:}
+
+\vspace{2mm}
+\textbf{Sigmoid:} $\sigma(z) = \frac{1}{1 + e^{-z}}$
+\begin{itemize}
+\item Range: (0, 1)
+\item Used for gates (0 = close, 1 = open)
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Tanh:} $\tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}}$
+\begin{itemize}
+\item Range: (-1, 1)
+\item Used for cell state (can be positive or negative)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Concrete Numerical Example:}
+
+\vspace{2mm}
+Input: word ``love'' (after ``I'')
+
+\vspace{2mm}
+\textbf{Step 1:} Compute gates
+\begin{itemize}
+\item $f_t = [0.62, 0.45, 0.69, ...]$ (keep some)
+\item $i_t = [0.77, 0.69, 0.38, ...]$ (add much)
+\item $o_t = [0.71, 0.75, 0.45, ...]$ (reveal most)
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Step 2:} Create candidate
+\begin{itemize}
+\item $\tilde{C}_t = [0.54, -0.29, 0.72, ...]$
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Step 3:} Update cell state
+\begin{itemize}
+\item Old: $C_{t-1} = [0.5, 0.3, 0.2, ...]$
+\item Keep: $f_t \odot C_{t-1} = [0.31, 0.14, 0.14, ...]$
+\item Add: $i_t \odot \tilde{C}_t = [0.42, -0.20, 0.27, ...]$
+\item New: $C_t = [0.73, -0.06, 0.41, ...]$
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Step 4:} Compute output
+\begin{itemize}
+\item $h_t = o_t \odot \tanh(C_t)$
+\item $h_t = [0.44, -0.04, 0.17, ...]$
+\end{itemize}
+
+\vspace{2mm}
+{\footnotesize\color{annotGray}This happens at every word in the sequence!}
+
+\end{columns}
+\end{frame}
+
+% CHECKPOINT 3: Test Equation Understanding
+\begin{frame}[t]{Checkpoint 3: Can You Read LSTM Equations?}
+\begin{center}
+\textbf{Final Check: Do You Understand the Math?}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Question 1:} In $f_t = \sigma(W_f [h_{t-1}, x_t] + b_f)$, what does $[h_{t-1}, x_t]$ mean?
+
+\vspace{2mm}
+A) Matrix multiplication\\
+B) Addition of vectors\\
+C) Concatenation (stick together)\\
+D) Element-wise product
+}}
+
+\vspace{3mm}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Question 2:} Which gate uses tanh (not sigmoid)?
+
+\vspace{2mm}
+A) Forget gate $f_t$\\
+B) Input gate $i_t$\\
+C) Candidate memory $\tilde{C}_t$\\
+D) Output gate $o_t$
+}}
+
+\vspace{3mm}
+\colorbox{checkpointBlue!15}{\parbox{0.45\textwidth}{\small
+\textbf{Question 3:} How many parameters does an LSTM learn per gate?
+
+\vspace{2mm}
+A) 1 (just the gate value)\\
+B) 2 (weight and bias)\\
+C) Many (weight matrix + bias vector)\\
+D) Infinite (it's continuous)
+}}
+
+\column{0.48\textwidth}
+\textbf{Answers \& Why They Matter:}
+
+\vspace{3mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{Answer 1: C (Concatenation)}
+
+$[h_{t-1}, x_t]$ means stick the vectors together: if $h_{t-1}$ is size 256 and $x_t$ is size 100, result is size 356. NOT multiplication or addition!
+}}
+
+\vspace{3mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{Answer 2: C (Candidate $\tilde{C}_t$)}
+
+$\tilde{C}_t = \tanh(...)$ uses tanh because cell state can be negative or positive. All three GATES ($f_t, i_t, o_t$) use sigmoid because they need 0-1 range for ``how much''!
+}}
+
+\vspace{3mm}
+\colorbox{successGreen!10}{\parbox{0.45\textwidth}{\footnotesize
+\textbf{Answer 3: C (Many)}
+
+Each gate has $W$ (weight matrix) + $b$ (bias vector). For hidden=256, input=100: $W_f$ is 256×356, $b_f$ is 256. That's 91,392 parameters per gate! Total LSTM: \~365k parameters.
+}}
+
+\vspace{3mm}
+\textbf{Mastery Check:}
+
+Can you write out all 6 equations from memory? If yes, you truly understand LSTMs!
+
+\end{columns}
+\end{frame}
+
+% PAGE 8: Training LSTMs
+\begin{frame}[t]{Page 8: Training LSTMs}
+\begin{center}
+\textbf{Backpropagation Through Time (BPTT)}
+\end{center}
+\vspace{2mm}
+
+\begin{columns}[t]
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/training_progression.pdf}
+
+\vspace{2mm}
+\textbf{What This Shows:}
+\begin{itemize}
+\item Training loss decreasing over time
+\item Validation accuracy improving
+\item Model learning long-range patterns
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Training Process:}
+\begin{enumerate}
+\item Forward pass through entire sequence
+\item Compute loss (prediction error)
+\item Backward pass to compute gradients
+\item Update all weights ($W_f, W_i, W_C, W_o$)
+\item Repeat for thousands of sequences
+\end{enumerate}
+
+\column{0.42\textwidth}
+\textbf{Technical Terms:}
+
+\vspace{2mm}
+\colorbox{glossaryPurple!15}{\parbox{0.4\textwidth}{\footnotesize\textbf{BPTT:} Backpropagation Through Time. Compute gradients by unrolling the sequence and flowing errors backward from end to start}}
+
+\vspace{2mm}
+\colorbox{glossaryPurple!15}{\parbox{0.4\textwidth}{\footnotesize\textbf{Loss Function:} Measures prediction error. Usually cross-entropy for word prediction}}
+
+\vspace{2mm}
+\colorbox{glossaryPurple!15}{\parbox{0.4\textwidth}{\footnotesize\textbf{Gradient Clipping:} Cap gradients at threshold (e.g., 5.0) to prevent explosion}}
+
+\vspace{3mm}
+\textbf{Key Hyperparameters:}
+\begin{itemize}
+\item Hidden size: 256-512 (memory capacity)
+\item Learning rate: 0.001 (update step size)
+\item Batch size: 32-128 (sequences per update)
+\item Sequence length: 50-100 (truncation)
+\item Dropout: 0.2-0.5 (prevent overfitting)
+\end{itemize}
+
+\vspace{2mm}
+{\footnotesize\color{annotGray}Training can take hours to days depending on data size}
+
+\end{columns}
+\end{frame}
+
+% PAGE 9: Applications, Summary and Reference
+\begin{frame}[t]{Page 9: Applications, Summary \& Quick Reference}
+\begin{center}
+\textbf{Where LSTMs Are Used + Summary}
+\end{center}
+\vspace{1mm}
+
+\begin{columns}[t]
+\column{0.32\textwidth}
+\textbf{Applications:}
+
+\vspace{1mm}
+\textbf{NLP:} Translation, generation, sentiment
+
+\textbf{Speech:} Recognition (Siri), music generation
+
+\textbf{Time Series:} Stock, weather, energy, healthcare
+
+\vspace{2mm}
+\includegraphics[width=\textwidth]{../figures/model_comparison_table.pdf}
+
+\vspace{1mm}
+\textbf{Key Insight:} LSTMs still relevant in 2025! Complementary to Transformers.
+
+\column{0.34\textwidth}
+\textbf{Equations Reference:}
+
+{\tiny
+\begin{align*}
+f_t &= \sigma(W_f [h_{t-1}, x_t] + b_f)\\
+i_t &= \sigma(W_i [h_{t-1}, x_t] + b_i)\\
+\tilde{C}_t &= \tanh(W_C [h_{t-1}, x_t] + b_C)\\
+C_t &= f_t \odot C_{t-1} + i_t \odot \tilde{C}_t\\
+o_t &= \sigma(W_o [h_{t-1}, x_t] + b_o)\\
+h_t &= o_t \odot \tanh(C_t)
+\end{align*}
+}
+
+\vspace{1mm}
+\textbf{Summary:}
+\begin{itemize}
+\item \textbf{Problem:} 50-100 step memory needed
+\item \textbf{Solution:} 3 gates + additive cell state
+\item \textbf{Impact:} Google Translate, foundation for Transformers
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{When to Use:}
+
+\vspace{1mm}
+\textbf{LSTMs:}
+\begin{itemize}
+\item Time series (SOTA)
+\item Real-time
+\item Mobile/edge
+\item Limited data
+\end{itemize}
+
+\vspace{1mm}
+\textbf{Transformers:}
+\begin{itemize}
+\item Large datasets
+\item Parallel training
+\item Bidirectional
+\item SOTA NLP
+\end{itemize}
+
+\vspace{1mm}
+\textbf{Notation:}
+\begin{itemize}
+\item $t$: time, $x_t$: input
+\item $h_t$: hidden, $C_t$: cell
+\item $\sigma$: sigmoid (0-1)
+\item $\tanh$: (-1-1)
+\item $\odot$: element-wise ×
+\end{itemize}
+
+\vspace{1mm}
+\textbf{Code:}
+\begin{itemize}
+\item PyTorch: \texttt{nn.LSTM()}
+\item TensorFlow: \texttt{tf.keras.layers.LSTM()}
+\end{itemize}
+
+\vspace{1mm}
+{\footnotesize Hochreiter \& Schmidhuber (1997), Colah's blog, PyTorch tutorials}
+
+\end{columns}
+\end{frame}
+
+\end{document}

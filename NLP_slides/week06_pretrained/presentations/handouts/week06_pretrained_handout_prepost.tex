@@ -1,0 +1,637 @@
+\documentclass[10pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+% Colors
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Code style
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% Custom commands
+\newcommand{\question}[1]{\vspace{0.5em}\noindent\textbf{Q: #1}\vspace{0.3em}}
+\newcommand{\exercise}[1]{\vspace{0.5em}\noindent\textbf{Exercise: #1}\vspace{0.3em}}
+\newcommand{\think}[1]{\vspace{0.3em}\noindent\textit{Think: #1}\vspace{0.3em}}
+\newcommand{\intuition}[1]{
+    \begin{tcolorbox}[colback=purple!5!white,colframe=purple!60!black,title=Intuition]
+    #1
+    \end{tcolorbox}
+}
+\newcommand{\checkpoint}[1]{
+    \begin{tcolorbox}[colback=yellow!10!white,colframe=yellow!75!black,title=Checkpoint]
+    #1
+    \end{tcolorbox}
+}
+\newcommand{\discovery}[1]{
+    \begin{tcolorbox}[colback=green!5!white,colframe=green!75!black,title=Discovery]
+    #1
+    \end{tcolorbox}
+}
+\newcommand{\realworld}[1]{
+    \begin{tcolorbox}[colback=orange!5!white,colframe=orange!75!black,title=Real World]
+    #1
+    \end{tcolorbox}
+}
+\newcommand{\technical}[1]{
+    \begin{tcolorbox}[colback=blue!5!white,colframe=blue!60!black,title=Technical Detail]
+    #1
+    \end{tcolorbox}
+}
+
+\title{Week 6: Pre-trained Language Models\\
+\large Pre-Class Discovery \& Post-Class Application}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{How to Use This Handout}
+\begin{itemize}
+    \item \textbf{Before Class}: Complete Part A to discover why we need pre-training
+    \item \textbf{During Class}: Learn about BERT, GPT, and fine-tuning techniques
+    \item \textbf{After Class}: Complete Part B to apply technical concepts
+\end{itemize}
+
+\hrule
+\vspace{2em}
+
+\huge\textbf{PART A: PRE-CLASS DISCOVERY}
+\normalsize
+
+\vspace{1em}
+\textit{No prior knowledge required - Let's discover transfer learning!}
+
+\section{A1: The Learning Problem (10 minutes)}
+
+\subsection{Learning from Scratch vs Building on Knowledge}
+
+\realworld{
+Imagine you want to learn to play the piano. Which approach would be faster?
+\begin{enumerate}
+    \item Starting from zero: Learn what music is, what notes are, how to read music, finger positions, then finally play songs
+    \item Already knowing music theory: Just learn finger positions and practice
+\end{enumerate}
+}
+
+\exercise{Think about learning a new skill. List what you could reuse from existing knowledge:}
+
+New skill: Learning Spanish
+\begin{itemize}
+    \item Can reuse from English: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item Must learn fresh: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item Time saved by reusing: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\end{itemize}
+
+\question{If an AI needs to analyze movie reviews, what language skills would it need?}
+
+List 5 skills:
+\begin{enumerate}
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\end{enumerate}
+
+\think{Should every company teach their AI what ``the'' means from scratch?}
+
+\vspace{2em}
+
+\discovery{
+You've discovered the motivation for pre-training: Most language understanding is general and can be learned once and reused!
+}
+
+\section{A2: The Fill-in-the-Blank Game (10 minutes)}
+
+\subsection{How We Understand Context}
+
+\exercise{Fill in the blanks using context clues:}
+
+\begin{enumerate}
+    \item ``The cat sat on the \_\_\_\_\_''
+    \item ``I went to the \_\_\_\_\_ to buy milk''
+    \item ``The \_\_\_\_\_ was delicious but too expensive''
+    \item ``She \_\_\_\_\_ the ball to her friend''
+\end{enumerate}
+
+\question{Which clues did you use to fill each blank?}
+
+For sentence 2:
+\begin{itemize}
+    \item Words before the blank: \_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item Words after the blank: \_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item Your world knowledge: \_\_\_\_\_\_\_\_\_\_\_\_\_
+\end{itemize}
+
+\subsection{One-Way vs Two-Way Understanding}
+
+\intuition{
+Imagine reading a mystery novel:
+\begin{itemize}
+    \item Reading forward only: You guess what happens next
+    \item Reading the whole page: You understand what's happening
+\end{itemize}
+Which gives better understanding?
+}
+
+\exercise{Compare these two approaches for filling blanks:}
+
+``The [BLANK] barked loudly at the mailman''
+
+\textbf{Approach 1:} Only see ``The [BLANK]''
+Possible answers: \_\_\_\_\_\_\_\_\_\_\_\_\_
+
+\textbf{Approach 2:} See entire sentence
+Possible answers: \_\_\_\_\_\_\_\_\_\_\_\_\_
+
+Which approach is more accurate? Why?
+
+\vspace{2em}
+
+\section{A3: The Prediction Game (10 minutes)}
+
+\subsection{Completing Sentences}
+
+\exercise{Complete these sentence beginnings:}
+
+\begin{enumerate}
+    \item ``Once upon a \_\_\_\_\_''
+    \item ``The weather today is \_\_\_\_\_''
+    \item ``I love to eat \_\_\_\_\_''
+    \item ``The best thing about weekends is \_\_\_\_\_''
+\end{enumerate}
+
+\question{How did you predict what comes next?}
+
+Think about your process:
+\begin{itemize}
+    \item Did you use grammar rules? \_\_\_\_\_
+    \item Did you use common patterns? \_\_\_\_\_
+    \item Did you use personal experience? \_\_\_\_\_
+\end{itemize}
+
+\subsection{Generation vs Understanding}
+
+\think{What's the difference between:}
+\begin{enumerate}
+    \item Filling a blank in the middle of a sentence
+    \item Continuing a sentence from where it stops
+\end{enumerate}
+
+Which requires more creativity? \_\_\_\_\_\_\_\_\_\_\_\_\_
+Which requires more understanding? \_\_\_\_\_\_\_\_\_\_\_\_\_
+
+\discovery{
+You've discovered two approaches: BERT-style (fill blanks using all context) and GPT-style (predict what comes next)!
+}
+
+\section{A4: The Specialization Problem (10 minutes)}
+
+\subsection{General vs Specific Knowledge}
+
+\realworld{
+A medical student knows:
+\begin{itemize}
+    \item General: How to read, write, study
+    \item Specific: Medical terminology, procedures
+\end{itemize}
+The general knowledge transfers to any field!
+}
+
+\exercise{Categorize these AI tasks as General or Specific:}
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Task} & \textbf{General/Specific} \\
+\hline
+Understanding grammar & \_\_\_\_\_\_\_ \\
+Knowing movie genres & \_\_\_\_\_\_\_ \\
+Recognizing sentiment words & \_\_\_\_\_\_\_ \\
+Understanding ``the'' and ``a'' & \_\_\_\_\_\_\_ \\
+Medical diagnosis terms & \_\_\_\_\_\_\_ \\
+Sentence structure & \_\_\_\_\_\_\_ \\
+\hline
+\end{tabular}
+\end{center}
+
+\question{What percentage of language understanding is general vs task-specific?}
+
+Your estimate: \_\_\_\% general, \_\_\_\% specific
+
+\section{A5: The Cost Problem (5 minutes)}
+
+\subsection{Training Efficiency}
+
+\exercise{Calculate the waste:}
+
+5 companies each need sentiment analysis AI:
+\begin{itemize}
+    \item Each trains from scratch: \$500,000
+    \item Total cost: \_\_\_\_\_\_\_\_\_
+\end{itemize}
+
+Alternative approach:
+\begin{itemize}
+    \item Train one general model: \$1,000,000
+    \item Each company adapts it: \$10,000
+    \item Total cost: \_\_\_\_\_\_\_\_\_
+    \item Money saved: \_\_\_\_\_\_\_\_\_
+\end{itemize}
+
+\think{Besides money, what else is wasted when training from scratch?}
+
+\vspace{2em}
+
+\checkpoint{
+Pre-Class Complete! You've discovered:
+\begin{itemize}
+    \item Why reusing knowledge is efficient
+    \item Two ways to learn from text (fill blanks vs predict next)
+    \item General vs specific knowledge
+    \item The economic motivation for pre-training
+\end{itemize}
+Ready to learn how BERT and GPT implement these ideas!
+}
+
+\newpage
+
+\huge\textbf{PART B: POST-CLASS APPLICATION}
+\normalsize
+
+\vspace{1em}
+\textit{Now apply the technical concepts from lecture!}
+
+\section{B1: BERT's Masked Language Modeling (15 minutes)}
+
+\subsection{Understanding MLM}
+
+\technical{
+BERT's training objective:
+\begin{itemize}
+    \item Randomly mask 15\% of tokens
+    \item 80\% replaced with [MASK]
+    \item 10\% replaced with random token
+    \item 10\% kept unchanged
+\end{itemize}
+This prevents the model from only looking for [MASK].
+}
+
+\exercise{Implement masking strategy:}
+
+Given sentence: ``The quick brown fox jumps''
+Token positions: [0, 1, 2, 3, 4]
+
+If we mask 15\% (1 token), and choose position 2 (``brown''):
+\begin{itemize}
+    \item 80\% chance: ``The quick [MASK] fox jumps''
+    \item 10\% chance: ``The quick [RANDOM] fox jumps''
+    \item 10\% chance: ``The quick brown fox jumps''
+\end{itemize}
+
+\question{Why not mask 50\% of tokens? What would happen?}
+
+\vspace{2em}
+
+\subsection{Bidirectional Attention}
+
+\exercise{Calculate attention patterns:}
+
+For ``The [MASK] sat on the mat'', BERT can attend:
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|c|}
+\hline
+From [MASK] to: & The & [MASK] & sat & on & the & mat \\
+\hline
+Can attend? & Yes & Yes & Yes & Yes & Yes & Yes \\
+\hline
+\end{tabular}
+\end{center}
+
+For GPT predicting after ``cat'':
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|c|}
+\hline
+From position 2 to: & The & cat & sat & on & the & mat \\
+\hline
+Can attend? & Yes & Yes & No & No & No & No \\
+\hline
+\end{tabular}
+\end{center}
+
+\question{How many connections does BERT have vs GPT for a sequence of length n?}
+
+BERT: \_\_\_\_\_ connections
+GPT: \_\_\_\_\_ connections
+
+\section{B2: GPT's Autoregressive Modeling (10 minutes)}
+
+\subsection{Next Token Prediction}
+
+\technical{
+GPT's training objective:
+$$P(x_t | x_1, x_2, ..., x_{t-1}) = \text{softmax}(W_o \cdot h_t)$$
+where $h_t$ is the hidden state at position t.
+}
+
+\exercise{Calculate probabilities:}
+
+Given context: ``The cat''
+Vocabulary: [``sat'', ``ran'', ``jumped'', ``slept'']
+Logits: [2.5, 1.0, 0.5, 1.5]
+
+After softmax:
+\begin{align}
+P(\text{sat}) &= \frac{e^{2.5}}{e^{2.5} + e^{1.0} + e^{0.5} + e^{1.5}} = \_\_\_\_ \\
+P(\text{ran}) &= \_\_\_\_ \\
+P(\text{jumped}) &= \_\_\_\_ \\
+P(\text{slept}) &= \_\_\_\_
+\end{align}
+
+\subsection{Generation Strategy}
+
+\question{What happens if we always pick the highest probability word?}
+
+\vspace{2em}
+
+\question{How does temperature affect generation?}
+
+Temperature = 0.5: \_\_\_\_\_\_\_\_\_\_\_\_\_
+Temperature = 1.0: \_\_\_\_\_\_\_\_\_\_\_\_\_
+Temperature = 2.0: \_\_\_\_\_\_\_\_\_\_\_\_\_
+
+\section{B3: Fine-tuning Mathematics (10 minutes)}
+
+\subsection{Transfer Learning}
+
+\technical{
+Fine-tuning updates:
+$$\theta_{new} = \theta_{pretrained} + \alpha \cdot \nabla_\theta L_{task}$$
+where $\alpha$ is the learning rate (typically small: 2e-5)
+}
+
+\exercise{Compare learning rates:}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Training Type} & \textbf{Typical LR} & \textbf{Why?} \\
+\hline
+From scratch & 1e-3 & Need large updates \\
+Fine-tuning & 2e-5 & \_\_\_\_\_\_\_\_\_\_ \\
+\hline
+\end{tabular}
+\end{center}
+
+\question{What happens with too large learning rate during fine-tuning?}
+
+\vspace{2em}
+
+\subsection{Catastrophic Forgetting}
+
+\exercise{Design a fine-tuning schedule to prevent forgetting:}
+
+\begin{enumerate}
+    \item Initial LR: \_\_\_\_\_
+    \item Warmup steps: \_\_\_\_\_
+    \item Decay strategy: \_\_\_\_\_\_\_\_\_\_\_
+    \item Freeze layers? \_\_\_\_\_\_\_\_\_\_\_
+\end{enumerate}
+
+\section{B4: Model Selection (10 minutes)}
+
+\subsection{Comparing Architectures}
+
+\exercise{Fill in the comparison table:}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Criterion} & \textbf{BERT} & \textbf{GPT} & \textbf{T5} \\
+\hline
+Parameters & 340M & 1.5B & 11B \\
+Best for & \_\_\_\_\_ & Generation & \_\_\_\_\_ \\
+Training objective & MLM & \_\_\_\_\_ & Span corruption \\
+Architecture & Encoder & \_\_\_\_\_ & Encoder-Decoder \\
+Context & Bidirectional & \_\_\_\_\_ & \_\_\_\_\_ \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Task Matching}
+
+\exercise{Match models to tasks:}
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Task} & \textbf{Best Model} \\
+\hline
+Sentiment analysis & \_\_\_\_\_ \\
+Text generation & \_\_\_\_\_ \\
+Question answering & \_\_\_\_\_ \\
+Translation & \_\_\_\_\_ \\
+Summarization & \_\_\_\_\_ \\
+Named entity recognition & \_\_\_\_\_ \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{B5: Implementation Exercise (15 minutes)}
+
+\subsection{Fine-tuning BERT}
+
+\begin{lstlisting}[language=Python]
+from transformers import BertForSequenceClassification
+from transformers import BertTokenizer, Trainer
+import torch
+
+# Load pre-trained model
+model = BertForSequenceClassification.from_pretrained(
+    'bert-base-uncased',
+    num_labels=2  # Binary classification
+)
+
+# Freeze embeddings (optional)
+for param in model.bert.embeddings.parameters():
+    param.requires_grad = # YOUR CODE: True or False?
+
+# Set fine-tuning parameters
+training_args = TrainingArguments(
+    output_dir='./results',
+    learning_rate=# YOUR CODE: appropriate LR,
+    per_device_train_batch_size=# YOUR CODE: batch size,
+    num_train_epochs=# YOUR CODE: epochs,
+    warmup_steps=# YOUR CODE: warmup,
+    weight_decay=# YOUR CODE: decay,
+)
+
+# What happens if we set learning_rate=1e-2?
+# YOUR ANSWER: _______________
+\end{lstlisting}
+
+\subsection{Using GPT for Generation}
+
+\begin{lstlisting}[language=Python]
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+
+# Load model
+model = GPT2LMHeadModel.from_pretrained('gpt2')
+tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+
+# Encode prompt
+prompt = "Once upon a time"
+inputs = tokenizer.encode(prompt, return_tensors='pt')
+
+# Generate with different strategies
+# Greedy decoding
+output_greedy = model.generate(
+    inputs, 
+    max_length=50,
+    # YOUR CODE: what parameter for greedy?
+)
+
+# Sampling with temperature
+output_sample = model.generate(
+    inputs,
+    max_length=50,
+    do_sample=True,
+    temperature=# YOUR CODE: temperature value
+)
+
+# Beam search
+output_beam = model.generate(
+    inputs,
+    max_length=50,
+    num_beams=# YOUR CODE: beam size
+)
+\end{lstlisting}
+
+\section{B6: Advanced Concepts (10 minutes)}
+
+\subsection{Efficient Fine-tuning}
+
+\technical{
+Parameter-Efficient Fine-Tuning (PEFT):
+\begin{itemize}
+    \item LoRA: Low-rank adaptation
+    \item Prefix tuning: Learn soft prompts
+    \item Adapter layers: Small trainable modules
+\end{itemize}
+}
+
+\exercise{Calculate parameter savings with LoRA:}
+
+Original model: 340M parameters
+LoRA rank r=16:
+\begin{itemize}
+    \item Original weight: $W \in \mathbb{R}^{768 \times 768}$
+    \item LoRA: $W + BA$ where $B \in \mathbb{R}^{768 \times 16}$, $A \in \mathbb{R}^{16 \times 768}$
+    \item Trainable parameters: \_\_\_\_\_\_\_
+    \item Percentage of original: \_\_\_\_\%
+\end{itemize}
+
+\subsection{Environmental Impact}
+
+\exercise{Calculate carbon footprint:}
+
+Training GPT-3:
+\begin{itemize}
+    \item Energy: 1,287 MWh
+    \item CO2: 552 tons
+    \item Cost: \$4.6M
+\end{itemize}
+
+Fine-tuning GPT-3 on your task:
+\begin{itemize}
+    \item Energy: ~10 MWh
+    \item CO2: \_\_\_ tons
+    \item Cost: \_\_\_\_\_
+\end{itemize}
+
+Savings by fine-tuning vs training from scratch: \_\_\_\%
+
+\section{B7: Critical Thinking (5 minutes)}
+
+\question{What are the limitations of pre-trained models?}
+
+List 3 limitations:
+\begin{enumerate}
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \item \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\end{enumerate}
+
+\question{How might pre-training bias affect downstream tasks?}
+
+\vspace{3em}
+
+\hrule
+\vspace{1em}
+
+\section*{Key Takeaways}
+
+\checkpoint{
+After completing both parts, you understand:
+
+\textbf{From Pre-Class:}
+\begin{itemize}
+    \item Why transfer learning is powerful
+    \item Intuition for masked modeling vs autoregressive
+    \item General vs task-specific knowledge
+    \item Economic motivation for pre-training
+\end{itemize}
+
+\textbf{From Post-Class:}
+\begin{itemize}
+    \item BERT's MLM objective and bidirectional attention
+    \item GPT's autoregressive generation
+    \item Fine-tuning strategies and learning rates
+    \item Model selection criteria
+    \item Implementation with Transformers library
+\end{itemize}
+}
+
+\section*{Next Steps}
+
+\begin{enumerate}
+    \item Fine-tune BERT on a custom dataset
+    \item Experiment with different generation strategies in GPT
+    \item Try parameter-efficient fine-tuning methods
+    \item Explore domain-specific pre-trained models
+\end{enumerate}
+
+\realworld{
+You now understand the technology powering ChatGPT, GitHub Copilot, and modern search engines. These concepts you've learned are worth billions in industry!
+}
+
+\end{document}

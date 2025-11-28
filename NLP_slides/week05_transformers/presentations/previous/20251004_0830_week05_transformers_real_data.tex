@@ -1,0 +1,446 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+% Packages
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{tcolorbox}
+
+% Custom colors
+\definecolor{mlblue}{RGB}{68,114,196}
+\definecolor{mlpurple}{RGB}{139,90,155}
+\definecolor{mlgreen}{RGB}{68,160,68}
+\definecolor{mlorange}{RGB}{255,127,14}
+\definecolor{mlred}{RGB}{214,39,40}
+
+% Title
+\title{Transformers: Understanding the Pipeline}
+\subtitle{Input → Computation → Output → WHY (with REAL data)}
+\author{Week 5: Transformers}
+\date{}
+
+\begin{document}
+
+% Slide 1: Title
+\begin{frame}
+\titlepage
+\end{frame}
+
+% ===========================================
+% COMPLETE EXAMPLE FIRST (Educational Framework)
+% ===========================================
+
+% Slide 2: Complete Pipeline Example
+\begin{frame}{Complete Example: How Transformers Predict Words}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{INPUT:} ``The cat sat on the \_\_\_''
+
+\vspace{3mm}
+\textbf{GOAL:} Predict next word
+
+\vspace{3mm}
+\textbf{THE COMPLETE PIPELINE:}
+\begin{enumerate}
+\item Turn words into numbers
+\item Add position information
+\item \textbf{Attention:} Each word looks at context
+\item \textbf{4 Different Heads:}
+  \begin{itemize}
+  \item Head 1: Grammar patterns
+  \item Head 2: Semantic relationships
+  \item Head 3: Nearby words (33\% self-attention!)
+  \item Head 4: Global context
+  \end{itemize}
+\item Combine all perspectives
+\item Predict: \textbf{mat (6.9\%), sofa (7.0\%), chair (6.7\%)}
+\end{enumerate}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{../figures/sr_real_06_complete_pipeline.pdf}
+\end{center}
+\end{columns}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY THIS WORKS:} To predict ``mat'', the model needs ALL 6 steps. Real attention weights show Head 3 focuses 33\% on ``on'' itself, helping identify the preposition pattern ``on the [furniture]''. All top 7 predictions are furniture!
+}}
+\end{center}
+\end{frame}
+
+% ===========================================
+% PART 1: STEP-BY-STEP EXPLANATION (6 slides)
+% ===========================================
+
+% Slide 3: Step 1 - Words to Numbers (REAL DATA)
+\begin{frame}{Step 1: Words to Numbers (Real Embeddings)}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{INPUT:} Text words
+
+\vspace{3mm}
+\textbf{COMPUTATION:} Look up in embedding matrix
+\begin{itemize}
+\item Each word → 8-dimensional vector
+\item \textbf{Real structure:}
+  \begin{itemize}
+  \item Dims 0-1: Animal/Object (``cat'' = 0.9)
+  \item Dims 2-3: Action/State (``sat'' = 0.8)
+  \item Dims 4-5: Furniture/Location
+  \item Dims 6-7: Grammar role (``the'' = 1.0)
+  \end{itemize}
+\end{itemize}
+
+\vspace{3mm}
+\textbf{OUTPUT:} Numerical vectors
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{../figures/sr_real_04_embeddings_3d.pdf}
+\end{center}
+\end{columns}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY:} Computers need numbers! Real embeddings have semantic structure: animals cluster together (dim 0), actions cluster together (dim 2), furniture clusters together (dim 4-5).
+}}
+\end{center}
+\end{frame}
+
+% Slide 4: Step 2 - Add Position (REAL DATA)
+\begin{frame}{Step 2: Add Position Information (Real Sin/Cos Encoding)}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{THE PROBLEM:} Order matters!
+\begin{itemize}
+\item ``cat sat'' $\neq$ ``sat cat''
+\item ``on the'' $\rightarrow$ needs furniture
+\item Position 0, 1, 2, 3, 4
+\end{itemize}
+
+\vspace{3mm}
+\textbf{COMPUTATION:} Add positional encoding
+\begin{itemize}
+\item \textbf{Real formula:} sin/cos waves
+\item Pos 0: [0.00, 1.00, 0.00, 1.00, ...]
+\item Pos 1: [0.84, 0.54, 0.01, 1.00, ...]
+\item Pos 2: [0.91, -0.42, 0.02, 1.00, ...]
+\end{itemize}
+
+\vspace{3mm}
+\textbf{OUTPUT:} Embeddings + Position
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{../figures/sr_real_05_positional_encoding.pdf}
+\end{center}
+\end{columns}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY:} Real sin/cos encoding lets model understand ``the cat'' vs ``cat the'' and detect patterns like ``on the [furniture]''.
+}}
+\end{center}
+\end{frame}
+
+% Slide 5: Step 3 - Calculate Attention (REAL DATA)
+\begin{frame}{Step 3: Calculate Attention (Real Softmax Weights)}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{COMPUTATION:} For each word, calculate:
+\begin{itemize}
+\item Q (Query): What am I looking for?
+\item K (Key): What do I contain?
+\item V (Value): What information do I have?
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Real attention weights (Head 1, word ``the''):}
+\begin{itemize}
+\item The: 20\%
+\item cat: 20\%
+\item sat: 20\%
+\item on: 20\%
+\item the: 20\%
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{../figures/sr_real_01_attention_network.pdf}
+\end{center}
+\end{columns}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY:} Real softmax weights (sum to 100\%) show how much each word attends to others. Head 1 distributes attention evenly (20\% each).
+}}
+\end{center}
+\end{frame}
+
+% Slide 6: Step 4 - Multi-Head Attention (REAL DATA)
+\begin{frame}{Step 4: Multi-Head Attention (4 Real Heads)}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/sr_real_02_multihead_heatmap.pdf}
+\end{center}
+
+\vspace{3mm}
+\textbf{Real patterns from simulation:}
+\begin{itemize}
+\item \textbf{Head 1 (Grammar):} Uniform attention (20\% each)
+\item \textbf{Head 2 (Semantics):} Slightly varied (19\%-21\%)
+\item \textbf{Head 3 (Position):} Strong self-attention! ``on'' → ``on'' = 33\%
+\item \textbf{Head 4 (Global):} Focuses on boundaries (The: 29\%, the: 28\%)
+\end{itemize}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY 4 HEADS:} Each head learns different patterns. Head 3's 33\% self-attention on ``on'' helps identify preposition patterns!
+}}
+\end{center}
+\end{frame}
+
+% Slide 7: Step 5 - Combine All Heads
+\begin{frame}{Step 5: Combine All 4 Head Outputs}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{COMPUTATION:} Concatenate all heads
+\begin{itemize}
+\item Head 1 output: 2 dimensions
+\item Head 2 output: 2 dimensions
+\item Head 3 output: 2 dimensions
+\item Head 4 output: 2 dimensions
+\item \textbf{Combined:} 8 dimensions total
+\end{itemize}
+
+\vspace{3mm}
+\textbf{OUTPUT:} Rich representation
+\begin{itemize}
+\item Grammar understanding (Head 1)
+\item Semantic meaning (Head 2)
+\item Position awareness (Head 3)
+\item Global context (Head 4)
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{../figures/sr_real_02_multihead_heatmap.pdf}
+\end{center}
+\end{columns}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY COMBINE:} Each head captures different aspects. Together they give complete understanding: ``on the'' (grammar + position) → furniture (semantics).
+}}
+\end{center}
+\end{frame}
+
+% Slide 8: Step 6 - Final Prediction (REAL DATA)
+\begin{frame}{Step 6: Final Prediction (Real Probabilities)}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{INPUT:} Combined representation from all 4 heads
+
+\vspace{3mm}
+\textbf{COMPUTATION:} Output layer
+\begin{itemize}
+\item Last token representation (8-dim)
+\item Multiply by output weights
+\item Apply softmax
+\item Get probability for each word
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Real top predictions:}
+\begin{itemize}
+\item sofa: 7.0\% ← furniture!
+\item mat: 6.9\% ← furniture!
+\item chair: 6.7\% ← furniture!
+\item rug: 6.5\% ← furniture!
+\item floor: 6.4\% ← furniture!
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{../figures/sr_real_03_output_probs.pdf}
+\end{center}
+\end{columns}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{green!20}{\parbox{0.9\textwidth}{
+\textbf{SUCCESS!} All top 7 predictions are furniture! The model correctly learned ``cat sat on the [furniture]'' pattern from real computations.
+}}
+\end{center}
+\end{frame}
+
+% ===========================================
+% PART 2: WHY IT'S FAST (2 slides)
+% ===========================================
+
+% Slide 9: Parallel Processing
+\begin{frame}{Why Transformers Are Fast: Parallel Processing}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{OLD WAY (RNN):}
+\begin{itemize}
+\item Word 1 → compute → WAIT
+\item Word 2 → compute → WAIT
+\item Word 3 → compute → WAIT
+\item Sequential bottleneck
+\item GPU usage: 2\%
+\item Training time: 90 days
+\end{itemize}
+
+\vspace{5mm}
+\textbf{NEW WAY (Transformer):}
+\begin{itemize}
+\item ALL words at once
+\item All attention heads parallel
+\item Full GPU utilization
+\item GPU usage: 92\%
+\item Training time: 1 day
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{../figures/sr_3d_simple_09_speed_comparison.pdf}
+\end{center}
+\end{columns}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{green!20}{\parbox{0.9\textwidth}{
+\textbf{WHY THIS MATTERS:} 90x speedup (90 days → 1 day) enabled modern AI scale. Without this, GPT-4 training would take 10+ years!
+}}
+\end{center}
+\end{frame}
+
+% Slide 10: Real World Impact
+\begin{frame}{Real World Impact: What This Enabled}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Same architecture, different data:}
+\begin{itemize}
+\item \textbf{Language:} ChatGPT, GPT-4, Claude
+\item \textbf{Vision:} DALL-E, Midjourney, Stable Diffusion
+\item \textbf{Audio:} Whisper, MusicGen
+\item \textbf{Multimodal:} Gemini, GPT-4V
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Key insight:}
+\begin{itemize}
+\item Parallel attention mechanism
+\item Works on any sequence data
+\item Scales to billions of parameters
+\item Enabled modern AI revolution
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{../figures/sr_3d_simple_10_application_sphere.pdf}
+\end{center}
+\end{columns}
+
+\vspace{3mm}
+\begin{center}
+\colorbox{orange!20}{\parbox{0.9\textwidth}{
+\textbf{WHY THIS MATTERS:} Without 100x speedup, none of these models would exist. Training GPT-4 with RNNs would take 10+ years (impossible!).
+}}
+\end{center}
+\end{frame}
+
+% ===========================================
+% PART 3: SUMMARY (2 slides)
+% ===========================================
+
+% Slide 11: The Tradeoff
+\begin{frame}{The Tradeoff: What We Gave Up}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Advantages (PRO):}
+\begin{itemize}
+\item \textcolor{green}{100x faster training}
+\item \textcolor{green}{Parallel processing}
+\item \textcolor{green}{92\% GPU utilization}
+\item \textcolor{green}{Works on any data type}
+\item \textcolor{green}{Enabled modern AI}
+\item \textcolor{green}{Interpretable attention}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Disadvantages (CON):}
+\begin{itemize}
+\item \textcolor{red}{More memory (O(n²))}
+\item \textcolor{red}{Needs more training data}
+\item \textcolor{red}{Limited sequence length}
+\item \textcolor{red}{More complex to tune}
+\item \textcolor{red}{Attention computation cost}
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{yellow!20}{\parbox{0.9\textwidth}{
+\textbf{THE DECISION:} Speed + quality > memory cost for modern AI
+}}
+\end{center}
+
+\vspace{5mm}
+\textbf{WHY ACCEPT TRADEOFF:} Memory is cheap (\$100/TB), time is expensive (\$1000/day for GPUs). Better to train fast even if uses more RAM. Real example: Our simulation uses 8-dim embeddings, but GPT-4 uses 12,000+ dims!
+\end{frame}
+
+% Slide 12: Summary
+\begin{frame}{Summary: The Complete Pipeline}
+\textbf{The 6-Step Pipeline with REAL Data:}
+
+\vspace{3mm}
+\begin{enumerate}
+\item \textbf{Words → Numbers:} Real semantic embeddings (cat=0.9 on animal dim)
+\item \textbf{Add Position:} Real sin/cos encoding (Pos 1 = [0.84, 0.54, ...])
+\item \textbf{Calculate Attention:} Real softmax weights (sum to 100\%)
+\item \textbf{Multi-Head (4 heads):} Grammar (20\% each), Position (33\% self!), Semantics, Global
+\item \textbf{Combine All Heads:} Concatenate 4 × 2-dim = 8-dim output
+\item \textbf{Predict Output:} Real probs: mat (6.9\%), sofa (7.0\%), chair (6.7\%) ← all furniture!
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{KEY INSIGHT: All words processed in parallel!}
+\begin{itemize}
+\item Result: 90 days → 1 day (90x speedup)
+\item Enabled: ChatGPT, GPT-4, DALL-E, Whisper, Claude, ...
+\end{itemize}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{green!20}{\parbox{0.9\textwidth}{
+\textbf{Next Week:} Pre-training \& Fine-tuning - Now that training is fast, we can train models with billions of parameters!
+}}
+\end{center}
+\end{frame}
+
+% Final slide
+\begin{frame}
+\begin{center}
+{\Huge \textbf{Transformers}}\\
+\vspace{5mm}
+{\Large Understanding the Pipeline}\\
+\vspace{5mm}
+{\large With REAL Simulation Data}\\
+\vspace{10mm}
+{\large Input → Computation → Output → WHY}\\
+\vspace{10mm}
+{\large Questions?}
+\end{center}
+\end{frame}
+
+\end{document}

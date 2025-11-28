@@ -1,0 +1,318 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{multicol}
+
+% Custom commands
+\newcommand{\highlight}[1]{\textbf{#1}}
+
+% Box for exercises
+\newtcolorbox{exercise}[1][]{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=#1,
+    fonttitle=\bfseries,
+    left=3pt, right=3pt, top=3pt, bottom=3pt
+}
+
+\newtcolorbox{keytakeaway}[1][]{
+    colback=green!5!white,
+    colframe=green!75!black,
+    title=Key Takeaway,
+    fonttitle=\bfseries,
+    left=3pt, right=3pt, top=3pt, bottom=3pt
+}
+
+% Compact spacing
+\setlist{nosep, leftmargin=*, after=\vspace{-2pt}}
+
+\begin{document}
+
+% Compact header instead of maketitle
+\begin{center}
+\textbf{\Large Neural Networks Discovery}\\[2pt]
+\textit{Understanding How Neurons Build Intelligence}\\[2pt]
+\small Pre-Class Discovery Handout | Time: 40-50 minutes
+\end{center}
+\vspace{-2mm}
+\hrule
+\vspace{3mm}
+
+\noindent\textbf{Objective:} Discover how simple neurons combine to solve complex problems through hands-on exploration. \textbf{No prior knowledge required!}
+
+\section*{Part 0: What is a Neuron? Building from Zero (15 minutes)}
+
+\subsection*{The Party Decision Problem}
+
+\begin{exercise}[Your Friend Alex's Decision]
+Alex needs to decide: Should I go to this party? Two factors matter:
+\begin{itemize}
+\item \textbf{Distance} (km): How far is the party?
+\item \textbf{Friends}: How many friends are going?
+\end{itemize}
+
+\textbf{Alex's personal formula for decisions:}
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering
+\textbf{Decision Score} = $(-2 \times \text{Distance})$ + $(3 \times \text{Friends})$ - 5\\[2pt]
+If Score $>$ 0 $\rightarrow$ \textbf{GO!} \quad | \quad If Score $\leq$ 0 $\rightarrow$ \textbf{STAY HOME}
+}}
+\end{center}
+
+\textbf{Your task:} Calculate Alex's decision for these parties. Fill in the table:
+
+\vspace{2mm}
+\begin{center}
+\small
+\begin{tabular}{|c|c||c|c|}
+\hline
+\textbf{Distance} & \textbf{Friends} & \textbf{Score Calculation} & \textbf{Decision} \\
+\hline\hline
+1 km & 2 & $(-2 \times 1) + (3 \times 2) - 5 =$ \rule{1.5cm}{0.4pt} & GO / STAY \\
+\hline
+5 km & 1 & $(-2 \times 5) + (3 \times 1) - 5 =$ \rule{1.5cm}{0.4pt} & GO / STAY \\
+\hline
+2 km & 3 & \rule{4.5cm}{0.4pt} & GO / STAY \\
+\hline
+3 km & 4 & \rule{4.5cm}{0.4pt} & GO / STAY \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Reflection Questions:}
+\begin{enumerate}
+\item The number \textbf{-2} (distance weight) means: \rule{5cm}{0.4pt}
+\item Why is friends weight \textbf{+3} positive but distance \textbf{-2} negative? \rule{5cm}{0.4pt}
+\item The \textbf{-5} is called the ``bias.'' What does it tell you about Alex? \rule{5cm}{0.4pt}
+\end{enumerate}
+\end{exercise}
+
+\subsection*{This is a Neuron!}
+
+\begin{keytakeaway}
+\textbf{Congratulations!} You just computed a \textbf{NEURON}. Here's the general formula:
+
+\begin{center}
+\large
+$\text{Output} = (w_1 \times \text{input}_1) + (w_2 \times \text{input}_2) + \text{bias}$
+\end{center}
+
+\textbf{Terminology:}
+\begin{itemize}
+\item $w_1, w_2$ = \textbf{WEIGHTS} (importance of each input)
+\item inputs = \textbf{DATA} (distance, friends, or any numbers)
+\item bias = \textbf{BASELINE} (starting preference before considering inputs)
+\item output = \textbf{SCORE} (final decision value)
+\end{itemize}
+
+\textbf{Intuition:} Positive weights mean ``more is better,'' negative weights mean ``less is better.''
+\end{keytakeaway}
+
+\vspace{-1mm}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/handout/neuron_schematic_simple.pdf}
+\end{center}
+
+\subsection*{Visualizing Alex's Decisions}
+
+Now let's plot all of Alex's past party decisions on a graph:
+
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/handout/party_decision_scatter.pdf}
+\end{center}
+
+\textbf{Discovery:} The line $-2d + 3f - 5 = 0$ perfectly separates GO from STAY decisions! This is called the \textbf{decision boundary}, and it's always a \rule{3cm}{0.4pt} line (straight/curved).
+
+\newpage
+
+\section*{Part 1: The Limitation - Only Straight Lines (8 minutes)}
+
+\begin{exercise}[Understanding Linear Boundaries]
+Remember Alex's formula from Part 0? Let's see what happens with mathematical notation:
+
+\begin{center}
+\includegraphics[width=0.55\textwidth]{../figures/handout/single_neuron_linear_example.pdf}
+\end{center}
+
+A single neuron computes: $\text{Output} = w_1x_1 + w_2x_2 + b$
+
+When Output = 0, we get the boundary: $w_1x_1 + w_2x_2 + b = 0$ (this is a line!)
+
+\textbf{Critical Question:}\\
+Can this neuron separate data arranged in a \textbf{circular pattern} (inner circle vs outer circle)?
+
+\begin{itemize}
+\item[$\square$] Yes - I can draw one straight line to separate them
+\item[$\square$] No - I would need a curve, not a line
+\end{itemize}
+
+\textbf{What's the fundamental limitation?} \rule{8cm}{0.4pt}
+\end{exercise}
+
+\begin{keytakeaway}
+\textbf{Without activation functions:} A single neuron can \textbf{ONLY} draw straight lines. It cannot create curved boundaries!
+\end{keytakeaway}
+
+\section*{Part 2: The Solution - Adding Curves (8 minutes)}
+
+\begin{exercise}[From Lines to Curves with Activation Functions]
+To handle circular or complex patterns, we add an \textbf{activation function} that ``bends'' the output.
+
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/neuron_without_with_activation.pdf}
+\end{center}
+
+\textbf{Fill in the comparison:}
+
+\vspace{1mm}
+\begin{center}
+\small
+\begin{tabular}{|l||c|c|}
+\hline
+\textbf{Property} & \textbf{Without Activation} & \textbf{With Activation} \\
+\hline\hline
+Boundary shape & \rule{2.5cm}{0.4pt} & \rule{2.5cm}{0.4pt} \\
+\hline
+Can make curves? & Yes / No & Yes / No \\
+\hline
+Can separate circles? & Yes / No & Yes / No \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{2mm}
+\textbf{Common Activation Functions:}
+
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/handout/activation_functions_comparison.pdf}
+\end{center}
+
+\vspace{-2mm}
+\textbf{Question:} Which activation function outputs values between 0 and 1? \rule{2.5cm}{0.4pt}
+\end{exercise}
+
+\section*{Part 3: Two Neurons Are Better Than One - The XOR Problem (12 minutes)}
+
+\begin{exercise}[Why One Neuron Isn't Enough]
+\textbf{The XOR (exclusive OR) problem:} Output 1 if inputs are \textit{different}, 0 if \textit{same}.
+
+\vspace{1mm}
+\begin{minipage}{0.35\textwidth}
+\centering
+\small
+\textbf{XOR Truth Table:}\\
+\vspace{1mm}
+\begin{tabular}{|c|c||c|}
+\hline
+$x_1$ & $x_2$ & Output \\
+\hline\hline
+0 & 0 & 0 \\
+\hline
+0 & 1 & 1 \\
+\hline
+1 & 0 & 1 \\
+\hline
+1 & 1 & 0 \\
+\hline
+\end{tabular}
+\end{minipage}
+\hfill
+\begin{minipage}{0.6\textwidth}
+\textbf{Challenge:} Try drawing \textbf{ONE} straight line that separates the 1's from 0's on the plot below.
+
+\textbf{Result:} Impossible with one line! \\
+\textbf{Solution:} Use \textbf{TWO} neurons!
+\end{minipage}
+
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/xor_solution_3panel.pdf}
+\end{center}
+
+\textbf{Key Insight:} Neuron 1 creates one boundary, Neuron 2 creates another. Together, their \textit{intersection} solves XOR!
+
+\vspace{1mm}
+\begin{center}
+\includegraphics[width=0.55\textwidth]{../figures/handout/two_neurons_combining.pdf}
+\end{center}
+
+\textbf{Trace Through Calculation:} For XOR input $(x_1=1, x_2=0)$, assume:
+\begin{itemize}
+\item Hidden Neuron 1: weights=[1.0, 1.0], bias=-0.5
+\item Hidden Neuron 2: weights=[1.0, 1.0], bias=-1.5
+\end{itemize}
+
+\small
+\begin{enumerate}[label=\alph*)]
+\item Neuron 1: $z_1 = (1.0 \times 1) + (1.0 \times 0) - 0.5 =$ \rule{1.5cm}{0.4pt}
+\item After sigmoid: $h_1 = \sigma(z_1) \approx$ \rule{1.5cm}{0.4pt} \quad \textit{(use 0.62 if $z_1=0.5$)}
+\item Neuron 2: $z_2 = (1.0 \times 1) + (1.0 \times 0) - 1.5 =$ \rule{1.5cm}{0.4pt}
+\end{enumerate}
+\end{exercise}
+
+\section*{Part 4: Many Neurons = Any Function! (5 minutes)}
+
+\begin{exercise}[The Universal Approximation Theorem]
+As we add more neurons, we can approximate \textit{any} smooth function to \textit{any} accuracy!
+
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/function_approximation_progression.pdf}
+\end{center}
+
+\vspace{-2mm}
+\textbf{Observations:}
+\begin{enumerate}
+\item With 1 neuron, the fit is \rule{2.5cm}{0.4pt} (poor/excellent).
+\item With 10 neurons, the approximation is \rule{2.5cm}{0.4pt} (poor/nearly perfect).
+\item \textbf{Pattern:} More neurons = \rule{2.5cm}{0.4pt} approximation.
+\end{enumerate}
+
+\textbf{True or False:}
+\begin{itemize}
+\item[$\square$] Neural networks with enough neurons can approximate any continuous function.
+\item[$\square$] One neuron is always enough to solve any problem.
+\item[$\square$] Activation functions are optional for neural networks.
+\end{itemize}
+\end{exercise}
+
+\begin{keytakeaway}
+\textbf{Universal Approximation Theorem (Cybenko, 1989):} A neural network with enough hidden neurons can approximate \textit{any} continuous function to \textit{any} desired accuracy. This is why neural networks are so powerful!
+\end{keytakeaway}
+
+\section*{Summary: What You Discovered}
+
+\textbf{Fill in the blanks to consolidate your learning:}
+
+\begin{enumerate}
+\item A neuron computes: Output = \rule{5cm}{0.4pt}
+\item \textbf{Weights} control the \rule{3cm}{0.4pt} of each input.
+\item \textbf{Bias} represents the \rule{3cm}{0.4pt} before considering inputs.
+\item \textbf{Without activation:} Neurons can only make \rule{3cm}{0.4pt} boundaries.
+\item \textbf{With activation:} Neurons can create \rule{3cm}{0.4pt} shapes.
+\item \textbf{Multiple neurons:} Can solve problems like \rule{3cm}{0.4pt} that single neurons cannot.
+\item \textbf{Many neurons:} Can approximate \rule{3cm}{0.4pt}.
+\end{enumerate}
+
+\vspace{3mm}
+\noindent\textbf{Before Class - Think About:}
+\begin{itemize}
+\item How do we actually \textit{learn} the right weights?
+\item What happens when we stack many layers of neurons?
+\item What are the limitations of neural networks?
+\end{itemize}
+
+\vspace{2mm}
+\hrule
+\vspace{1mm}
+\noindent\textit{\small Answers will be revealed in class. Bring your questions!}
+
+\end{document}

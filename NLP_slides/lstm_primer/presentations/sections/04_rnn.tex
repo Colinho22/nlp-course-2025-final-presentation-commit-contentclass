@@ -1,0 +1,148 @@
+% Section 4: Recurrent Neural Networks - First Attempt
+
+\begin{frame}[t]{Recurrent Neural Networks: First Attempt}
+\begin{center}
+\textbf{Idea: Maintain a Hidden State as Memory}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{The RNN Concept:}
+
+\vspace{3mm}
+\begin{itemize}
+\item \textbf{Hidden state} $h_t$ = memory
+\item Update memory at each word
+\item Use memory to make predictions
+\item Memory flows through time
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Math:}
+\begin{align*}
+h_t &= \tanh(W_h h_{t-1} + W_x x_t + b) \\
+y_t &= \text{softmax}(W_y h_t + b_y)
+\end{align*}
+
+Where:
+\begin{itemize}
+\item $h_t$ = hidden state (memory) at time $t$
+\item $h_{t-1}$ = previous memory
+\item $x_t$ = current word embedding
+\item $y_t$ = prediction probabilities
+\item $W_h, W_x, W_y$ = learned weight matrices
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Key Properties:}
+\begin{itemize}
+\item Same weights reused at each step
+\item Memory compressed into fixed-size vector
+\item Can theoretically remember infinite context
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{How It Processes Sequences:}
+
+\vspace{3mm}
+Input: ``I love chocolate''
+
+\vspace{3mm}
+\textbf{Step 1:} Process ``I''
+\begin{itemize}
+\item $h_0 = [0, 0, 0, \ldots]$ (initial state)
+\item $h_1 = \tanh(W_h h_0 + W_x [\text{embed}(\text{``I''})]+b)$
+\item Predict next word from $h_1$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Step 2:} Process ``love''
+\begin{itemize}
+\item Use $h_1$ from previous step
+\item $h_2 = \tanh(W_h h_1 + W_x [\text{embed}(\text{``love''})]+b)$
+\item Now $h_2$ contains info about ``I love''
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Step 3:} Process ``chocolate''
+\begin{itemize}
+\item $h_3 = \tanh(W_h h_2 + W_x [\text{embed}(\text{``chocolate''})]+b)$
+\item $h_3$ should remember full sequence
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Advantages over N-grams:}
+\begin{itemize}
+\item No fixed window size
+\item Learns patterns, not just counts
+\item Generalizes to unseen sequences
+\item Continuous representation
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Sounds perfect! But there's a critical problem\ldots}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{RNN Concrete Example: Step-by-Step Numbers}
+\begin{center}
+\textbf{Walking Through an Actual RNN Computation}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Setup:}
+
+\vspace{3mm}
+Input sequence: ``I love''
+
+\vspace{2mm}
+Dimensions:
+\begin{itemize}
+\item Hidden size: 3 (toy example)
+\item Word embeddings: 2-dimensional
+\end{itemize}
+
+\vspace{2mm}
+Weights (simplified):
+$$W_h = \begin{bmatrix} 0.5 & -0.2 & 0.3 \\ 0.1 & 0.4 & -0.1 \\ -0.3 & 0.2 & 0.6 \end{bmatrix}$$
+
+$$W_x = \begin{bmatrix} 0.8 & 0.3 \\ -0.2 & 0.5 \\ 0.4 & -0.1 \end{bmatrix}$$
+
+\vspace{2mm}
+Word embeddings:
+\begin{itemize}
+\item ``I'' = $[1.0, 0.5]$
+\item ``love'' = $[0.8, 0.9]$
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Step 1: Process ``I''}
+
+$$h_0 = [0, 0, 0]$$
+
+$$W_x x_1 = \begin{bmatrix} 0.8 & 0.3 \\ -0.2 & 0.5 \\ 0.4 & -0.1 \end{bmatrix} \begin{bmatrix} 1.0 \\ 0.5 \end{bmatrix} = \begin{bmatrix} 0.95 \\ 0.05 \\ 0.35 \end{bmatrix}$$
+
+$$h_1 = \tanh([0,0,0] + [0.95, 0.05, 0.35])$$
+$$h_1 = \tanh([0.95, 0.05, 0.35])$$
+$$h_1 = [0.74, 0.05, 0.34]$$
+
+\vspace{3mm}
+\textbf{Step 2: Process ``love''}
+
+$$W_h h_1 = \begin{bmatrix} 0.5 & -0.2 & 0.3 \\ 0.1 & 0.4 & -0.1 \\ -0.3 & 0.2 & 0.6 \end{bmatrix} \begin{bmatrix} 0.74 \\ 0.05 \\ 0.34 \end{bmatrix} = \begin{bmatrix} 0.46 \\ 0.04 \\ -0.01 \end{bmatrix}$$
+
+$$W_x x_2 = \begin{bmatrix} 0.8 & 0.3 \\ -0.2 & 0.5 \\ 0.4 & -0.1 \end{bmatrix} \begin{bmatrix} 0.8 \\ 0.9 \end{bmatrix} = \begin{bmatrix} 0.91 \\ 0.29 \\ 0.23 \end{bmatrix}$$
+
+$$h_2 = \tanh([0.46, 0.04, -0.01] + [0.91, 0.29, 0.23])$$
+$$h_2 = \tanh([1.37, 0.33, 0.22])$$
+$$h_2 = [0.88, 0.32, 0.22]$$
+
+\vspace{3mm}
+\textbf{Observation:} $h_2$ encodes both ``I'' and ``love''!
+
+\end{columns}
+\end{frame}

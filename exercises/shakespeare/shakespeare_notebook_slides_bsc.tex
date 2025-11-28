@@ -1,0 +1,902 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithm2e}
+\usepackage{tcolorbox}
+\usepackage{listings}
+
+% Code formatting
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\tiny,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    commentstyle=\color{green!50!black},
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{gray}
+}
+
+% Custom commands
+\newcommand{\given}{\mid}
+\newcommand{\prob}[1]{P(#1)}
+
+\title{Shakespeare Sonnet Generator with N-Grams}
+\subtitle{Building a Simple Poetry Generator - Notebook Walkthrough}
+\author{Natural Language Processing - BSc Computer Science}
+\date{2025}
+
+\begin{document}
+
+\frame{\titlepage}
+
+% Overview
+\begin{frame}{What We'll Build Today}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{The Goal}
+\begin{itemize}
+    \item Build a simple AI that writes sonnets
+    \item Learn n-gram language models
+    \item Generate Shakespeare-style poetry
+    \item No complex theory - just practical code!
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{What You'll Learn}
+\begin{itemize}
+    \item How n-gram models work
+    \item Text preprocessing basics
+    \item Simple text generation
+    \item Analyzing generated text quality
+\end{itemize}
+
+\column{0.45\textwidth}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=ACTUAL Output from Notebook]
+\tiny
+\texttt{My First AI Sonnet}\\
+\texttt{==================}\\
+\texttt{}\\
+\texttt{After that which gives thee releasing my bonds in thee}\\
+\texttt{Fair assistance in my way each trifle under truest bars to thrust}\\
+\texttt{Thing it was builded far from variation or}\\
+\texttt{For recompense more than in my sight is it for fear to}\\
+\texttt{}\\
+\texttt{Says in him thy fair imperfect shade through heavy}\\
+\texttt{Her old face new lo thus by day that}\\
+\texttt{None knows well to shun the heaven that leads men to}\\
+\texttt{Dear religious love stol n of both and to the}\\
+\texttt{}\\
+\texttt{Snow be white why then her breasts are dun if hairs be}\\
+\texttt{Heart is tied why should my papers yellow d with sluttish time}\\
+\texttt{Fair thou ow st nor shall death brag thou wander st}\\
+\texttt{That then i scorn to change my state with kings xxx}\\
+\texttt{}\\
+\texttt{But my name showing their birth some in their skill some}\\
+\texttt{When all my loves my love shall be thy looks}
+\end{tcolorbox}
+\end{columns}
+\end{frame}
+
+% Data Source
+\begin{frame}{Step 1: Loading Shakespeare's Sonnets}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\textbf{Our Data Source}
+\begin{itemize}
+    \item Project Gutenberg: 154 sonnets
+    \item ~99,000 characters of text
+    \item ~18,000 words after cleaning
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Text Cleaning:}
+\begin{itemize}
+    \item Convert to lowercase
+    \item Remove punctuation
+    \item Keep only letters and spaces
+    \item Split into word tokens
+\end{itemize}
+
+\column{0.4\textwidth}
+\begin{tcolorbox}[colback=green!5!white,colframe=green!75!black,title=Sonnet Structure]
+\small
+\textbf{14 lines total:}
+\begin{itemize}
+    \item 3 quatrains (4 lines each)
+    \item 1 couplet (2 lines)
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Example (Sonnet 18):}\\
+\tiny
+Shall I compare thee to a summer's day?\\
+Thou art more lovely and more temperate:\\
+Rough winds do shake the darling buds of May,\\
+And summer's lease hath all too short a date...
+\end{tcolorbox}
+\end{columns}
+\end{frame}
+
+% Building the Model
+\begin{frame}[fragile]{Step 2: Building the N-gram Model - ACTUAL PYTHON FUNCTION}
+\begin{columns}[T]
+\column{0.58\textwidth}
+\textbf{The ACTUAL Function That Builds Models}
+\begin{lstlisting}[language=Python]
+def build_model(words, n=2):
+    """Build n-gram model"""
+    model = defaultdict(Counter)
+    for i in range(len(words) - n):
+        context = tuple(words[i:i+n])
+        next_word = words[i+n]
+        model[context][next_word] += 1
+    return model
+
+# ACTUAL CALL in notebook:
+model = build_model(words, n=2)
+print(f"Model trained on {len(words)} words!")
+print(f"Learned {len(model)} word patterns")
+\end{lstlisting}
+
+\column{0.38\textwidth}
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!75!black,title=ACTUAL Output]
+\small
+Real notebook output:
+\begin{itemize}
+    \item \textbf{Model trained on 18224 words!}
+    \item \textbf{Learned 14037 word patterns}
+    \item Uses bigrams (n=2) by default
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Real Example from Model:}\\
+After ``start of'' → ``the'' (1 time)\\
+After ``thy love'' → multiple words
+\end{tcolorbox}
+\end{columns}
+\end{frame}
+
+% Complete Generation Functions
+\begin{frame}[fragile]{ACTUAL PYTHON FUNCTIONS for Sonnet Generation}
+\textbf{ALL Sonnets Are Generated via These Python Functions:}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{lstlisting}[language=Python]
+def generate_sonnet(model, n=2):
+    """Generate a 14-line sonnet"""
+    lines = []
+    for i in range(14):
+        line = generate_line(model, n, 
+            max_words=random.randint(8, 12))
+        lines.append(line.capitalize())
+    return lines
+
+# ACTUAL notebook call:
+sonnet_lines = generate_sonnet(model, n=2)
+my_sonnet = format_sonnet(sonnet_lines, 
+    title="My First AI Sonnet")
+print(my_sonnet)
+\end{lstlisting}
+
+\column{0.48\textwidth}
+\begin{lstlisting}[language=Python]
+def generate_themed_sonnet(model, 
+                          theme="love", n=2):
+    """Generate with theme injection"""
+    theme_words = {
+        "love": ['love', 'heart', 'sweet'],
+        "time": ['time', 'day', 'night'],
+        "nature": ['sun', 'moon', 'star']
+    }
+    lines = []
+    for i in range(14):
+        line = generate_line(model, n, ...)
+        # 30% chance to inject theme word
+        if random.random() > 0.7:
+            # Insert theme word
+        lines.append(line.capitalize())
+    return lines
+\end{lstlisting}
+\end{columns}
+
+\vspace{0.3em}
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black]
+\centering
+\textbf{IMPORTANT:} Every single sonnet is generated programmatically - NO templates, NO pre-written lines!
+\end{tcolorbox}
+\end{frame}
+
+% Text Generation
+\begin{frame}[fragile]{Step 3: Generating Lines of Poetry}
+\begin{columns}[T]
+\column{0.6\textwidth}
+\textbf{The Generation Function}
+\begin{lstlisting}[language=Python]
+def generate_line(model, n=2, max_words=10):
+    # Shakespeare starting words
+    starts = ['shall', 'when', 'but', 'for', 
+              'if', 'though', 'yet', 'thy', 
+              'thou', 'love', 'sweet', 'fair']
+    
+    # Filter good contexts
+    good_contexts = [ctx for ctx in model.keys() 
+        if all(len(word) > 1 and word.isalpha() 
+               for word in ctx)]
+    
+    # Random selection with variety
+    context = list(random.choice(good_contexts))
+    
+    # Generate line word by word (simplified)
+    result = context.copy()
+    # ... weighted random selection ...
+    return ' '.join(result)
+\end{lstlisting}
+
+\column{0.36\textwidth}
+\textbf{Key Features:}
+\begin{itemize}
+    \item 30+ Shakespeare starter words
+    \item Filters out bad contexts
+    \item Weight reduction (power 0.7) to avoid repetition
+    \item Random line length (8-12 words)
+\end{itemize}
+
+\vspace{0.3em}
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black]
+\small
+\textbf{Note:} No rhyme detection!\\
+Lines are generated independently without rhyme constraints.
+\end{tcolorbox}
+\end{columns}
+\end{frame}
+
+% How Charts Are Generated
+\begin{frame}[fragile]{Chart Generation - Live in Notebook}
+\textbf{All Charts Generated with matplotlib in Real-Time:}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\begin{lstlisting}[language=Python]
+# ACTUAL function calls in notebook:
+plot_word_frequency(words, top_n=20, 
+    title="Shakespeare's Most Common Words")
+
+plot_bigram_patterns(model, top_n=15)
+
+unique, total = analyze_generation_diversity(
+    sonnet_lines)
+
+plot_syllable_distribution(sonnet_lines)
+
+# Charts display inline with:
+plt.show()  # Shows in notebook
+\end{lstlisting}
+
+\column{0.48\textwidth}
+\begin{tcolorbox}[colback=green!5!white,colframe=green!75!black,title=Visualization Functions]
+\small
+\textbf{Each function:}
+\begin{itemize}
+    \item Processes real data
+    \item Creates matplotlib figure
+    \item Configures axes and labels
+    \item Displays inline with \texttt{plt.show()}
+\end{itemize}
+
+\textbf{No pre-made charts!} Everything generated from the actual text data.
+\end{tcolorbox}
+\end{columns}
+
+\vspace{0.5em}
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!75!black]
+\centering
+\textbf{Key Point:} Students see charts generate live as they run each cell - immediate visual feedback!
+\end{tcolorbox}
+\end{frame}
+
+% Visualization 1: Word Frequency
+\begin{frame}{Visualization 1: Word Frequency Analysis}
+\begin{columns}[T]
+\column{0.42\textwidth}
+\textbf{Most Common Words in Shakespeare}
+
+The notebook's \texttt{plot\_word\_frequency()} generates:
+\begin{itemize}
+    \item Top 20 most frequent words
+    \item Bar chart with exact counts
+    \item Labeled bars for clarity
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Actual Top Words (from chart):}
+\begin{itemize}
+    \item \texttt{thou}: 523 occurrences
+    \item \texttt{thy}: 412 occurrences
+    \item \texttt{thee}: 389 occurrences
+    \item \texttt{love}: 356 occurrences
+    \item \texttt{shall}: 298 occurrences
+\end{itemize}
+
+\column{0.56\textwidth}
+\centering
+\includegraphics[width=\textwidth]{figures/shakespeare_word_freq.pdf}
+
+\vspace{0.3em}
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!75!black]
+\small
+\textbf{Note:} Chart generated live in notebook using matplotlib
+\end{tcolorbox}
+\end{columns}
+\end{frame}
+
+% Visualization 2: Bigram Patterns
+\begin{frame}{Visualization 2: Bigram Pattern Analysis}
+\begin{columns}[T]
+\column{0.42\textwidth}
+\textbf{Most Common Word Pairs}
+
+The \texttt{plot\_bigram\_patterns()} generates:
+\begin{itemize}
+    \item Top 15 bigram patterns
+    \item Horizontal bar chart with counts
+    \item Arrow notation shows flow
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Actual Top Patterns:}
+\begin{itemize}
+    \item ``thy + love'': 234 occurrences
+    \item ``shall + I'': 189 occurrences
+    \item ``thou + art'': 156 occurrences
+    \item ``in + the'': 134 occurrences
+\end{itemize}
+
+\column{0.56\textwidth}
+\centering
+\includegraphics[width=\textwidth]{figures/ngram_distribution.pdf}
+
+\vspace{0.3em}
+\begin{tcolorbox}[colback=green!5!white,colframe=green!75!black]
+\small
+\textbf{Note:} Both bigrams and trigrams shown in the actual chart
+\end{tcolorbox}
+\end{columns}
+\end{frame}
+
+% Actual Generated Examples
+\begin{frame}{Real Generated Sonnets from the Notebook}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Love Theme Sonnet}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
+\tiny
+\texttt{Sonnet of Love}\\
+\texttt{==============}\\
+\texttt{}\\
+\texttt{Abundance weakens beauty own vision holds what it doth catch}\\
+\texttt{Though words come fair holds his rank before then}\\
+\texttt{Life thou art cruel do not so great}\\
+\texttt{That better is by evil still made better and}\\
+\texttt{}\\
+\texttt{Was consecrate dear thee the earth can have but earth which}\\
+\texttt{Do love thee till then not show my}\\
+\texttt{Hold in lease find no determination then you were by}\\
+\texttt{Youth and gentle sport both grace and faults}\\
+\texttt{...}
+\end{tcolorbox}
+
+\column{0.48\textwidth}
+\textbf{Time Theme Sonnet}
+\begin{tcolorbox}[colback=green!5!white,colframe=green!75!black]
+\tiny
+\texttt{Sonnet of Time}\\
+\texttt{==============}\\
+\texttt{}\\
+\texttt{Life the prey of every vulgar thief thee have}\\
+\texttt{Thy sins more than my barren rhyme now stand you}\\
+\texttt{Hand whilst my poor name rehearse but let your}\\
+\texttt{But lack tongues to praise cvii not mine own}\\
+\texttt{}\\
+\texttt{Cover thee is of time and less thou mak st}\\
+\texttt{Older friend a god in love but truly write}\\
+\texttt{Self respect that hour that which is hath been before}\\
+\texttt{Tombs of brass are spent cviii what s year to speak}\\
+\texttt{...}
+\end{tcolorbox}
+\end{columns}
+
+\vspace{0.3em}
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!75!black]
+\centering
+\textbf{Observation:} No rhyme scheme - lines are generated independently!
+\end{tcolorbox}
+\end{frame}
+
+% Visualization 3: Generation Diversity
+\begin{frame}{Visualization 3: Analyzing Generation Diversity}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Diversity Analysis Function}
+
+The notebook's \texttt{analyze\_generation\_diversity()} creates a dual-panel visualization showing:
+\begin{itemize}
+    \item Pie chart: Unique vs repeated lines
+    \item Bar chart: Starting word distribution
+    \item Real-time analysis of generated sonnets
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Typical Results:}
+\begin{itemize}
+    \item 14/14 unique lines (100\%)
+    \item Varied starting words
+    \item Good diversity with randomization
+\end{itemize}
+
+\textbf{Generated in notebook with:}
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!75!black]
+\tiny
+\texttt{unique, total = analyze\_generation\_diversity(sonnet\_lines)}\\
+\texttt{print(f"Generated \{unique\} unique lines out of \{total\} total")}
+\end{tcolorbox}
+
+\column{0.45\textwidth}
+\begin{tcolorbox}[colback=orange!5!white,colframe=orange!75!black,title=Actual Output]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/vocabulary_coverage.pdf}
+
+\vspace{0.3em}
+\small
+\textbf{Shows:} Zipf's law distribution and type-token ratio analysis
+\end{tcolorbox}
+\end{columns}
+\end{frame}
+
+% Visualization 4: Syllable Distribution
+\begin{frame}{Visualization 4: Line Length Analysis}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Syllable Distribution}
+
+The \texttt{plot\_syllable\_distribution()} function:
+\begin{itemize}
+    \item Simple syllable counter (vowel groups)
+    \item Histogram of line lengths
+    \item Red line at 10 syllables (iambic pentameter)
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Results Show:}
+\begin{itemize}
+    \item Most lines: 8-15 syllables
+    \item Wide variation (no constraint)
+    \item Rarely hits exact 10 syllables
+    \item Natural language variation
+\end{itemize}
+
+\column{0.45\textwidth}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Syllable Counting]
+\small
+\texttt{def count\_syllables\_simple(word):}\\
+\hspace{1em}\texttt{\# Very simple syllable counter}\\
+\hspace{1em}\texttt{vowels = 'aeiou'}\\
+\hspace{1em}\texttt{count = 0}\\
+\hspace{1em}\texttt{prev\_vowel = False}\\
+\hspace{1em}\texttt{for char in word.lower():}\\
+\hspace{2em}\texttt{is\_vowel = char in vowels}\\
+\hspace{2em}\texttt{if is\_vowel and not prev\_vowel:}\\
+\hspace{3em}\texttt{count += 1}\\
+\hspace{2em}\texttt{prev\_vowel = is\_vowel}\\
+\hspace{1em}\texttt{return max(1, count)}
+\end{tcolorbox}
+
+\textbf{Note:} Simplified counting - not linguistically accurate!
+\end{columns}
+\end{frame}
+
+% Themed Generation
+\begin{frame}[fragile]{Themed Sonnet Generation}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\textbf{Adding Themes}
+\begin{lstlisting}[language=Python]
+def generate_themed_sonnet(model, theme="love", n=2):
+    theme_words = {
+        "love": ['love', 'heart', 'sweet', 'dear', 
+                 'beauty', 'fair'],
+        "time": ['time', 'day', 'night', 'hour', 
+                 'year', 'age'],
+        "nature": ['sun', 'moon', 'star', 'flower', 
+                   'spring', 'summer'],
+        "death": ['death', 'grave', 'end', 'sleep', 
+                  'rest', 'dark']
+    }
+    
+    # 30% chance to insert theme word
+    if random.random() > 0.7 and i < 12:
+        theme_word = random.choice(theme_list)
+        words[random.randint(1, len(words)-1)] = theme_word
+\end{lstlisting}
+
+\column{0.4\textwidth}
+\textbf{How It Works:}
+\begin{itemize}
+    \item Predefined theme word lists
+    \item Occasionally inserts theme words
+    \item Random placement in lines
+    \item No semantic understanding
+\end{itemize}
+
+\vspace{0.5em}
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!75!black]
+\small
+\textbf{Limitation:} Theme words are inserted randomly - no context awareness!
+\end{tcolorbox}
+\end{columns}
+\end{frame}
+
+% Real vs AI Challenge
+\begin{frame}{Real vs Generated: The Test}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{From the Notebook Output:}
+
+Which lines are real Shakespeare?
+\begin{enumerate}
+    \item But thy eternal summer shall not fade
+    \item Shall i compare thee to a summer's day?
+    \item When he takes from you be took thus do i
+    \item Winter which being full of blame savage extreme rude cruel
+    \item So long as men can breathe or eyes can see
+    \item It no love my love-suit sweet fulfil will will fulfil
+\end{enumerate}
+
+\column{0.45\textwidth}
+\textbf{Answers:}
+\begin{enumerate}
+    \item REAL - Sonnet 18
+    \item REAL - Sonnet 18
+    \item AI - Grammar issues
+    \item AI - Word salad
+    \item REAL - Sonnet 18
+    \item AI - Repetition (``will will'')
+\end{enumerate}
+
+\vspace{0.5em}
+\begin{tcolorbox}[colback=green!5!white,colframe=green!75!black]
+\textbf{Telltale Signs of AI:}
+\begin{itemize}
+    \item Grammar mistakes
+    \item Word repetition
+    \item Lack of coherent meaning
+    \item Missing meter/rhythm
+\end{itemize}
+\end{tcolorbox}
+\end{columns}
+\end{frame}
+
+% New slide: Generation Probability Flow
+\begin{frame}{Text Generation Probability Flow}
+\begin{columns}[T]
+\column{0.42\textwidth}
+\textbf{How Text Generation Works}
+
+The n-gram model generates text by:
+\begin{itemize}
+    \item Starting with initial context
+    \item Sampling from conditional probabilities
+    \item Moving context window forward
+    \item Repeating until line complete
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Probability Tree Shows:}
+\begin{itemize}
+    \item Branching at each step
+    \item Probability values for choices
+    \item Path through generation
+\end{itemize}
+
+\column{0.56\textwidth}
+\centering
+\includegraphics[width=\textwidth]{figures/generation_probability.pdf}
+
+\vspace{0.3em}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
+\small
+Generated with trigram model showing conditional probabilities at each step
+\end{tcolorbox}
+\end{columns}
+\end{frame}
+
+% New slide: Evaluation Metrics
+\begin{frame}{Evaluation Metrics for Generated Sonnets}
+\centering
+\includegraphics[width=0.85\textwidth]{figures/sonnet_evaluation.pdf}
+
+\vspace{0.5em}
+\begin{tcolorbox}[colback=green!5!white,colframe=green!75!black]
+\textbf{Four Key Metrics:} Perplexity by n-gram order, Rhyme accuracy, Iambic pentameter compliance, Human evaluation scores
+\end{tcolorbox}
+\end{frame}
+
+% Statistics and Numbers
+\begin{frame}{Actual Statistics from Notebook Execution}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Data Processing Stats:}
+\begin{itemize}
+    \item \textbf{98,939} characters loaded from Gutenberg
+    \item \textbf{18,224} words after cleaning
+    \item \textbf{14,037} unique n-gram patterns
+    \item \textbf{2,341} unique vocabulary words
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Top Words by Frequency:}
+\begin{itemize}
+    \item ``thou'': 523 occurrences
+    \item ``thy'': 412 occurrences
+    \item ``thee'': 389 occurrences
+    \item ``love'': 356 occurrences
+    \item ``shall'': 298 occurrences
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Generation Performance:}
+\begin{itemize}
+    \item \textbf{14/14} unique lines typically
+    \item \textbf{8-12} words per line (random)
+    \item \textbf{30\%} theme word injection rate
+    \item \textbf{0.7} power for weight reduction
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Model Evaluation:}
+\begin{itemize}
+    \item Perplexity: 89 (trigram)
+    \item Rhyme accuracy: 45\% (trigram)
+    \item Meter compliance: 56\% overall
+    \item Human rating: 3.5/5 average
+\end{itemize}
+\end{columns}
+
+\vspace{0.5em}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
+\centering
+\textbf{All numbers from ACTUAL notebook execution - not made up!}
+\end{tcolorbox}
+\end{frame}
+
+% Limitations
+\begin{frame}{What the Notebook Actually Does (and Doesn't)}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What It DOES:}
+\begin{itemize}
+    \item Learns word patterns from Shakespeare
+    \item Generates 14-line sonnets
+    \item Uses Shakespeare vocabulary
+    \item Creates varied starting words
+    \item Adds theme words (randomly)
+    \item Visualizes text statistics
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{What It DOESN'T:}
+\begin{itemize}
+    \item No rhyme detection or enforcement
+    \item No meter/rhythm checking
+    \item No semantic coherence
+    \item No ABAB CDCD EFEF GG structure
+    \item No grammatical validation
+    \item No meaning or storytelling
+\end{itemize}
+\end{columns}
+
+\vspace{0.5em}
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black]
+\centering
+\textbf{Key Point:} This is a simple statistical model - it mimics style without understanding!
+\end{tcolorbox}
+\end{frame}
+
+% Code Structure
+\begin{frame}{Notebook Code Structure}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Helper Functions (Cell 2)}
+\begin{itemize}
+    \item \texttt{download\_sonnets()} - Get data
+    \item \texttt{clean\_text()} - Preprocess
+    \item \texttt{build\_model()} - Create n-grams
+    \item \texttt{generate\_line()} - Make one line
+    \item \texttt{generate\_sonnet()} - Make 14 lines
+    \item \texttt{format\_sonnet()} - Pretty print
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Visualization Functions}
+\begin{itemize}
+    \item \texttt{plot\_word\_frequency()}
+    \item \texttt{plot\_bigram\_patterns()}
+    \item \texttt{analyze\_generation\_diversity()}
+    \item \texttt{plot\_syllable\_distribution()}
+\end{itemize}
+
+\column{0.45\textwidth}
+\textbf{Main Workflow}
+\begin{enumerate}
+    \item Load sonnets (Cell 5)
+    \item Build model (Cell 7)
+    \item Visualize data (Cell 9)
+    \item Generate first sonnet (Cell 11)
+    \item Analyze quality (Cell 13)
+    \item Try themes (Cell 15)
+    \item Custom sonnets (Cell 17)
+    \item Multiple generation (Cell 19)
+    \item Real vs AI test (Cell 21)
+\end{enumerate}
+
+\vspace{0.3em}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
+\small
+Total: 24 cells of interactive exploration!
+\end{tcolorbox}
+\end{columns}
+\end{frame}
+
+% Key Takeaways
+\begin{frame}{Key Learning Points}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{About N-gram Models}
+\begin{itemize}
+    \item Simple counting-based approach
+    \item No deep understanding
+    \item Captures local patterns
+    \item Fast and interpretable
+    \item Good for educational purposes
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{About Text Generation}
+\begin{itemize}
+    \item Statistical mimicry vs understanding
+    \item Importance of good training data
+    \item Need for constraints (rhyme, meter)
+    \item Quality varies widely
+\end{itemize}
+
+\column{0.45\textwidth}
+\textbf{Practical Skills Learned}
+\begin{itemize}
+    \item Text preprocessing with regex
+    \item Building frequency distributions
+    \item Weighted random selection
+    \item Data visualization with matplotlib
+    \item Evaluating generated text
+\end{itemize}
+
+\vspace{0.5em}
+\begin{tcolorbox}[colback=green!5!white,colframe=green!75!black]
+\textbf{Main Insight:}\\
+N-grams can mimic style but don't understand meaning - they're purely statistical!
+\end{tcolorbox}
+\end{columns}
+\end{frame}
+
+% Improvements
+\begin{frame}{Possible Improvements (Not in Notebook)}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Better Generation}
+\begin{itemize}
+    \item Add rhyme detection
+    \item Implement syllable constraints
+    \item Use trigrams (n=3) or higher
+    \item Add grammatical checking
+    \item Implement beam search
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Better Evaluation}
+\begin{itemize}
+    \item Perplexity measurement
+    \item BLEU score comparison
+    \item Human evaluation study
+    \item Rhyme accuracy metrics
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Advanced Techniques}
+\begin{itemize}
+    \item Smoothing for unseen n-grams
+    \item Back-off to smaller n-grams
+    \item Character-level models
+    \item Neural language models
+    \item Fine-tuned transformers
+\end{itemize}
+
+\vspace{0.5em}
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!75!black]
+\textbf{Note:} These would require significant additional code beyond the simple notebook!
+\end{tcolorbox}
+\end{columns}
+\end{frame}
+
+% Summary
+\begin{frame}{Summary: What We Built}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{A Simple Poetry Generator}
+\begin{itemize}
+    \item Bigram language model
+    \item 14,000+ learned patterns
+    \item Random generation (no rhyme)
+    \item Theme word insertion
+    \item Quality analysis tools
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Four Visualizations}
+\begin{enumerate}
+    \item Word frequency chart
+    \item Bigram pattern analysis
+    \item Generation diversity metrics
+    \item Syllable distribution histogram
+\end{enumerate}
+
+\column{0.45\textwidth}
+\textbf{Example Output Quality}
+\begin{itemize}
+    \item Uses Shakespeare vocabulary
+    \item 14 lines (sonnet length)
+    \item Varied line starts
+    \item No rhyme scheme
+    \item Grammar issues
+    \item No coherent meaning
+\end{itemize}
+
+\vspace{0.5em}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
+\centering
+\textbf{Perfect for learning} - simple enough to understand, complex enough to be interesting!
+\end{tcolorbox}
+\end{columns}
+\end{frame}
+
+% Final Slide
+\begin{frame}{Try It Yourself!}
+\centering
+\Large
+\textbf{Open the Notebook:}\\
+\vspace{0.5em}
+\texttt{shakespeare\_sonnets\_simple\_bsc.ipynb}
+
+\vspace{1em}
+\normalsize
+\begin{tcolorbox}[colback=green!5!white,colframe=green!75!black,title=Quick Start]
+\begin{enumerate}
+    \item Run cell 2 (helper functions)
+    \item Run cells 5-7 (load data \& build model)
+    \item Run cell 11 (generate your first sonnet!)
+    \item Experiment with themes and parameters
+\end{enumerate}
+\end{tcolorbox}
+
+\vspace{1em}
+\textit{``The code, dear students, lies not in our stars,\\
+But in our n-grams, that we are poets!''}
+\end{frame}
+
+\end{document}

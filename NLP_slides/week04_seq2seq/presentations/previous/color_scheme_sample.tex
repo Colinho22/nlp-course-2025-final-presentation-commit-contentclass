@@ -1,0 +1,201 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+
+% Modern Tech Color Palette
+\definecolor{modernPrimary}{HTML}{2E4057}    % Deep Blue
+\definecolor{modernSecondary}{HTML}{048A81}  % Vibrant Teal
+\definecolor{modernAccent}{HTML}{F18F01}     % Warm Orange
+\definecolor{modernNeutral}{HTML}{7D8491}    % Soft Gray
+\definecolor{modernBackground}{HTML}{F5F9FC} % Light Blue-Gray
+
+% Apply color scheme to beamer
+\setbeamercolor{structure}{fg=modernPrimary}
+\setbeamercolor{title}{fg=modernPrimary}
+\setbeamercolor{frametitle}{bg=modernPrimary!10,fg=modernPrimary}
+\setbeamercolor{block title}{bg=modernSecondary,fg=white}
+\setbeamercolor{block body}{bg=modernBackground}
+\setbeamercolor{item}{fg=modernAccent}
+\setbeamercolor{subitem}{fg=modernSecondary}
+\setbeamercolor{subsubitem}{fg=modernPrimary}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.25ex,dp=1ex,left]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\hspace{2mm}Week 4: Seq2Seq Models
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \usebeamerfont{date in head/foot}\insertframenumber{} / \inserttotalframenumber\hspace{2mm}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{booktabs}
+
+% Custom commands for colored boxes
+\newcommand{\colorbox}[2]{%
+  \begin{tcolorbox}[colback=#1!10,colframe=#1,fonttitle=\bfseries,title=#2]
+}
+\newcommand{\endcolorbox}{\end{tcolorbox}}
+
+\title{\textcolor{modernPrimary}{Sequence-to-Sequence Models}}
+\subtitle{\textcolor{modernSecondary}{Enhanced Visualization with Modern Color Scheme}}
+\author{NLP Course - Week 4}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{Enhanced Color Scheme Benefits}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textcolor{modernPrimary}{\textbf{Modern Tech Palette}}
+\begin{itemize}
+    \item \textcolor{modernPrimary}{Primary: Deep Blue \#2E4057}
+    \item \textcolor{modernSecondary}{Secondary: Vibrant Teal \#048A81}
+    \item \textcolor{modernAccent}{Accent: Warm Orange \#F18F01}
+    \item \textcolor{modernNeutral}{Neutral: Soft Gray \#7D8491}
+\end{itemize}
+
+\vspace{5mm}
+\textcolor{modernPrimary}{\textbf{Benefits:}}
+\begin{itemize}
+    \item High contrast for readability
+    \item Professional appearance
+    \item Colorblind-friendly combinations
+    \item Reduces eye strain
+\end{itemize}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\textcolor{modernSecondary}{\textbf{Alternative Palettes}}
+
+\small
+\textbf{Educational Warm:}
+\begin{itemize}
+    \item Navy \#1E3A8A
+    \item Sky Blue \#60A5FA
+    \item Coral \#FB7185
+\end{itemize}
+
+\textbf{Nature Professional:}
+\begin{itemize}
+    \item Forest Green \#14532D
+    \item Teal \#0D9488
+    \item Amber \#F59E0B
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{New Chart: Attention Heatmap}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/week4_attention_heatmap_colorful.pdf}
+\end{center}
+\vspace{-3mm}
+\textcolor{modernNeutral}{\footnotesize Interactive attention weights visualization showing word alignments}
+\end{frame}
+
+\begin{frame}{New Chart: Model Complexity Comparison}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/week4_model_complexity_comparison.pdf}
+\end{center}
+\vspace{-3mm}
+\textcolor{modernNeutral}{\footnotesize Comprehensive comparison of model architectures across multiple dimensions}
+\end{frame}
+
+\begin{frame}{New Chart: Beam Search Visualization}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{../figures/week4_beam_search_tree.pdf}
+\end{center}
+\vspace{-3mm}
+\textcolor{modernNeutral}{\footnotesize Interactive tree structure showing beam search paths and scores}
+\end{frame}
+
+\begin{frame}{New Chart: Training Dynamics Dashboard}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/week4_training_dynamics.pdf}
+\end{center}
+\vspace{-3mm}
+\textcolor{modernNeutral}{\footnotesize Multi-panel view of training metrics and dynamics}
+\end{frame}
+
+\begin{frame}{New Chart: Context Window Analysis}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/week4_context_window_analysis.pdf}
+\end{center}
+\vspace{-3mm}
+\textcolor{modernNeutral}{\footnotesize Performance vs resource trade-offs for different context sizes}
+\end{frame}
+
+\begin{frame}{New Chart: Architecture Evolution Timeline}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/week4_architecture_evolution.pdf}
+\end{center}
+\vspace{-3mm}
+\textcolor{modernNeutral}{\footnotesize Historical progression of NMT architectures and their performance}
+\end{frame}
+
+\begin{frame}{Additional Chart Opportunities}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textcolor{modernPrimary}{\textbf{Suggested Additions:}}
+\begin{enumerate}
+    \item \textcolor{modernSecondary}{Vocabulary Distribution}
+    \begin{itemize}
+        \item Word frequency plots
+        \item OOV handling visualization
+    \end{itemize}
+
+    \item \textcolor{modernSecondary}{Error Analysis}
+    \begin{itemize}
+        \item Common translation errors
+        \item Error type distribution
+    \end{itemize}
+
+    \item \textcolor{modernSecondary}{Computational Efficiency}
+    \begin{itemize}
+        \item FLOPs comparison
+        \item Inference time analysis
+    \end{itemize}
+\end{enumerate}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\textcolor{modernPrimary}{\textbf{Interactive Elements:}}
+\begin{enumerate}
+    \item \textcolor{modernAccent}{Gradient Flow}
+    \begin{itemize}
+        \item Backprop visualization
+        \item Gradient magnitude plots
+    \end{itemize}
+
+    \item \textcolor{modernAccent}{Attention Patterns}
+    \begin{itemize}
+        \item Different attention types
+        \item Head specialization
+    \end{itemize}
+
+    \item \textcolor{modernAccent}{Decoding Strategies}
+    \begin{itemize}
+        \item Sampling distributions
+        \item Temperature effects
+    \end{itemize}
+\end{enumerate}
+\end{column}
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{modernBackground}{\textcolor{modernPrimary}{\textbf{Total: 6 new charts added + 6 more opportunities}}}
+\end{center}
+\end{frame}
+
+\end{document}

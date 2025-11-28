@@ -1,0 +1,200 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+% Theme settings
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Custom colors
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{173,216,230}
+\definecolor{accent1}{RGB}{255,107,107}  % Red
+\definecolor{accent2}{RGB}{78,205,196}   % Teal
+\definecolor{accent3}{RGB}{149,231,126}  % Green
+\definecolor{accent4}{RGB}{255,195,0}    % Gold
+
+% Custom commands
+\newcommand{\highlight}[1]{\textcolor{darkblue}{\textbf{#1}}}
+\newcommand{\prob}[1]{P(#1)}
+\newcommand{\given}{\mid}
+
+\title[Week 1 Overview]{Week 1: Foundations \& Statistical Language Models}
+\subtitle{Building the Groundwork for NLP}
+\author{Natural Language Processing Course}
+\date{BSc Computer Science}
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+    \titlepage
+\end{frame}
+
+%============================================================================
+% SLIDE 1: What We'll Learn
+%============================================================================
+\begin{frame}[t]{What We'll Learn This Week}
+    \centering
+    \includegraphics[width=0.85\textwidth]{../figures/week1_learning_objectives.pdf}
+    
+    \vspace{0.3em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{\textcolor{accent1}{Core Concepts:}}
+            \small
+            \begin{itemize}
+                \item \textbf{Probability Theory} for NLP
+                    \begin{itemize}
+                        \tiny
+                        \item Joint, conditional, marginal probabilities
+                        \item Bayes' theorem applications
+                        \item Maximum likelihood estimation
+                    \end{itemize}
+                \item \textbf{N-gram Models}
+                    \begin{itemize}
+                        \tiny
+                        \item Unigrams, bigrams, trigrams
+                        \item Markov assumption
+                        \item Language model training
+                    \end{itemize}
+                \item \textbf{Text Preprocessing}
+                    \begin{itemize}
+                        \tiny
+                        \item Tokenization strategies
+                        \item Vocabulary management
+                        \item Unknown word handling
+                    \end{itemize}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{\textcolor{accent2}{Skills You'll Gain:}}
+            \small
+            \begin{itemize}
+                \item Calculate n-gram probabilities
+                \item Build statistical language models
+                \item Handle data sparsity issues
+                \item Implement smoothing techniques
+                \item Evaluate model perplexity
+                \item Generate text using n-grams
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \begin{tcolorbox}[colback=accent4!10,colframe=accent4,boxrule=0.5pt]
+                \centering
+                \small \textbf{Foundation Week:} Everything builds on these concepts!
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+%============================================================================
+% SLIDE 2: Key Concepts - N-grams
+%============================================================================
+\begin{frame}[t]{Key Concept: N-gram Language Models}
+    \centering
+    \includegraphics[width=0.85\textwidth]{../figures/week1_ngram_concept.pdf}
+    
+    \vspace{0.3em}
+    \begin{columns}[T]
+        \begin{column}{0.32\textwidth}
+            \textbf{\textcolor{accent1}{The Markov Assumption}}
+            \small
+            \begin{itemize}
+                \item Future depends only on recent past
+                \item $\prob{w_i \given w_1...w_{i-1}} \approx \prob{w_i \given w_{i-n+1}...w_{i-1}}$
+                \item Makes computation tractable
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \textbf{\textcolor{accent2}{Probability Estimation}}
+            \small
+            \begin{itemize}
+                \item Count n-grams in corpus
+                \item Maximum likelihood: $\frac{\text{count}(w_{i-n+1}...w_i)}{\text{count}(w_{i-n+1}...w_{i-1})}$
+                \item Handle zero counts
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \textbf{\textcolor{accent3}{Challenges}}
+            \small
+            \begin{itemize}
+                \item Data sparsity
+                \item Storage requirements
+                \item Context limitations
+                \item Smoothing needed
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.3em}
+    \begin{tcolorbox}[colback=lightblue!10,colframe=darkblue,boxrule=0.5pt]
+        \centering
+        \small \textbf{Key Insight:} Simple counting + probability = Surprisingly effective language models
+    \end{tcolorbox}
+\end{frame}
+
+%============================================================================
+% SLIDE 3: Applications & Practice
+%============================================================================
+\begin{frame}[t]{Applications \& Real-World Impact}
+    \centering
+    \includegraphics[width=0.85\textwidth]{../figures/week1_applications.pdf}
+    
+    \vspace{0.3em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{\textcolor{accent1}{Where N-grams Excel:}}
+            \small
+            \begin{itemize}
+                \item \textbf{Spell Checking}: Find likely corrections
+                \item \textbf{Auto-complete}: Predict next words
+                \item \textbf{Speech Recognition}: Language constraints
+                \item \textbf{Machine Translation}: Phrase-based systems
+                \item \textbf{Text Generation}: Simple but effective
+            \end{itemize}
+            
+            \vspace{0.3em}
+            \textbf{Hands-On Exercise:}
+            \small
+            \begin{itemize}
+                \item Build bigram model on Shakespeare
+                \item Generate new sonnets
+                \item Compare with trigrams
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{\textcolor{accent2}{Historical Significance:}}
+            \small
+            \begin{itemize}
+                \item Dominated NLP for decades (1980s-2000s)
+                \item Still used in hybrid systems
+                \item Baseline for evaluation
+                \item Foundation for understanding
+            \end{itemize}
+            
+            \vspace{0.3em}
+            \begin{tcolorbox}[colback=accent3!10,colframe=accent3,boxrule=0.5pt]
+                \textbf{Lab Preview:}\\
+                \small
+                \begin{itemize}
+                    \item Implement n-gram models
+                    \item Explore smoothing techniques
+                    \item Build text generator
+                    \item Measure perplexity
+                \end{itemize}
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\end{document}

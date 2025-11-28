@@ -1,0 +1,672 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{xcolor}
+
+\definecolor{checkpointBlue}{RGB}{100,149,237}
+\definecolor{successGreen}{RGB}{76,175,80}
+
+\title{Neural Networks: Complete Guide}
+\subtitle{From Handwriting Recognition to Modern AI in 10 Slides}
+\author{NLP Course 2025}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+% SLIDE 1: Handwriting Challenge (BSc Framing)
+\begin{frame}{1. The Handwriting Challenge}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Everyone Writes Differently}
+
+\vspace{1mm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/handwriting_variations.pdf}
+\end{center}
+
+\textbf{You recognize them all because:}
+\begin{itemize}
+\item You learned from examples
+\item You see patterns, not exact shapes
+\item Your brain generalizes
+\end{itemize}
+
+\textbf{But computers see:}
+\begin{itemize}
+\item Just pixels (numbers)
+\item No inherent meaning
+\item Need explicit instructions
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why Traditional Programming Fails}
+
+\vspace{2mm}
+Can't write rules for infinite variations:
+\begin{itemize}
+\item 7 billion people write uniquely
+\item Print vs cursive
+\item Size, rotation, thickness
+\item Personal style changes
+\item = Impossible to program!
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Historical Timeline}
+\begin{itemize}
+\item 1943: McCulloch-Pitts neuron
+\item 1958: Perceptron learns
+\item 1969: XOR problem (AI Winter)
+\item 1986: Backpropagation
+\item 1998: LeNet, 2012: AlexNet
+\item 2022: ChatGPT
+\end{itemize}
+
+\vspace{2mm}
+\colorbox{checkpointBlue!20}{\parbox{0.95\columnwidth}{\centering\small
+\textbf{Solution:} Let computers learn patterns from examples!
+}}
+\end{columns}
+\end{frame}
+
+% SLIDE 2: The Neuron (Traffic Light + Math)
+\begin{frame}{2. The Neuron: A Weighted Voter}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Think of a Traffic Light}
+
+\begin{itemize}
+\item Input 1: Cars waiting? (w=0.5)
+\item Input 2: Pedestrian? (w=0.8)
+\item Input 3: Time? (w=0.3)
+\item Add weighted inputs
+\item Decision: Change or not
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Neuron is the Same:}
+\begin{itemize}
+\item Input 1: Pixel 1 value
+\item Input 2: Pixel 2 value
+\item Input 3: Pixel 3 value
+\item Each has importance (weight)
+\item Add them up
+\item Decision: Is it an ``A''?
+\end{itemize}
+
+\vspace{2mm}
+\colorbox{successGreen!20}{\parbox{0.95\columnwidth}{\centering\small
+A neuron is just a weighted voter - nothing magical!
+}}
+
+\column{0.48\textwidth}
+\textbf{Mathematical Definition}
+
+\[
+z = \sum_{i=1}^n w_ix_i + b
+\]
+
+\textbf{Components:}
+\begin{itemize}
+\item $x_i$ = inputs (pixel values)
+\item $w_i$ = weights (importance)
+\item $b$ = bias (baseline threshold)
+\item $z$ = output score
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Example: Party Decision}
+
+\[
+\text{Score} = -2 \cdot \text{Distance} + 3 \cdot \text{Friends} - 5
+\]
+
+If Score $> 0 \rightarrow$ GO, else STAY
+
+\vspace{1mm}
+\textbf{Geometric Interpretation}
+
+Decision boundary: line where Score = 0
+\[
+-2d + 3f - 5 = 0 \quad \Rightarrow \quad f = \frac{2d + 5}{3}
+\]
+
+\vspace{2mm}
+\colorbox{checkpointBlue!20}{\parbox{0.95\columnwidth}{\centering\small
+Single neuron = straight line boundary
+}}
+\end{columns}
+\end{frame}
+
+% SLIDE 3: Everything is Numbers
+\begin{frame}{3. From Images to Numbers}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{The Transformation Process}
+
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/pixel_to_numbers.pdf}
+\end{center}
+
+\textbf{Steps:}
+\begin{enumerate}
+\item Scan letter
+\item Grid: 28x28 pixels
+\item Black=1, White=0
+\item Total: 784 numbers!
+\end{enumerate}
+
+\textbf{Why This Works:}
+\begin{itemize}
+\item Math only works on numbers
+\item 784 inputs → neuron processes
+\item Same representation for all letters
+\item Computer can now ``see''
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Real Example: Letter ``A''}
+
+\vspace{2mm}
+{\small
+Grid (5x5 simplified):
+\[
+\begin{bmatrix}
+0 & 1 & 1 & 1 & 0 \\
+0 & 1 & 0 & 1 & 0 \\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 0 & 1 & 1 \\
+1 & 1 & 0 & 1 & 1
+\end{bmatrix}
+\]
+}
+
+Flattened: [0,1,1,1,0,0,1,0,1,0,1,1,1,1,1,...]
+
+\vspace{3mm}
+\textbf{This is the Input:}
+\[
+x = [x_1, x_2, ..., x_{784}]
+\]
+
+Each pixel becomes one input to the neuron!
+
+\vspace{3mm}
+\textbf{The Calculation:}
+\[
+z = w_1x_1 + w_2x_2 + ... + w_{784}x_{784} + b
+\]
+
+784 multiplications, 784 additions, 1 bias
+
+\vspace{2mm}
+\colorbox{checkpointBlue!20}{\parbox{0.95\columnwidth}{\centering\small
+Everything must become numbers for computers!
+}}
+\end{columns}
+\end{frame}
+
+% SLIDE 4: Weights & Learning (Training Progression)
+\begin{frame}{4. How Networks Learn: Adjusting Weights}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Learning = Adjusting Weights}
+
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/weight_evolution_heatmap.pdf}
+\end{center}
+
+\textbf{The Learning Process:}
+\begin{itemize}
+\item Start: Random weights
+\item See example: ``This is A''
+\item Neuron: 0.2 (wrong!)
+\item Adjust important weights
+\item Repeat 1000s of times
+\item Weights organize!
+\end{itemize}
+
+\vspace{1mm}
+\textbf{The Rule:}
+\begin{itemize}
+\item Pixel=1, wrong? → Increase
+\item Pixel=0, wrong? → Decrease
+\item Correct? → Keep
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Training Progress: Real Numbers}
+
+\vspace{1mm}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{../figures/training_steps_numbered.pdf}
+\end{center}
+
+\vspace{1mm}
+\textbf{Step by Step:}
+\begin{itemize}
+\item \textbf{Step 1:} Random weights, \textbf{20\% correct}
+\item \textbf{Step 2:} Small adjustments, \textbf{35\% correct}
+\item \textbf{Step 3:} Pattern emerging, \textbf{60\% correct}
+\item \textbf{Step 4:} Almost there, \textbf{85\% correct}
+\item \textbf{Step 5:} Trained! \textbf{95\% correct}
+\end{itemize}
+
+\vspace{2mm}
+\textbf{What Happens:}
+\begin{itemize}
+\item Weights organize
+\item Important pixels → high weights
+\item Unimportant → low weights
+\item Pattern emerges
+\item \textbf{No programming!}
+\end{itemize}
+
+\vspace{2mm}
+\colorbox{successGreen!20}{\parbox{0.95\columnwidth}{\centering\small
+After seeing hundreds of examples, the neuron ``knows'' what an A looks like
+}}
+\end{columns}
+\end{frame}
+
+% SLIDE 5: Activation Functions
+\begin{frame}{5. Activation Functions: The Secret to Power}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{The Linearity Problem}
+
+Without activation, multiple neurons = one neuron!
+\[
+z_2 = w_1(w_2x + b_2) + b_1 = (w_1w_2)x + (w_1b_2 + b_1)
+\]
+
+This is just another linear function!
+
+\vspace{3mm}
+\textbf{Solution: Add Non-linearity}
+\[
+a = f(z) = f\left(\sum_i w_ix_i + b\right)
+\]
+
+\vspace{3mm}
+\textbf{Common Activations}
+\begin{itemize}
+\item \textbf{Sigmoid:} $\sigma(z) = \frac{1}{1+e^{-z}}$ (0 to 1)
+\item \textbf{ReLU:} $\max(0, z)$ (modern standard)
+\item \textbf{Tanh:} $\frac{e^z - e^{-z}}{e^z + e^{-z}}$ (-1 to 1)
+\item \textbf{Leaky ReLU:} $\max(0.01z, z)$ (prevents dying)
+\end{itemize}
+
+\vspace{2mm}
+\colorbox{red!20}{\parbox{0.95\columnwidth}{\centering\small
+\textbf{Critical:} Without activation, 100 layers = 1 neuron!
+}}
+
+\column{0.48\textwidth}
+\textbf{Visual Comparison}
+
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/handout/activation_functions_comparison.pdf}
+\end{center}
+
+\vspace{1mm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/handout/neuron_without_with_activation.pdf}
+\end{center}
+
+\vspace{2mm}
+\textbf{Why ReLU Dominates:}
+\begin{itemize}
+\item Simple: max(0, z)
+\item Fast to compute
+\item No vanishing gradient
+\item Sparse activation (biological)
+\item Empirically works best
+\end{itemize}
+
+\vspace{2mm}
+\colorbox{checkpointBlue!20}{\parbox{0.95\columnwidth}{\centering\small
+Activation functions enable complex, curved boundaries
+}}
+\end{columns}
+\end{frame}
+
+% SLIDE 6: XOR Crisis & Hidden Layers
+\begin{frame}{6. The XOR Crisis and Hidden Layers}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{XOR Problem}
+
+Output 1 if inputs different, 0 if same
+
+\vspace{2mm}
+\begin{center}
+\begin{tabular}{|c|c||c|}
+\hline
+$x_1$ & $x_2$ & Output \\
+\hline\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Challenge:} Draw ONE line separating 1's from 0's
+
+\textbf{Result:} Impossible!
+
+\vspace{3mm}
+\textbf{Historical Impact (1969)}
+
+Minsky \& Papert proved single-layer networks can't solve XOR
+
+$\Rightarrow$ \textbf{First AI Winter} - funding dried up for decades
+
+\vspace{2mm}
+\colorbox{red!20}{\parbox{0.95\columnwidth}{\centering\small
+Single neurons only solve linearly separable problems
+}}
+
+\column{0.48\textwidth}
+\textbf{The Solution: Hidden Layers}
+
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/handout/xor_solution_3panel.pdf}
+\end{center}
+
+\vspace{2mm}
+\textbf{How It Works:}
+\begin{itemize}
+\item Hidden neuron 1: Separates (0,0) from others
+\item Hidden neuron 2: Separates (1,1) from others
+\item Output neuron: Finds intersection
+\item Only (0,1) and (1,0) satisfy both!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Architecture:}
+\begin{itemize}
+\item Input layer: 2 neurons ($x_1, x_2$)
+\item Hidden layer: 2 neurons (two boundaries)
+\item Output layer: 1 neuron (combines)
+\end{itemize}
+
+\vspace{2mm}
+\colorbox{successGreen!20}{\parbox{0.95\columnwidth}{\centering\small
+Hidden layers enable networks to solve any problem!
+}}
+\end{columns}
+\end{frame}
+
+% SLIDE 7: Loss Functions (NEW from restructured)
+\begin{frame}{7. Measuring Error: Loss Functions}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{How Do We Know If Network Is Wrong?}
+
+\textbf{Concrete Example:}
+
+\textit{Predicting house price:}
+\begin{itemize}
+\item Network predicts: \$300,000
+\item Actual price: \$400,000
+\item Error = \$400k - \$300k = \$100k
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Problem:}
+\begin{itemize}
+\item Positive (+\$100k) and negative (-\$100k) cancel out
+\item We care about magnitude, not direction
+\item Solution: Square the error!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Why Square It?}
+\begin{itemize}
+\item Always positive: (\$100k)$^2$ = 10B\$
+\item Big mistakes hurt more: (\$200k)$^2$ = 40B\$
+\item Math works nicely for optimization
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Loss Function (MSE)}
+
+For one example:
+\[
+\text{Error} = (\text{pred} - \text{actual})^2
+\]
+
+For all examples:
+\[
+L = \frac{1}{n} \sum_{i=1}^{n} (y_{\text{pred}}^{(i)} - y_{\text{true}}^{(i)})^2
+\]
+
+\vspace{2mm}
+\textbf{Real Numbers:}
+
+\begin{center}
+\begin{tabular}{ccc}
+Predicted & Actual & Error$^2$ \\
+\hline
+0.3 & 1.0 & 0.49 \\
+0.8 & 1.0 & 0.04 \\
+0.1 & 0.0 & 0.01 \\
+\hline
+\multicolumn{2}{r}{Average:} & 0.18 \\
+\end{tabular}
+\end{center}
+
+\vspace{3mm}
+\colorbox{checkpointBlue!20}{\parbox{0.95\columnwidth}{\centering\small
+\textbf{Goal of training:} Make this loss as small as possible!
+}}
+\end{columns}
+\end{frame}
+
+% SLIDE 8: Backpropagation
+\begin{frame}{8. Backpropagation: How Networks Learn}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{The Credit Assignment Problem}
+
+Given output error, which weights to adjust by how much?
+
+\vspace{3mm}
+\textbf{Algorithm (4 Steps)}
+
+\textbf{1. Forward:} $z = Wa + b$, $a = f(z)$
+
+\textbf{2. Loss:} $L = \frac{1}{2}(y_{pred} - y_{true})^2$
+
+\textbf{3. Backward (Chain):}
+\[
+\frac{\partial L}{\partial w} = \frac{\partial L}{\partial a} \cdot \frac{\partial a}{\partial z} \cdot \frac{\partial z}{\partial w}
+\]
+
+\textbf{4. Update:} $w \leftarrow w - \eta \partial L/\partial w$ ($\eta$=0.001)
+
+\column{0.48\textwidth}
+\textbf{Gradient Descent Intuition}
+
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/gradient_landscape_3d.pdf}
+\end{center}
+
+Hiking in fog:
+\begin{enumerate}
+\item Feel slope (gradient)
+\item Step downhill (update)
+\item Repeat to valley (converge)
+\end{enumerate}
+
+\vspace{2mm}
+\textbf{History}
+
+\begin{itemize}
+\item 1970s: Werbos invented
+\item 1986: Rumelhart, Hinton, Williams
+\item Foundation of modern DL
+\item Uses calculus for credit assignment
+\end{itemize}
+
+\vspace{2mm}
+\colorbox{successGreen!20}{\parbox{0.95\columnwidth}{\centering\small
+Backprop assigns credit: which weights caused the error
+}}
+\end{columns}
+\end{frame}
+
+% SLIDE 9: Emergent Features & Universal Approximation
+\begin{frame}{9. Emergent Features and Theoretical Power}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Features Emerge}
+
+Training for ``A'':
+
+\vspace{1mm}
+\textbf{Week 1:} Random (10\% acc)
+
+\textbf{Week 2:} Edges, regions (40\%)
+
+\textbf{Week 3:} Diagonals, intersections! (90\%)
+
+\vspace{2mm}
+\textbf{Why Matters:}
+\begin{itemize}
+\item No feature engineering
+\item Adapts to any problem
+\item Finds optimal representation
+\item Different runs, same accuracy!
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Universal Approximation Theorem}
+
+\textbf{Cybenko (1989):} Network with one hidden layer can approximate \textit{any} continuous function to \textit{any} accuracy!
+
+\vspace{2mm}
+\textbf{How:} Position steps at different locations:
+\[
+f(x) \approx \sum_{i=1}^n a_i \sigma(w_ix + b_i)
+\]
+
+\vspace{1mm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/handout/universal_approximation_sine.pdf}
+\end{center}
+
+\vspace{2mm}
+\textbf{Caveats:}
+\begin{itemize}
+\item Guarantees exist, not efficient
+\item May need many neurons
+\item Deep often better than wide
+\end{itemize}
+
+\vspace{2mm}
+\colorbox{checkpointBlue!20}{\parbox{0.95\columnwidth}{\centering\small
+If task = find patterns, network \textit{can} learn it!
+}}
+\end{columns}
+\end{frame}
+
+% SLIDE 10: Modern Applications & Summary
+\begin{frame}{10. From Theory to Modern AI: Complete Summary}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Key Breakthroughs}
+\begin{itemize}
+\item 1998 LeNet, 2012 AlexNet
+\item 2015 ResNet (152 layers)
+\item 2017 Transformers
+\item 2020 GPT-3 (175B params)
+\item 2022 ChatGPT
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Applications}
+
+\begin{multicols}{2}
+{\small
+\begin{itemize}
+\item Medical diagnosis
+\item Self-driving
+\item Drug discovery
+\item Translation
+\item Code/Art gen
+\item Speech
+\item Protein folding
+\item Climate
+\end{itemize}
+}
+\end{multicols}
+
+\vspace{1mm}
+\textbf{Formulas}
+
+{\small
+\begin{tabular}{|l|l|}
+\hline
+Neuron & $\sum w_ix_i + b$ \\
+\hline
+Sigmoid & $1/(1+e^{-z})$ \\
+\hline
+ReLU & $\max(0,z)$ \\
+\hline
+Loss & $\frac{1}{n}\sum (y_p-y_t)^2$ \\
+\hline
+Update & $w - \eta \partial L/\partial w$ \\
+\hline
+\end{tabular}
+}
+
+\column{0.48\textwidth}
+\textbf{Path}
+
+{\small
+Problem $\rightarrow$ Numbers $\rightarrow$ Neuron $\rightarrow$ Activation $\rightarrow$ XOR $\rightarrow$ Hidden $\rightarrow$ Loss $\rightarrow$ Backprop $\rightarrow$ Theory $\rightarrow$ Practice
+}
+
+\vspace{2mm}
+\textbf{Key Insights}
+\begin{itemize}
+\item Neurons = voters
+\item Learning = weights (20\%→95\%)
+\item Activation = non-linearity
+\item Hidden = any problem
+\item Backprop = assign credit
+\item Features emerge
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Next}
+
+\begin{itemize}
+\item Code (NumPy/PyTorch)
+\item Build classifier/generator
+\item Learn: Fast.ai, CS231n
+\item Viz: playground.tensorflow
+\end{itemize}
+
+\vspace{2mm}
+\colorbox{successGreen!20}{\parbox{0.95\columnwidth}{\centering\small
+\textbf{You now understand the fundamentals powering modern AI!}
+}}
+\end{columns}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,1366 @@
+% Week 3: Recurrent Neural Networks (RNNs)
+% Enhanced with Neural Network Foundations
+% Using the Master Optimal Readability Template
+
+\input{../../common/master_template.tex}
+
+\title{Recurrent Neural Networks}
+\subtitle{\secondary{Week 3 - Teaching Networks to Remember}}
+\author{NLP Course 2025}
+\date{\today}
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}
+\secondary{\footnotesize From Feedforward to Recurrent: Adding Memory to Neural Networks}
+\end{center}
+\end{frame}
+
+% Overview
+\begin{frame}{Week 3: The Memory Revolution}
+\begin{center}
+{\Large \textbf{Processing Sequences with State}}
+\end{center}
+
+\vspace{10mm}
+
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{The Challenge}
+\begin{itemize}
+\item Sequential data everywhere
+\item \warning{Order matters}
+\item Variable length inputs
+\item Long-term dependencies
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{The Solution}
+\begin{itemize}
+\item \highlight{Recurrent connections}
+\item Hidden state memory
+\item Parameter sharing
+\item Backprop through time
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{The Evolution}
+\begin{itemize}
+\item Vanilla RNN → \success{LSTM}
+\item Solving gradients
+\item Gating mechanisms
+\item Modern variants (GRU)
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize The foundation of sequence modeling before transformers}
+\end{frame}
+
+% Course Journey
+\begin{frame}{Course Journey: Where We Are}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/course_timeline.pdf}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Journey So Far:}
+\begin{itemize}
+\item Week 1: Statistical language models (n-grams)
+\item Week 2: Word embeddings (Word2Vec, dense vectors)
+\item \highlight{Week 3: Sequential processing with memory}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Coming Next:}
+\begin{itemize}
+\item Week 4: Encoder-decoder architectures
+\item Week 5: Attention mechanisms
+\item Week 6+: Transformers and beyond
+\end{itemize}
+\end{columns}
+
+\vfill
+\keypoint{RNNs bridge the gap between static embeddings and modern attention}
+\end{frame}
+
+% ============================================
+% NEW SECTION: NEURAL NETWORK FOUNDATIONS
+% ============================================
+
+% Foundation Part Header
+\begin{frame}{\Large Foundations: Neural Network Basics}
+\begin{center}
+{\huge \textbf{Before We Dive Into RNNs}}
+\end{center}
+
+\vfill
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What We'll Cover:}
+\begin{itemize}
+\item What is a neural network?
+\item How do neurons compute?
+\item Why activation functions?
+\item What are weight matrices?
+\item How do networks learn?
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why This Matters:}
+\begin{itemize}
+\item RNNs are neural networks with loops
+\item Need to understand basic building blocks
+\item Gradients crucial for training
+\item Matrices organize computations
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize 10 minutes to build your neural network intuition}
+\end{frame}
+
+% From Biology to Math
+\begin{frame}{From Biology to Math: What is a Neural Network?}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Biological Neuron}
+
+\includegraphics[width=\textwidth]{../figures/biological_neuron_simple.pdf}
+
+\begin{itemize}
+\item Receives signals from other neurons
+\item Processes in cell body
+\item Fires if signal strong enough
+\item Sends output to next neurons
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Mathematical Neuron}
+
+\includegraphics[width=\textwidth]{../figures/mathematical_neuron.pdf}
+
+\begin{itemize}
+\item Inputs: numbers ($x_1, x_2, x_3$)
+\item Weights: importance ($w_1, w_2, w_3$)
+\item Sum: $z = \sum w_i x_i + b$
+\item Output: $y = f(z)$ where $f$ is activation
+\end{itemize}
+\end{columns}
+
+\vfill
+\keypoint{Neural networks are just functions that learn patterns from data}
+\end{frame}
+
+% The Simplest Neural Network
+\begin{frame}{The Simplest Neural Network: One Neuron}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{../figures/single_neuron_computation.pdf}
+\end{center}
+
+\textbf{Step-by-step computation:}
+\begin{enumerate}
+\item \textbf{Inputs}: $x_1 = 0.5$, $x_2 = 0.3$ (e.g., word features)
+\item \textbf{Weights}: $w_1 = 2.0$, $w_2 = -1.0$ (learned importance)
+\item \textbf{Weighted sum}: $(0.5 \times 2.0) + (0.3 \times -1.0) = 0.7$
+\item \textbf{Add bias}: $0.7 + 0.1 = 0.8$ (threshold adjustment)
+\item \textbf{Apply activation}: $\text{output} = f(0.8)$ (non-linearity)
+\end{enumerate}
+
+\vfill
+\keypoint{Weights determine what patterns the neuron detects}
+\end{frame}
+
+% Why Activation Functions
+\begin{frame}{Why Activation Functions?}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Without Activation (Linear)}
+\begin{itemize}
+\item Just weighted sums
+\item $y = w_1x_1 + w_2x_2$
+\item Can only learn straight lines
+\item Multiple layers = still just lines!
+\item \warning{Cannot solve XOR problem}
+\end{itemize}
+
+\vspace{5mm}
+
+\includegraphics[width=\textwidth]{../figures/linear_vs_nonlinear.pdf}
+
+\column{0.48\textwidth}
+\textbf{With Activation (Non-linear)}
+\begin{itemize}
+\item Adds curves and bends
+\item Can learn complex patterns
+\item Different activations for different uses:
+\end{itemize}
+
+\vspace{3mm}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Function} & \textbf{Use Case} \\
+\midrule
+Sigmoid & Probabilities [0,1] \\
+Tanh & Centered [-1,1] \\
+ReLU & Hidden layers \\
+Softmax & Multi-class \\
+\bottomrule
+\end{tabular}
+
+\vspace{3mm}
+
+\includegraphics[width=\textwidth]{../figures/activation_functions_comparison.pdf}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Think of activations as adding "decision boundaries" to your network}
+\end{frame}
+
+% Understanding Tanh
+\begin{frame}{Deep Dive: The Tanh Activation}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What is tanh?}
+
+\formula{\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}}
+
+\vspace{3mm}
+
+Properties:
+\begin{itemize}
+\item Output range: [-1, 1]
+\item Centered at zero
+\item Smooth and differentiable
+\item Derivative: $1 - \tanh^2(x)$
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Why RNNs use tanh:}
+\begin{itemize}
+\item Keeps values bounded
+\item Zero-centered helps learning
+\item Smooth gradients
+\item Historical convention
+\end{itemize}
+
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/tanh_detailed.pdf}
+
+\vspace{5mm}
+
+\textbf{Intuition:}
+\begin{itemize}
+\item Strong positive → +1
+\item Strong negative → -1
+\item Near zero → linear
+\item Natural "squashing"
+\end{itemize}
+\end{columns}
+
+\vfill
+\keypoint{Tanh prevents values from exploding while maintaining gradients}
+\end{frame}
+
+% Matrices: Organizing Connections
+\begin{frame}{Matrices: Organizing Many Connections}
+\textbf{From Single Neurons to Layers}
+
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/matrix_organization.pdf}
+\end{center}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Why Matrices?}
+\begin{itemize}
+\item Organize weights efficiently
+\item Compute all neurons at once
+\item Hardware optimization (GPUs)
+\item Clean mathematical notation
+\end{itemize}
+
+\vspace{3mm}
+
+Example: 3 inputs → 2 neurons
+\begin{itemize}
+\item Weight matrix $W$: (2×3)
+\item Input vector $x$: (3×1)
+\item Output $y = Wx$: (2×1)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Matrix Multiplication Reminder:}
+
+$\begin{bmatrix} w_{11} & w_{12} & w_{13} \\ w_{21} & w_{22} & w_{23} \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix} = \begin{bmatrix} y_1 \\ y_2 \end{bmatrix}$
+
+Where:
+\begin{itemize}
+\item $y_1 = w_{11}x_1 + w_{12}x_2 + w_{13}x_3$
+\item $y_2 = w_{21}x_1 + w_{22}x_2 + w_{23}x_3$
+\end{itemize}
+
+\vspace{3mm}
+\success{All neurons computed in parallel!}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Matrices let us compute entire layers in one operation}
+\end{frame}
+
+% How Neural Networks Learn
+\begin{frame}{How Neural Networks Learn: The Intuition}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Learning = Adjusting Weights}
+
+Analogy: Learning to throw darts
+\begin{enumerate}
+\item Throw dart (forward pass)
+\item See where it lands (compute error)
+\item Adjust aim (update weights)
+\item Repeat until bullseye!
+\end{enumerate}
+
+\vspace{5mm}
+
+Neural Network Version:
+\begin{enumerate}
+\item Make prediction with current weights
+\item Compare to correct answer
+\item Calculate error (loss)
+\item Adjust weights to reduce error
+\item Repeat thousands of times
+\end{enumerate}
+
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/learning_process_analogy.pdf}
+
+\vspace{5mm}
+
+\textbf{The Learning Rule:}
+
+\formula{\text{new\_weight} = \text{old\_weight} - \alpha \cdot \text{gradient}}
+
+Where:
+\begin{itemize}
+\item $\alpha$ = learning rate (step size)
+\item gradient = direction of error increase
+\item minus = we go opposite direction
+\end{itemize}
+\end{columns}
+
+\vfill
+\keypoint{Learning is just intelligent trial and error}
+\end{frame}
+
+% Gradients: Direction to Improve
+\begin{frame}{Gradients: The Direction to Improve}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Mountain Hiking Analogy}
+
+\includegraphics[width=\textwidth]{../figures/gradient_descent_2d.pdf}
+
+\begin{itemize}
+\item Goal: Reach valley (minimum error)
+\item Gradient: Steepest uphill direction
+\item We go opposite way (downhill)
+\item Step size: Learning rate
+\item Too big: Overshoot valley
+\item Too small: Takes forever
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{What is a Gradient?}
+
+Simply: \highlight{Rate of change}
+
+\vspace{3mm}
+
+For function $f(x) = x^2$:
+\begin{itemize}
+\item Gradient = $2x$ (derivative)
+\item At $x=3$: gradient = 6
+\item Means: "increasing x increases $f$ by 6×"
+\item So we decrease $x$ to reduce $f$
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{In Neural Networks:}
+\begin{itemize}
+\item Gradient tells how each weight affects error
+\item Computed via backpropagation
+\item Update all weights simultaneously
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Gradients guide us toward better weights}
+\end{frame}
+
+% Backpropagation Intuition
+\begin{frame}{Backpropagation: Distributing the Blame}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/backprop_flow_simple.pdf}
+\end{center}
+
+\textbf{Team Project Analogy:}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{itemize}
+\item Project fails (high error)
+\item Need to figure out who should improve
+\item Trace back through decisions
+\item Everyone adjusts their part
+\item Try again with improvements
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{itemize}
+\item Output wrong (high loss)
+\item Propagate error backwards
+\item Each weight learns its contribution
+\item All weights update together
+\item Forward pass with new weights
+\end{itemize}
+\end{columns}
+
+\vfill
+\keypoint{Backprop efficiently calculates how to update all weights}
+\end{frame}
+
+% From Feedforward to Recurrent
+\begin{frame}{From Feedforward to Recurrent Networks}
+\textbf{The Limitation of Feedforward}
+
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/feedforward_vs_recurrent.pdf}
+\end{center}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Feedforward: No Memory}
+\begin{itemize}
+\item Process one input → one output
+\item Forget everything, start fresh
+\item "The cat" → predict
+\item "The cat sat" → predict (no memory of "cat"!)
+\item Each word processed independently
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Recurrent: With Memory}
+\begin{itemize}
+\item Output feeds back as input
+\item Maintains hidden state
+\item "The cat" → remember "cat"
+\item "The cat sat" → knows about "cat"
+\item Context builds through sequence
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Like reading: you remember the story so far}
+\end{frame}
+
+% The Recurrence Idea
+\begin{frame}{The Recurrence Idea: Adding Memory}
+\textbf{Transforming Feedforward to Recurrent}
+
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/adding_recurrence_animation.pdf}
+\end{center}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Key Innovation:}
+\begin{enumerate}
+\item Take feedforward network
+\item Add connection from output to input
+\item Now output influences next computation
+\item Creates a "memory loop"
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{Reading Analogy:}
+\begin{itemize}
+\item \warning{Feedforward}: Read each word, forget immediately
+\item \success{Recurrent}: Remember story while reading
+\item Each word updates your understanding
+\item Context accumulates naturally
+\end{itemize}
+\end{columns}
+
+\vfill
+\keypoint{One simple loop transforms static network to sequential processor}
+\end{frame}
+
+% Hidden State as Memory
+\begin{frame}{Hidden State: The Network's Memory}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/hidden_state_evolution.pdf}
+\end{center}
+
+\textbf{Processing "The cat sat on the mat"}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+At each step:
+\begin{enumerate}
+\item Combine new input + previous memory
+\item Process together
+\item Update memory
+\item Pass memory forward
+\end{enumerate}
+
+\column{0.48\textwidth}
+Hidden state evolution:
+\begin{itemize}
+\item $h_0$: (empty memory)
+\item $h_1$: (saw "the")
+\item $h_2$: (saw "the cat")
+\item $h_3$: (saw "the cat sat")
+\item Each $h_t$ summarizes story so far
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Hidden state is like your mental model while reading}
+\end{frame}
+
+% Building Up to RNN Equation
+\begin{frame}{Putting It All Together: The RNN Equation}
+\textbf{Building the equation step by step}
+
+\begin{enumerate}
+\item Start simple:
+   \[\text{new\_memory} = f(\text{old\_memory}, \text{new\_input})\]
+
+\item Add weights to control influence:
+   \[\text{new\_memory} = f(W_1 \cdot \text{old\_memory} + W_2 \cdot \text{new\_input})\]
+
+\item Add bias for threshold:
+   \[\text{new\_memory} = f(W_1 \cdot \text{old\_memory} + W_2 \cdot \text{new\_input} + b)\]
+
+\item Use proper notation:
+   \[\highlight{h_t = \tanh(W_{hh} \cdot h_{t-1} + W_{xh} \cdot x_t + b_h)}\]
+\end{enumerate}
+
+Where:
+\begin{itemize}
+\item $h_t$ = hidden state (memory) at time $t$
+\item $x_t$ = input at time $t$
+\item $W_{hh}$ = weights for previous memory
+\item $W_{xh}$ = weights for new input
+\item $\tanh$ = activation function (squashing)
+\end{itemize}
+
+\vfill
+\keypoint{This one equation is the heart of RNNs!}
+\end{frame}
+
+% ============================================
+% ORIGINAL CONTENT CONTINUES FROM HERE
+% ============================================
+
+% Part 1: Why Sequential Processing Matters
+\begin{frame}{\Large Part 1: Why Sequential Processing Matters}
+\begin{center}
+{\huge \textbf{The Importance of Order}}
+\end{center}
+
+\vfill
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Word Order Changes Meaning}
+
+\begin{itemize}
+\item "Dog bites man" $\neq$ "Man bites dog"
+\item "Not bad" $\neq$ "Bad, not!"
+\item Context flows through sequence
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Feedforward Limitations}
+\begin{itemize}
+\item Fixed input size
+\item No memory between inputs
+\item Can't model sequences naturally
+\item Position information lost
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Sequential Tasks in NLP}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Task} & \textbf{Type} \\
+\midrule
+Language Model & Many-to-many \\
+Translation & Seq-to-seq \\
+Sentiment & Many-to-one \\
+Named Entity & Many-to-many \\
+Speech Rec. & Seq-to-seq \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+
+\keypoint{Most NLP is inherently sequential}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Sequential processing is fundamental to understanding language}
+\end{frame}
+
+% The Core RNN Idea (with foundation reference)
+\begin{frame}{The Core Idea: Recurrence}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Mathematical Definition}
+
+\formula{h_t = \tanh(W_{hh} h_{t-1} + W_{xh} x_t + b_h)}
+\formula{y_t = W_{hy} h_t + b_y}
+
+Where:
+\begin{itemize}
+\item $h_t$ = hidden state at time $t$
+\item $x_t$ = input at time $t$
+\item $y_t$ = output at time $t$
+\item $W_{*}$ = weight matrices (shared!)
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Key Insight}: Same weights at every timestep
+
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/rnn_unrolled.pdf}
+
+\vspace{5mm}
+
+\textbf{Unrolled View Shows:}
+\begin{itemize}
+\item Information flows left-to-right
+\item Hidden state carries memory
+\item Parameters shared across time
+\item Can handle any sequence length
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Remember: we just learned what each part means!}
+\end{frame}
+
+% Forward Pass Visualization
+\begin{frame}{Forward Pass: Step by Step}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/rnn_forward_pass.pdf}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Step 1: Initialize}
+\begin{itemize}
+\item $h_0 = \vec{0}$ (zeros)
+\item Load first input $x_1$
+\item Apply RNN cell
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Step 2: Process}
+\begin{itemize}
+\item Compute $h_1$ from $h_0, x_1$
+\item Generate output $y_1$
+\item Pass $h_1$ forward
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Step 3: Continue}
+\begin{itemize}
+\item Repeat for all timesteps
+\item Each $h_t$ depends on history
+\item Outputs can be at each step
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Hidden state accumulates information over time}
+\end{frame}
+
+% Code Example
+\begin{frame}[fragile]{Implementation: Simple RNN Cell}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+class RNNCell:
+    def __init__(self, input_size, hidden_size):
+        # Initialize weights
+        self.Wxh = np.random.randn(input_size, hidden_size) * 0.01
+        self.Whh = np.random.randn(hidden_size, hidden_size) * 0.01
+        self.Why = np.random.randn(hidden_size, output_size) * 0.01
+        self.bh = np.zeros((1, hidden_size))
+        self.by = np.zeros((1, output_size))
+
+    def step(self, x, h_prev):
+        # Single timestep forward
+        h = np.tanh(np.dot(x, self.Wxh) +
+                   np.dot(h_prev, self.Whh) + self.bh)
+        y = np.dot(h, self.Why) + self.by
+        return y, h
+
+    def forward(self, inputs):
+        h = np.zeros((1, self.hidden_size))
+        outputs = []
+
+        for x in inputs:
+            y, h = self.step(x, h)
+            outputs.append(y)
+
+        return outputs
+\end{lstlisting}
+
+\column{0.43\textwidth}
+\textbf{PyTorch Equivalent:}
+\begin{lstlisting}[language=Python]
+import torch.nn as nn
+
+# Built-in RNN
+rnn = nn.RNN(
+    input_size=100,
+    hidden_size=256,
+    num_layers=1,
+    batch_first=True
+)
+
+# Or use LSTM/GRU
+lstm = nn.LSTM(
+    input_size=100,
+    hidden_size=256,
+    num_layers=2,
+    dropout=0.2,
+    bidirectional=True
+)
+
+# Forward pass
+output, (hn, cn) = lstm(input_seq)
+\end{lstlisting}
+
+\vspace{3mm}
+\keypoint{Modern frameworks handle the complexity}
+\end{columns}
+\end{frame}
+
+% Part 2: The Vanishing Gradient Problem (with intuition)
+\begin{frame}{\Large Part 2: The Vanishing Gradient Problem}
+\begin{center}
+{\huge \textbf{Why Simple RNNs Fail}}
+\end{center}
+
+\vfill
+
+\textbf{Intuition First: The Telephone Game}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{../figures/telephone_game_gradient.pdf}
+\end{center}
+
+\begin{itemize}
+\item Whisper message through 20 people
+\item Each person changes message slightly (multiply by 0.9)
+\item After 20 people: $0.9^{20} = 0.12$ (88\% lost!)
+\item Same in RNNs: gradient signal weakens each step
+\end{itemize}
+
+\vfill
+\keypoint{Information degrades exponentially through time}
+\end{frame}
+
+% Mathematical Explanation
+\begin{frame}{The Vanishing Gradient: Mathematical View}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Problem}
+
+Gradient through time:
+\formula{\frac{\partial L}{\partial h_0} = \frac{\partial L}{\partial h_T} \prod_{t=1}^{T} \frac{\partial h_t}{\partial h_{t-1}}}
+
+Each term: $\frac{\partial h_t}{\partial h_{t-1}} = W_h^T \cdot \text{diag}(f'(h_{t-1}))$
+
+\vspace{5mm}
+
+For tanh: $|f'(x)| \leq 1$
+
+If $||W_h|| < 1$: gradients → 0 \warning{(vanish)}
+
+If $||W_h|| > 1$: gradients → ∞ \warning{(explode)}
+
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/vanishing_gradient.pdf}
+
+\vspace{5mm}
+
+\textbf{Consequences:}
+\begin{itemize}
+\item Can't learn long dependencies
+\item Gradient ≈ 0 after 10-20 steps
+\item Network "forgets" early inputs
+\item Training becomes ineffective
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize The fundamental limitation that led to LSTM/GRU}
+\end{frame}
+
+% Gradient Flow Visualization
+\begin{frame}{Visualizing Gradient Flow}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/gradient_flow_comparison.pdf}
+\end{center}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Vanilla RNN}
+\begin{itemize}
+\item Exponential decay/growth
+\item Gradient magnitude: $O(\lambda^T)$
+\item Effective memory: 5-10 steps
+\item \warning{Cannot learn long patterns}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{LSTM (Next Section)}
+\begin{itemize}
+\item Constant error flow
+\item Gradient highways
+\item Effective memory: 100+ steps
+\item \success{Learns long dependencies}
+\end{itemize}
+\end{columns}
+
+\vfill
+\keypoint{Gradient flow determines what the network can learn}
+\end{frame}
+
+% Part 3: LSTM - The Solution
+\begin{frame}{\Large Part 3: Long Short-Term Memory (LSTM)}
+\begin{center}
+{\huge \textbf{Engineering Memory}}
+\end{center}
+
+\vfill
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Innovation (1997)}
+
+Hochreiter & Schmidhuber's insight:
+\begin{itemize}
+\item Add a \highlight{memory cell} $C_t$
+\item Control flow with \highlight{gates}
+\item Create gradient highways
+\item Selective reading/writing
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Three Gates:}
+\begin{enumerate}
+\item \textbf{Forget}: What to discard
+\item \textbf{Input}: What to store
+\item \textbf{Output}: What to expose
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{LSTM Equations}
+
+\begin{align*}
+f_t &= \sigma(W_f \cdot [h_{t-1}, x_t] + b_f) \\
+i_t &= \sigma(W_i \cdot [h_{t-1}, x_t] + b_i) \\
+\tilde{C}_t &= \tanh(W_C \cdot [h_{t-1}, x_t] + b_C) \\
+C_t &= f_t * C_{t-1} + i_t * \tilde{C}_t \\
+o_t &= \sigma(W_o \cdot [h_{t-1}, x_t] + b_o) \\
+h_t &= o_t * \tanh(C_t)
+\end{align*}
+
+\vspace{3mm}
+
+\keypoint{Gates use sigmoid (0-1) for control}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize The architecture that made deep sequence modeling possible}
+\end{frame}
+
+% LSTM Architecture Visualization
+\begin{frame}{LSTM Architecture: Gate Mechanisms}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/lstm_architecture.pdf}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Forget Gate}
+\begin{itemize}
+\item Decides what to forget
+\item $f_t \in [0,1]^d$
+\item 0 = forget completely
+\item 1 = remember fully
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Input Gate}
+\begin{itemize}
+\item Controls new information
+\item $i_t$ = how much to write
+\item $\tilde{C}_t$ = what to write
+\item Selective memory update
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Output Gate}
+\begin{itemize}
+\item Filters cell state
+\item $o_t$ = what to output
+\item Hidden state from cell
+\item Task-specific exposure
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Information flow is carefully controlled at each step}
+\end{frame}
+
+% LSTM vs RNN Comparison
+\begin{frame}{RNN vs LSTM: Key Differences}
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Aspect} & \textbf{Vanilla RNN} & \textbf{LSTM} \\
+\midrule
+Parameters & $O(h^2)$ & $O(4h^2)$ \\
+Memory & Short (5-10 steps) & Long (100+ steps) \\
+Gradient flow & Multiplicative & Additive \\
+Training speed & Fast & Slower (4x params) \\
+Gradient problem & Severe & Largely solved \\
+Use cases & Short sequences & Most applications \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{8mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{When to Use RNN:}
+\begin{itemize}
+\item Very short sequences
+\item Real-time constraints
+\item Limited compute
+\item Simple patterns
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{When to Use LSTM:}
+\begin{itemize}
+\item Long dependencies
+\item Complex patterns
+\item Production systems
+\item Default choice (pre-2017)
+\end{itemize}
+\end{columns}
+
+\vfill
+\keypoint{LSTM's complexity is justified by superior performance}
+\end{frame}
+
+% GRU - Simplified Alternative
+\begin{frame}{GRU: Gated Recurrent Unit}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Simplification of LSTM (2014)}
+
+Cho et al. merged gates:
+\begin{itemize}
+\item Only \highlight{2 gates} instead of 3
+\item No separate cell state
+\item Fewer parameters (3x vs 4x)
+\item Similar performance
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{GRU Equations:}
+\begin{align*}
+z_t &= \sigma(W_z \cdot [h_{t-1}, x_t]) \\
+r_t &= \sigma(W_r \cdot [h_{t-1}, x_t]) \\
+\tilde{h}_t &= \tanh(W \cdot [r_t * h_{t-1}, x_t]) \\
+h_t &= (1-z_t) * h_{t-1} + z_t * \tilde{h}_t
+\end{align*}
+
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/gru_architecture.pdf}
+
+\vspace{5mm}
+
+\textbf{Gates:}
+\begin{itemize}
+\item \textbf{Update gate} ($z_t$): How much to update
+\item \textbf{Reset gate} ($r_t$): How much past matters
+\end{itemize}
+
+\vspace{5mm}
+
+\keypoint{GRU ≈ LSTM with fewer parameters}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Often preferred for smaller datasets}
+\end{frame}
+
+% Bidirectional RNNs
+\begin{frame}[fragile]{Bidirectional RNNs: Using Future Context}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/bidirectional_rnn.pdf}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Motivation}
+
+"The bank by the river" vs "The bank denied the loan"
+\begin{itemize}
+\item "bank" ambiguous without future context
+\item Forward RNN only sees past
+\item Solution: process both directions
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Architecture:}
+\begin{itemize}
+\item Two separate RNNs
+\item Forward: left → right
+\item Backward: right → left
+\item Concatenate hidden states
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Implementation:}
+\begin{lstlisting}[language=Python]
+# PyTorch BiLSTM
+bilstm = nn.LSTM(
+    input_size=100,
+    hidden_size=128,
+    bidirectional=True
+)
+
+# Output size = 2 * hidden_size
+# output: [batch, seq, 256]
+
+# Separate directions:
+output = output.view(
+    batch, seq, 2, 128
+)
+forward = output[:,:,0,:]
+backward = output[:,:,1,:]
+\end{lstlisting}
+
+\vspace{3mm}
+\success{Standard for non-causal tasks}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Double the parameters, significant performance gain}
+\end{frame}
+
+% Practical Training Tips
+\begin{frame}[fragile]{Training RNNs: Practical Tips}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Common Issues \& Solutions}
+
+\begin{enumerate}
+\item \textbf{Gradient Explosion}
+   \begin{itemize}
+   \item Solution: Gradient clipping
+   \item `torch.nn.utils.clip\_grad\_norm\_`
+   \item Typical value: 1.0 - 5.0
+   \end{itemize}
+
+\item \textbf{Initialization}
+   \begin{itemize}
+   \item Xavier/He initialization
+   \item Forget gate bias = 1.0 (LSTM)
+   \item Helps gradient flow
+   \end{itemize}
+
+\item \textbf{Overfitting}
+   \begin{itemize}
+   \item Dropout (between layers)
+   \item Recurrent dropout (careful!)
+   \item Weight decay
+   \end{itemize}
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{Hyperparameters}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} & \textbf{Typical Range} \\
+\midrule
+Hidden size & 128 - 512 \\
+Num layers & 1 - 3 \\
+Learning rate & 1e-3 - 1e-2 \\
+Batch size & 32 - 128 \\
+Sequence length & 20 - 200 \\
+Gradient clip & 1.0 - 5.0 \\
+Dropout & 0.2 - 0.5 \\
+\bottomrule
+\end{tabular}
+
+\vspace{5mm}
+
+\textbf{Training Strategy:}
+\begin{itemize}
+\item Start with small sequences
+\item Gradually increase length
+\item Monitor gradient norms
+\item Use teacher forcing wisely
+\end{itemize}
+\end{columns}
+
+\vfill
+\keypoint{RNN training requires careful tuning and monitoring}
+\end{frame}
+
+% Applications
+\begin{frame}{Real-World Applications}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Natural Language Processing}
+\begin{itemize}
+\item Language modeling (pre-2018)
+\item Machine translation (pre-2017)
+\item Speech recognition (still used)
+\item Named entity recognition
+\item Sentiment analysis
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Time Series}
+\begin{itemize}
+\item Stock price prediction
+\item Weather forecasting
+\item Anomaly detection
+\item Signal processing
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Modern Context (2024)}
+
+\includegraphics[width=\textwidth]{../figures/rnn_vs_transformer_timeline.pdf}
+
+\vspace{5mm}
+
+\textbf{Where RNNs Still Win:}
+\begin{itemize}
+\item Streaming/online processing
+\item Edge devices (memory constraints)
+\item Variable-length sequences
+\item Time series with clear temporal patterns
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize RNNs remain relevant for specific use cases}
+\end{frame}
+
+% Connection to Modern Methods
+\begin{frame}{From RNNs to Transformers: Evolution}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/evolution_to_transformers.pdf}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{RNN Era (2013-2017)}
+\begin{itemize}
+\item Sequential processing
+\item Hidden state memory
+\item Cannot parallelize
+\item Long-range struggles
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Attention Addition (2015)}
+\begin{itemize}
+\item RNN + attention
+\item Direct connections
+\item Better gradients
+\item Still sequential
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Transformers (2017+)}
+\begin{itemize}
+\item Pure attention
+\item Fully parallel
+\item Global context
+\item Dominates today
+\end{itemize}
+\end{columns}
+
+\vfill
+\keypoint{RNNs taught us the importance of modeling sequences}
+\end{frame}
+
+% Key Takeaways
+\begin{frame}{Key Takeaways}
+\begin{center}
+{\Large \textbf{What We Learned About RNNs}}
+\end{center}
+
+\vspace{10mm}
+
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Core Concepts}
+\begin{itemize}
+\item \highlight{Recurrence} for sequences
+\item Hidden state as memory
+\item Parameter sharing
+\item Backprop through time
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Challenges}
+\begin{itemize}
+\item Vanishing gradients
+\item Sequential bottleneck
+\item Training difficulty
+\item Limited context window
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Solutions}
+\begin{itemize}
+\item LSTM/GRU gates
+\item Gradient clipping
+\item Bidirectional processing
+\item Attention (next week!)
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+
+\keypoint{RNNs introduced memory to neural networks - a crucial innovation}
+
+\vspace{8mm}
+
+\begin{center}
+\secondary{\Large Next Week: Sequence-to-Sequence Models}\\
+\secondary{How to translate, summarize, and generate with encoder-decoder architectures}
+\end{center}
+\end{frame}
+
+% References
+\begin{frame}{References \& Further Reading}
+\textbf{Foundational Papers:}
+\begin{itemize}
+\item Hochreiter \& Schmidhuber (1997). "Long Short-Term Memory"
+\item Cho et al. (2014). "Learning Phrase Representations using RNN Encoder-Decoder" (GRU)
+\item Graves (2013). "Generating Sequences With RNNs"
+\item Karpathy (2015). "The Unreasonable Effectiveness of RNNs" (blog)
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Practical Resources:}
+\begin{itemize}
+\item PyTorch RNN Tutorial: \url{pytorch.org/tutorials/intermediate/char_rnn}
+\item Understanding LSTMs: \url{colah.github.io/posts/2015-08-Understanding-LSTMs/}
+\item Stanford CS224N Lecture 6: RNNs and Language Models
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Code Examples:}
+\begin{itemize}
+\item Week 3 Lab: `week03\_rnn\_lab.ipynb`
+\item GitHub: Various char-RNN implementations
+\item Hugging Face: Modern RNN models
+\end{itemize}
+\end{frame}
+
+% Quick Reference Appendix
+\begin{frame}{Appendix: Quick Math Reference}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Matrix Multiplication}
+\[\begin{bmatrix} a & b \\ c & d \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} ax+by \\ cx+dy \end{bmatrix}\]
+
+\vspace{5mm}
+
+\textbf{Common Derivatives}
+\begin{tabular}{ll}
+\toprule
+Function & Derivative \\
+\midrule
+$\tanh(x)$ & $1 - \tanh^2(x)$ \\
+$\sigma(x)$ & $\sigma(x)(1-\sigma(x))$ \\
+$\text{ReLU}(x)$ & $\begin{cases}1 & x>0\\0 & x\leq0\end{cases}$ \\
+\bottomrule
+\end{tabular}
+
+\column{0.48\textwidth}
+\textbf{Notation Guide}
+\begin{itemize}
+\item $\mathbf{x}$ = vector (bold)
+\item $W$ = matrix (capital)
+\item $x_t$ = value at time $t$
+\item $h_{t-1}$ = previous hidden state
+\item $\sigma$ = sigmoid function
+\item $*$ = element-wise multiplication
+\item $\cdot$ = matrix multiplication
+\item $[a, b]$ = concatenation
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Dimensions}
+\begin{itemize}
+\item Input: $(batch, seq, features)$
+\item Hidden: $(batch, hidden\_size)$
+\item Output: $(batch, seq, classes)$
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\end{document}

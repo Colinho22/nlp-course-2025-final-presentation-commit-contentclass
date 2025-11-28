@@ -1,0 +1,2315 @@
+% Week 6: Pre-trained Models (BERT & GPT)
+% BSc Discovery-Based Presentation using Educational Framework
+% Complete rewrite with $1M cost revolution hook and problem-driven narrative
+
+\input{../../common/master_template.tex}
+
+% Define bottomnote command
+\newcommand{\bottomnote}[1]{%
+    \vspace{0.2cm}
+    \begin{center}
+    \footnotesize\secondary{#1}
+    \end{center}
+}
+
+\title{Pre-trained Language Models}
+\subtitle{\secondary{Week 6 - The \$1 Million Revolution}}
+\author{NLP Course 2025}
+\date{October 26, 2025}
+
+\begin{document}
+
+% ===== OPENING SEQUENCE (Slides 1-5) =====
+
+% Slide 1: Title
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}
+\secondary{\footnotesize BSc Discovery-Based Presentation}
+\end{center}
+\end{frame}
+
+% Slide 2: Discovery Hook - The $1 Million Problem
+\begin{frame}[t]{The \$1 Million Problem}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/training_cost_comparison_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Pre-training changes the economics of NLP completely
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Training BERT from scratch: \$1M+. Fine-tuning: \$50-500. Game changer.}
+\end{frame}
+
+% Slide 3: Before 2018 - The Old Way
+\begin{frame}[t]{Before 2018: The Old Way}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Task-Specific Models}:
+
+\begin{itemize}
+\item \textbf{Sentiment}: Custom CNN architecture
+\item \textbf{Question Answering}: BiDAF model
+\item \textbf{Named Entity}: BiLSTM-CRF
+\item \textbf{Translation}: Seq2Seq with attention
+\item \textbf{Summarization}: Pointer-generator
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Process}:
+
+\begin{enumerate}
+\item Design architecture for your task
+\item Collect labeled data (10K+ examples)
+\item Train from random initialization
+\item Hope it works
+\end{enumerate}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Limitations}:
+
+\begin{itemize}
+\item Each task starts from scratch
+\item No knowledge transfer
+\item Expensive data collection
+\item Months per task
+\item Small datasets = poor performance
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Cost}:
+
+\begin{itemize}
+\item 3-6 months per task
+\item 10K-100K labeled examples
+\item \$50K-200K in labeling costs
+\item Limited accuracy (60-75\%)
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Every NLP task was an isolated, expensive project}
+\end{frame}
+
+% Slide 4: The Breakthrough - October 2018
+\begin{frame}[t]{The Breakthrough: October 2018}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/2018_breakthrough_timeline_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: BERT and GPT changed everything in 4 months
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{June 2018 (GPT-1) and October 2018 (BERT) - the inflection point}
+\end{frame}
+
+% Slide 5: The New Paradigm
+\begin{frame}[t]{The New Paradigm}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/pretraining_finetuning_paradigm_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Learn language once (expensive), apply everywhere (cheap)
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{This is transfer learning - finally working for NLP}
+\end{frame}
+
+% ===== PRE-2018 LANDSCAPE (Slides 6-10) =====
+
+% Slide 6: Visual - Task-Specific Architectures
+\begin{frame}[t]{Pre-2018: Every Task Needed Its Own Model}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/task_specific_architectures_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: No sharing, no transfer, no efficiency
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Each task was an independent research project}
+\end{frame}
+
+% Slide 7: Detail - Why Task-Specific Failed
+\begin{frame}[t]{Why This Approach Failed to Scale}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Limitations}:
+
+\begin{itemize}
+\item \textbf{No transfer}: Each model learns from scratch
+\item \textbf{Data hungry}: Need 10K+ labeled examples per task
+\item \textbf{Expensive}: Labeling costs \$50K-200K
+\item \textbf{Slow}: 3-6 months per task
+\item \textbf{Brittle}: Fails on new domains
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Example - Sentiment Analysis}:
+
+\begin{itemize}
+\item Collect 20K movie reviews
+\item Label positive/negative
+\item Train custom CNN: 2-3 weeks
+\item Accuracy: 82\%
+\item Deploy to product reviews: Fails (65\%)!
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{What We Needed}:
+
+\begin{itemize}
+\item Shared language understanding
+\item Transfer across tasks
+\item Work with small labeled datasets
+\item Fast adaptation to new tasks
+\item Robust across domains
+\end{itemize}
+
+\vspace{5mm}
+\textbf{The Dream}:
+
+\begin{itemize}
+\item Train once on ALL text
+\item Fine-tune with 100-1000 examples
+\item Days instead of months
+\item State-of-art on every task
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{The question: Can we achieve this dream?}
+\end{frame}
+
+% Slide 8: Visual - Data Requirements Pre-2018
+\begin{frame}[t]{The Data Bottleneck}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/data_requirements_pre2018_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Performance plateaus without massive labeled datasets
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Labeled data is expensive - this limited what we could build}
+\end{frame}
+
+% Slide 9: Detail - The Transfer Learning Dream
+\begin{frame}[t]{The Transfer Learning Dream}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Computer Vision's Success}:
+
+\begin{itemize}
+\item 2012: ImageNet pre-training (AlexNet)
+\item Train on 1M images (unsupervised labels)
+\item Fine-tune for any vision task
+\item 10x less data needed
+\item State-of-art on everything
+\end{itemize}
+
+\vspace{5mm}
+\textbf{The Magic}:
+
+\begin{itemize}
+\item Low-level features shared (edges, textures)
+\item High-level features shared (objects, shapes)
+\item Learn once, transfer everywhere
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Why NLP Lagged}:
+
+\begin{itemize}
+\item Words are discrete (images continuous)
+\item Context matters more
+\item Sequence length varies
+\item Multiple tasks (classification, generation, QA)
+\item No clear "ImageNet equivalent"
+\end{itemize}
+
+\vspace{5mm}
+\textbf{The Question (2017)}:
+
+\textit{Can we create an ImageNet moment for NLP?}
+
+\vspace{3mm}
+Answer coming in 2018...
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Transfer learning worked for vision - could it work for language?}
+\end{frame}
+
+% Slide 10: The Question
+\begin{frame}[t]{The Central Question}
+\begin{center}
+\Large
+\textbf{Can we pre-train a language model on ALL text,}
+
+\textbf{then fine-tune for ANY task?}
+\end{center}
+
+\vspace{10mm}
+
+\begin{center}
+\textbf{Requirements}:
+\begin{itemize}
+\item Unsupervised pre-training (no labels needed)
+\item Massive text corpus (billions of words)
+\item Learn general language understanding
+\item Fast fine-tuning with small labeled data
+\item Work across all NLP tasks
+\end{itemize}
+\end{center}
+
+\vspace{10mm}
+
+\begin{center}
+\Large
+\textbf{Answer: YES}
+
+\vspace{3mm}
+\secondary{\normalsize Next 36 slides show exactly how}
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{The breakthrough: BERT and GPT (2018)}
+\end{frame}
+
+% ===== BERT SECTION (Slides 11-28) - 18 Slides =====
+
+\begin{frame}[t]{}
+\begin{center}
+\Huge\textbf{Part 1: BERT}
+
+\vspace{5mm}
+\Large\secondary{Bidirectional Encoder Representations}
+
+\vspace{5mm}
+\Large\secondary{from Transformers}
+\end{center}
+\end{frame}
+
+% Slides 11-12: The Fill-in-Blank Challenge (Problem-First)
+\begin{frame}[t]{The Fill-in-Blank Challenge}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/fill_in_blank_challenge_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Need both left AND right context to fill blanks correctly
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Left-to-right models (like GPT) can't solve this naturally}
+\end{frame}
+
+\begin{frame}[t]{Why Bidirectional Matters}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Task}:
+
+Fill in: ``The [BLANK] sat on the mat''
+
+\vspace{3mm}
+\textbf{Left-to-Right Approach}:
+
+Only sees: ``The [BLANK]''
+
+Cannot use: ``sat on the mat''
+
+\vspace{3mm}
+\textbf{Predictions}:
+\begin{itemize}
+\item ``dog'' (generic animal)
+\item ``person'' (generic)
+\item ``cat'' (lucky guess)
+\end{itemize}
+
+\vspace{3mm}
+Accuracy: \textcolor{red}{Low - missing critical context!}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Bidirectional Approach}:
+
+Sees both: ``The [BLANK]'' AND ``sat on the mat''
+
+\vspace{3mm}
+Uses full context:
+\begin{itemize}
+\item ``sat'' suggests living thing
+\item ``on the mat'' suggests small animal
+\item ``the'' suggests common noun
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Predictions}:
+\begin{itemize}
+\item ``cat'' (high probability)
+\item ``dog'' (possible)
+\item ``kitten'' (possible)
+\end{itemize}
+
+\vspace{3mm}
+Accuracy: \textcolor{green}{High - full context used!}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{This is BERT's core innovation - bidirectional understanding}
+\end{frame}
+
+% Slides 13-14: Bidirectional Context
+\begin{frame}[t]{Bidirectional Context in Action}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/bidirectional_attention_flow_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Every word sees every other word (no direction restriction)
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Bidirectional = encoder from Week 5 transformers}
+\end{frame}
+
+\begin{frame}[t]{How Bidirectional Helps Different Tasks}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Fill-in-Blank Tasks}:
+
+\begin{itemize}
+\item Masked language modeling
+\item Cloze questions
+\item Spell correction
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Classification Tasks}:
+
+\begin{itemize}
+\item Sentiment: Full sentence context
+\item Spam detection: Look ahead and behind
+\item Topic classification: Global understanding
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Question Answering}:
+
+\begin{itemize}
+\item Match question to passage
+\item Find answer span
+\item Use context on both sides
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Why It Works}:
+
+\begin{itemize}
+\item Contextual embeddings from both sides
+\item Disambiguate word meanings
+\item Capture long-range dependencies
+\item Understand sentence structure
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Example - ``bank''}:
+
+\begin{itemize}
+\item Left: ``The river''
+\item Right: ``was flooding''
+\item Conclusion: Water bank, not financial
+\end{itemize}
+
+\vspace{3mm}
+\textbf{When Bidirectional Doesn't Help}:
+
+\begin{itemize}
+\item Text generation (can't see future!)
+\item Autoregressive tasks
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Different tasks need different architectures - BERT for understanding}
+\end{frame}
+
+% Slide 15: Visual - Masked LM Concept
+\begin{frame}[t]{Masked Language Modeling: The Training Objective}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/masked_lm_process_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Mask 15\% of tokens, predict them using full context
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{This forces the model to learn bidirectional representations}
+\end{frame}
+
+% Slide 16: Detail - Masked LM Mathematics
+\begin{frame}[t]{Masked Language Modeling: The Mathematics}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Objective Function}:
+
+$$\mathcal{L}_{MLM} = -\sum_{i \in masked} \log P(w_i | context)$$
+
+where $context$ = all other words
+
+\vspace{3mm}
+\textbf{The Process}:
+
+\begin{enumerate}
+\item Randomly mask 15\% of tokens
+\item Replace with [MASK] token (80\%)
+\item Replace with random word (10\%)
+\item Keep unchanged (10\%)
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Why the variation}?
+
+Prevents model from just memorizing [MASK] $\rightarrow$ word
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Training Example}:
+
+Original: ``The cat sat on the mat''
+
+\vspace{3mm}
+Masked: ``The [MASK] sat on the [MASK]''
+
+\vspace{3mm}
+Model predicts:
+\begin{itemize}
+\item Position 2: $P(\text{cat}|\text{context})$
+\item Position 6: $P(\text{mat}|\text{context})$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Cross-Entropy Loss}:
+
+$$Loss = -[\log P(\text{cat}) + \log P(\text{mat})]$$
+
+\vspace{3mm}
+Minimize this across billions of sentences
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Masked LM is self-supervised - no labels needed!}
+\end{frame}
+
+% Slide 17: Worked Example - Masked Token Prediction
+\begin{frame}[t]{Worked Example: Predicting Masked Tokens}
+\small
+\textbf{Given}: ``The [MASK] sat on the mat''
+
+\vspace{3mm}
+\textbf{Step 1}: Convert to token embeddings (each 768-dim vector)
+
+Token IDs: [101, 1996, 103, 2938, 2006, 1996, 13523, 102]
+
+\vspace{3mm}
+\textbf{Step 2}: Add positional embeddings
+
+$$E_{input} = E_{token} + E_{position}$$
+
+\vspace{3mm}
+\textbf{Step 3}: Pass through 12 transformer encoder layers
+
+Each layer: Self-attention (bidirectional) + Feed-forward
+
+\vspace{3mm}
+\textbf{Step 4}: Get output for [MASK] position (position 2)
+
+Output vector: $h_{[MASK]} \in \mathbb{R}^{768}$
+
+\vspace{3mm}
+\textbf{Step 5}: Project to vocabulary, apply softmax
+
+$$P(w) = \frac{\exp(W \cdot h_{[MASK]})}{\sum_{v} \exp(W \cdot h_{[MASK]})}$$
+
+\vspace{3mm}
+\textbf{Result}: Top predictions with probabilities
+
+\begin{itemize}
+\item P(cat) = 0.73
+\item P(dog) = 0.15
+\item P(person) = 0.04
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{Full bidirectional context yields confident, accurate predictions}
+\end{frame}
+
+% Slides 18-19: BERT Architecture
+\begin{frame}[t]{BERT Architecture Overview}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/bert_architecture_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Stack of transformer encoders - pure bidirectional attention
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{This is the encoder stack from Week 5 - no decoder needed}
+\end{frame}
+
+\begin{frame}[t]{BERT Architecture: The Details}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{BERT-Base}:
+
+\begin{itemize}
+\item Layers: 12 transformer encoders
+\item Hidden size: 768 dimensions
+\item Attention heads: 12 per layer
+\item Parameters: 110 million
+\item Max sequence: 512 tokens
+\end{itemize}
+
+\vspace{5mm}
+\textbf{BERT-Large}:
+
+\begin{itemize}
+\item Layers: 24 encoders
+\item Hidden size: 1024 dimensions
+\item Attention heads: 16 per layer
+\item Parameters: 340 million
+\item Max sequence: 512 tokens
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Key Components}:
+
+\begin{itemize}
+\item \textbf{Token Embeddings}: WordPiece (30K vocab)
+\item \textbf{Position Embeddings}: Learned (not sinusoidal)
+\item \textbf{Segment Embeddings}: Sentence A vs B
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Why These Choices}:
+
+\begin{itemize}
+\item 12 layers: Balance depth vs speed
+\item 768 hidden: Standard transformer size
+\item 12 heads: Multiple attention patterns
+\item 512 max: Memory constraints
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Computation}:
+
+Training BERT-base from scratch: 4 days on 64 TPUs
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{These specs became the standard for encoder-based models}
+\end{frame}
+
+% Slides 20-21: Special Tokens
+\begin{frame}[t]{BERT's Special Tokens}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/bert_special_tokens_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Special tokens enable multiple tasks with one model
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{[CLS], [SEP], [MASK] - each serves a specific purpose}
+\end{frame}
+
+\begin{frame}[t]{Special Tokens: Purpose and Usage}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{[CLS] - Classification Token}:
+
+\begin{itemize}
+\item Always first token
+\item Aggregates sentence meaning
+\item Used for classification tasks
+\end{itemize}
+
+\vspace{3mm}
+Example: ``[CLS] The movie was great [SEP]''
+
+Output of [CLS]: Sentence embedding for sentiment classification
+
+\vspace{5mm}
+\textbf{[SEP] - Separator Token}:
+
+\begin{itemize}
+\item Separates sentence pairs
+\item Enables QA, entailment tasks
+\end{itemize}
+
+\vspace{3mm}
+Example: ``[CLS] Question [SEP] Passage [SEP]''
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{[MASK] - Masked Token}:
+
+\begin{itemize}
+\item Used only during pre-training
+\item Replaced with actual word during fine-tuning
+\item Training signal for MLM objective
+\end{itemize}
+
+\vspace{3mm}
+Example: ``The [MASK] is blue''
+
+Model learns: $P(\text{sky} | \text{context})$
+
+\vspace{5mm}
+\textbf{[PAD] - Padding Token}:
+
+\begin{itemize}
+\item Fills sequences to same length
+\item Ignored in attention
+\item Enables batch processing
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Four special tokens, each crucial for BERT's versatility}
+\end{frame}
+
+% Slides 22-23: WordPiece Tokenization
+\begin{frame}[t]{WordPiece Tokenization}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/wordpiece_tokenization_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Subword units handle rare words and morphology
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Full details in Week 8 - preview here for BERT context}
+\end{frame}
+
+\begin{frame}[t]{WordPiece: Subword Units}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Problem}:
+
+\begin{itemize}
+\item Word-level: 100K+ vocabulary (huge)
+\item Character-level: Long sequences (slow)
+\item Rare words: Poor representations
+\end{itemize}
+
+\vspace{3mm}
+\textbf{WordPiece Solution}:
+
+\begin{itemize}
+\item Learn 30K subword units
+\item Frequent words: Single token
+\item Rare words: Multiple subwords
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Examples}:
+
+\begin{itemize}
+\item ``playing'' $\rightarrow$ [``play'', ``\#\#ing'']
+\item ``unhappiness'' $\rightarrow$ [``un'', ``\#\#happiness'']
+\item ``COVID'' $\rightarrow$ [``CO'', ``\#\#VI'', ``\#\#D'']
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Benefits}:
+
+\begin{itemize}
+\item Fixed 30K vocabulary
+\item Handle any word (no UNK)
+\item Capture morphology
+\item Share representations (``play'' in ``playing'', ``player'')
+\end{itemize}
+
+\vspace{3mm}
+\textbf{BERT's Vocabulary}:
+
+\begin{itemize}
+\item 30,522 WordPiece tokens
+\item Covers English comprehensively
+\item Trained with BPE-like algorithm
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Impact}:
+
+Rare word handling improved by 40\%
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Subword tokenization is now standard across all modern models}
+\end{frame}
+
+% Slide 24: Visual - Pre-training Data
+\begin{frame}[t]{Pre-training Data: The Foundation}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/bert_pretraining_corpus_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Massive unsupervised data powers general language understanding
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{BooksCorpus (800M words) + Wikipedia (2.5B words) = 3.3B words}
+\end{frame}
+
+% Slide 25: Detail - Pre-training Objectives
+\begin{frame}[t]{BERT's Two Pre-training Objectives}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Objective 1: Masked LM}:
+
+\begin{itemize}
+\item Mask 15\% of tokens
+\item Predict masked words
+\item Uses bidirectional context
+\end{itemize}
+
+\vspace{3mm}
+Example:
+
+\texttt{The [MASK] sat on [MASK] mat}
+
+Predict: ``cat'' and ``the''
+
+\vspace{5mm}
+\textbf{Objective 2: Next Sentence Prediction}:
+
+\begin{itemize}
+\item Given two sentences A and B
+\item Predict if B follows A
+\item Binary classification (50\% real, 50\% random)
+\end{itemize}
+
+\vspace{3mm}
+Example:
+
+\texttt{A: Alice was tired.}
+
+\texttt{B: She went to sleep.} \textcolor{green}{[True]}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Why These Objectives}:
+
+\begin{itemize}
+\item \textbf{MLM}: Learn word-level representations
+\item \textbf{NSP}: Learn sentence relationships
+\item Together: Comprehensive language understanding
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Training Details}:
+
+\begin{itemize}
+\item Batch size: 256 sequences
+\item Steps: 1M (40 epochs)
+\item Optimizer: Adam (lr=1e-4)
+\item Time: 4 days on 64 TPUs
+\item Cost: ~\$7,000 compute
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Result}:
+
+General language model ready for ANY task
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Two complementary objectives create robust representations}
+\end{frame}
+
+% Slides 26-27: Fine-tuning Mechanics
+\begin{frame}[t]{Fine-tuning BERT for Your Task}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/bert_finetuning_process_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Add task-specific head, train on small labeled dataset
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Days instead of months - with better results}
+\end{frame}
+
+\begin{frame}[t]{Fine-tuning: The Mechanics}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Process}:
+
+\begin{enumerate}
+\item Load pre-trained BERT weights
+\item Add task-specific layer on top
+\item Train on labeled data (100-10K examples)
+\item Use small learning rate (2e-5)
+\item Train for 2-4 epochs
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Task-Specific Heads}:
+
+\begin{itemize}
+\item \textbf{Classification}: Linear layer on [CLS]
+\item \textbf{Token classification}: Linear on each token
+\item \textbf{QA}: Span prediction (start/end)
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Hyperparameters}:
+
+\begin{itemize}
+\item Learning rate: 2e-5, 3e-5, 5e-5
+\item Batch size: 16 or 32
+\item Epochs: 2-4
+\item Warmup: 10\% of steps
+\item Max sequence: 128-512
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Layer Freezing Options}:
+
+\begin{itemize}
+\item Freeze nothing: Full fine-tuning (best)
+\item Freeze bottom 8 layers: Faster
+\item Freeze all, train head only: Feature extraction
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Typical Results}:
+
+1000 examples + BERT $>$ 10,000 from scratch
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Fine-tuning is fast, cheap, and remarkably effective}
+\end{frame}
+
+% Slide 28: Checkpoint Quiz - BERT
+\begin{frame}[t]{Checkpoint: Understanding BERT}
+\begin{center}
+\textbf{Quick Quiz}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Question 1}:
+
+Why does BERT mask 15\% of tokens?
+
+\vspace{3mm}
+\textbf{A)} It's faster \\
+\textbf{B)} Balances learning vs efficiency \\
+\textbf{C)} Reduces overfitting \\
+\textbf{D)} Random choice
+
+\vspace{8mm}
+\textbf{Question 2}:
+
+What makes BERT bidirectional?
+
+\vspace{3mm}
+\textbf{A)} Two LSTMs \\
+\textbf{B)} Encoder allows full context \\
+\textbf{C)} Reads backwards \\
+\textbf{D)} Has two outputs
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Answer 1}: \textbf{B) Balances learning vs efficiency}
+
+\begin{itemize}
+\item Too few: Not enough training signal
+\item Too many: Model sees mostly masks
+\item 15\%: Empirically optimal
+\item Enough context remains unmasked
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Answer 2}: \textbf{B) Encoder allows full context}
+
+\begin{itemize}
+\item Transformer encoder: No causal mask
+\item Each token attends to ALL others
+\item Left and right context used equally
+\item This is the key difference from GPT
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Understanding these foundations is critical for using BERT effectively}
+\end{frame}
+
+% ===== GPT SECTION (Slides 29-43) - 15 Slides =====
+
+\begin{frame}[t]{}
+\begin{center}
+\Huge\textbf{Part 2: GPT}
+
+\vspace{5mm}
+\Large\secondary{Generative Pre-trained Transformer}
+\end{center}
+\end{frame}
+
+% Slides 29-30: The Generation Challenge (Problem-First)
+\begin{frame}[t]{The Generation Challenge}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/text_generation_challenge_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Generation requires predicting one word at a time, left-to-right
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Bidirectional models can't generate - they'd cheat by seeing the future}
+\end{frame}
+
+\begin{frame}[t]{Why Generation is Harder Than Classification}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Classification}:
+
+\begin{itemize}
+\item Input: Full sentence
+\item Output: Single label
+\item Can see everything
+\item One prediction
+\end{itemize}
+
+\vspace{3mm}
+Example: ``Great movie!'' $\rightarrow$ Positive
+
+\vspace{5mm}
+\textbf{Generation}:
+
+\begin{itemize}
+\item Input: Partial sequence
+\item Output: Next word
+\item Can't see future
+\item Multiple sequential predictions
+\end{itemize}
+
+\vspace{3mm}
+Example: ``Once upon'' $\rightarrow$ predict ``a''
+
+Then: ``Once upon a'' $\rightarrow$ predict ``time''
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Constraint}:
+
+\textit{During generation, you haven't written future words yet!}
+
+\vspace{3mm}
+Cannot use bidirectional model
+
+\vspace{3mm}
+Must use \highlight{causal} (left-to-right) attention
+
+\vspace{5mm}
+\textbf{Requirements}:
+
+\begin{itemize}
+\item Predict token-by-token
+\item Each prediction uses only past
+\item Autoregressive: Output becomes input
+\item Coherent over long sequences
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Use Cases}:
+
+\begin{itemize}
+\item Text completion
+\item Story generation
+\item Code generation
+\item Dialogue systems
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Different tasks need different architectures - GPT for generation}
+\end{frame}
+
+% Slides 31-32: Autoregressive Approach
+\begin{frame}[t]{Autoregressive Language Modeling}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/autoregressive_visual_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Predict next token using only previous tokens (causal)
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Auto-regressive = output at time $t$ becomes input at time $t+1$}
+\end{frame}
+
+\begin{frame}[t]{Autoregressive Approach: The Mathematics}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Objective Function}:
+
+$$\mathcal{L}_{AR} = -\sum_{t=1}^{T} \log P(w_t | w_1, ..., w_{t-1})$$
+
+Maximize probability of each next word
+
+\vspace{3mm}
+\textbf{Chain Rule Decomposition}:
+
+$$P(w_1, ..., w_T) = \prod_{t=1}^{T} P(w_t | w_1, ..., w_{t-1})$$
+
+Exact factorization (no approximation!)
+
+\vspace{3mm}
+\textbf{Causal Constraint}:
+
+At time $t$, can only see $w_1, ..., w_{t-1}$
+
+Cannot see $w_t, w_{t+1}, ...$ (haven't generated yet)
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Training with Teacher Forcing}:
+
+\begin{itemize}
+\item Given full sequence during training
+\item At each position: Predict next
+\item Use ground truth (not predictions)
+\item Prevents error accumulation
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Example}:
+
+Sequence: ``The cat sat''
+
+\begin{itemize}
+\item Position 1: Predict ``The'' (start)
+\item Position 2: Given ``The'', predict ``cat''
+\item Position 3: Given ``The cat'', predict ``sat''
+\end{itemize}
+
+\vspace{3mm}
+All trained in parallel!
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Autoregressive objective is natural for generation tasks}
+\end{frame}
+
+% Slide 33: Visual - Next Token Prediction
+\begin{frame}[t]{Next Token Prediction Process}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/next_token_prediction_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Each token predicted using ALL previous tokens
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{This is language modeling from Week 1 - but with transformers!}
+\end{frame}
+
+% Slide 34: Detail - Autoregressive Mathematics
+\begin{frame}[t]{Autoregressive Mathematics Deep Dive}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{At Time Step $t$}:
+
+Input: $w_1, w_2, ..., w_{t-1}$
+
+\vspace{3mm}
+\textbf{Step 1}: Embed tokens
+
+$$E = [e_1, e_2, ..., e_{t-1}]$$
+
+\vspace{3mm}
+\textbf{Step 2}: Add positional encoding
+
+$$H^{(0)} = E + P$$
+
+\vspace{3mm}
+\textbf{Step 3}: Pass through $L$ decoder layers
+
+$$H^{(\ell)} = \text{TransformerDecoder}(H^{(\ell-1)})$$
+
+\vspace{3mm}
+\textbf{Step 4}: Project final layer to vocabulary
+
+$$logits = W \cdot h_{t-1}^{(L)}$$
+
+\textbf{Step 5}: Softmax for probabilities
+
+$$P(w_t) = \softmax(logits)$$
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Teacher Forcing}:
+
+During training:
+\begin{itemize}
+\item Use ground truth $w_t$ for next step
+\item Don't use model's prediction
+\item Prevents compounding errors
+\item Enables parallel training
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Inference (Generation)}:
+
+\begin{itemize}
+\item Sample from $P(w_t)$
+\item Append to sequence
+\item Repeat: $w_t$ $\rightarrow$ input for $w_{t+1}$
+\item Stop at [END] or max length
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Key Difference from BERT}:
+
+BERT: Predict masked (can see both sides)
+
+GPT: Predict next (can only see left)
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Causal constraint is enforced by attention masking}
+\end{frame}
+
+% Slide 35: Worked Example - Next Token Prediction
+\begin{frame}[t]{Worked Example: Computing P(next word)}
+\small
+\textbf{Given Sequence}: ``The cat sat on''
+
+\vspace{3mm}
+\textbf{Task}: Compute $P(\text{the} | \text{The cat sat on})$
+
+\vspace{3mm}
+\textbf{Step 1}: Token IDs and embeddings
+
+\texttt{[The=50256, cat=3797, sat=3332, on=319]} $\rightarrow$ $E \in \mathbb{R}^{4 \times 768}$
+
+\vspace{3mm}
+\textbf{Step 2}: Add positional embeddings
+
+$$H^{(0)} = E + P$$
+
+\vspace{3mm}
+\textbf{Step 3}: 12 decoder layers with causal attention
+
+Each token only attends to previous tokens (triangular mask)
+
+\vspace{3mm}
+\textbf{Step 4}: Final hidden state for position 4 (``on'')
+
+$$h_4^{(12)} \in \mathbb{R}^{768}$$
+
+\vspace{3mm}
+\textbf{Step 5}: Project to vocabulary (50,257 tokens)
+
+$$logits = W \cdot h_4^{(12)} \in \mathbb{R}^{50257}$$
+
+\vspace{3mm}
+\textbf{Step 6}: Softmax and sample
+
+\begin{itemize}
+\item $P(\text{the}) = 0.42$ \textcolor{green}{(highest!)}
+\item $P(\text{a}) = 0.18$
+\item $P(\text{mat}) = 0.09$
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{Model confidently predicts ``the'' - matches English patterns}
+\end{frame}
+
+% Slides 36-37: GPT Architecture
+\begin{frame}[t]{GPT Architecture Overview}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/gpt_architecture_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Stack of transformer decoders with causal attention
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{This is the decoder from Week 5 - no encoder needed for generation}
+\end{frame}
+
+\begin{frame}[t]{GPT Architecture: The Details}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{GPT-1 (June 2018)}:
+
+\begin{itemize}
+\item Layers: 12 decoder layers
+\item Hidden size: 768 dimensions
+\item Attention heads: 12 per layer
+\item Parameters: 117 million
+\item Context window: 512 tokens
+\end{itemize}
+
+\vspace{5mm}
+\textbf{GPT-2 (February 2019)}:
+
+\begin{itemize}
+\item Layers: 48 decoder layers
+\item Hidden size: 1600 dimensions
+\item Attention heads: 25 per layer
+\item Parameters: 1.5 billion (13x larger!)
+\item Context: 1024 tokens
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{GPT-3 (May 2020)}:
+
+\begin{itemize}
+\item Layers: 96 decoder layers
+\item Hidden size: 12,288 dimensions
+\item Attention heads: 96 per layer
+\item Parameters: 175 billion (116x GPT-2!)
+\item Context: 2048 tokens
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Training Costs}:
+
+\begin{itemize}
+\item GPT-1: \$50K (weeks on 8 GPUs)
+\item GPT-2: \$500K (weeks on 256 GPUs)
+\item GPT-3: \$4.6M (months on 10K GPUs)
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Scaling drove capability emergence - few-shot learning appeared}
+\end{frame}
+
+% Slides 38-39: Causal Masking
+\begin{frame}[t]{Causal Masking: Preventing Future Cheating}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/causal_mask_matrix_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Lower triangular mask ensures causality (no peeking ahead)
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{This is implemented in attention: masked positions get $-\infty$ before softmax}
+\end{frame}
+
+\begin{frame}[t]{Causal Masking: How It Works}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Attention Mask}:
+
+Lower triangular matrix of 1s and 0s
+
+$$M = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+1 & 1 & 0 & 0 \\
+1 & 1 & 1 & 0 \\
+1 & 1 & 1 & 1
+\end{bmatrix}$$
+
+\vspace{3mm}
+\textbf{Meaning}:
+
+\begin{itemize}
+\item 1: Can attend
+\item 0: Cannot attend (masked)
+\end{itemize}
+
+\vspace{3mm}
+Token 1: Sees only itself
+
+Token 2: Sees tokens 1-2
+
+Token 3: Sees tokens 1-3
+
+Token 4: Sees all (tokens 1-4)
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Implementation}:
+
+Before softmax in attention:
+
+$$\text{scores}_\text{masked} = \text{scores} + (1-M) \times (-\infty)$$
+
+After softmax: Masked positions get probability 0
+
+\vspace{5mm}
+\textbf{Why Essential for Generation}:
+
+\begin{itemize}
+\item Training: Model can't cheat
+\item Inference: Naturally left-to-right
+\item Prevents data leakage
+\item Ensures valid generation
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Contrast with BERT}:
+
+BERT: All 1s (full bidirectional)
+
+GPT: Lower triangular (causal)
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Causal mask is the key difference in transformer decoder vs encoder}
+\end{frame}
+
+% Slide 40: Visual - GPT Evolution
+\begin{frame}[t]{The Scaling Journey: GPT-1 to GPT-3}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/gpt_evolution_timeline_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Scaling unlocked emergent capabilities (few-shot learning)
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{GPT-3 can perform tasks from examples - no fine-tuning needed!}
+\end{frame}
+
+% Slide 41: Detail - Few-Shot Learning
+\begin{frame}[t]{Few-Shot Learning: The Emergent Capability}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Definitions}:
+
+\begin{itemize}
+\item \textbf{Zero-shot}: Task description only
+
+  ``Translate to French: Hello'' $\rightarrow$ ``Bonjour''
+
+\item \textbf{One-shot}: One example
+
+  ``English: Hello, French: Bonjour.
+
+  English: Goodbye, French:'' $\rightarrow$ ``Au revoir''
+
+\item \textbf{Few-shot}: Multiple examples (2-10)
+
+  Show 5 translation pairs, model infers pattern
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What's Remarkable}:
+
+No gradient updates! Pure inference!
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{How It Works}:
+
+\begin{itemize}
+\item Model learns to learn during pre-training
+\item In-context learning
+\item Pattern matching in prompt
+\item Emerges at scale (GPT-3, not GPT-1)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Example Tasks}:
+
+\begin{itemize}
+\item Translation (unseen language pairs)
+\item Arithmetic (3-digit addition)
+\item Programming (code generation)
+\item Reasoning (logical inference)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Limitations}:
+
+\begin{itemize}
+\item Inconsistent performance
+\item Sensitive to prompt wording
+\item Not as good as fine-tuning
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Few-shot learning hints at artificial general intelligence}
+\end{frame}
+
+% Slide 42: Worked Example - Transfer Learning Data Efficiency
+\begin{frame}[t]{Worked Example: Data Efficiency of Pre-training}
+\small
+\textbf{Experiment}: Sentiment classification on product reviews
+
+\vspace{3mm}
+\textbf{Approach A - Train from Scratch}:
+
+\begin{itemize}
+\item Architecture: LSTM (2 layers, 512 hidden)
+\item Training data: 10,000 labeled reviews
+\item Training time: 6 hours on GPU
+\item Test accuracy: 78.3\%
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Approach B - Fine-tune GPT-2}:
+
+\begin{itemize}
+\item Base model: GPT-2 (1.5B parameters, pre-trained)
+\item Training data: 100 labeled reviews (100x less!)
+\item Training time: 10 minutes on GPU
+\item Test accuracy: 91.7\%
+\end{itemize}
+
+\vspace{5mm}
+\begin{center}
+\Large
+\textbf{Result}: 100 examples + GPT-2 $>$ 10,000 from scratch
+
+\vspace{3mm}
+\secondary{\normalsize 100x less data, 36x faster, 17\% better accuracy}
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{This is the power of transfer learning - pre-training solves the data problem}
+\end{frame}
+
+% Slide 43: Checkpoint Quiz - GPT
+\begin{frame}[t]{Checkpoint: Understanding GPT}
+\begin{center}
+\textbf{Quick Quiz}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Question 1}:
+
+Why is GPT autoregressive?
+
+\vspace{3mm}
+\textbf{A)} It's faster \\
+\textbf{B)} Natural for generation \\
+\textbf{C)} Uses less memory \\
+\textbf{D)} More accurate
+
+\vspace{8mm}
+\textbf{Question 2}:
+
+What's the key difference from BERT?
+
+\vspace{3mm}
+\textbf{A)} More parameters \\
+\textbf{B)} Different dataset \\
+\textbf{C)} Causal vs bidirectional \\
+\textbf{D)} Slower training
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Answer 1}: \textbf{B) Natural for generation}
+
+\begin{itemize}
+\item Generation = predict next word
+\item Can't see future (not written yet)
+\item Autoregressive = use output as next input
+\item Perfect fit for the task
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Answer 2}: \textbf{C) Causal vs bidirectional}
+
+\begin{itemize}
+\item BERT: See full sentence (encoder)
+\item GPT: See only past (decoder)
+\item BERT: Better for understanding
+\item GPT: Better for generation
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Architecture follows task requirements - understand the why}
+\end{frame}
+
+% ===== INTEGRATION SECTION (Slides 44-51) - 8 Slides =====
+
+\begin{frame}[t]{}
+\begin{center}
+\Huge\textbf{Part 3: Integration}
+
+\vspace{5mm}
+\Large\secondary{Comparing and Choosing}
+\end{center}
+\end{frame}
+
+% Slides 44-45: BERT vs GPT Comparison
+\begin{frame}[t]{BERT vs GPT: Side-by-Side}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/bert_vs_gpt_architecture_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Encoder for understanding, decoder for generation
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Choose based on your task requirements}
+\end{frame}
+
+\begin{frame}[t]{BERT vs GPT: When to Use Each}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Use BERT When}:
+
+\begin{itemize}
+\item \textbf{Task}: Classification, QA, NER
+\item \textbf{Need}: Full sentence understanding
+\item \textbf{Input}: Complete text available
+\item \textbf{Output}: Labels or spans
+\end{itemize}
+
+\vspace{3mm}
+\textbf{BERT Strengths}:
+
+\begin{itemize}
+\item Bidirectional context
+\item Best for understanding
+\item [CLS] token for sentence embedding
+\item Handles word sense disambiguation
+\end{itemize}
+
+\vspace{3mm}
+\textbf{BERT Applications}:
+
+\begin{itemize}
+\item Search (Google uses BERT)
+\item Question answering
+\item Named entity recognition
+\item Sentiment analysis
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Use GPT When}:
+
+\begin{itemize}
+\item \textbf{Task}: Generation, completion, dialogue
+\item \textbf{Need}: Coherent text generation
+\item \textbf{Input}: Prompt or partial sequence
+\item \textbf{Output}: Continued text
+\end{itemize}
+
+\vspace{3mm}
+\textbf{GPT Strengths}:
+
+\begin{itemize}
+\item Natural text generation
+\item In-context learning (few-shot)
+\item Scales well (GPT-3: 175B params)
+\item Handles diverse prompts
+\end{itemize}
+
+\vspace{3mm}
+\textbf{GPT Applications}:
+
+\begin{itemize}
+\item ChatGPT (dialogue)
+\item Code completion (Copilot)
+\item Creative writing
+\item Text summarization (generative)
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Both are transformers - different objectives, different use cases}
+\end{frame}
+
+% Slides 46-47: Transfer Learning Pipeline
+\begin{frame}[t]{The Complete Transfer Learning Pipeline}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/transfer_learning_pipeline_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Unsupervised pre-training + supervised fine-tuning = best of both
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{One-time expensive pre-training, many cheap fine-tunings}
+\end{frame}
+
+\begin{frame}[t]{Transfer Learning: Best Practices}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Pre-training (Done Once)}:
+
+\begin{itemize}
+\item Massive unsupervised corpus (billions of words)
+\item Self-supervised objectives (MLM or AR)
+\item Large compute (TPUs/GPUs, weeks)
+\item Cost: \$1M-\$10M
+\item Result: General language model
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Who Does This}:
+
+\begin{itemize}
+\item Big tech (Google, OpenAI, Meta)
+\item Research labs
+\item Shared publicly
+\item You download, don't train
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Fine-tuning (Per Task)}:
+
+\begin{itemize}
+\item Small labeled dataset (100-10K examples)
+\item Task-specific head
+\item Small learning rate (2e-5)
+\item Short training (hours)
+\item Cost: \$50-\$500
+\item Result: Task-specific model
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Best Practices}:
+
+\begin{itemize}
+\item Start with pre-trained checkpoint
+\item Use small learning rate
+\item Train 2-4 epochs
+\item Monitor validation loss
+\item Try different layer freezing
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{This pipeline is now standard across all of NLP}
+\end{frame}
+
+% Slide 48: When NOT to Use
+\begin{frame}[t]{When NOT to Use Pre-trained Models}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Overkill Scenarios}:
+
+\begin{itemize}
+\item Simple regex suffices
+\item Rule-based system works
+\item N-grams are enough
+\item Tiny dataset (< 50 examples)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Resource Constraints}:
+
+\begin{itemize}
+\item Limited memory (BERT needs 4GB+ GPU)
+\item Strict latency requirements (< 10ms)
+\item Edge deployment (phones, IoT)
+\item Battery-powered devices
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Domain Mismatch}:
+
+\begin{itemize}
+\item Highly specialized jargon
+\item Different language structure
+\item Pre-training corpus unrepresentative
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Better Alternatives}:
+
+\begin{itemize}
+\item DistilBERT (smaller, faster)
+\item Domain-specific pre-training
+\item Few-shot prompting (no fine-tuning)
+\item Ensemble of simple models
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Cost-Benefit}:
+
+Sometimes simple approaches better ROI
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Know when NOT to use powerful models - engineering judgment matters}
+\end{frame}
+
+% Slide 49: Common Pitfalls
+\begin{frame}[t]{Common Pitfalls in Fine-tuning}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Pitfall 1: Learning Rate Too High}
+
+\begin{itemize}
+\item Pre-trained weights are delicate
+\item High LR destroys them (catastrophic forgetting)
+\item \textcolor{green}{Solution}: Use 2e-5 to 5e-5 (100x smaller than training from scratch)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Pitfall 2: Too Many Epochs}
+
+\begin{itemize}
+\item Overfits to small dataset
+\item \textcolor{green}{Solution}: 2-4 epochs maximum
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Pitfall 3: Wrong Task Head}
+
+\begin{itemize}
+\item Architecture mismatch
+\item \textcolor{green}{Solution}: Use standard heads from examples
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Pitfall 4: Ignoring Validation}
+
+\begin{itemize}
+\item Train loss down, test loss up
+\item \textcolor{green}{Solution}: Early stopping on validation
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Pitfall 5: Not Trying Layer Freezing}
+
+\begin{itemize}
+\item Small dataset: Freeze bottom layers
+\item \textcolor{green}{Solution}: Experiment with freezing 0, 6, 8, or 10 layers
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Pitfall 6: Forgetting Preprocessing}
+
+\begin{itemize}
+\item Tokenization must match pre-training
+\item \textcolor{green}{Solution}: Use model's own tokenizer
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Most failures come from hyperparameter choices - start conservative}
+\end{frame}
+
+% Slide 50: Unified View - The Paradigm Shift
+\begin{frame}[t]{The Paradigm Shift: Pre-2018 vs Post-2018}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/paradigm_shift_comparison_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{The Core Principle}: Pre-training solves the data problem
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{This is the foundation of modern NLP - everything changed in 2018}
+\end{frame}
+
+% Slide 51: Key Takeaways
+\begin{frame}[t]{Key Takeaways}
+\begin{enumerate}
+\item \textbf{Pre-training on massive unlabeled data}
+
+  Learn general language understanding without task-specific labels
+
+\item \textbf{BERT: Bidirectional encoder for understanding}
+
+  Masked LM objective, full context, best for classification/QA
+
+\item \textbf{GPT: Autoregressive decoder for generation}
+
+  Next token prediction, causal mask, best for text generation
+
+\item \textbf{Fine-tuning adapts with small labeled data}
+
+  100-1000 examples sufficient, days not months, state-of-art results
+
+\item \textbf{Transfer learning finally works for NLP}
+
+  Learn once, apply everywhere - the 2018 revolution
+
+\item \textbf{2018 was the inflection point}
+
+  BERT and GPT changed everything - modern NLP is post-2018
+
+\end{enumerate}
+
+\vspace{0.2cm}
+\bottomnote{Master these concepts - they define modern NLP practice}
+\end{frame}
+
+% Slide 52: Lab Preview
+\begin{frame}[t]{Next: Hands-On Feature Extraction}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Lab Activities}:
+
+\begin{enumerate}
+\item Load pre-trained BERT and GPT
+\item Extract embeddings from both
+\item Compare representation spaces
+\item Visualize attention patterns
+\item Use features for classification
+\item Compare BERT vs GPT effectiveness
+\end{enumerate}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{What You'll Learn}:
+
+\begin{itemize}
+\item Practical HuggingFace usage
+\item How to extract features
+\item BERT vs GPT representations
+\item Attention pattern interpretation
+\item Feature-based transfer learning
+\end{itemize}
+
+\vspace{5mm}
+\textbf{No Fine-tuning}:
+
+We'll use models as feature extractors (simpler, faster)
+
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\Large
+\textbf{Let's explore pre-trained models hands-on!}
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Understanding by doing - the lab makes theory concrete}
+\end{frame}
+
+% ===== TECHNICAL APPENDIX (Slides A1-A6) =====
+
+\begin{frame}[t]{}
+\begin{center}
+\Huge\textbf{Technical Appendix}
+
+\vspace{5mm}
+\Large\secondary{Architecture, Training, and Deployment Details}
+\end{center}
+\end{frame}
+
+% Slide A1: BERT Architecture Specifications
+\begin{frame}[t]{Appendix A: BERT Architecture Specifications}
+\small
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Component} & \textbf{BERT-Base} & \textbf{BERT-Large} \\
+\midrule
+Transformer Layers & 12 & 24 \\
+Hidden Size & 768 & 1024 \\
+Attention Heads & 12 & 16 \\
+Intermediate Size (FFN) & 3072 & 4096 \\
+Total Parameters & 110M & 340M \\
+Max Position Embeddings & 512 & 512 \\
+Vocabulary Size (WordPiece) & 30,522 & 30,522 \\
+Segment Embeddings & 2 & 2 \\
+\midrule
+\textbf{Training Specs} & & \\
+Pre-training Corpus & \multicolumn{2}{c}{BooksCorpus (800M) + Wikipedia (2.5B)} \\
+Batch Size & 256 & 256 \\
+Steps & 1M & 1M \\
+Learning Rate & 1e-4 & 1e-4 \\
+Warmup Steps & 10,000 & 10,000 \\
+Hardware & 16 TPU pods & 64 TPU pods \\
+Training Time & 4 days & 4 days \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{BERT-Large has 3x parameters but same training time (more parallelism)}
+\end{frame}
+
+% Slide A2: GPT Architecture Specifications
+\begin{frame}[t]{Appendix B: GPT Architecture Specifications}
+\small
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Component} & \textbf{GPT-1} & \textbf{GPT-2} & \textbf{GPT-3} \\
+\midrule
+Decoder Layers & 12 & 48 & 96 \\
+Hidden Size & 768 & 1600 & 12,288 \\
+Attention Heads & 12 & 25 & 96 \\
+Context Window & 512 & 1024 & 2048 \\
+Parameters & 117M & 1.5B & 175B \\
+Vocabulary (BPE) & 40K & 50K & 50K \\
+\midrule
+\textbf{Training} & & & \\
+Dataset & BooksCorpus & WebText & Common Crawl \\
+Dataset Size & 5GB & 40GB & 570GB \\
+Tokens & 1B & 10B & 300B \\
+Batch Size & 64 & 512 & 3.2M \\
+GPUs & 8 & 256 & 10,000+ \\
+Training Time & Weeks & Weeks & Months \\
+Cost Estimate & \$50K & \$500K & \$4.6M \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Exponential scaling in parameters, data, and compute}
+\end{frame}
+
+% Slide A3: Pre-training Hyperparameters
+\begin{frame}[t]{Appendix C: Pre-training Hyperparameters}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{BERT Pre-training}:
+
+\begin{itemize}
+\item \textbf{Optimizer}: Adam
+\item \textbf{Learning rate}: 1e-4
+\item \textbf{$\beta_1, \beta_2$}: 0.9, 0.999
+\item \textbf{L2 weight decay}: 0.01
+\item \textbf{Warmup steps}: 10,000
+\item \textbf{LR schedule}: Linear decay
+\item \textbf{Dropout}: 0.1
+\item \textbf{Activation}: GELU
+\item \textbf{Batch size}: 256 sequences
+\item \textbf{Max steps}: 1,000,000
+\item \textbf{Masking}: 15\% of tokens
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{GPT-3 Pre-training}:
+
+\begin{itemize}
+\item \textbf{Optimizer}: Adam
+\item \textbf{Learning rate}: 6e-5 (peak)
+\item \textbf{$\beta_1, \beta_2$}: 0.9, 0.95
+\item \textbf{Weight decay}: 0.1
+\item \textbf{Gradient clipping}: 1.0
+\item \textbf{LR schedule}: Cosine decay
+\item \textbf{Dropout}: Varies by layer
+\item \textbf{Batch size}: 3.2M tokens
+\item \textbf{Tokens}: 300B total
+\item \textbf{Context window}: 2048
+\item \textbf{Precision}: Mixed (FP16/FP32)
+\end{itemize}
+
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\textbf{Key Insight}: These are carefully tuned over months of experimentation
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Don't change these for fine-tuning - use proven recipes}
+\end{frame}
+
+% Slide A4: Fine-tuning Recipes
+\begin{frame}[t]{Appendix D: Fine-tuning Recipes by Task}
+\small
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+\textbf{Task} & \textbf{Learning Rate} & \textbf{Epochs} & \textbf{Strategy} \\
+\midrule
+\textbf{Classification} & & & \\
+Sentiment & 2e-5 & 3-4 & Full fine-tuning \\
+Topic & 3e-5 & 2-3 & Full fine-tuning \\
+Spam & 2e-5 & 4 & Freeze bottom 6 \\
+\midrule
+\textbf{Question Answering} & & & \\
+SQuAD & 3e-5 & 2 & Full fine-tuning \\
+Custom QA & 5e-5 & 3-4 & Full fine-tuning \\
+\midrule
+\textbf{NER} & & & \\
+Named Entities & 5e-5 & 3 & Full fine-tuning \\
+Domain-specific & 2e-5 & 4-5 & Freeze bottom 8 \\
+\midrule
+\textbf{Generation (GPT)} & & & \\
+Completion & 2e-5 & 2-3 & Full fine-tuning \\
+Dialogue & 1e-5 & 3-5 & Full fine-tuning \\
+Summarization & 3e-5 & 2-3 & Full fine-tuning \\
+\bottomrule
+\multicolumn{4}{l}{\secondary{\footnotesize Batch size: 16-32, Warmup: 10\% of steps}} \\
+\end{tabular}
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Start with these proven recipes, then experiment}
+\end{frame}
+
+% Slide A5: Training Cost Analysis
+\begin{frame}[t]{Appendix E: Training Cost Analysis}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Pre-training Costs (2018-2024)}:
+
+\begin{center}
+\begin{tabular}{lr}
+Model & Cost \\
+\hline
+BERT-base & \$7K \\
+BERT-large & \$25K \\
+GPT-1 & \$50K \\
+GPT-2 & \$500K \\
+GPT-3 & \$4.6M \\
+GPT-4 (est) & \$50M+ \\
+\end{tabular}
+\end{center}
+
+\vspace{3mm}
+\textbf{Why So Expensive}:
+
+\begin{itemize}
+\item Massive datasets (100B-1T tokens)
+\item Large models (1B-1T parameters)
+\item Weeks/months on thousands of GPUs
+\item Trial and error in hyperparameters
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Fine-tuning Costs (Per Task)}:
+
+\begin{center}
+\begin{tabular}{lr}
+Dataset Size & Cost \\
+\hline
+100 examples & \$5-10 \\
+1,000 examples & \$50-100 \\
+10,000 examples & \$200-500 \\
+\end{tabular}
+\end{center}
+
+\vspace{3mm}
+\textbf{The Economics}:
+
+\begin{itemize}
+\item Pre-training: One-time investment
+\item Fine-tuning: Cheap per task
+\item Amortize cost across many applications
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Business Model}:
+
+OpenAI, Anthropic, Google: Pay for pre-training, sell API access
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Pre-training economics enable the modern AI industry}
+\end{frame}
+
+% Slide A6: Further Reading
+\begin{frame}[t]{Appendix F: Further Reading and Resources}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Original Papers}:
+
+\begin{itemize}
+\item \textbf{Attention}: Vaswani et al. (2017)
+
+  ``Attention is All You Need''
+
+\item \textbf{GPT-1}: Radford et al. (June 2018)
+
+  ``Improving Language Understanding by Generative Pre-Training''
+
+\item \textbf{BERT}: Devlin et al. (October 2018)
+
+  ``BERT: Pre-training of Deep Bidirectional Transformers''
+
+\item \textbf{GPT-2}: Radford et al. (2019)
+
+  ``Language Models are Unsupervised Multitask Learners''
+
+\item \textbf{GPT-3}: Brown et al. (2020)
+
+  ``Language Models are Few-Shot Learners''
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Practical Resources}:
+
+\begin{itemize}
+\item \textbf{HuggingFace Transformers}
+
+  Library for using pre-trained models
+
+  https://huggingface.co/transformers
+
+\item \textbf{Model Hub}
+
+  Thousands of pre-trained models
+
+  https://huggingface.co/models
+
+\item \textbf{Fine-tuning Tutorials}
+
+  Official guides for common tasks
+
+\item \textbf{Papers With Code}
+
+  Leaderboards and implementations
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Next Week}:
+
+Advanced architectures (T5, GPT-4, etc.)
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{These papers are essential reading for serious NLP practitioners}
+\end{frame}
+
+\end{document}

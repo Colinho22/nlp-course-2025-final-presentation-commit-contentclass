@@ -1,0 +1,213 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes}
+
+% Custom commands
+\newcommand{\highlight}[1]{\textbf{#1}}
+
+% Box for exercises
+\newtcolorbox{exercise}[1][]{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=#1,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{hint}[1][]{
+    colback=yellow!10!white,
+    colframe=orange!75!black,
+    title=Hint,
+    fonttitle=\bfseries
+}
+
+\title{\textbf{Week 2: Neural Language Models}\\
+\large Discovering Word Meanings Through Context\\
+\large Pre-Lab Exercise (No Programming Required)}
+\author{NLP Course 2025 - Student Version}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Time:} 30-40 minutes\\
+\textbf{Objective:} Understand the core concepts behind word embeddings and neural language models through hands-on discovery.
+
+\section*{Part 1: Context Discovery (10 minutes)}
+
+\begin{exercise}[The Mystery Word ``Glork'']
+Read the following sentences carefully. The word ``glork'' is not a real English word, but you should be able to figure out what it means from context.
+
+\begin{enumerate}[label=\alph*)]
+    \item The glork meowed loudly at night, keeping everyone awake.
+    \item I need to feed my glork before leaving for work.
+    \item The glork chased the mouse across the kitchen floor.
+    \item My neighbor has three glorks, all different colors.
+    \item The veterinarian said my glork is perfectly healthy.
+    \item The glork purred contentedly while sitting on my lap.
+\end{enumerate}
+
+\textbf{Questions:}
+\begin{enumerate}
+    \item What is a ``glork''? \rule{3cm}{0.4pt}
+    \item List three words that helped you figure this out: 
+    \begin{itemize}
+        \item \rule{3cm}{0.4pt}
+        \item \rule{3cm}{0.4pt}
+        \item \rule{3cm}{0.4pt}
+    \end{itemize}
+    \item This demonstrates the \textbf{distributional hypothesis}: ``You shall know a word by the company it keeps.'' 
+    
+    In your own words, what does this mean?
+    
+    \vspace{2cm}
+\end{enumerate}
+\end{exercise}
+
+\section*{Part 2: Word Similarity Matrix (15 minutes)}
+
+\begin{exercise}[Building a Similarity Space]
+Rate the similarity between each pair of words on a scale from 0 (completely unrelated) to 10 (nearly identical). Fill in the matrix below:
+
+\begin{center}
+\begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+\hline
+ & king & queen & man & woman & Paris & France & Berlin & Germany \\
+\hline\hline
+king & 10 & & & & & & & \\
+\hline
+queen & & 10 & & & & & & \\
+\hline
+man & & & 10 & & & & & \\
+\hline
+woman & & & & 10 & & & & \\
+\hline
+Paris & & & & & 10 & & & \\
+\hline
+France & & & & & & 10 & & \\
+\hline
+Berlin & & & & & & & 10 & \\
+\hline
+Germany & & & & & & & & 10 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Analysis Questions:}
+\begin{enumerate}
+    \item Which word pair has the highest similarity (excluding identical words)? \rule{4cm}{0.4pt}
+    \item Do you notice any patterns? For example, are certain groups of words more similar to each other?
+    
+    \vspace{2cm}
+    
+    \item If you subtract your ``man'' ratings from your ``king'' ratings, what pattern emerges?
+    
+    \vspace{1.5cm}
+\end{enumerate}
+\end{exercise}
+
+\newpage
+
+\section*{Part 3: The Dimension Problem (10 minutes)}
+
+\begin{exercise}[Describing Words with Numbers]
+Imagine you need to describe animals using only numbers (like coordinates in space). Each property becomes a dimension.
+
+\textbf{Task:} Rate these animals on each dimension (0-10):
+
+\begin{center}
+\begin{tabular}{|l||c|c|c|c|c|}
+\hline
+Animal & Size & Friendliness & Domesticated & Dangerous & Flying ability \\
+\hline\hline
+Cat & & & & & \\
+\hline
+Dog & & & & & \\
+\hline
+Lion & & & & & \\
+\hline
+Eagle & & & & & \\
+\hline
+Goldfish & & & & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Questions:}
+\begin{enumerate}
+    \item Which two animals are most similar based on your numbers? Calculate by finding the pair with the smallest total difference across all dimensions.
+    
+    \vspace{2cm}
+    
+    \item How many dimensions would you need to perfectly distinguish between all animals in the world? Circle one:
+    \begin{itemize}
+        \item[$\square$] 5-10
+        \item[$\square$] 50-100
+        \item[$\square$] 100-500
+        \item[$\square$] 1000+
+    \end{itemize}
+    
+    \item Word2Vec typically uses 100-300 dimensions. Why might this be enough even though there are hundreds of thousands of words?
+    
+    \vspace{2cm}
+\end{enumerate}
+\end{exercise}
+
+\section*{Part 4: Word Arithmetic Discovery (10 minutes)}
+
+\begin{exercise}[Vector Arithmetic with Words]
+If words are points in space (with many dimensions), we can do arithmetic with them!
+
+\begin{hint}
+Think of relationships as directions in space. The direction from ``man'' to ``king'' might be similar to the direction from ``woman'' to...?
+\end{hint}
+
+\textbf{Analogies as Arithmetic:}
+\begin{enumerate}
+    \item If we compute: \textbf{king} - \textbf{man} + \textbf{woman} = ?
+    
+    Your answer: \rule{3cm}{0.4pt}
+    
+    \item If we compute: \textbf{Paris} - \textbf{France} + \textbf{Germany} = ?
+    
+    Your answer: \rule{3cm}{0.4pt}
+    
+    \item Create your own word arithmetic problem:
+    
+    \rule{2cm}{0.4pt} - \rule{2cm}{0.4pt} + \rule{2cm}{0.4pt} = \rule{2cm}{0.4pt}
+    
+    \item Why does this work? What does the subtraction capture?
+    
+    \vspace{2cm}
+\end{enumerate}
+\end{exercise}
+
+\section*{Part 5: Reflection Questions (5 minutes)}
+
+\begin{enumerate}
+    \item \textbf{Why Numbers?} Why would representing words as numbers (vectors) help computers understand language?
+    
+    \vspace{2cm}
+    
+    \item \textbf{Ambiguity Problem:} The word ``bank'' can mean a financial institution or the side of a river. How does this complicate our vector representation? What might be a solution?
+    
+    \vspace{2cm}
+    
+    \item \textbf{Teaching Relationships:} If you had to teach a computer that ``puppy'' and ``dog'' are related (without explicitly programming rules), how would our context-based approach help?
+    
+    \vspace{2cm}
+\end{enumerate}
+
+\vspace{1cm}
+\noindent\rule{\textwidth}{0.4pt}
+\begin{center}
+\textit{End of Student Exercise}
+\end{center}
+
+\end{document}

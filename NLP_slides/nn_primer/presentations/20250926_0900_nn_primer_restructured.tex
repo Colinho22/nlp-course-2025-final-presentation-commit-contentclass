@@ -1,0 +1,587 @@
+% Neural Networks Primer: Teaching Machines to See Patterns
+% RESTRUCTURED VERSION - Optimal Logical Flow
+% Changes from original:
+% - Moved function approximation AFTER Universal Approximation Theorem
+% - Moved activation functions BEFORE XOR problem
+% - Removed redundant neuron explanations from Part 0
+% - Added geometric XOR bridge slide
+% - Updated overview to reflect new structure
+
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+% Include preamble with all package imports and command definitions
+\input{sections/preamble}
+
+\begin{document}
+
+% ============================================================================
+% PHASE 1: THE MOTIVATION (Slides 1-10)
+% ============================================================================
+
+% Title slide
+\input{sections/title}
+
+% Updated overview
+\input{sections/overview_restructured}
+
+% ============================================================================
+% PART 1: THE PROBLEM THAT STARTED EVERYTHING
+% ============================================================================
+
+% Historical context and early attempts
+\begin{frame}{Part 1: The Problem That Started Everything}
+\begin{center}
+{\Large \textbf{1950s: The Mail Sorting Crisis}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Challenge:}
+\begin{itemize}
+\item 150 million letters per day
+\item Hand-written addresses
+\item Human sorters: slow, expensive, error-prone
+\item Traditional programming: useless
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why Traditional Code Failed:}
+\begin{itemize}
+\item Can't write rules for every handwriting style
+\item Too many variations of each letter
+\item Context matters: ``I'' vs ``l'' vs ``1''
+\item This wasn't computation---it was \highlight{pattern recognition}
+\end{itemize}
+\end{columns}
+\bottomnote{ This problem would take 40 years to solve properly}
+\end{frame}
+
+% Historical Timeline
+\begin{frame}{80 Years of Neural Networks: The Complete Journey}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/historical_timeline.pdf}
+\end{center}
+\bottomnote{ From theoretical neurons to ChatGPT: Each breakthrough built on previous failures}
+\end{frame}
+
+% Why Rules Don't Work
+\begin{frame}[fragile]{Why Can't We Just Write Rules?}
+\begin{center}
+\textbf{Problem: Recognize the Letter ``A''}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Traditional Approach (Failed):}
+\begin{lstlisting}[basicstyle=\tiny]
+if (has_triangle_top AND
+    has_horizontal_bar AND
+    two_diagonal_lines) {
+  return "A"
+}
+\end{lstlisting}
+\secondary{\small But what about...}
+\begin{itemize}
+\item Handwritten A's?
+\item Different fonts?
+\item Rotated A's?
+\item Partial A's?
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/various_a_styles.pdf}
+\end{center}
+\textbf{The Insight:}
+\begin{itemize}
+\item We need \highlight{pattern recognition}, not rules
+\item System must \highlight{learn from examples}
+\item Similar to how humans learn
+\end{itemize}
+\end{columns}
+\bottomnote{ This realization launched the field of machine learning}
+\end{frame}
+
+% McCulloch-Pitts
+\begin{frame}{1943: The First Mathematical Neuron}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{McCulloch \& Pitts:}
+\begin{itemize}
+\item Neurophysiologists studying brain
+\item Asked: Can neurons be modeled mathematically?
+\item Created first artificial neuron
+\end{itemize}
+
+\vspace{5mm}
+\textbf{The Model:}
+\begin{itemize}
+\item Multiple inputs (dendrites)
+\item Weighted sum (cell body)
+\item Threshold activation (axon)
+\item Binary output (fire or not)
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/nn_building_blocks.pdf}
+\end{center}
+
+\textbf{The Limitation:}
+\begin{itemize}
+\item Weights were \highlight{fixed}
+\item No learning mechanism
+\item Programmer had to set weights manually
+\end{itemize}
+\end{columns}
+\bottomnote{ Revolutionary idea, but missing the key ingredient: learning}
+\end{frame}
+
+% Rosenblatt's Perceptron
+\begin{frame}{1958: Rosenblatt's Learning Breakthrough}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Frank Rosenblatt's Insight:}
+\begin{quote}
+\textit{``What if the machine could adjust its own weights based on mistakes?''}
+\end{quote}
+
+\textbf{The Perceptron Learning Rule:}
+\begin{enumerate}
+\item Make a prediction
+\item Check if wrong
+\item If wrong: adjust weights
+\item Repeat until correct
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Historic Demo (1958):}
+\begin{itemize}
+\item Mark I Perceptron machine
+\item Learned to recognize simple shapes
+\item Press coverage: ``Thinking machine!''
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/perceptron_hardware.pdf}
+\end{center}
+
+\textbf{Why Revolutionary:}
+\begin{itemize}
+\item First machine that could \highlight{learn}
+\item Weights adjusted automatically
+\item Learned from examples, not rules
+\item Mathematically proven to converge
+\end{itemize}
+\end{columns}
+\bottomnote{ This was the birth of machine learning}
+\end{frame}
+
+% ============================================================================
+% PHASE 2: UNDERSTANDING THE BASICS (Slides 11-20)
+% ============================================================================
+
+% Intermission transition
+\input{sections/intermission}
+
+% NEW: Activation functions introduced BEFORE XOR problem
+\input{sections/activation_functions}
+
+% ============================================================================
+% PHASE 3: THE CRISIS & SOLUTION (Slides 21-32)
+% ============================================================================
+
+\begin{frame}{Part 2: The XOR Crisis}
+\begin{center}
+{\Large \textbf{1969: The Problem That Killed AI}}
+\end{center}
+\end{frame}
+
+% XOR Problem Introduction
+\begin{frame}{The XOR Problem: Why Single Neurons Fail}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{XOR (Exclusive OR):}
+\begin{itemize}
+\item Output 1 if inputs are different
+\item Output 0 if inputs are same
+\end{itemize}
+
+\vspace{3mm}
+\begin{center}
+\textbf{Truth Table:}\\[3mm]
+\begin{tabular}{cc|c}
+$x_1$ & $x_2$ & Output \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0
+\end{tabular}
+\end{center}
+
+\vspace{3mm}
+\textbf{The Challenge:}
+\begin{itemize}
+\item Try drawing ONE straight line
+\item That separates 1's from 0's
+\item Impossible!
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/xor_impossible_line.pdf}
+\end{center}
+
+\textbf{Why It Matters:}
+\begin{itemize}
+\item Perceptrons can only draw straight lines
+\item XOR requires curved boundary
+\item This is the simplest non-linear problem
+\item Minsky \& Papert proved this mathematically
+\end{itemize}
+\end{columns}
+\bottomnote{ This proof triggered the first AI Winter (1970-1980)}
+\end{frame}
+
+% NEW: Geometric intuition bridge slide
+\begin{frame}{NEW: Geometric Intuition - Why We Need Two Boundaries}
+\begin{center}
+\textbf{The Key Insight: XOR Needs TWO Lines, Not One}
+\end{center}
+\vspace{2mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Visualization:}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/xor_solution_steps.pdf}
+\end{center}
+
+\textbf{What We See:}
+\begin{itemize}
+\item Red line: Separates (0,0) from others
+\item Blue line: Separates (1,1) from others
+\item Green region: Intersection of both
+\item Points (0,1) and (1,0) in green = Output 1!
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Breakthrough Idea:}
+\begin{enumerate}
+\item Use TWO neurons (not one)
+\item Each neuron creates one boundary
+\item Combine their outputs
+\item Intersection solves XOR!
+\end{enumerate}
+
+\vspace{1mm}
+\textbf{This Requires:}
+\begin{itemize}
+\item Hidden layer with 2 neurons
+\item Output layer combines results
+\item This is a 2-layer network
+\item First layer: create boundaries
+\item Second layer: find intersection
+\end{itemize}
+
+\vspace{3mm}
+\colorbox{green!20}{\parbox{0.95\textwidth}{\centering
+\textbf{Key Insight:} Hidden layers let us combine simple boundaries into complex decision regions!
+}}
+\end{columns}
+\bottomnote{ This geometric intuition explains WHY hidden layers work}
+\end{frame}
+
+% Hidden Layers Solution
+\begin{frame}{The Solution: Hidden Layers}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Architecture with Hidden Layer:}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/multilayer_network.pdf}
+\end{center}
+
+\textbf{How It Works:}
+\begin{itemize}
+\item Input layer: 2 neurons ($x_1$, $x_2$)
+\item Hidden layer: 2 neurons (two boundaries)
+\item Output layer: 1 neuron (combines)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Forward Pass for XOR:}
+
+Given weights:
+\begin{itemize}
+\item Hidden 1: $w=[1,1], b=-0.5$
+\item Hidden 2: $w=[1,1], b=-1.5$
+\item Output: $w=[1,-1], b=0$
+\end{itemize}
+
+\vspace{3mm}
+For input $(1,0)$:
+\begin{align*}
+h_1 &= \sigma(1 \cdot 1 + 1 \cdot 0 - 0.5) \\
+&= \sigma(0.5) \approx 0.62 \\
+h_2 &= \sigma(1 \cdot 1 + 1 \cdot 0 - 1.5) \\
+&= \sigma(-0.5) \approx 0.38 \\
+y &= \sigma(1 \cdot 0.62 - 1 \cdot 0.38) \\
+&= \sigma(0.24) \approx 0.56 \text{ (close to 1!)}
+\end{align*}
+\end{columns}
+\bottomnote{ Hidden layers unlock non-linear patterns}
+\end{frame}
+
+% The Training Problem
+\begin{frame}{The New Challenge: How to Train Hidden Layers?}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Credit Assignment Problem:}
+\begin{itemize}
+\item Output is wrong - we know the error
+\item But which hidden neuron caused it?
+\item How much should each weight change?
+\item Perceptron rule only works for output layer
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Why It's Hard:}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/blame_distribution.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{Early Failed Attempts (1970s):}
+\begin{itemize}
+\item Random weight adjustment
+\item Genetic algorithms
+\item Simulated annealing
+\item All too slow or unreliable
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What We Needed:}
+\begin{itemize}
+\item Systematic way to assign blame
+\item Efficient computation
+\item Guaranteed to improve
+\item Works for many layers
+\end{itemize}
+
+\vspace{3mm}
+\colorbox{orange!20}{\parbox{0.95\textwidth}{\centering
+\textbf{The solution would come from calculus...}
+}}
+\end{columns}
+\bottomnote{ This problem was solved in 1986 with backpropagation}
+\end{frame}
+
+% NEW: Before Backpropagation - Explain Loss
+\begin{frame}{Before We Can Learn: Measuring Error}
+\begin{center}
+\textbf{How Do We Know If Our Network Is Wrong?}
+\end{center}
+\vspace{2mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{A Concrete Example:}
+
+\textit{Predicting house price:}
+\begin{itemize}
+\item Network predicts: \$300,000
+\item Actual price: \$400,000
+\item Error = \$400k - \$300k = \$100k
+\end{itemize}
+
+\vspace{2mm}
+\textbf{The Problem:}
+\begin{itemize}
+\item Positive errors (+\$100k) and negative errors (-\$100k) cancel out
+\item We care about magnitude, not direction
+\item Solution: Square the error!
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Why Square It?}
+\begin{itemize}
+\item Always positive: (\$100k)$^2$ = 10,000M$^2$
+\item Big mistakes hurt more: (\$200k)$^2$ = 40,000M$^2$
+\item Math works nicely for optimization
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Loss Function:}
+
+For one example:
+$$\text{Error} = (\text{predicted} - \text{actual})^2$$
+
+For all training examples:
+$$\text{Loss} = \frac{1}{n} \sum_{i=1}^{n} (\text{predicted}_i - \text{actual}_i)^2$$
+
+\plainmath{Average of squared errors across all examples}
+
+\vspace{2mm}
+\textbf{Real Numbers:}
+\begin{center}
+\small
+\begin{tabular}{ccc}
+Predicted & Actual & Error$^2$ \\
+\hline
+0.3 & 1.0 & 0.49 \\
+0.8 & 1.0 & 0.04 \\
+0.1 & 0.0 & 0.01 \\
+\hline
+\multicolumn{2}{r}{Average:} & 0.18 \\
+\end{tabular}
+\end{center}
+
+\vspace{2mm}
+\colorbox{checkpointBlue!20}{\parbox{0.95\columnwidth}{
+\centering\small
+\textbf{Goal of training:} Make this loss as small as possible!
+}}
+\end{columns}
+\bottomnote{ Now we can talk about backpropagation - the algorithm that minimizes this loss}
+\end{frame}
+
+% Backpropagation
+\begin{frame}{1986: Backpropagation - The Breakthrough Algorithm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Algorithm (Rumelhart et al.):}
+\begin{enumerate}
+\item \textbf{Forward pass}: Compute output
+\item \textbf{Compute error}: Compare to target
+\item \textbf{Backward pass}: Use chain rule to compute gradients
+\item \textbf{Update weights}: Gradient descent
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{The Key Insight:}
+\begin{itemize}
+\item Use calculus (chain rule)
+\item Error flows backward through network
+\item Each layer gets its share of blame
+\item Weights adjusted proportionally
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/gradient_flow_visualization.pdf}
+\end{center}
+
+\textbf{Mathematical Foundation:}
+\begin{align*}
+\frac{\partial L}{\partial w_{ij}} &= \frac{\partial L}{\partial a_j} \cdot \frac{\partial a_j}{\partial z_j} \cdot \frac{\partial z_j}{\partial w_{ij}} \\
+&= \delta_j \cdot a_i
+\end{align*}
+
+\textbf{Why Revolutionary:}
+\begin{itemize}
+\item Efficient: One backward pass
+\item General: Works for any architecture
+\item Automatic: No manual tuning
+\end{itemize}
+\end{columns}
+\bottomnote{ This paper revived neural networks and enabled modern deep learning}
+\end{frame}
+
+% Gradient visualization
+\begin{frame}{Visualizing Learning: The Gradient Landscape}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/gradient_landscape_3d.pdf}
+\end{center}
+\bottomnote{ Gradient descent finds the valley where error is minimized}
+\end{frame}
+
+% Universal Approximation Theorem
+\begin{frame}{1989: The Theoretical Guarantee}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Cybenko's Universal Approximation Theorem:}
+
+\begin{quote}
+\textit{A neural network with one hidden layer and finite neurons can approximate ANY continuous function to ANY desired accuracy}
+\end{quote}
+
+\vspace{3mm}
+\textbf{What This Means:}
+\begin{itemize}
+\item Mathematical proof
+\item Not just XOR - ANY pattern!
+\item Theoretical justification
+\item Explains why NNs are so powerful
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/universal_approximation.pdf}
+\end{center}
+
+\textbf{Caveats:}
+\begin{itemize}
+\item Guarantees existence, not learning
+\item May need exponential neurons
+\item Deep networks often more efficient
+\item Still need good training algorithm
+\end{itemize}
+\end{columns}
+\bottomnote{ Theory meets practice: NNs CAN learn any pattern, backprop shows us HOW}
+\end{frame}
+
+% NOW: Function approximation (moved from Part 0)
+\input{sections/intro_function_approx}
+
+% ============================================================================
+% PHASE 4: FROM THEORY TO PRACTICE (Slides 33-44)
+% ============================================================================
+
+% Advanced visualizations
+\input{sections/advanced_visualizations}
+
+% Part 3: Breakthrough years
+\begin{frame}{Part 3: The Breakthrough Years (1998-2012)}
+\begin{center}
+{\Large \textbf{From Theory to Working Systems}}
+\end{center}
+\end{frame}
+
+\input{sections/act3_breakthrough}
+
+% Part 4: Modern revolution
+\begin{frame}{Part 4: The Deep Learning Revolution (2012-Present)}
+\begin{center}
+{\Large \textbf{The Explosion of Modern AI}}
+\end{center}
+\end{frame}
+
+\input{sections/act4_revolution}
+
+% ============================================================================
+% PHASE 5: YOUR TURN (Slides 45-48)
+% ============================================================================
+
+\input{sections/epilogue}
+
+% ============================================================================
+% APPENDICES
+% ============================================================================
+
+\begin{frame}{Appendices}
+\begin{center}
+{\Large \textbf{Additional Material for Deep Dive}}
+\end{center}
+\vspace{10mm}
+\begin{itemize}
+\item Appendix A: Advanced Topics
+\item Appendix B: Extended History
+\end{itemize}
+\end{frame}
+
+\input{sections/appendix_a_advanced_topics}
+\input{sections/appendix_b_extended_history}
+
+\end{document}

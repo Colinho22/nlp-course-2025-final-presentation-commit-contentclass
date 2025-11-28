@@ -1,0 +1,81 @@
+% Section 3: The Memory Problem
+
+\begin{frame}[t]{The Memory Problem: What Should We Remember?}
+\begin{center}
+\textbf{Insight from Human Reading}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Imagine Reading a Novel:}
+
+\vspace{3mm}
+\textit{Chapter 1: ``Alice was born in London in 1985. She had a happy childhood.''}
+
+\textit{Chapter 3: ``After graduating from university, Alice moved to New York.''}
+
+\textit{Chapter 7: ``Now 38 years old, Alice reflected on her life in \_\_\_''}
+
+\vspace{3mm}
+\textbf{What You Remember:}
+\begin{itemize}
+\item Alice (main character)
+\item Born in London
+\item Moved to New York
+\item Currently 38 years old
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What You Forgot:}
+\begin{itemize}
+\item ``had a happy childhood''
+\item ``graduating from university''
+\item Exact wording
+\item Minor details
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Key Insight:} Memory is \textbf{selective}
+
+\vspace{3mm}
+\textbf{Human Memory Strategy:}
+\begin{enumerate}
+\item \textbf{Decide} what's important
+\item \textbf{Keep} relevant information
+\item \textbf{Forget} irrelevant details
+\item \textbf{Update} as story progresses
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{What We Need in AI:}
+
+\vspace{3mm}
+\textbf{Forget Mechanism:}
+\begin{itemize}
+\item Remove outdated information
+\item Clear memory when topic changes
+\item Example: Forget ``chocolate'' after period
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Input Mechanism:}
+\begin{itemize}
+\item Decide what to store
+\item Remember important words
+\item Example: Store ``Paris'' strongly
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Output Mechanism:}
+\begin{itemize}
+\item Control what to reveal
+\item Use memory when needed
+\item Example: Recall ``Paris'' when predicting language
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This is exactly what LSTMs do!}
+
+\end{columns}
+\end{frame}

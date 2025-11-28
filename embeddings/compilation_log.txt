@@ -1,0 +1,815 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(main_enhanced.tex
+LaTeX2e <2025-06-01> patch level 1
+L3 programming layer <2025-07-19>
+
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamer.
+cls
+Document Class: beamer 2025/06/15 v3.74 A class for typesetting presentations
+
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asemodes.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etool
+box.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asedecode.sty))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.
+sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+aseoptions.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyva
+l.sty))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geome
+try.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex
+.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geome
+try.cfg))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfma
+th.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\
+pgfrcs.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilitie
+s\pgfutil-common.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilitie
+s\pgfutil-latex.def)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilitie
+s\pgfrcs.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revi
+sion.tex)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\
+pgfkeys.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilitie
+s\pgfkeys.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilitie
+s\pgfkeyslibraryfiltered.code.tex)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+math.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+mathutil.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+mathparser.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+mathfunctions.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+mathfunctions.basic.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+mathfunctions.trigonometric.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+mathfunctions.random.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+mathfunctions.comparison.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+mathfunctions.base.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+mathfunctions.round.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+mathfunctions.misc.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+mathfunctions.integerarithmetics.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+mathcalc.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+mathfloat.code.tex)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/extsizes\size8
+.clo)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer
+\pgfcore.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graph
+icx.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graph
+ics.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.
+sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\g
+raphics.cfg)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\p
+dftex.def)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlaye
+r\pgfsys.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemla
+yer\pgfsys.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemla
+yer\pgf.cfg)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemla
+yer\pgfsys-pdftex.def
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemla
+yer\pgfsys-common-pdf.def)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemla
+yer\pgfsyssoftpath.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemla
+yer\pgfsysprotocol.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.
+sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\c
+olor.cfg)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathc
+olor.ltx))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcore.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgf
+int.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcorepoints.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcorepathconstruct.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcorepathusage.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcorescopes.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcoregraphicstate.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcoretransformations.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcorequick.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcoreobjects.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcorepathprocessing.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcorearrows.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcoreshade.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcoreimage.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcoreexternal.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcorelayers.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcoretransparency.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcorepatterns.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclay
+er\pgfcorerdf.code.tex)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\
+xxcolor.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/base\atbegshi-
+ltx.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyper
+ref.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvse
+tkeys.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys
+\kvdefinekeys.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pd
+fescape.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxc
+mds.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\p
+dftexcmds.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\in
+fwarerr.sty)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolo
+r.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\namer
+ef.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refco
+unt.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestri
+ng\gettitlestring.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvop
+tions.sty)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\st
+ringenc.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1en
+c.def)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intc
+alc.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc
+.def)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitse
+t.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\b
+igintcalc.sty))
+
+Package hyperref Message: Stopped early.
+
+)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdft
+ex.def
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck
+\rerunfilecheck.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounte
+r\uniquecounter.sty)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+aserequires.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asecompatibility.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asefont.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssy
+mb.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfo
+nts.sty))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/sansmathaccent
+\sansmathaccent.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/koma-script\sc
+rlfile.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/koma-script\sc
+rlfile-hook.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/koma-script\sc
+rlogo.sty)))))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asetranslator.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/translator\tra
+nslator.sty))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asemisc.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asetwoscreens.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+aseoverlay.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asetitle.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asesection.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+aseframe.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+aseverbatim.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+aseframesize.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+aseframecomponents.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asecolor.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asenotes.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asetoc.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asetemplates.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+aseauxtemplates.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+aseboxes.sty)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+aselocalstructure.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/tools\enumerat
+e.sty))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asenavigation.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asenavigationsymbols.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asetheorems.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmat
+h.sty
+For additional information on amsmath, use the `?' option.
+
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstex
+t.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen
+.sty))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy
+.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn
+.sty))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/amscls\amsthm.
+sty))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerb
+asethemes.sty))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamert
+hemedefault.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerf
+ontthemedefault.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerc
+olorthemedefault.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beameri
+nnerthemedefault.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamero
+uterthemedefault.sty))) (config/settings.tex
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.43 \newif\ifuse3
+                  d             \use3dtrue             % Include 3D visualiz...
+
+! Undefined control sequence.
+l.43 \newif\ifuse3d             \use
+                                    3dtrue             % Include 3D visualiz...
+
+) (preamble_enhanced.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/base\inputenc.
+sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendla
+yer\tikz.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer
+\pgf.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\
+pgfmoduleshapes.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\
+pgfmoduleplot.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibil
+ity\pgfcomp-version-0-65.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibil
+ity\pgfcomp-version-1-18.sty))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\
+pgffor.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilitie
+s\pgffor.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz\tikz.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/librarie
+s\pgflibraryplothandlers.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\
+pgfmodulematrix.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibrarytopaths.code.tex)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/algorithm2e\al
+gorithm2e.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.st
+y)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/ifoddpage\ifod
+dpage.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/tools\xspace.s
+ty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/relsize\relsiz
+e.sty))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/listings\listi
+ngs.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstpa
+tch.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmi
+sc.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/listings\listi
+ngs.cfg))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.st
+y)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/colortbl\color
+tbl.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\bookt
+abs.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcol
+orbox.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/tools\verbatim
+.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/environ\enviro
+n.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/trimspaces\tri
+mspaces.sty)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome\fo
+ntawesome.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifxete
+x.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifluat
+ex.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome\fo
+ntawesomesymbols-generic.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome\fo
+ntawesomesymbols-pdftex.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/pgfplots\pgfpl
+ots.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgf
+plots.revision.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgf
+plots.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgf
+plotscore.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/sys
+\pgfplotssysgeneric.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/lib
+s\pgfplotslibrary.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/old
+pgfcompatib\pgfplotsoldpgfsupp_loader.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/librarie
+s\pgflibraryfpu.code.tex)
+Package pgfplots: loading complementary utilities for your pgf version...
+
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/old
+pgfcompatib\pgfplotsoldpgfsupp_pgfutil-common-lists.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/uti
+l\pgfplotsutil.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/lis
+tstructure\pgfplotsliststructure.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/lis
+tstructure\pgfplotsliststructureext.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/lis
+tstructure\pgfplotsarray.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/lis
+tstructure\pgfplotsmatrix.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/num
+table\pgfplotstableshared.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/lis
+tstructure\pgfplotsdeque.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/uti
+l\pgfplotsbinary.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/uti
+l\pgfplotsbinary.data.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/uti
+l\pgfplotsutil.verb.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/lib
+s\pgflibrarypgfplots.surfshading.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/sys
+\pgflibrarypgfplots.surfshading.pgfsys-pdftex.def)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/uti
+l\pgfplotscolormap.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/uti
+l\pgfplotscolor.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgf
+plotsstackedplots.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgf
+plotsplothandlers.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgf
+plotsmeshplothandler.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgf
+plotsmeshplotimage.code.tex)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgf
+plots.scaling.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgf
+plotscoordprocessing.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgf
+plots.errorbars.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgf
+plots.markers.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgf
+plotsticks.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgf
+plots.paths.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibrarydecorations.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\
+pgfmoduledecorations.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibrarydecorations.pathmorphing.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/librarie
+s/decorations\pgflibrarydecorations.pathmorphing.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibrarydecorations.pathreplacing.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/librarie
+s/decorations\pgflibrarydecorations.pathreplacing.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/lib
+s\tikzlibrarypgfplots.contourlua.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibraryplotmarks.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/librarie
+s\pgflibraryplotmarks.code.tex)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/tools\multicol
+.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/adjustbox\adju
+stbox.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/xkeyval\xkeyva
+l.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkey
+val.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkvu
+tils.tex)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/adjustbox\adjc
+alc.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/adjustbox\trim
+clip.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/collectbox\col
+lectbox.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/adjustbox\tc-p
+dftex.def))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/varwidth\varwi
+dth.sty)
+==> First Aid for varwidth.sty applied!
+)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibraryshapes.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibraryshapes.geometric.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/librarie
+s/shapes\pgflibraryshapes.geometric.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibraryshapes.misc.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/librarie
+s/shapes\pgflibraryshapes.misc.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibraryshapes.symbols.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/librarie
+s/shapes\pgflibraryshapes.symbols.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibraryshapes.arrows.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/librarie
+s/shapes\pgflibraryshapes.arrows.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibraryshapes.callouts.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/librarie
+s/shapes\pgflibraryshapes.callouts.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibraryshapes.multipart.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/librarie
+s/shapes\pgflibraryshapes.multipart.code.tex)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibraryarrows.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/librarie
+s\pgflibraryarrows.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibrarypositioning.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibrarycalc.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibrarypatterns.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/librarie
+s\pgflibrarypatterns.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibraryshadows.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibraryfadings.code.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/librarie
+s\pgflibraryfadings.code.tex)))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontend
+layer/tikz/libraries\tikzlibrarybackgrounds.code.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamert
+hemeMadrid.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerc
+olorthemewhale.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerc
+olorthemeorchid.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beameri
+nnerthemerounded.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamero
+uterthemeinfolines.sty))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamerc
+olorthemeseahorse.sty) (styles/colors.tex) (styles/commands.tex)
+(styles/listings.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstla
+ng1.sty)) (styles/visual_theme.tex
+
+! LaTeX Error: Command \highlight already defined.
+               Or name \end... illegal, see p.192 of the manual.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.192 ...ght}[2]{\textcolor<#1>{alertWarning}{#2}}
+                                                  
+)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbs
+kins.code.tex
+Library (tcolorbox): 'tcbskins.code.tex' version '6.7.1'
+
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzf
+ill.image.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzf
+ill-common.sty)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzl
+ibraryfill.image.code.tex))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbs
+kinsjigsaw.code.tex
+Library (tcolorbox): 'tcbskinsjigsaw.code.tex' version '6.7.1'
+))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbb
+reakable.code.tex
+Library (tcolorbox): 'tcbbreakable.code.tex' version '6.7.1'
+
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/pdfcol\pdfcol.
+sty))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbt
+heorems.code.tex
+Library (tcolorbox): 'tcbtheorems.code.tex' version '6.7.1'
+)) (metadata.tex)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3ba
+ckend-pdftex.def)
+No file main_enhanced.aux.
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\su
+pp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\e
+pstopdf-base.sty
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epsto
+pdf-sys.cfg))
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/translator\tra
+nslator-basic-dictionary-English.dict)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/translator\tra
+nslator-bibliography-dictionary-English.dict)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/translator\tra
+nslator-environment-dictionary-English.dict)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/translator\tra
+nslator-months-dictionary-English.dict)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/translator\tra
+nslator-numbers-dictionary-English.dict)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/translator\tra
+nslator-theorem-dictionary-English.dict)
+Package pgfplots notification 'compat/show suggested version=true': you might b
+enefit from \pgfplotsset{compat=1.18} (current compat level: 1.17).
+
+No file main_enhanced.nav.
+(content/00_frontmatter.tex
+Overfull \vbox (10.0pt too high) has occurred while \output is active
+[1{C:/Users/OsterriederJRO/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
+No file main_enhanced.toc.
+
+[2]
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.
+fd)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.
+fd)
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/sansmathaccent
+\ot1mathkerncmss.fd)
+[3]) (content/01_introduction.tex
+[4]) (content/02_basic_concepts.tex
+[5]
+[6]
+Overfull \vbox (7.84218pt too high) detected at line 216
+
+[7]) (content/03_word2vec.tex
+[8]
+[9]
+[10]) (content/04_contextual.tex
+[11]
+[12]) (content/05_advanced_topics.tex
+Overfull \vbox (8.07303pt too high) detected at line 45
+
+[13 <../figures/embeddings/ascii_vs_embedding.pdf>] (main_enhanced.vrb)
+Overfull \vbox (36.26213pt too high) detected at line 69
+
+[14 <../figures/embeddings/sparsity_analysis.pdf>] (main_enhanced.vrb)
+Overfull \vbox (47.6316pt too high) detected at line 106
+
+[15 <../figures/embeddings/cosine_similarity_geometry.pdf>] (main_enhanced.vrb)
+
+[16{C:/Users/OsterriederJRO/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/cm-su
+per/cm-super-t1.enc}] (main_enhanced.vrb)
+Overfull \vbox (164.86873pt too high) detected at line 174
+
+[17 <../figures/embeddings/context_window_theory.pdf>] (main_enhanced.vrb)
+Overfull \vbox (198.81766pt too high) detected at line 213
+
+[18 <../figures/embeddings/vector_arithmetic_theory.pdf>] (main_enhanced.vrb)
+[19]) (content/06_dimensionality.tex
+Overfull \vbox (179.79898pt too high) detected at line 18
+
+[20 <../figures/embeddings/distance_concentration_plot.pdf> <../figures/embeddi
+ngs/nearest_neighbor_degradation.pdf>]
+Overfull \vbox (38.3408pt too high) detected at line 55
+
+[21 <../figures/embeddings/formulas/distance_concentration_formula.pdf>]
+Overfull \vbox (29.65369pt too high) detected at line 72
+
+[22 <../figures/embeddings/sphere_volume_curve.pdf>]
+Overfull \vbox (101.70987pt too high) detected at line 86
+
+[23 <../figures/embeddings/formulas/volume_decomposition.pdf>]
+[24 <../figures/embeddings/volume_distribution_shells.pdf>]
+Overfull \vbox (4.82796pt too high) detected at line 137
+
+[25{C:/Users/OsterriederJRO/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/cm-su
+per/cm-super-ts1.enc}]
+[26]) (content/07_training.tex
+Overfull \vbox (37.10034pt too high) detected at line 34
+
+[27 <../figures/embeddings/training_process_theory.pdf>]
+Overfull \vbox (44.59723pt too high) detected at line 49
+
+[28 <../figures/embeddings/formulas/training_loss_formula.pdf>]
+[29]
+[30]
+[31]) (content/09_latest_research.tex
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome\uf
+ontawesometwo.fd)
+[32{C:/Users/OsterriederJRO/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/fonta
+wesome/fontawesometwo.enc}]
+
+LaTeX Font Warning: Font shape `U/fontawesometwo/bx/n' undefined
+(Font)              using `U/fontawesometwo/m/n' instead on input line 58.
+
+
+(C:\Users\OsterriederJRO\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome\uf
+ontawesomethree.fd)
+Overfull \vbox (25.0353pt too high) detected at line 58
+
+[33{C:/Users/OsterriederJRO/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/fonta
+wesome/fontawesomethree.enc}]
+[34]
+
+LaTeX Font Warning: Font shape `U/fontawesomethree/bx/n' undefined
+(Font)              using `U/fontawesomethree/m/n' instead on input line 178.
+
+
+[35]
+Overfull \vbox (18.10365pt too high) detected at line 241
+
+[36]
+[37]
+! Undefined control sequence.
+<recently read> \iconRocket 
+                            
+l.337 \end{frame}
+                 
+! Undefined control sequence.
+<recently read> \iconWarning 
+                             
+l.337 \end{frame}
+                 
+
+[38]) (content/10_practical_implementation.tex
+[39]
+[40]
+[41]
+Overfull \vbox (47.12291pt too high) detected at line 200
+
+[42]
+Overfull \vbox (24.2217pt too high) detected at line 270
+
+[43]
+Overfull \vbox (7.33736pt too high) detected at line 333
+
+[44]
+[45]) (content/08_summary.tex
+[46]
+[47]
+[48]
+[49])
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\translate ' on input line 43.
+
+(appendix/A_mathematics.tex
+Overfull \vbox (40.4559pt too high) detected at line 24
+
+[50 <../figures/embeddings/formulas/skipgram_loss_surface.pdf>]
+[51 <../figures/embeddings/formulas/negative_sampling_comparison.pdf>]
+Overfull \vbox (82.85796pt too high) detected at line 57
+
+[52 <../figures/embeddings/formulas/glove_cooccurrence_matrix.pdf>]
+
+! LaTeX Error: Unicode character α (U+03B1)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.77 \end{frame}
+                
+
+[53 <../figures/embeddings/formulas/glove_weighting_curves.pdf>]
+Overfull \vbox (47.2195pt too high) detected at line 93
+
+[54 <../figures/embeddings/formulas/attention_matrix_visual.pdf>]
+Overfull \vbox (131.09483pt too high) detected at line 104
+
+[55 <../figures/embeddings/formulas/positional_encoding_patterns.pdf>]
+Overfull \vbox (171.0545pt too high) detected at line 120
+
+[56 <../figures/embeddings/formulas/bert_mlm_masking.pdf>])
+(appendix/B_skipgram.tex
+Overfull \vbox (45.36598pt too high) detected at line 22
+
+[57 <../figures/embeddings/skipgram/skipgram_architecture.pdf>]
+Overfull \vbox (42.84053pt too high) detected at line 38
+
+[58 <../figures/embeddings/skipgram/skipgram_training_pairs.pdf>]
+Overfull \vbox (124.36183pt too high) detected at line 54
+
+[59 <../figures/embeddings/skipgram/skipgram_forward_pass.pdf>]
+Overfull \vbox (39.54274pt too high) detected at line 70
+
+[60 <../figures/embeddings/skipgram/skipgram_backprop.pdf>]
+Overfull \vbox (127.90411pt too high) detected at line 86
+
+[61 <../figures/embeddings/skipgram/skipgram_evolution.pdf>])
+(main_enhanced.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+
+Package rerunfilecheck Warning: File `main_enhanced.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
+(see the transcript file for additional information)<C:/Users/OsterriederJRO/Ap
+pData/Local/Programs/MiKTeX/fonts/type1/public/fontawesome/FontAwesome.pfb><C:/
+Users/OsterriederJRO/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
+cmextra/cmex8.pfb><C:/Users/OsterriederJRO/AppData/Local/Programs/MiKTeX/fonts/
+type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/OsterriederJRO/AppData/Local/Progr
+ams/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/OsterriederJRO/Ap
+pData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/
+OsterriederJRO/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cms
+s10.pfb><C:/Users/OsterriederJRO/AppData/Local/Programs/MiKTeX/fonts/type1/publ
+ic/amsfonts/cm/cmss17.pfb><C:/Users/OsterriederJRO/AppData/Local/Programs/MiKTe
+X/fonts/type1/public/amsfonts/cm/cmss8.pfb><C:/Users/OsterriederJRO/AppData/Loc
+al/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmssbx10.pfb><C:/Users/Osterr
+iederJRO/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmssi8.pf
+b><C:/Users/OsterriederJRO/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmsy5.pfb><C:/Users/OsterriederJRO/AppData/Local/Programs/MiKTeX/fonts
+/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/OsterriederJRO/AppData/Local/Prog
+rams/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/OsterriederJRO/A
+ppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users
+/OsterriederJRO/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbo
+ls/msam10.pfb><C:/Users/OsterriederJRO/AppData/Local/Programs/MiKTeX/fonts/type
+1/public/amsfonts/symbols/msbm10.pfb><C:/Users/OsterriederJRO/AppData/Local/Pro
+grams/MiKTeX/fonts/type1/public/cm-super/sfso0800.pfb><C:/Users/OsterriederJRO/
+AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfss0700.pfb><C:/User
+s/OsterriederJRO/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfss
+0800.pfb>
+Output written on main_enhanced.pdf (61 pages, 1589440 bytes).
+Transcript written on main_enhanced.log.

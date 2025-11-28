@@ -1,0 +1,1149 @@
+% Week 0: First Day Lecture - Course Introduction
+% NLP Course 2025
+% Created: 2025-09-27
+
+\input{../../common/master_template.tex}
+
+\title{Welcome to NLP 2025}
+\subtitle{\secondary{From N-grams to Transformers: Your Journey Begins Today}}
+\author{NLP Course 2025}
+\date{First Day of Class}
+
+\begin{document}
+
+% Slide 1: Title
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}
+\secondary{\footnotesize Natural Language Processing: 12 Weeks to Understanding ChatGPT}
+\end{center}
+\end{frame}
+
+% Slide 2: What You'll Build
+\begin{frame}{What You'll Build This Semester}
+\begin{center}
+{\Large \textbf{From Zero to Transformer}}
+\end{center}
+
+\vspace{8mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Week 2:}
+\begin{itemize}
+\item Word embeddings from scratch
+\item Train on real text
+\item Visualize word similarities
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Week 3:}
+\begin{itemize}
+\item LSTM language model
+\item Generate Shakespeare
+\item Understanding memory
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Week 5:}
+\begin{itemize}
+\item \highlight{Complete transformer}
+\item Self-attention mechanism
+\item The architecture behind ChatGPT
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Week 6:}
+\begin{itemize}
+\item Fine-tune BERT
+\item Transfer learning
+\item State-of-the-art results
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Week 9:}
+\begin{itemize}
+\item Text generation strategies
+\item Control creativity
+\item Beam search and sampling
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Week 12:}
+\begin{itemize}
+\item Deploy responsibly
+\item Measure and mitigate bias
+\item \highlight{Ethical AI}
+\end{itemize}
+
+\end{columns}
+
+\vspace{5mm}
+\keypoint{By Week 5, you'll understand how ChatGPT, Claude, and all modern LLMs work}
+\end{frame}
+
+% Slide 3: Why This Course Matters
+\begin{frame}{Why This Course Matters}
+\begin{center}
+{\Large \textbf{NLP is Transforming Every Industry}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Current Applications:}
+\begin{itemize}
+\item \highlight{ChatGPT \& Claude} - Conversational AI
+\item \highlight{GitHub Copilot} - Code generation
+\item \highlight{Google Translate} - 100+ languages
+\item \highlight{Grammarly} - Writing assistance
+\item \highlight{Alexa \& Siri} - Voice assistants
+\item \highlight{Gmail} - Smart compose
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Career Impact:}
+\begin{itemize}
+\item NLP engineers: Top 5 percent salaries
+\item ML researchers: High demand
+\item Data scientists: Essential skill
+\item Product managers: Understanding capability
+\item All roles: AI literacy critical
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Market Growth:}
+\begin{itemize}
+\item NLP market: USD 20B (2024)
+\item Projected: USD 100B+ (2030)
+\item AI investment: USD 500B+ annually
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{Understanding transformers is understanding the future of computing}
+\end{frame}
+
+% Slide 4: Course Philosophy
+\begin{frame}{Our Learning Philosophy}
+\begin{center}
+{\Large \textbf{Learn by Building, Not Just Watching}}
+\end{center}
+
+\vspace{8mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Discovery-Based Learning:}
+\begin{itemize}
+\item Start with concrete problems
+\item Discover solutions yourself
+\item THEN learn the formal theory
+\item Build intuition first
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Hands-On Practice:}
+\begin{itemize}
+\item 12 lab notebooks
+\item Real code, real data
+\item Run in your browser
+\item No magic black boxes
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Progressive Complexity:}
+\begin{itemize}
+\item Week 1: Count words
+\item Week 5: Build transformer
+\item Week 12: Deploy ethically
+\item Each week builds on previous
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Real Implementation:}
+\begin{itemize}
+\item PyTorch from scratch
+\item Every line explained
+\item No hidden abstractions
+\item Understanding not memorization
+\end{itemize}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{By the end, you'll have IMPLEMENTED a transformer, not just understood it}
+\end{frame}
+
+% Slide 5: Your 12-Week Journey
+\begin{frame}{Your 12-Week Journey}
+\begin{center}
+{\Large \textbf{Three Phases of Mastery}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{\highlight{Phase 1: Foundations}}\\
+\secondary{Weeks 1-4}
+
+\vspace{3mm}
+\small
+\textbf{Week 1:} Statistical LM\\
+\secondary{N-grams, probability}
+
+\textbf{Week 2:} Word Embeddings\\
+\secondary{Word2Vec, GloVe}
+
+\textbf{Week 3:} RNN/LSTM\\
+\secondary{Sequential models}
+
+\textbf{Week 4:} Seq2Seq\\
+\secondary{Attention mechanism}
+
+\vspace{3mm}
+\success{Master: Neural basics}
+
+\column{0.32\textwidth}
+\textbf{\highlight{Phase 2: Revolution}}\\
+\secondary{Weeks 5-8}
+
+\vspace{3mm}
+\small
+\textbf{Week 5:} Transformers\\
+\secondary{Self-attention}
+
+\textbf{Week 6:} Pre-trained\\
+\secondary{BERT, GPT}
+
+\textbf{Week 7:} Advanced\\
+\secondary{T5, GPT-3, scaling}
+
+\textbf{Week 8:} Tokenization\\
+\secondary{BPE, WordPiece}
+
+\vspace{3mm}
+\success{Master: Modern architectures}
+
+\column{0.32\textwidth}
+\textbf{\highlight{Phase 3: Application}}\\
+\secondary{Weeks 9-12}
+
+\vspace{3mm}
+\small
+\textbf{Week 9:} Decoding\\
+\secondary{Generation strategies}
+
+\textbf{Week 10:} Fine-tuning\\
+\secondary{Adaptation methods}
+
+\textbf{Week 11:} Efficiency\\
+\secondary{Optimization}
+
+\textbf{Week 12:} Ethics\\
+\secondary{Responsible deployment}
+
+\vspace{3mm}
+\success{Master: Production deployment}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{Each phase unlocks new capabilities - by Week 12, you're deployment-ready}
+\end{frame}
+
+% Slide 6: Prerequisites Check
+\begin{frame}{Prerequisites: Do You Have What It Takes?}
+\begin{center}
+{\Large \textbf{Self-Assessment}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{\success{Required (Must Have):}}
+\begin{itemize}
+\item Python programming experience
+\item Basic linear algebra (vectors, matrices)
+\item Basic probability theory
+\item Comfortable with loops and functions
+\item Can read and write code
+\end{itemize}
+
+\vspace{5mm}
+\textbf{\warning{If You Don't Have These:}}
+\begin{itemize}
+\item Python: Complete Python tutorial first
+\item Math: Review Khan Academy linear algebra
+\item Probability: Review basic probability
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{\data{Helpful But Not Required:}}
+\begin{itemize}
+\item PyTorch or TensorFlow
+\item Neural networks basics
+\item Machine learning concepts
+\item Backpropagation understanding
+\item GPU programming
+\end{itemize}
+
+\vspace{5mm}
+\textbf{\success{We Provide:}}
+\begin{itemize}
+\item Neural Network Primer (if needed)
+\item LSTM Primer (deep dive)
+\item Progressive difficulty
+\item Office hours support
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{New to neural networks? Start with our Neural Network Primer before Week 2}
+\end{frame}
+
+% Slide 7: Course Materials
+\begin{frame}{Course Materials: Everything You Need}
+\begin{center}
+{\Large \textbf{Complete Open-Source Course}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Presentations:}
+\begin{itemize}
+\item 60+ slide decks
+\item Optimal readability design
+\item Multiple versions (BSc, enhanced)
+\item PDF and LaTeX source
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Lab Notebooks:}
+\begin{itemize}
+\item 12 interactive Jupyter notebooks
+\item Hands-on implementation
+\item Real data and models
+\item Run in your browser
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Handouts:}
+\begin{itemize}
+\item Pre-class discovery exercises
+\item Post-class technical practice
+\item Student and instructor versions
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Supplementary:}
+\begin{itemize}
+\item Neural Network Primer
+\item LSTM Primer (32 slides)
+\item Word Embeddings Module
+\item 8 visualization notebooks
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Documentation:}
+\begin{itemize}
+\item Complete installation guide
+\item Week-by-week course index
+\item Troubleshooting support
+\item Project templates
+\end{itemize}
+
+\vspace{3mm}
+\textbf{All Materials:}
+\begin{itemize}
+\item Open source (MIT license)
+\item GitHub repository
+\item Always accessible
+\item Community contributions welcome
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{GitHub: github.com/josterri/2025\_NLP\_Lectures}
+\end{frame}
+
+% Slide 8: Getting Started TODAY
+\begin{frame}[fragile]{Getting Started TODAY}
+\begin{center}
+{\Large \textbf{Your First Assignment (Due Next Class)}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Step 1: Clone Repository}
+\begin{itemize}
+\item \texttt{git clone github.com/josterri/2025\_NLP\_Lectures.git}
+\item \texttt{cd 2025\_NLP\_Lectures}
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Step 2: Install Dependencies}
+\begin{itemize}
+\item \texttt{pip install -r requirements.txt}
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Step 3: Verify Installation}
+\begin{itemize}
+\item \texttt{python verify\_installation.py}
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Expected Time:}
+\begin{itemize}
+\item Clone: 2 minutes
+\item Install: 10-15 minutes
+\item Verify: 30 seconds
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Step 4: Test First Notebook}
+\begin{itemize}
+\item Launch: \texttt{jupyter lab}
+\item Open: Week 2 word embeddings lab
+\item Run first 3 cells
+\item Verify imports work
+\end{itemize}
+
+\vspace{3mm}
+\textbf{GPU Optional:}
+\begin{itemize}
+\item Weeks 1-4: CPU sufficient
+\item Weeks 5+: GPU recommended
+\item All labs work on CPU
+\item GPU speeds up training
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Get Help:}
+\begin{itemize}
+\item Read INSTALLATION.md
+\item Check GitHub Issues
+\item Office hours: TBD
+\item Email: TBD
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{If verify\_installation.py succeeds, you're ready for Week 2!}
+\end{frame}
+
+% Slide 9: Week-by-Week Schedule
+\begin{frame}{Week-by-Week Schedule}
+\begin{center}
+{\Large \textbf{What Happens Each Week}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Before Class (Monday):}
+\begin{itemize}
+\item Read handout (pre-class section)
+\item Complete discovery exercises
+\item Build intuition
+\item Identify questions
+\end{itemize}
+
+\vspace{3mm}
+\textbf{During Lecture (Wednesday):}
+\begin{itemize}
+\item Review key concepts
+\item Live coding demonstrations
+\item Q\&A on pre-class material
+\item Preview lab notebook
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Lab Session (Friday):}
+\begin{itemize}
+\item Implement concepts
+\item Hands-on coding
+\item Get help from TAs
+\item Debug together
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{After Lab (Weekend):}
+\begin{itemize}
+\item Complete lab notebook
+\item Finish post-class handout
+\item Experiment and explore
+\item Submit by Monday
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Office Hours (TBD):}
+\begin{itemize}
+\item Individual help
+\item Concept clarification
+\item Project discussion
+\item Career advice
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Weekly Commitment:}
+\begin{itemize}
+\item Lecture: 2 hours
+\item Lab: 2 hours
+\item Independent work: 4-6 hours
+\item Total: 8-10 hours/week
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{This is an intensive course - budget 10 hours per week for success}
+\end{frame}
+
+% Slide 10: Assessment Overview
+\begin{frame}{How You'll Be Assessed}
+\begin{center}
+{\Large \textbf{Grading Breakdown}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Lab Notebooks (40 percent):}
+\begin{itemize}
+\item 12 notebooks, 11 graded (drop lowest)
+\item Due Monday after lab
+\item Implementation correctness
+\item Code quality and comments
+\item Experimentation and insights
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Midterm Project (25 percent):}
+\begin{itemize}
+\item After Week 6
+\item Implement and evaluate model
+\item Written report
+\item Code submission
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Final Project (30 percent):}
+\begin{itemize}
+\item Weeks 11-12
+\item Original NLP application
+\item Full pipeline implementation
+\item Presentation and report
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Participation (5 percent):}
+\begin{itemize}
+\item Class attendance
+\item Lab participation
+\item Office hours engagement
+\item Helping classmates
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Grading Philosophy:}
+\begin{itemize}
+\item Focus on learning not perfection
+\item Partial credit for attempts
+\item Bonus for creativity
+\item Collaboration encouraged (cite sources)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Late Policy:}
+\begin{itemize}
+\item 48-hour grace period (no penalty)
+\item After that: 10 percent per day
+\item Max 5 days late
+\item Exceptions for emergencies
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{Success = consistent effort on labs + creative final project}
+\end{frame}
+
+% Slide 11: Example Projects
+\begin{frame}{Example Final Projects}
+\begin{center}
+{\Large \textbf{What Past Students Built}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Text Generation:}
+\begin{itemize}
+\item \highlight{Poetry generator} - Style transfer
+\item \highlight{Code completion} - GitHub-trained
+\item \highlight{Story writer} - Character-consistent
+\item \highlight{Email composer} - Professional tone
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Information Extraction:}
+\begin{itemize}
+\item \highlight{Resume parser} - Extract skills
+\item \highlight{News summarizer} - Multi-document
+\item \highlight{Question answering} - Domain-specific
+\item \highlight{Fact checker} - Claim verification
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Classification:}
+\begin{itemize}
+\item \highlight{Sentiment analysis} - Product reviews
+\item \highlight{Spam detection} - Email filtering
+\item \highlight{Intent classification} - Chatbot
+\item \highlight{Toxicity detection} - Content moderation
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Translation \& Multilingual:}
+\begin{itemize}
+\item \highlight{Domain translator} - Legal/medical
+\item \highlight{Code-switching} - Multilingual text
+\item \highlight{Style transfer} - Formal to casual
+\item \highlight{Dialect conversion} - Regional
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Creative Applications:}
+\begin{itemize}
+\item \highlight{Music from text} - Lyrics to melody
+\item \highlight{Debate partner} - Argument generation
+\item \highlight{Language learning} - Adaptive tutor
+\item \highlight{Game dialogue} - NPC conversations
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Research Projects:}
+\begin{itemize}
+\item \highlight{Bias measurement} - Gender/race
+\item \highlight{Interpretability} - Attention analysis
+\item \highlight{Efficiency} - Model compression
+\item \highlight{Robustness} - Adversarial testing
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{Best projects combine technical skill + creativity + real-world impact}
+\end{frame}
+
+% Slide 12: Typical Week 5 Achievement
+\begin{frame}{Milestone: What You'll Know By Week 5}
+\begin{center}
+{\Large \textbf{From Zero to Transformer in 5 Weeks}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Technical Understanding:}
+\begin{itemize}
+\item How attention mechanism works
+\item Query, Key, Value matrices
+\item Multi-head attention computation
+\item Positional encoding mathematics
+\item Layer normalization
+\item Feed-forward networks
+\item Residual connections
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Implementation Skills:}
+\begin{itemize}
+\item Scaled dot-product attention
+\item Multi-head splitting and merging
+\item Complete transformer block
+\item Positional encoding
+\item Training loop
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Practical Abilities:}
+\begin{itemize}
+\item Debug attention weights
+\item Visualize attention patterns
+\item Optimize hyperparameters
+\item Compare with RNN/LSTM
+\item Understand GPT architecture
+\item Read research papers
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Real-World Knowledge:}
+\begin{itemize}
+\item Why ChatGPT is so powerful
+\item How BERT differs from GPT
+\item Computational complexity trade-offs
+\item When to use transformers
+\item Current limitations
+\item Future directions
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{Week 5 is the turning point - after this, modern NLP makes complete sense}
+\end{frame}
+
+% Slide 13: Common Questions
+\begin{frame}{Common Questions}
+\begin{center}
+{\Large \textbf{Frequently Asked Questions}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Q: Do I need a GPU?}\\
+\secondary{A: No, all labs work on CPU. GPU speeds things up for Weeks 5+ but isn't required.}
+
+\vspace{3mm}
+\textbf{Q: How much Python?}\\
+\secondary{A: Comfortable writing functions, loops, and classes. PyTorch will be taught.}
+
+\vspace{3mm}
+\textbf{Q: Mathematical background?}\\
+\secondary{A: Linear algebra (vectors, matrices, dot products) and basic probability. We'll review as needed.}
+
+\vspace{3mm}
+\textbf{Q: Can I audit?}\\
+\secondary{A: Yes! All materials are open source. You won't get grades but can follow along.}
+
+\vspace{3mm}
+\textbf{Q: Group projects?}\\
+\secondary{A: Labs are individual. Final project can be pairs with instructor approval.}
+
+\column{0.48\textwidth}
+\textbf{Q: How hard is this?}\\
+\secondary{A: Challenging but doable. Budget 10 hours/week. We support you every step.}
+
+\vspace{3mm}
+\textbf{Q: What if I fall behind?}\\
+\secondary{A: Office hours, catch-up sessions, and grace periods. Communication is key.}
+
+\vspace{3mm}
+\textbf{Q: Industry vs research?}\\
+\secondary{A: Both! Course covers practical deployment and research methods.}
+
+\vspace{3mm}
+\textbf{Q: After this course?}\\
+\secondary{A: You'll be ready for NLP engineering roles, ML research, or advanced courses.}
+
+\vspace{3mm}
+\textbf{Q: Most important week?}\\
+\secondary{A: Week 5 (transformers) is the foundation. Don't miss it!}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{More questions? Email TBD or come to office hours}
+\end{frame}
+
+% Slide 14: Success Strategies
+\begin{frame}{Strategies for Success}
+\begin{center}
+{\Large \textbf{How Top Students Excel}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Before Each Week:}
+\begin{itemize}
+\item Read pre-class handout carefully
+\item Try exercises before looking at solutions
+\item Write down questions
+\item Review previous week's concepts
+\end{itemize}
+
+\vspace{3mm}
+\textbf{During Lab:}
+\begin{itemize}
+\item Start early (don't wait until deadline)
+\item Experiment beyond requirements
+\item Ask questions immediately
+\item Help classmates (best way to learn)
+\item Save your work frequently
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Study Groups:}
+\begin{itemize}
+\item Form groups of 3-4 students
+\item Meet weekly to discuss concepts
+\item Explain to each other
+\item Collaborate on understanding (not code)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Debugging Mindset:}
+\begin{itemize}
+\item Read error messages carefully
+\item Print intermediate outputs
+\item Test with small examples first
+\item Check dimensions and shapes
+\item Use debugger or print statements
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Going Deeper:}
+\begin{itemize}
+\item Read suggested papers
+\item Try bonus challenges
+\item Implement variants
+\item Share findings with class
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Stay Organized:}
+\begin{itemize}
+\item Keep notes for each week
+\item Maintain code repository
+\item Document experiments
+\item Plan ahead for projects
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{Consistent effort beats cramming - do a little every day}
+\end{frame}
+
+% Slide 15: Course Resources
+\begin{frame}{Resources and Support}
+\begin{center}
+{\Large \textbf{Where to Get Help}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Course Materials:}
+\begin{itemize}
+\item \highlight{GitHub:} github.com/josterri/2025\_NLP\_Lectures
+\item \highlight{Documentation:} README.md, COURSE\_INDEX.md
+\item \highlight{Installation:} INSTALLATION.md
+\item \highlight{Syllabus:} SYLLABUS.md
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Getting Help:}
+\begin{itemize}
+\item \highlight{Office Hours:} TBD
+\item \highlight{Email:} TBD
+\item \highlight{Discussion Forum:} TBD
+\item \highlight{Lab TAs:} Available during lab sessions
+\end{itemize}
+
+\vspace{3mm}
+\textbf{External Resources:}
+\begin{itemize}
+\item \highlight{PyTorch Tutorials:} pytorch.org/tutorials
+\item \highlight{Papers:} arxiv.org
+\item \highlight{Blogs:} Jay Alammar, Lil'Log
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Community:}
+\begin{itemize}
+\item \highlight{GitHub Issues:} Report bugs
+\item \highlight{Pull Requests:} Contribute improvements
+\item \highlight{Discussions:} Share insights
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Reference Books:}
+\begin{itemize}
+\item Speech and Language Processing (Jurafsky \& Martin)
+\item Neural Network Methods for NLP (Goldberg)
+\item Dive into Deep Learning (Zhang et al)
+\item All available free online
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Tools:}
+\begin{itemize}
+\item \highlight{Google Colab:} Free GPU notebooks
+\item \highlight{Hugging Face:} Pre-trained models
+\item \highlight{Weights \& Biases:} Experiment tracking
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{You're never alone - we have extensive support systems}
+\end{frame}
+
+% Slide 16: Immediate Next Steps
+\begin{frame}{Your Immediate Action Items}
+\begin{center}
+{\Large \textbf{What to Do Right Now}}
+\end{center}
+
+\vspace{8mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Today (Next 30 Minutes):}
+\begin{enumerate}
+\item Clone the repository
+\item Read the README.md
+\item Check system requirements
+\item Identify if you need GPU
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Tonight (1-2 Hours):}
+\begin{enumerate}
+\item Install dependencies (requirements.txt)
+\item Run verify\_installation.py
+\item Fix any installation issues
+\item Read INSTALLATION.md if stuck
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{Before Next Class:}
+\begin{enumerate}
+\item Complete Neural Network Primer (if needed)
+\item Read Week 2 pre-class handout
+\item Try the discovery exercises
+\item Prepare questions
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Optional (For Eager Students):}
+\begin{enumerate}
+\item Browse Week 2 lab notebook
+\item Read Week 1 presentation
+\item Check out supplementary modules
+\item Join discussion forum
+\end{enumerate}
+\end{columns}
+
+\vspace{8mm}
+\keypoint{Most important: Get your environment working BEFORE Week 2}
+\end{frame}
+
+% Slide 17: The Transformer Revolution
+\begin{frame}{Understanding the AI Revolution}
+\begin{center}
+{\Large \textbf{Why Transformers Changed Everything}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Before Transformers (Pre-2017):}
+\begin{itemize}
+\item Sequential processing (RNNs)
+\item Slow training (hours to days)
+\item Limited context (hundreds of words)
+\item Vanishing gradient problems
+\item Hard to parallelize
+\item Specialized architectures per task
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Limitations We Hit:}
+\begin{itemize}
+\item Couldn't scale to large models
+\item Couldn't use massive datasets
+\item Couldn't capture long-range dependencies
+\item Transfer learning was limited
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{After Transformers (2017+):}
+\begin{itemize}
+\item Parallel processing (attention)
+\item Fast training (hours on GPUs)
+\item Unlimited context (thousands of tokens)
+\item Stable gradients
+\item Massively parallelizable
+\item Universal architecture
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What Became Possible:}
+\begin{itemize}
+\item GPT-3: 175 billion parameters
+\item GPT-4: Multimodal understanding
+\item Claude: 100k+ token context
+\item ChatGPT: Conversational AI
+\item All modern LLMs use transformers
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{You'll learn WHY this architecture unlocked the AI revolution}
+\end{frame}
+
+% Slide 18: Course Outcomes
+\begin{frame}{What You'll Be Able to Do}
+\begin{center}
+{\Large \textbf{By the End of This Course}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Technical Skills:}
+\begin{itemize}
+\item \success{Implement} transformers from scratch
+\item \success{Fine-tune} BERT and GPT models
+\item \success{Debug} attention mechanisms
+\item \success{Optimize} model efficiency
+\item \success{Deploy} models responsibly
+\item \success{Measure} and mitigate bias
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Conceptual Understanding:}
+\begin{itemize}
+\item How ChatGPT works internally
+\item Why attention beats RNNs
+\item When to use which architecture
+\item Trade-offs in model design
+\item Current research frontiers
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Practical Abilities:}
+\begin{itemize}
+\item Read and implement research papers
+\item Design NLP systems
+\item Evaluate model performance
+\item Choose appropriate methods
+\item Debug complex models
+\item Communicate technical concepts
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Career Readiness:}
+\begin{itemize}
+\item NLP engineer interviews
+\item ML research positions
+\item Data science roles
+\item PhD program preparation
+\item Startup technical co-founder
+\item Technical leadership
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{This course is your pathway to the frontier of AI}
+\end{frame}
+
+% Slide 19: Week 2 Preview
+\begin{frame}{Next Week Preview: Word Embeddings}
+\begin{center}
+{\Large \textbf{Your First Hands-On Lab}}
+\end{center}
+
+\vspace{5mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What You'll Learn:}
+\begin{itemize}
+\item Words as vectors
+\item Semantic similarity
+\item Word2Vec algorithm (CBOW \& Skip-gram)
+\item Training on real text
+\item Visualizing embeddings
+\item Analogies: king - man + woman = queen
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What You'll Build:}
+\begin{itemize}
+\item Train word embeddings from scratch
+\item Implement Skip-gram model
+\item Visualize word relationships
+\item Discover semantic patterns
+\item Test word analogies
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Prepare By:}
+\begin{itemize}
+\item Reading pre-class handout
+\item Understanding distributional hypothesis
+\item Reviewing basic neural networks
+\item (Optional) Neural Network Primer
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Lab Highlights:}
+\begin{itemize}
+\item Work with real text corpus
+\item See embeddings evolve during training
+\item Interactive visualizations
+\item Explore semantic relationships
+\item Bonus challenges available
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\keypoint{Week 2 is where the magic starts - you'll be amazed how much computers can learn about word meanings}
+\end{frame}
+
+% Slide 20: Closing - Your Journey Starts Now
+\begin{frame}{Your Journey Starts Now}
+\begin{center}
+{\Huge \textbf{Welcome to NLP 2025}}
+\end{center}
+
+\vspace{8mm}
+
+\begin{center}
+\textbf{\Large Key Takeaways:}
+\end{center}
+
+\vspace{5mm}
+
+\begin{itemize}
+\item \highlight{Build transformers} - Understand how ChatGPT works
+\item \highlight{12-week journey} - From foundations to deployment
+\item \highlight{Hands-on learning} - Implement everything yourself
+\item \highlight{Real applications} - Deploy models responsibly
+\item \highlight{Complete support} - Extensive materials and help
+\end{itemize}
+
+\vspace{8mm}
+
+\begin{center}
+\textbf{\Large First Assignment:}\\
+\vspace{3mm}
+\secondary{Install environment by next class}\\
+\secondary{Run verify\_installation.py successfully}\\
+\secondary{Read Week 2 pre-class handout}
+\end{center}
+
+\vspace{8mm}
+
+\begin{center}
+\keypoint{See you next week - let's build the future of AI together!}
+\end{center}
+\end{frame}
+
+\end{document}

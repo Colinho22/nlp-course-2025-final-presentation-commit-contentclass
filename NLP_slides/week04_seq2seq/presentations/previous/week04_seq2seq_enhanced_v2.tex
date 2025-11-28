@@ -1,0 +1,542 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm2e}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{subfigure}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+
+% Theme settings
+\usetheme{Frankfurt}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Custom colors (matching educational color scheme)
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{173,216,230}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codegray}{RGB}{150,150,150}
+\definecolor{codepurple}{RGB}{128,0,128}
+\definecolor{backcolor}{RGB}{245,245,245}
+
+% Code listing settings
+\lstset{
+    backgroundcolor=\color{backcolor},
+    basicstyle=\ttfamily\tiny,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    showstringspaces=false,
+    frame=single,
+    numbers=left,
+    language=Python
+}
+
+% Include shared slide layouts
+\input{../../common/slide_layouts.tex}
+
+\title[Week 4: Seq2Seq]{Natural Language Processing Course}
+\subtitle{Week 4: Sequence-to-Sequence Models}
+\author{Breaking the Fixed-Length Barrier}
+\institute{NLP Course 2025}
+\date{}
+
+\begin{document}
+
+% Title page
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Learning objectives with modern context
+\begin{frame}{Week 4: What You'll Master Today}
+    \textbf{By the end of this week, you will:}
+    \begin{itemize}
+        \item \highlight{Understand} why ChatGPT's predecessors needed variable-length processing
+        \item \highlight{Build} intuition for encoder-decoder architecture (used in Google Translate)
+        \item \highlight{Discover} the attention mechanism that powers modern AI
+        \item \highlight{Implement} a complete seq2seq model from scratch
+        \item \highlight{Connect} these concepts to today's transformer-based systems
+    \end{itemize}
+    
+    \vspace{1em}
+    \eqbox{
+        \textbf{Core Breakthrough:} Input and output sequences can have different lengths!
+    }
+    
+    \vspace{0.5em}
+    \textit{This innovation (2014-2016) laid the foundation for everything from Google Translate to GitHub Copilot}
+\end{frame}
+
+% Modern motivation
+\conceptslide{Why This Matters: Your Daily AI Interactions (2024)}{
+    \textbf{Translation \& Communication:}
+    \begin{itemize}
+        \item Google Translate: 1+ billion translations daily
+        \item DeepL: 1 billion people served monthly
+        \item Real-time conversation translation
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Code \& Development:}
+    \begin{itemize}
+        \item GitHub Copilot: 40\% faster development
+        \item Natural language → SQL queries
+        \item Comment → complete function generation
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Content \& Communication:}
+    \begin{itemize}
+        \item Email summarization (Outlook, Gmail)
+        \item Meeting transcript → action items
+        \item Customer service automation (80\% first-line)
+    \end{itemize}
+}{
+    \includegraphics[width=\textwidth]{../figures/week4_modern_applications_ecosystem.pdf}
+}
+
+% The fundamental problem
+\conceptslide{The Variable-Length Challenge}{
+    \textbf{The Core Problem:}
+    
+    \vspace{0.5em}
+    Different languages express ideas with different lengths:
+    \begin{itemize}
+        \item English: "I love you" (3 words)
+        \item French: "Je t'aime" (2 words)  
+        \item German: "Ich liebe dich" (3 words)
+        \item Japanese: "aishiteru" (1 compound word)
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Traditional RNN Limitation:}
+    \begin{itemize}
+        \item Each input produces exactly one output
+        \item Fixed-length constraint breaks translation
+        \item Can't handle summarization (long → short)
+        \item Fails at code generation (comment → function)
+    \end{itemize}
+}{
+    \vspace{1em}
+    \textbf{Failed Approaches:}
+    \begin{enumerate}
+        \item Pad to maximum length (wasteful)
+        \item Truncate long sequences (loses information)
+        \item Force 1:1 word mapping (doesn't work)
+    \end{enumerate}
+    
+    \vspace{1em}
+    \colorbox{red!20}{
+        \parbox{0.9\textwidth}{
+            \centering
+            \textbf{We need to decouple input and output lengths!}
+        }
+    }
+}
+
+% The brilliant solution
+\resultslide{The Breakthrough: Encoder-Decoder Architecture}{
+    \includegraphics[width=\textwidth]{../figures/week4_encoder_decoder_architecture.pdf}
+}{
+    \begin{itemize}
+        \item \textbf{Encoder:} Compresses input sequence into fixed-size "thought" vector
+        \item \textbf{Decoder:} Expands "thought" into variable-length output
+        \item \textbf{Key Innovation:} Separate encoding from decoding phases
+        \item \textbf{Result:} Input and output can have completely different lengths
+    \end{itemize}
+}
+
+% Mathematical formulation
+\conceptslide{Seq2Seq Mathematics: The Core Equations}{
+    \textbf{Encoder Phase:}
+    \eqbox{
+        $h_t = \text{LSTM}(h_{t-1}, x_t)$ \quad \text{where } $h_T = \text{context vector}$
+    }
+    
+    \textbf{Decoder Phase:}
+    \eqbox{
+        $s_t = \text{LSTM}(s_{t-1}, y_{t-1})$ \quad \text{conditioned on context}
+    }
+    
+    \textbf{Output Probability:}
+    \eqbox{
+        $P(y_t \given y_{<t}, x) = \softmax(W_s s_t + b)$
+    }
+    
+    \vspace{0.5em}
+    \textbf{Training Objective:}
+    \eqbox{
+        $\max \sum_{t=1}^{T'} \log P(y_t^* \given y_{<t}^*, x)$
+    }
+}{
+    \textbf{Key Insights:}
+    \begin{itemize}
+        \item Context vector = compressed representation
+        \item Decoder generates one word at a time
+        \item Training uses teacher forcing
+        \item Inference uses beam search
+    \end{itemize}
+    
+    \vspace{1em}
+    \textbf{Dimensions:}
+    \begin{itemize}
+        \item Input length: $T$ (variable)
+        \item Output length: $T'$ (variable)
+        \item Context size: $d$ (fixed)
+    \end{itemize}
+}
+
+% Code implementation
+\begin{frame}[fragile]{Building Seq2Seq: PyTorch Implementation}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{lstlisting}[language=Python]
+class Seq2SeqEncoder(nn.Module):
+    def __init__(self, vocab_size, embed_size, hidden_size):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.lstm = nn.LSTM(embed_size, hidden_size, batch_first=True)
+    
+    def forward(self, x):
+        # x: [batch, seq_len]
+        embedded = self.embedding(x)  # [batch, seq_len, embed]
+        output, (h_n, c_n) = self.lstm(embedded)
+        return h_n, c_n  # Final hidden and cell states
+
+class Seq2SeqDecoder(nn.Module):
+    def __init__(self, vocab_size, embed_size, hidden_size):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.lstm = nn.LSTM(embed_size, hidden_size, batch_first=True)
+        self.output_projection = nn.Linear(hidden_size, vocab_size)
+    
+    def forward(self, x, hidden, cell):
+        # x: [batch, 1] (one word at a time)
+        embedded = self.embedding(x)
+        output, (h_n, c_n) = self.lstm(embedded, (hidden, cell))
+        logits = self.output_projection(output)
+        return logits, h_n, c_n
+\end{lstlisting}
+\column{0.43\textwidth}
+\textbf{Key Components:}
+\begin{itemize}
+    \item \textcolor{blue}{\textbf{Encoder}}: Processes entire input sequence
+    \item \textcolor{green}{\textbf{Context}}: Hidden state transfer
+    \item \textcolor{red}{\textbf{Decoder}}: Generates output step-by-step
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Training Process:}
+\begin{enumerate}
+    \item Encode input sentence
+    \item Initialize decoder with context
+    \item Teacher forcing during training
+    \item Beam search during inference
+\end{enumerate}
+
+\vspace{0.5em}
+\textbf{Modern Usage:}
+\begin{itemize}
+    \item Foundation of Transformer encoder-decoder
+    \item Still used in specialized applications
+    \item Basis for understanding attention
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% The bottleneck problem
+\resultslide{The Information Bottleneck Problem}{
+    \includegraphics[width=\textwidth]{../figures/week4_information_bottleneck_analysis.pdf}
+}{
+    \begin{itemize}
+        \item \textbf{Problem:} All input information compressed into single vector
+        \item \textbf{Effect:} Quality degrades rapidly with sentence length
+        \item \textbf{Solution Preview:} Attention mechanism (next slides!)
+        \item \textbf{Real Impact:} Google Translate was limited to ~20 words before attention
+    \end{itemize}
+}
+
+% Attention introduction
+\conceptslide{The Attention Revolution (2015)}{
+    \textbf{The Key Insight:}
+    \begin{itemize}
+        \item Don't compress everything into one vector
+        \item Keep \textit{all} encoder hidden states
+        \item Let decoder \textit{choose} what to focus on
+        \item Different output words attend to different input words
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Attention Mechanism:}
+    \eqbox{
+        $c_t = \sum_{i=1}^{T} \alpha_{t,i} h_i$ \quad where \quad $\alpha_{t,i} = \frac{\exp(e_{t,i})}{\sum_{j=1}^{T} \exp(e_{t,j})}$
+    }
+    
+    \vspace{0.5em}
+    \textbf{Alignment Score:}
+    \eqbox{
+        $e_{t,i} = \text{align}(s_{t-1}, h_i)$ \quad (similarity function)
+    }
+}{
+    \textbf{Breakthrough Results:}
+    \begin{itemize}
+        \item Google NMT (2016): 60\% improvement
+        \item Handles sentences up to 80+ words
+        \item Foundation for Transformers
+        \item Powers all modern LLMs
+    \end{itemize}
+    
+    \vspace{1em}
+    \colorbox{green!20}{
+        \parbox{0.9\textwidth}{
+            \centering
+            \textbf{"Attention is All You Need"}\\
+            (Transformer paper, 2017)
+        }
+    }
+}
+
+% Attention visualization
+\resultslide{Attention in Action: What the Model Looks At}{
+    \includegraphics[width=\textwidth]{../figures/week4_attention_comprehensive_analysis.pdf}
+}{
+    \begin{itemize}
+        \item \textbf{Heatmap:} Darker = higher attention weight
+        \item \textbf{Alignment:} Model learns word-to-word correspondences
+        \item \textbf{Flexibility:} One target word can attend to multiple source words
+        \item \textbf{Evolution:} Attention patterns improve with model scale
+    \end{itemize}
+}
+
+% Attention implementation
+\begin{frame}[fragile]{Implementing Attention: The Complete Mechanism}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{lstlisting}[language=Python]
+class AttentionMechanism(nn.Module):
+    def __init__(self, hidden_size):
+        super().__init__()
+        self.hidden_size = hidden_size
+        self.W_a = nn.Linear(hidden_size, hidden_size)
+        self.U_a = nn.Linear(hidden_size, hidden_size)
+        self.v_a = nn.Linear(hidden_size, 1)
+    
+    def forward(self, decoder_hidden, encoder_outputs):
+        # decoder_hidden: [batch, hidden_size]
+        # encoder_outputs: [batch, seq_len, hidden_size]
+        
+        batch_size, seq_len, _ = encoder_outputs.size()
+        
+        # Expand decoder hidden for all time steps
+        decoder_hidden = decoder_hidden.unsqueeze(1).repeat(1, seq_len, 1)
+        
+        # Compute alignment scores
+        energy = torch.tanh(
+            self.W_a(decoder_hidden) + self.U_a(encoder_outputs)
+        )
+        attention_scores = self.v_a(energy).squeeze(2)
+        
+        # Apply softmax to get attention weights
+        attention_weights = F.softmax(attention_scores, dim=1)
+        
+        # Compute context vector
+        context = torch.bmm(
+            attention_weights.unsqueeze(1),
+            encoder_outputs
+        ).squeeze(1)
+        
+        return context, attention_weights
+\end{lstlisting}
+\column{0.43\textwidth}
+\textbf{Step-by-Step Process:}
+\begin{enumerate}
+    \item Compute similarity between decoder state and all encoder states
+    \item Apply softmax to get probability distribution
+    \item Weight encoder states by attention
+    \item Sum to get context vector
+\end{enumerate}
+
+\vspace{0.5em}
+\textbf{Three Attention Types:}
+\begin{itemize}
+    \item \textcolor{blue}{\textbf{Dot Product}}: $h_i \cdot s_t$
+    \item \textcolor{green}{\textbf{Additive}}: $v^T \tanh(W_h h_i + W_s s_t)$
+    \item \textcolor{red}{\textbf{Scaled Dot}}: $\frac{h_i \cdot s_t}{\sqrt{d}}$
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Modern Impact:}
+\begin{itemize}
+    \item Transformer uses scaled dot-product
+    \item Multi-head attention in GPT/BERT
+    \item Self-attention in modern LLMs
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Beam search
+\resultslide{Beam Search: Finding the Best Translation}{
+    \includegraphics[width=\textwidth]{../figures/week4_beam_search_algorithm.pdf}
+}{
+    \begin{itemize}
+        \item \textbf{Problem:} Exponentially many possible outputs
+        \item \textbf{Solution:} Keep top-k most likely partial sequences
+        \item \textbf{Trade-off:} Beam size vs computational cost
+        \item \textbf{Practice:} Beam size 4-8 for translation, 1-2 for creative text
+    \end{itemize}
+}
+
+% Performance evolution
+\resultslide{From 2014 to 2024: The Performance Revolution}{
+    \includegraphics[width=\textwidth]{../figures/week4_performance_evolution_timeline.pdf}
+}{
+    \begin{itemize}
+        \item \textbf{2014:} Vanilla Seq2Seq - proof of concept
+        \item \textbf{2015:} Attention - breakthrough for long sequences
+        \item \textbf{2017:} Transformer - "Attention is All You Need"
+        \item \textbf{2024:} Modern LLMs - seq2seq principles scaled massively
+    \end{itemize}
+}
+
+% Modern connections
+\conceptslide{Connecting to Modern AI: GPT, BERT, and Beyond}{
+    \textbf{Seq2Seq Lives On in Modern Models:}
+    \begin{itemize}
+        \item \textbf{ChatGPT:} Uses encoder-decoder principles internally
+        \item \textbf{GitHub Copilot:} Comment → code is seq2seq
+        \item \textbf{BERT:} Encoder-only architecture
+        \item \textbf{T5:} "Text-to-Text Transfer Transformer" - pure seq2seq
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Key Evolution Points:}
+    \begin{itemize}
+        \item RNN → Transformer (parallelization)
+        \item Single attention → Multi-head attention
+        \item Fixed context → Self-attention
+        \item Supervised → Pre-training + fine-tuning
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \eqbox{
+        \textbf{Core Principle Unchanged:} Variable-length input → Variable-length output
+    }
+}{
+    \textbf{2024 Statistics:}
+    \begin{itemize}
+        \item 127B+ model parameters (vs 10M in 2014)
+        \item Trillions of tokens training data
+        \item Sub-second response times
+        \item Multi-modal capabilities
+    \end{itemize}
+    
+    \vspace{1em}
+    \textbf{Industry Impact:}
+    \begin{itemize}
+        \item \$127B+ market size
+        \item 40\% developer productivity gains
+        \item 1B+ daily translations
+        \item 80\% customer service automation
+    \end{itemize}
+}
+
+% Hands-on exercise preview
+\begin{frame}{Week 4 Lab: Build Your Own Translator}
+    \textbf{In today's lab, you will:}
+    \begin{enumerate}
+        \item Implement a complete seq2seq model from scratch
+        \item Train it on English-French translation
+        \item Add attention mechanism and see the improvement
+        \item Visualize attention weights on real examples
+        \item Compare different beam search strategies
+        \item Connect your implementation to modern transformers
+    \end{enumerate}
+    
+    \vspace{1em}
+    \textbf{Dataset:} 10K English-French sentence pairs
+    
+    \textbf{Tools:} PyTorch, Jupyter notebook with interactive visualizations
+    
+    \textbf{Outcome:} Working translator that you can test with your own sentences!
+    
+    \vspace{1em}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            \textbf{Ready to build the technology behind Google Translate?}
+        }
+    }
+    \end{center}
+\end{frame}
+
+% Key takeaways
+\begin{frame}{Key Takeaways: Breaking Free from Fixed Length}
+    \textbf{Core Concepts Mastered:}
+    \begin{enumerate}
+        \item \highlight{Variable-length problem:} Why 1:1 mapping fails
+        \item \highlight{Encoder-decoder solution:} Separate encoding from decoding
+        \item \highlight{Information bottleneck:} Single context vector limitation
+        \item \highlight{Attention mechanism:} Dynamic focus on relevant inputs
+        \item \highlight{Beam search:} Efficient search through output space
+    \end{enumerate}
+    
+    \vspace{1em}
+    \textbf{Modern Relevance:}
+    \begin{itemize}
+        \item Foundation of all current language models
+        \item Core principle in ChatGPT, Copilot, and translation systems
+        \item Attention evolved into self-attention (Transformers)
+        \item Encoder-decoder architectures still dominant
+    \end{itemize}
+    
+    \vspace{1em}
+    \eqbox{
+        \textbf{Next Week:} Transformers - "Attention is All You Need"
+    }
+    
+    \vspace{0.5em}
+    \textit{You now understand the foundation that made modern AI possible!}
+\end{frame}
+
+% References
+\begin{frame}{References and Further Reading}
+    \textbf{Foundational Papers:}
+    \begin{itemize}
+        \item Sutskever et al. (2014). "Sequence to Sequence Learning with Neural Networks"
+        \item Bahdanau et al. (2015). "Neural Machine Translation by Jointly Learning to Align and Translate"
+        \item Luong et al. (2015). "Effective Approaches to Attention-based Neural Machine Translation"
+        \item Vaswani et al. (2017). "Attention Is All You Need"
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Modern Applications:}
+    \begin{itemize}
+        \item Wu et al. (2016). "Google's Neural Machine Translation System"
+        \item Radford et al. (2019). "Language Models are Unsupervised Multitask Learners" (GPT-2)
+        \item Brown et al. (2020). "Language Models are Few-Shot Learners" (GPT-3)
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Interactive Resources:}
+    \begin{itemize}
+        \item The Illustrated Transformer (Jay Alammar)
+        \item OpenAI's GPT papers and blog posts
+        \item Hugging Face Transformers documentation
+        \item Today's lab notebook with complete implementations
+    \end{itemize}
+\end{frame}
+
+\end{document}

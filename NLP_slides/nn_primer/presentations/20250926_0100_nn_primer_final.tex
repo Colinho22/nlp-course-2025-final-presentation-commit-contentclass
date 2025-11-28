@@ -1,0 +1,957 @@
+% Neural Networks Primer: Teaching Machines to See Patterns
+% Final BSc-Enhanced Version with Complete Visualizations
+% All "Act" references removed, advanced topics moved to appendices
+
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+% Include preamble with all package imports and command definitions
+\input{sections/preamble}
+
+\begin{document}
+
+% ============================================================================
+% MAIN PRESENTATION
+% ============================================================================
+
+% Title slide
+\input{sections/title}
+
+% Overview and roadmap
+\input{sections/overview}
+
+% ============================================================================
+% PART 0: FOUNDATIONAL CONCEPTS (NEW!)
+% ============================================================================
+
+% NEW: Simple neuron visualizations (3 slides)
+\input{sections/simple_neurons_intro}
+
+% Foundational concept: Function approximation (3 slides)
+\input{sections/intro_function_approx}
+
+% ============================================================================
+% PART 1: THE PROBLEM THAT STARTED EVERYTHING
+% ============================================================================
+
+% Historical context and early attempts
+% NOTE: Removed "Mark I Perceptron" slide (moved to Appendix B)
+\begin{frame}{Part 1: The Problem That Started Everything}
+\begin{center}
+{\Large \textbf{1950s: The Mail Sorting Crisis}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Challenge:}
+\begin{itemize}
+\item 150 million letters per day
+\item Hand-written addresses
+\item Human sorters: slow, expensive, error-prone
+\item Traditional programming: useless
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why Traditional Code Failed:}
+\begin{itemize}
+\item Can't write rules for every handwriting style
+\item Too many variations of each letter
+\item Context matters: "I" vs "l" vs "1"
+\item This wasn't computation---it was \highlight{pattern recognition}
+\end{itemize}
+\end{columns}
+\bottomnote{ This problem would take 40 years to solve properly}
+\end{frame}
+
+% Historical Timeline
+\begin{frame}{80 Years of Neural Networks: The Complete Journey}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/historical_timeline.pdf}
+\end{center}
+\bottomnote{ From theoretical neurons to ChatGPT: Each breakthrough built on previous failures}
+\end{frame}
+
+% Why Rules Don't Work
+\begin{frame}[fragile]{Why Can't We Just Write Rules?}
+\begin{center}
+\textbf{Problem: Recognize the Letter "A"}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Traditional Approach (Failed):}
+\begin{lstlisting}[basicstyle=\tiny]
+if (has_triangle_top AND
+    has_horizontal_bar AND
+    two_diagonal_lines) {
+  return "A"
+}
+\end{lstlisting}
+\secondary{\small But what about...}
+\begin{itemize}
+\item Handwritten A's?
+\item Different fonts?
+\item Rotated A's?
+\item Partial A's?
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/various_a_styles.pdf}
+\end{center}
+\secondary{\small Just for the letter "A", we'd need thousands of rules!}
+\end{columns}
+\bottomnote{ The breakthrough: What if machines could learn patterns like children do?}
+\end{frame}
+
+% McCulloch-Pitts
+\begin{frame}{1943: The First Spark - McCulloch \& Pitts}
+\begin{center}
+\textbf{The Birth of Computational Neuroscience}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Revolutionary Paper:}
+\begin{itemize}
+\item "A Logical Calculus of Ideas Immanent in Nervous Activity"
+\item First mathematical model of neurons
+\item Proved: Networks can compute ANY logical function
+\item Inspired von Neumann's computer architecture
+\end{itemize}
+
+\textbf{Key Insight:}
+\begin{itemize}
+\item Neurons = Logic gates
+\item Brain = Computing machine
+\item Thinking = Computation
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Model:}
+\begin{itemize}
+\item Binary neurons (0 or 1)
+\item Threshold activation
+\item Fixed connections
+\item No learning yet!
+\end{itemize}
+
+\textbf{Historical Impact:}
+\begin{itemize}
+\item Founded field of neural networks
+\item Influenced cybernetics movement
+\item Set stage for AI research
+\item "The brain is a computer" metaphor
+\end{itemize}
+\end{columns}
+\bottomnote{ 14 years later, Rosenblatt would add the missing piece: learning}
+\end{frame}
+
+% Perceptron
+\begin{frame}{1957: The First Learning Machine - The Perceptron}
+\begin{center}
+\textbf{Frank Rosenblatt's Radical Idea: Neurons That Learn}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Beyond McCulloch-Pitts:}
+\begin{itemize}
+\item Adjustable weights (not fixed!)
+\item Learning from mistakes
+\item Physical machine built (Mark I)
+\item Could recognize simple patterns
+\end{itemize}
+
+\textbf{The Hardware:}
+\begin{itemize}
+\item 400 photocells (20$\times$20 ``retina'')
+\item 512 motor-driven potentiometers
+\item Weights adjusted by electric motors
+\item Took 5 minutes to learn patterns
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Mathematical Model:}
+\begin{itemize}
+\item Inputs: $x_1, x_2, ..., x_n$
+\item Weights: $w_1, w_2, ..., w_n$
+\item Sum: $z = \sum_{i=1}^{n} w_i x_i + b$
+\item Output: $y = \begin{cases} 1 & \text{if } z > 0 \\ 0 & \text{if } z \leq 0 \end{cases}$
+\end{itemize}
+
+\plainmath{Each input gets a vote (weight). We add up all votes plus a bias. If total is positive, output 1; otherwise 0.}
+
+\textbf{Learning Rule:}
+If wrong: $w_i = w_i + \eta \cdot error \cdot x_i$
+\end{columns}
+\bottomnote{ The New York Times, 1958: "The Navy revealed the embryo of an electronic computer that will be able to walk, talk, see, write, reproduce itself and be conscious of its existence."}
+\end{frame}
+
+% ============================================================================
+% INTERMISSION: FROM STORY TO SCIENCE
+% ============================================================================
+
+\input{sections/intermission}
+
+% ============================================================================
+% NEW: ADVANCED VISUALIZATIONS (Key visualizations integrated here)
+% ============================================================================
+
+% NEW: 3D neuron visualization
+\begin{frame}{The Neuron as a 3D Function}
+\begin{center}
+\textbf{Visualizing How Activation Functions Transform the Output Space}
+\end{center}
+\vspace{5mm}
+
+\includegraphics[width=0.95\textwidth]{../figures/neuron_3d_visualization.pdf}
+
+\bottomnote{ Left: Linear (just a plane), Right: With activation (curved surface) - this non-linearity is what makes learning possible!}
+\end{frame}
+
+% NEW: Network complexity visualization
+\begin{frame}{From Simple to Complex: Network Depth Creates Complexity}
+\begin{center}
+\textbf{How More Neurons Enable More Complex Decision Boundaries}
+\end{center}
+\vspace{5mm}
+
+\includegraphics[width=0.95\textwidth]{../figures/network_complexity_visualization.pdf}
+
+\bottomnote{ Each neuron adds a new "dimension" to what the network can learn}
+\end{frame}
+
+% ============================================================================
+% PART 2: THE STRUGGLES AND SOLUTIONS
+% ============================================================================
+
+% XOR Crisis through Backpropagation
+% NOTE: Removed "NetTalk" slide (moved to Appendix B)
+\begin{frame}{Part 2: The Struggles (1969-1989)}
+\begin{center}
+{\Large \textbf{1969: The Crisis - XOR Problem}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{XOR (Exclusive OR):}
+\begin{center}
+\begin{tabular}{cc|c}
+$x_1$ & $x_2$ & Output \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\end{tabular}
+\end{center}
+
+\textbf{The Problem:}
+\begin{itemize}
+\item Can't draw a single line to separate
+\item Perceptron only learns linear boundaries
+\item Real-world problems are non-linear!
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/xor_visualization.pdf}
+\end{center}
+\textbf{Impact:}
+\begin{itemize}
+\item Funding dried up
+\item "AI Winter" begins
+\item Neural networks abandoned
+\end{itemize}
+\end{columns}
+\bottomnote{ The field would be dormant for over a decade...}
+\end{frame}
+
+% XOR Solution with NEW visualization
+\begin{frame}{XOR Problem Solved Visually}
+\begin{center}
+\textbf{Why We Need Hidden Layers: The XOR Solution}
+\end{center}
+\vspace{5mm}
+
+\includegraphics[width=0.95\textwidth]{../figures/xor_solution_visualization.pdf}
+
+\bottomnote{ Two hidden neurons working together can solve what one neuron cannot}
+\end{frame}
+
+% Continue with rest of Part 2 (hidden layers, backpropagation, etc.)
+% Using content from act2_struggles.tex but without NetTalk
+
+% Include remaining key slides from Part 2
+\begin{frame}{When One Line Isn't Enough: Real Problems Need More}
+\begin{center}
+\textbf{\checkpoint{Let's See Why We Need Hidden Layers}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Problem 1: Spam Detection (Easy)}
+\begin{itemize}
+\item Has many spam words? $\rightarrow$ SPAM
+\item Has few spam words? $\rightarrow$ NOT SPAM
+\item \success{One line (threshold) works!}
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Problem 2: Cat or Dog Photo (Hard)}
+\begin{itemize}
+\item Small + fluffy? Could be either!
+\item Large + smooth? Could be either!
+\item Pointy ears + whiskers? $\rightarrow$ Cat
+\item Floppy ears + wet nose? $\rightarrow$ Dog
+\item \warning{Need multiple feature detectors!}
+\end{itemize}
+
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/linear_to_nonlinear_bridge.pdf}
+
+\textbf{The Solution:}
+\begin{enumerate}
+\item First layer: Multiple detectors
+  \begin{itemize}
+  \item Detector 1: "Has cat features?"
+  \item Detector 2: "Has dog features?"
+  \end{itemize}
+\item Second layer: Combine detections
+  \begin{itemize}
+  \item If cat features > dog features $\rightarrow$ Cat
+  \end{itemize}
+\end{enumerate}
+\end{columns}
+\bottomnote{ This is why deep learning works: each layer builds more complex detectors from simpler ones}
+\end{frame}
+
+% Hidden layers solution
+\begin{frame}{Part 2: The Journey Back}
+\begin{center}
+{\Large \textbf{1980s: The Hidden Layer Revolution}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Insight:}
+\begin{itemize}
+\item Stack multiple layers!
+\item First layer: detect simple features
+\item Hidden layer: combine features
+\item Output layer: final decision
+\end{itemize}
+
+\textbf{Solving XOR:}
+\begin{itemize}
+\item Hidden neuron 1: Is it (0,1)?
+\item Hidden neuron 2: Is it (1,0)?
+\item Output: OR of hidden neurons
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/multilayer_network.pdf}
+\end{center}
+\textbf{New Architecture:}
+\begin{itemize}
+\item Input layer: raw data
+\item Hidden layer(s): feature extraction
+\item Output layer: final classification
+\end{itemize}
+\end{columns}
+\bottomnote{ But how do we train multiple layers?}
+\end{frame}
+
+% NEW: Forward pass visualization
+\begin{frame}{Forward Pass: Signal Propagation Step-by-Step}
+\begin{center}
+\textbf{Following Data as it Flows Through the Network}
+\end{center}
+\vspace{5mm}
+
+\includegraphics[width=0.95\textwidth]{../figures/forward_pass_frames.pdf}
+
+\bottomnote{ Each frame shows one step: computing weighted sums, applying activations, passing to next layer}
+\end{frame}
+
+% Backpropagation
+\begin{frame}{1986: Backpropagation - Teaching Networks to Learn}
+\begin{center}
+\textbf{Rumelhart, Hinton, Williams: The Learning Algorithm}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Problem:}
+\begin{itemize}
+\item Perceptron learning only works for 1 layer
+\item How to adjust hidden layer weights?
+\item No direct error signal for hidden neurons
+\end{itemize}
+
+\textbf{The Solution:}
+\begin{itemize}
+\item Propagate error backwards!
+\item Each layer gets blame for output error
+\item Use calculus (chain rule) to distribute blame
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Algorithm:}
+\begin{enumerate}
+\item Forward: Calculate output
+\item Compare: Find error
+\item Backward: Distribute blame
+\item Update: Adjust all weights
+\end{enumerate}
+
+\plainmath{Like a teacher marking an essay: finds the final error, then traces back to see which paragraphs, sentences, and words caused it}
+
+\textbf{Impact:}
+\begin{itemize}
+\item Finally could train deep networks!
+\item Neural networks reborn
+\item Foundation of all modern AI
+\end{itemize}
+\end{columns}
+\bottomnote{ This algorithm runs billions of times to train ChatGPT}
+\end{frame}
+
+% Universal Approximation
+\begin{frame}{1989: Universal Approximation - The Mathematical Foundation}
+\begin{center}
+\textbf{Cybenko, Hornik: The Ultimate Proof}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Theorem:}
+\colorbox{checkpointBlue!20}{\parbox{0.95\columnwidth}{
+\small
+A feedforward network with:
+\begin{itemize}
+\item One hidden layer
+\item Enough neurons
+\item Non-linear activation
+\end{itemize}
+Can approximate ANY continuous function to arbitrary accuracy!
+}}
+
+\textbf{What This Means:}
+\begin{itemize}
+\item Neural networks are universal computers
+\item No function is too complex
+\item Just need enough neurons and data
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Real-World Analogy:}
+
+\textit{LEGO blocks can build anything:}
+\begin{itemize}
+\item Few blocks = rough shape
+\item Many blocks = detailed model
+\item Infinite blocks = perfect replica
+\end{itemize}
+
+\textit{Same with neurons:}
+\begin{itemize}
+\item Few neurons = rough approximation
+\item Many neurons = good function
+\item Infinite neurons = exact function
+\end{itemize}
+
+\tryit{Think of any pattern or function. This theorem guarantees a neural network can learn it!}
+\end{columns}
+\bottomnote{ This gave theoretical backing to the neural network revolution}
+\end{frame}
+
+% Activation functions
+\input{sections/activation_functions}
+
+% NEW: Gradient landscape visualization
+\begin{frame}{The Optimization Landscape}
+\begin{center}
+\textbf{Gradient Descent: Finding the Valley in 3D Space}
+\end{center}
+\vspace{5mm}
+
+\includegraphics[width=0.95\textwidth]{../figures/gradient_landscape_3d.pdf}
+
+\bottomnote{ Training a neural network = rolling a ball down this landscape to find the lowest point}
+\end{frame}
+
+% ============================================================================
+% PART 3: THE BREAKTHROUGH YEARS
+% ============================================================================
+
+% Main slides from act3_breakthrough.tex (without excessive detail)
+\begin{frame}{Part 3: The Breakthrough Years}
+\begin{center}
+{\Large \textbf{1998-2012: From Digits to ImageNet}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{1998 - LeNet: First Success}
+\begin{itemize}
+\item Yann LeCun's CNN for digits
+\item 32$\times$32 pixels $\rightarrow$ 10 classes
+\item 60,000 parameters
+\item Banks adopt for check reading
+\end{itemize}
+
+\textbf{Key Innovation: Convolutions}
+\begin{itemize}
+\item Share weights across image
+\item Detect features anywhere
+\item Build complexity layer by layer
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{2012 - AlexNet: The Revolution}
+\begin{itemize}
+\item 1000 ImageNet classes
+\item 60 million parameters
+\item GPUs enable training
+\item Error rate: 26\% $\rightarrow$ 16\%
+\end{itemize}
+
+\textbf{What Changed:}
+\begin{itemize}
+\item Big Data (millions of images)
+\item GPU computing (100x faster)
+\item ReLU activation
+\item Dropout regularization
+\end{itemize}
+\end{columns}
+\bottomnote{ This victory ended the second AI winter permanently}
+\end{frame}
+
+% Continue with key slides from Part 3...
+% Include CNN explanation, gradient descent, learning types, overfitting
+% Skip some of the very detailed slides to keep it focused
+
+% NEW: Learning process visualization
+\begin{frame}{The Learning Process: Frame by Frame}
+\begin{center}
+\textbf{Watching Decision Boundaries Evolve During Training}
+\end{center}
+\vspace{5mm}
+
+\includegraphics[width=0.95\textwidth]{../figures/decision_boundary_evolution.pdf}
+
+\tryit{Notice how the boundary starts random and gradually fits the data pattern!}
+\bottomnote{ This is what "learning" looks like - not magic, just systematic improvement}
+\end{frame}
+
+% ============================================================================
+% PART 4: THE REVOLUTION
+% ============================================================================
+
+% Key slides from act4_revolution.tex
+% NOTE: Removed these advanced slides (moved to Appendix A):
+% - Lottery Ticket Hypothesis
+% - Inductive Biases
+% - Scaling Laws
+% - Deep vs Wide
+% - Emergent Abilities
+% - Optimization Algorithms (detailed)
+
+\begin{frame}{Part 3 (continued): The Deep Learning Revolution}
+\begin{center}
+{\Large \textbf{2014-Present: Networks That Changed the World}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Depth Revolution:}
+\begin{itemize}
+\item 2014 - VGGNet: 19 layers
+\item 2015 - ResNet: 152 layers
+\item 2017 - Transformers: Attention
+\item 2020 - GPT-3: 175B parameters
+\end{itemize}
+
+\textbf{Why Depth Matters:}
+\begin{itemize}
+\item Each layer = abstraction level
+\item Deep = complex reasoning
+\item Hierarchical feature learning
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Real-World Impact:}
+\begin{itemize}
+\item \textbf{Vision:} Self-driving cars
+\item \textbf{Language:} Google Translate
+\item \textbf{Speech:} Siri, Alexa
+\item \textbf{Medicine:} Disease diagnosis
+\item \textbf{Science:} Protein folding
+\end{itemize}
+
+\textbf{The Scale:}
+\begin{itemize}
+\item Billions of parameters
+\item Trained on internet-scale data
+\item Months of GPU time
+\item Emergent abilities appear
+\end{itemize}
+\end{columns}
+\bottomnote{ We went from recognizing digits to passing the bar exam in 25 years}
+\end{frame}
+
+% ResNet
+\begin{frame}{2015: ResNet - The Skip Connection Revolution}
+\begin{center}
+\textbf{Problem: Networks Couldn't Get Deeper}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Vanishing Gradient:}
+\begin{itemize}
+\item Gradients multiply through layers
+\item Become exponentially small
+\item Deep layers stop learning
+\item 20 layers was the limit
+\end{itemize}
+
+\textbf{The Breakthrough: Skip Connections}
+\begin{itemize}
+\item Add input directly to output
+\item $F(x) + x$ instead of just $F(x)$
+\item Gradients flow directly backward
+\item Can train 1000+ layers!
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/resnet_skip_connection.pdf}
+\end{center}
+\textbf{Why It Works:}
+\begin{itemize}
+\item Learn residual (difference) only
+\item Identity mapping is easy default
+\item Gradients have direct path
+\item Each layer refines previous result
+\end{itemize}
+\end{columns}
+\bottomnote{ This simple trick enabled the deep learning revolution}
+\end{frame}
+
+% NEW: Architecture comparison visualization
+\begin{frame}{Architecture Evolution Over Time}
+\begin{center}
+\textbf{From 20 Parameters to 1.8 Trillion: The Growth of Neural Networks}
+\end{center}
+\vspace{5mm}
+
+\includegraphics[width=0.95\textwidth]{../figures/architecture_size_comparison.pdf}
+
+\bottomnote{ Each 10x increase in size unlocked new capabilities}
+\end{frame}
+
+% NEW: Architecture types
+\begin{frame}{Architecture Types Comparison}
+\begin{center}
+\textbf{Different Architectures for Different Problems}
+\end{center}
+\vspace{5mm}
+
+\includegraphics[width=0.95\textwidth]{../figures/architecture_type_comparison.pdf}
+
+\bottomnote{ Each architecture encodes different assumptions about the data structure}
+\end{frame}
+
+% ============================================================================
+% MODERN TECHNIQUES AND PRACTICAL ADVICE
+% ============================================================================
+
+% From modern_architectures.tex (keeping practical content, removing advanced theory)
+
+% Architectures overview
+\begin{frame}{Neural Network Architectures: Right Tool for Right Job}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Feedforward Networks:}
+\begin{itemize}
+\item Information flows forward only
+\item Fixed-size input and output
+\item Good for: Classification, regression
+\end{itemize}
+
+\textbf{Convolutional (CNN):}
+\begin{itemize}
+\item Spatial feature detection
+\item Translation invariance
+\item Good for: Images, video
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Recurrent (RNN):}
+\begin{itemize}
+\item Process sequences
+\item Maintain memory/state
+\item Good for: Text, time-series
+\end{itemize}
+
+\textbf{Transformer:}
+\begin{itemize}
+\item Attention mechanism
+\item Parallel processing
+\item Good for: Language, everything else
+\end{itemize}
+\end{columns}
+\bottomnote{ Each architecture encodes different assumptions about the data}
+\end{frame}
+
+% Modern training
+\begin{frame}{Modern Training: Standing on Shoulders of Giants}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Transfer Learning:}
+\begin{itemize}
+\item Start with pre-trained network
+\item Fine-tune on your task
+\item 100x less data needed
+\item Days $\rightarrow$ Hours training
+\end{itemize}
+
+\textbf{Data Augmentation:}
+\begin{itemize}
+\item Create variations of training data
+\item Rotations, crops, color shifts
+\item Prevents overfitting
+\item Free performance boost
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Simple Optimizers to Start:}
+\begin{itemize}
+\item \textbf{SGD:} Basic gradient descent
+\item \textbf{Adam:} Adaptive learning rates (use this!)
+\end{itemize}
+
+\textbf{Mixed Precision:}
+\begin{itemize}
+\item Use 16-bit floats where possible
+\item Keep 32-bit for critical ops
+\item 2-3x speedup
+\item Same accuracy
+\end{itemize}
+\end{columns}
+\bottomnote{ These techniques make deep learning practical for everyone}
+\end{frame}
+
+% Common misconceptions
+\begin{frame}{Common Mental Models That Are WRONG}
+\begin{center}
+\textbf{\warning{Misconceptions That Will Confuse You}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{WRONG: "Neurons are like brain neurons"}
+\begin{itemize}
+\item \warning{Brain neurons:} Complex, chemical, adaptive
+\item \success{Artificial neurons:} Simple math functions
+\item Just multiply and add!
+\item No biology involved
+\end{itemize}
+
+\vspace{3mm}
+\textbf{WRONG: "Networks understand concepts"}
+\begin{itemize}
+\item \warning{What you think:} "It knows what a cat is"
+\item \success{Reality:} It found statistical patterns
+\item No understanding, just correlation
+\item Can be fooled by tiny changes
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{WRONG: "More layers = always better"}
+\begin{itemize}
+\item \warning{Too deep:} Vanishing gradients
+\item \warning{Too deep:} Overfitting
+\item \success{Right depth:} Depends on problem complexity
+\item Simple problems need shallow networks
+\end{itemize}
+
+\vspace{3mm}
+\textbf{WRONG: "It learns like humans"}
+\begin{itemize}
+\item \warning{Humans:} Learn from few examples
+\item \warning{Humans:} Transfer knowledge easily
+\item \success{Networks:} Need thousands of examples
+\item \success{Networks:} Struggle with new situations
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\colorbox{mlorange!20}{\parbox{0.8\textwidth}{
+\centering
+\textbf{Remember:} Neural networks are just fancy pattern matchers.\\
+They don't think, understand, or reason - they find correlations in data.
+}}
+\end{center}
+\bottomnote{ Understanding these limits helps you use neural networks effectively}
+\end{frame}
+
+% Why now
+\begin{frame}{Why Deep Learning Exploded Now: The Perfect Storm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{1. Data Explosion:}
+\begin{itemize}
+\item Internet = infinite training data
+\item ImageNet: 14M labeled images
+\item Common Crawl: 300TB of text
+\item YouTube: 500 hours/minute
+\end{itemize}
+
+\textbf{2. Hardware Revolution:}
+\begin{itemize}
+\item GPUs: 100x faster than CPUs
+\item TPUs: Built for neural nets
+\item Cloud computing: Rent supercomputers
+\item Mobile chips with NPUs
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{3. Algorithm Breakthroughs:}
+\begin{itemize}
+\item ReLU activation (2011)
+\item Batch normalization (2015)
+\item Skip connections (2015)
+\item Attention mechanism (2017)
+\end{itemize}
+
+\textbf{4. Open Source Culture:}
+\begin{itemize}
+\item TensorFlow, PyTorch free
+\item Pre-trained models shared
+\item Papers with code
+\item Collaborative research
+\end{itemize}
+\end{columns}
+\bottomnote{ The same ideas from 1980s finally had the resources to work}
+\end{frame}
+
+% Practical implementation
+\begin{frame}[fragile]{From Theory to Practice: Your First Network}
+\begin{center}
+\textbf{Building a Digit Classifier in 10 Lines}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.58\textwidth}
+\textbf{PyTorch Implementation:}
+\begin{lstlisting}[language=Python,basicstyle=\tiny]
+import torch
+import torch.nn as nn
+
+class SimpleNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(784, 128)
+        self.fc2 = nn.Linear(128, 10)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        return self.fc2(x)
+
+# Train
+model = SimpleNet()
+optimizer = torch.optim.Adam(model.parameters())
+criterion = nn.CrossEntropyLoss()
+\end{lstlisting}
+
+\column{0.38\textwidth}
+\textbf{What This Does:}
+\begin{itemize}
+\item Input: 28$\times$28 pixel image
+\item Hidden: 128 neurons
+\item Output: 10 digit classes
+\item Activation: ReLU
+\item Training: Adam optimizer
+\end{itemize}
+
+\textbf{Training Loop:}
+\begin{itemize}
+\item Forward pass
+\item Calculate loss
+\item Backward pass
+\item Update weights
+\item Repeat
+\end{itemize}
+\end{columns}
+\bottomnote{ This simple network achieves 97\% accuracy on MNIST}
+\end{frame}
+
+% Debugging
+\begin{frame}{Your Debugging Checklist: When Things Go Wrong}
+\begin{center}
+\textbf{\checkpoint{Systematic Debugging Saves Hours}}
+\end{center}
+\vspace{5mm}
+\tryit{Save this checklist - you'll need it for every project!}
+\vspace{3mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Step 1: Sanity Checks}
+\begin{itemize}
+\item [$\square$] Can you overfit a single batch?
+\item [$\square$] Are inputs normalized?
+\item [$\square$] Is output layer correct?
+\item [$\square$] Loss function matches task?
+\end{itemize}
+
+\textbf{Step 2: Data Checks}
+\begin{itemize}
+\item [$\square$] Plot sample inputs
+\item [$\square$] Check label distribution
+\item [$\square$] Verify train/val split
+\item [$\square$] Look for data leakage
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Step 3: Training Checks}
+\begin{itemize}
+\item [$\square$] Plot loss curves
+\item [$\square$] Check gradient norms
+\item [$\square$] Monitor weight updates
+\item [$\square$] Try different learning rates
+\end{itemize}
+
+\textbf{Step 4: Architecture}
+\begin{itemize}
+\item [$\square$] Start with known working model
+\item [$\square$] Add complexity gradually
+\item [$\square$] Check activation distributions
+\item [$\square$] Verify dimensions match
+\end{itemize}
+
+\confusion{90\% of bugs are in data preprocessing, not the model!}
+\end{columns}
+\bottomnote{ Print this slide and keep it handy}
+\end{frame}
+
+% ============================================================================
+% EPILOGUE: YOUR TURN
+% ============================================================================
+
+\input{sections/epilogue}
+
+% ============================================================================
+% APPENDICES (Advanced topics not essential for BSc)
+% ============================================================================
+
+\input{sections/appendix_a_advanced_topics}
+\input{sections/appendix_b_extended_history}
+
+\end{document}

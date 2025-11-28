@@ -1,0 +1,185 @@
+% Chapter 6: The Curse of Dimensionality
+
+\section{Curse of Dimensionality}
+
+% Distance Concentration - Visualizations
+\begin{frame}{Distance Concentration in High Dimensions}
+\textbf{Why All Distances Become Similar}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/embeddings/distance_concentration_plot.pdf}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/embeddings/nearest_neighbor_degradation.pdf}
+\end{center}
+\end{frame}
+
+% Distance Concentration - Mathematical Reality
+\begin{frame}{Distance Concentration: The Mathematical Reality}
+\formulaWithChart{
+\textbf{Distance Ratio Convergence:}
+$$\frac{\text{dist}_{max} - \text{dist}_{min}}{\text{dist}_{mean}} \rightarrow 0 \text{ as } d \rightarrow \infty$$
+
+\textbf{Key Values:}
+\begin{itemize}
+    \item d=10: ratio $\approx 0.45$
+    \item d=100: ratio $\approx 0.14$  
+    \item d=1000: ratio $\approx 0.045$
+\end{itemize}
+}{distance_concentration_formula}{Theoretical vs simulated convergence}
+
+\vspace{0.5cm}
+\textbf{Implications for Machine Learning:}
+\begin{itemize}
+    \item Nearest neighbor search becomes meaningless
+    \item Traditional distance metrics fail
+    \item Need specialized techniques:
+    \begin{itemize}
+        \item Locality-Sensitive Hashing (LSH)
+        \item Approximate nearest neighbors
+        \item Learned distance metrics
+    \end{itemize}
+    \item Explains why high-D embeddings need normalization
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{center}
+\colorbox{yellow!20}{\parbox{0.8\textwidth}{
+\textbf{Key Takeaway:} In high dimensions, the concept of ``near" and ``far"\\
+becomes meaningless - all points are approximately the same distance apart!
+}}
+\end{center}
+\end{frame}
+
+% Volume Paradox - The Curve
+\begin{frame}{The Volume Paradox: Visual Evidence}
+\textbf{Unit Sphere Volume Across Dimensions}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/embeddings/sphere_volume_curve.pdf}
+\end{center}
+
+\vspace{0.5cm}
+\textbf{The Volume Formula:}
+$$V_d = \frac{\pi^{d/2}}{\Gamma(d/2 + 1)}$$
+
+\begin{center}
+\textbf{Peak at dimension 5, then rapid decay to zero!}
+\end{center}
+\end{frame}
+
+% Volume Paradox - Why It Happens
+\begin{frame}{Why Volume Goes to Zero: The Mathematics}
+\formulaWithChartWide{
+$$V_d = \frac{\pi^{d/2}}{\Gamma(d/2 + 1)}$$
+
+\textbf{Growth Rate Battle:}
+\begin{itemize}
+    \item Numerator: $\pi^{d/2} \approx 1.77^d$ (exponential)
+    \item Denominator: $\Gamma(d/2+1) \approx (d/2e)^{d/2}$ (super-exponential)
+    \item Result: Volume $\rightarrow 0$ as $d \rightarrow \infty$
+\end{itemize}
+}{volume_decomposition}{Formula components and volume decay}
+\end{frame}
+
+% Surface Concentration - Visualization
+\begin{frame}{Surface Concentration in High Dimensions}
+\textbf{Where the Volume Actually Lives}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/embeddings/volume_distribution_shells.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Almost all volume concentrates in a thin shell near the surface!}
+\end{center}
+\end{frame}
+
+% Surface Concentration - The Shell Phenomenon
+\begin{frame}{The Shell Phenomenon: Mathematical Analysis}
+\textbf{Why Everything Lives on the Surface}
+
+\textbf{Volume in Shells - The Mathematics:}
+\begin{itemize}
+    \item Consider inner sphere with radius $r = 0.9$ (90\% of full radius)
+    \item Volume ratio: $\frac{V_{inner}}{V_{total}} = r^d = (0.9)^d$
+    \item This ratio shrinks exponentially with dimension!
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Concrete Examples:}
+\begin{itemize}
+    \item d = 10: $(0.9)^{10} = 0.35$ → 35\% of volume is inside
+    \item d = 50: $(0.9)^{50} = 0.005$ → 0.5\% inside
+    \item d = 100: $(0.9)^{100} \approx 10^{-5}$ → 0.001\% inside
+    \item d = 1000: $(0.9)^{1000} \approx 10^{-46}$ → essentially zero!
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Implications for Embeddings:}
+\begin{itemize}
+    \item All vectors lie near the surface of the hypersphere
+    \item Random vectors are approximately equidistant
+    \item The interior is effectively "empty" space
+    \item Explains why L2 normalization is so effective
+    \item Cosine similarity becomes the natural distance metric
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{center}
+\colorbox{blue!10}{\parbox{0.85\textwidth}{
+\textbf{Practical Consequence:} In 768-dimensional BERT space,\\99.999999\% of the volume is within 1\% of the surface!\\The interior essentially doesn't exist.
+}}
+\end{center}
+\end{frame}
+
+% Optimal Dimensions - Finding the Sweet Spot
+\begin{frame}{Optimal Dimensions: Finding the Sweet Spot}
+\textbf{Balancing Expressiveness and Computational Efficiency}
+
+\textbf{Information Capacity:}
+\begin{itemize}
+    \item Theoretical capacity: $\propto d \log d$
+    \item But diminishing returns after certain point
+    \item Johnson-Lindenstrauss: $d = O(\log n / \epsilon^2)$ preserves distances
+\end{itemize}
+
+\textbf{Model Dimensions in Practice:}
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Model} & \textbf{Dimension} & \textbf{Parameters (embeddings only)} \\
+\hline
+Word2Vec & 50-300 & 15M (50K vocab × 300) \\
+GloVe & 50-300 & 15M (50K vocab × 300) \\
+FastText & 100-300 & 30M (includes subwords) \\
+ELMo & 1024 & 100M (bidirectional) \\
+BERT-base & 768 & 23M (30K vocab × 768) \\
+BERT-large & 1024 & 31M (30K vocab × 1024) \\
+GPT-3 & 12288 & 600M (50K vocab × 12288) \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Trade-offs:}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Lower Dimensions (50-300):}
+\begin{itemize}
+    \item Faster training
+    \item Less overfitting
+    \item Good for specific domains
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Higher Dimensions (768-1024+):}
+\begin{itemize}
+    \item More expressive power
+    \item Better for complex tasks
+    \item Requires more data
+\end{itemize}
+\end{columns}
+\end{frame}

@@ -1,0 +1,2061 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{listings}
+
+% Color definitions
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255, 127, 14}
+\definecolor{mlgreen}{RGB}{44, 160, 44}
+\definecolor{mlred}{RGB}{214, 39, 40}
+\definecolor{mlgray}{RGB}{127, 127, 127}
+
+% Apply colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% Bottom note command
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+% Code listing style
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{mlpurple}\bfseries,
+  commentstyle=\color{mlgray}\itshape,
+  stringstyle=\color{mlorange},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{mllavender4}
+}
+
+\title{Fine-tuning \& Prompt Engineering}
+\subtitle{Week 10 - BSc Discovery-Based Pedagogy}
+\author{NLP Course 2025}
+\date{October 2025}
+
+\begin{document}
+
+% ========== TITLE SLIDE ==========
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+% ========== I. OPENING SEQUENCE ==========
+
+% Slide 1: Hook - The $50K Question
+\begin{frame}[t]{The \$50,000 Question}
+\vspace{-3mm}
+\begin{center}
+\textbf{Scenario:} You work at a medical AI company
+\end{center}
+
+\vspace{2mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What You Have:}
+\begin{itemize}
+\item GPT-4: Amazing at general text
+\item 1,000 labeled medical diagnoses
+\item Goal: 90\%+ accuracy on medical QA
+\item Budget: Limited
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Problem:}
+\begin{itemize}
+\item GPT-4 zero-shot: 60\% accuracy
+\item Full fine-tuning: \$50,000+
+\item Training time: 2 weeks on 8 GPUs
+\item Risk: Catastrophic forgetting
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{What Would YOU Do?}
+
+\vspace{2mm}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/cost_performance_scatter_enhanced.pdf}
+\end{center}
+
+\textbf{The Answer:} LoRA fine-tuning
+\begin{itemize}
+\item Cost: \$500 (1\% of full FT)
+\item Accuracy: 93\% (98\% of full FT)
+\item Time: 6 hours
+\item Parameters updated: 0.1\%
+\end{itemize}
+\end{columns}
+
+\bottomnote{The dollar-50K question has a dollar-500 answer - this is what you'll learn today}
+\end{frame}
+
+% Slide 2: Paradigm Shift
+\begin{frame}[t]{Paradigm Shift: OLD vs NEW Adaptation}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{OLD: Train Everything}
+
+Traditional approach (pre-2018):
+\begin{itemize}
+\item Train 175B parameters from scratch
+\item Or fine-tune ALL weights
+\item Cost: \$5M+ for training
+\item Memory: 700GB+ required
+\item Time: Weeks to months
+\item Risk: Overfitting, forgetting
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Examples:}
+\begin{itemize}
+\item BERT (2018): 110M params, full FT
+\item GPT-2 (2019): 1.5B params, full FT
+\item Every task needs full retraining
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Problem:}
+
+Not scalable! Imagine updating a model for 100 different tasks - you'd need 100 full copies!
+
+\column{0.48\textwidth}
+\textbf{NEW: Adapt Efficiently}
+
+Modern approach (2021+):
+\begin{itemize}
+\item Freeze 175B base parameters
+\item Update only 0.1-1\% task-specific
+\item Cost: \$100-\$5K for adaptation
+\item Memory: Same as inference
+\item Time: Hours to days
+\item Benefit: Preserve base knowledge
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Examples:}
+\begin{itemize}
+\item LoRA (2021): 0.1\% params
+\item Adapters: 0.5-2\% params
+\item Prompt tuning: 0 params!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Breakthrough:}
+
+100 tasks = 1 base model + 100 tiny adapters (each 10MB) instead of 100 full models (each 350GB)!
+\end{columns}
+
+\bottomnote{Parameter-Efficient Fine-Tuning (PEFT) enables scaling to thousands of tasks}
+\end{frame}
+
+% Slide 3: Real-World Impact 2024
+\begin{frame}[t]{Real-World Impact: Who's Using What in 2024}
+\vspace{-2mm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/applications_2024.pdf}
+\end{center}
+
+\bottomnote{Major companies use different methods based on data, budget, and accuracy requirements}
+\end{frame}
+
+% ========== II. FOUNDATION BUILDING ==========
+
+% Slides 4-5: Transfer Learning Concept (Dual-slide)
+\begin{frame}[t]{Transfer Learning: Visual Overview}
+\vspace{-3mm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/transfer_learning_visual.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight:} 99\% of language knowledge is reusable - only adapt the 1\% that's task-specific
+\end{center}
+
+\bottomnote{Transfer learning: Reuse expensive pre-training, adapt cheaply for your task}
+\end{frame}
+
+\begin{frame}[t]{Transfer Learning: How It Works}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Concept:}
+
+Pre-trained models already know:
+\begin{itemize}
+\item Grammar and syntax
+\item Common sense reasoning
+\item World knowledge
+\item General patterns
+\end{itemize}
+
+What they DON'T know:
+\begin{itemize}
+\item Your specific domain (medical, legal)
+\item Your task format
+\item Your company's style
+\item Your special vocabulary
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Math:}
+
+Total knowledge = Base (99\%) + Task (1\%)
+
+Instead of learning 100\%, we only learn the missing 1\%!
+
+\column{0.48\textwidth}
+\textbf{When to Use:}
+\begin{itemize}
+\item You have a pre-trained model
+\item Your task is related to general language
+\item You have limited compute budget
+\item You want to avoid training from scratch
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Three Approaches:}
+
+\textbf{1. Prompting} (0\% training)
+\begin{itemize}
+\item Pros: Free, instant
+\item Cons: Limited accuracy
+\end{itemize}
+
+\textbf{2. PEFT} (0.1-2\% training)
+\begin{itemize}
+\item Pros: Efficient, effective
+\item Cons: Needs some labeled data
+\end{itemize}
+
+\textbf{3. Full FT} (100\% training)
+\begin{itemize}
+\item Pros: Maximum accuracy
+\item Cons: Expensive, risky
+\end{itemize}
+\end{columns}
+
+\bottomnote{Choose based on your data, budget, and accuracy requirements}
+\end{frame}
+
+% Slides 6-7: Parameter Update Spectrum (Dual-slide)
+\begin{frame}[t]{The Parameter Update Spectrum: Visual}
+\vspace{-3mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/parameter_spectrum.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight:} Model adaptation is a spectrum, not a binary choice
+\end{center}
+
+\bottomnote{From 0\% (prompting) to 100\% (full fine-tuning) - choose your efficiency point}
+\end{frame}
+
+\begin{frame}[t]{The Parameter Update Spectrum: Details}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Zero Training Zone (0\%):}
+
+\textbf{Zero-Shot:}
+\begin{itemize}
+\item Just ask directly
+\item Example: ``Translate to French: Hello''
+\item Accuracy: 40-70\%
+\item Cost: \$0
+\end{itemize}
+
+\textbf{Few-Shot:}
+\begin{itemize}
+\item Provide 3-5 examples in prompt
+\item Model learns pattern on-the-fly
+\item Accuracy: 60-80\%
+\item Cost: \textdollar0 (just longer prompts)
+\end{itemize}
+
+\textbf{Prompt Engineering:}
+\begin{itemize}
+\item Carefully craft instructions
+\item Role, task, format, examples
+\item Accuracy: 70-85\%
+\item Cost: \textdollar0 (+ human time)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Efficient Zone (0.1-2\%):}
+
+\textbf{Adapters:}
+\begin{itemize}
+\item Small modules between layers
+\item Update: 0.5-2\% of parameters
+\item Accuracy: 85-92\%
+\item Cost: \$500-\$5K
+\end{itemize}
+
+\textbf{LoRA:}
+\begin{itemize}
+\item Low-rank matrix updates
+\item Update: 0.1-1\% of parameters
+\item Accuracy: 88-94\%
+\item Cost: \$100-\$2K
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Full Update Zone (100\%):}
+
+\textbf{Full Fine-tuning:}
+\begin{itemize}
+\item Update all weights
+\item Accuracy: 90-97\%
+\item Cost: \$10K-\$100K
+\item Risk: Catastrophic forgetting
+\end{itemize}
+\end{columns}
+
+\bottomnote{The sweet spot is usually LoRA: 90\%+ accuracy at 1\% cost}
+\end{frame}
+
+% Slides 8-9: Data Requirements (Dual-slide)
+\begin{frame}[t]{Data Requirements: Performance vs Data Size}
+\vspace{-3mm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/data_performance_curves.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight:} Different methods need different amounts of data
+\end{center}
+
+\bottomnote{With 100-1000 examples, LoRA is the sweet spot}
+\end{frame}
+
+\begin{frame}[t]{Data Requirements: Decision Guide}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What Data Do You Have?}
+
+\textbf{0-10 Examples:}
+\begin{itemize}
+\item Use: Few-shot prompting
+\item Why: Not enough for training
+\item Expected: 60-75\% accuracy
+\item Example: New task, just starting
+\end{itemize}
+
+\textbf{10-100 Examples:}
+\begin{itemize}
+\item Use: Prompt engineering
+\item Why: Still too few for training
+\item Expected: 70-80\% accuracy
+\item Example: Prototyping phase
+\end{itemize}
+
+\textbf{100-1,000 Examples:}
+\begin{itemize}
+\item Use: LoRA fine-tuning
+\item Why: Enough for efficient training
+\item Expected: 85-93\% accuracy
+\item Example: Production-ready
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{1,000-10,000 Examples:}
+\begin{itemize}
+\item Use: LoRA or Full fine-tuning
+\item Why: Can consider full updates
+\item Expected: 90-95\% accuracy
+\item Example: Large-scale production
+\end{itemize}
+
+\textbf{10,000+ Examples:}
+\begin{itemize}
+\item Use: Full fine-tuning
+\item Why: Enough to avoid overfitting
+\item Expected: 93-97\% accuracy
+\item Example: Critical applications
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Quality Matters Too!}
+\begin{itemize}
+\item 100 high-quality > 1000 noisy
+\item Diverse examples beat repetitive
+\item Representative of real use cases
+\item Balanced class distribution
+\end{itemize}
+\end{columns}
+
+\bottomnote{Data quantity AND quality determine which method works best}
+\end{frame}
+
+% ========== III. TAXONOMY SECTION ==========
+
+% Slides 10-11: Zero-Shot Prompting
+\begin{frame}[t]{Zero-Shot Prompting: The Simplest Approach}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What is Zero-Shot?}
+
+Just ask the model directly - no examples, no training!
+
+\vspace{3mm}
+\textbf{Example:}
+
+\colorbox{mllavender4}{\parbox{0.9\columnwidth}{
+\textbf{Prompt:} Classify sentiment: ``The movie was terrible''
+
+\textbf{Response:} Negative
+}}
+
+\vspace{3mm}
+\textbf{How It Works:}
+\begin{itemize}
+\item Model uses pre-trained knowledge
+\item Interprets task from instruction
+\item No task-specific training
+\item Works for common tasks
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Parameters Updated:} 0\%
+
+\textbf{Cost:} Free (just API calls)
+
+\textbf{Time:} Instant
+
+\column{0.48\textwidth}
+\textbf{When to Use:}
+\begin{itemize}
+\item You have NO training data
+\item Task is straightforward
+\item Quick prototype/experiment
+\item Budget is very limited
+\end{itemize}
+
+\vspace{3mm}
+\textbf{When NOT to Use:}
+\begin{itemize}
+\item Need $>$85\% accuracy
+\item Domain-specific terminology
+\item Complex reasoning required
+\item Consistent format needed
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Real Example:}
+
+GPT-4 zero-shot for basic customer support:
+\begin{itemize}
+\item Task: Categorize customer emails
+\item Accuracy: 75\%
+\item Cost: \$0.10 per 1000 emails
+\item Time: Real-time
+\end{itemize}
+
+Good enough for low-stakes applications!
+\end{columns}
+
+\bottomnote{Zero-shot is free and fast but limited to 60-75\% accuracy on most tasks}
+\end{frame}
+
+% Slides 12-13: Few-Shot Learning
+\begin{frame}[t]{Few-Shot In-Context Learning: Show Examples}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What is Few-Shot?}
+
+Provide 3-5 examples IN THE PROMPT - model learns the pattern!
+
+\vspace{3mm}
+\textbf{Example:}
+
+\colorbox{mllavender4}{\parbox{0.9\columnwidth}{\small
+\textbf{Prompt:} Classify sentiment:
+
+Example 1: ``I loved it!'' → Positive
+
+Example 2: ``Terrible experience'' → Negative
+
+Example 3: ``It was okay'' → Neutral
+
+Now classify: ``Amazing product!''
+
+\textbf{Response:} Positive
+}}
+
+\vspace{3mm}
+\textbf{How It Works:}
+\begin{itemize}
+\item Model sees input-output pairs
+\item Infers pattern from examples
+\item Applies to new input
+\item Still no weight updates!
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{When to Use:}
+\begin{itemize}
+\item You have 5-50 examples
+\item Task has clear pattern
+\item Need quick improvements over zero-shot
+\item Can't afford training
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Best Practices:}
+\begin{itemize}
+\item Use diverse examples
+\item Show edge cases
+\item Consistent format
+\item 3-5 examples usually enough
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Performance Boost:}
+\begin{itemize}
+\item Zero-shot: 60\%
+\item Few-shot (3 examples): 75\%
+\item Few-shot (5 examples): 78\%
+\item Diminishing returns after 5!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Limitation:}
+
+Context window! GPT-4 has 128K tokens - examples use up context space.
+\end{columns}
+
+\bottomnote{Few-shot improves accuracy 10-20\% over zero-shot at zero cost}
+\end{frame}
+
+% Slides 14-15: Prompt Engineering
+\begin{frame}[t]{Prompt Engineering: Anatomy of Effective Prompts}
+\vspace{-3mm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/prompt_anatomy.pdf}
+\end{center}
+
+\bottomnote{Combine all 6 components for maximum effectiveness - order matters!}
+\end{frame}
+
+\begin{frame}[t]{Prompt Engineering: Best Practices}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Key Principles:}
+
+\textbf{1. Be Specific}
+\begin{itemize}
+\item Bad: ``Analyze this data''
+\item Good: ``Identify top 3 churn factors with percentages''
+\end{itemize}
+
+\textbf{2. Set Role/Context}
+\begin{itemize}
+\item ``You are an expert data scientist...''
+\item Helps model adopt appropriate style
+\end{itemize}
+
+\textbf{3. Specify Output Format}
+\begin{itemize}
+\item ``Provide response as: 1. ... 2. ... 3. ...''
+\item Ensures consistency
+\end{itemize}
+
+\textbf{4. Use Chain-of-Thought}
+\begin{itemize}
+\item ``Let's think step by step...''
+\item Improves reasoning by 20-30\%
+\end{itemize}
+
+\textbf{5. Provide Constraints}
+\begin{itemize}
+\item ``Use non-technical language''
+\item ``Maximum 100 words''
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Advanced Techniques:}
+
+\textbf{Self-Consistency:}
+\begin{itemize}
+\item Ask same question 5 times
+\item Take majority vote
+\item Reduces errors
+\end{itemize}
+
+\textbf{Tree-of-Thoughts:}
+\begin{itemize}
+\item Explore multiple reasoning paths
+\item Evaluate each path
+\item Choose best solution
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Common Pitfalls:}
+\begin{itemize}
+\item Too vague: ``Make it better''
+\item Too complex: 10-page prompt
+\item No examples: Hard to learn pattern
+\item Conflicting instructions
+\item No output format specified
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Performance Gain:}
+\begin{itemize}
+\item Basic prompt: 65\%
+\item Well-engineered: 80-85\%
+\item With CoT: 85-90\%
+\end{itemize}
+\end{columns}
+
+\bottomnote{Prompt engineering can match fine-tuning on some tasks - but requires skill}
+\end{frame}
+
+% Slides 16-17: Adapter Methods
+\begin{frame}[t]{Adapter Methods: Visual Architecture}
+\vspace{-3mm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/adapter_architecture.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight:} Insert small trainable modules, freeze rest of model
+\end{center}
+
+\bottomnote{Adapters: 0.5-2\% parameters trainable, 99\% frozen}
+\end{frame}
+
+\begin{frame}[t]{Adapter Methods: How They Work}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Concept:}
+
+Instead of updating huge matrices in transformer layers, insert small ``adapter'' modules:
+
+\vspace{3mm}
+\textbf{Architecture:}
+\begin{enumerate}
+\item Freeze all transformer weights
+\item Insert adapter after each layer
+\item Adapter: Down-project → Activate → Up-project
+\item Only train adapters
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Math:}
+
+Adapter size: $d \rightarrow r \rightarrow d$
+
+where $d=$ hidden dim (e.g., 1024), $r=$ bottleneck (e.g., 64)
+
+Parameters: $2 \times d \times r = 2 \times 1024 \times 64 = 131K$
+
+Compare to layer: $d \times d = 1M$
+
+Reduction: 10x!
+
+\column{0.48\textwidth}
+\textbf{When to Use:}
+\begin{itemize}
+\item Multiple tasks on same model
+\item Want to preserve base model
+\item Memory-constrained environment
+\item Need modular task switching
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Advantages:}
+\begin{itemize}
+\item Efficient: 0.5-2\% params
+\item Modular: Swap adapters easily
+\item Safe: Base model untouched
+\item Fast: Quick training
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Disadvantages:}
+\begin{itemize}
+\item Added inference latency (small)
+\item Slightly lower accuracy than LoRA
+\item Need to choose bottleneck size
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Real Performance:}
+\begin{itemize}
+\item GLUE benchmark: 96\% of full FT
+\item Parameters: 1.5\% vs 100\%
+\item Training time: 3 hours vs 12 hours
+\end{itemize}
+\end{columns}
+
+\bottomnote{Adapters were popular before LoRA - still useful for multi-task scenarios}
+\end{frame}
+
+% Slides 18-19: LoRA
+\begin{frame}[t]{LoRA: The Efficiency Breakthrough}
+\vspace{-3mm}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{../figures/lora_explanation.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight:} Most weight updates are low-rank - exploit this!
+\end{center}
+
+\bottomnote{LoRA: 0.1\% parameters, 98\% performance - the current state-of-the-art PEFT}
+\end{frame}
+
+\begin{frame}[t]{LoRA: Low-Rank Adaptation Explained}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Problem:}
+
+Fine-tuning updates weight matrix $W \in \mathbb{R}^{d \times d}$
+
+Example: $d=4096$ → $W$ has 16.7M parameters!
+
+Too many parameters to update efficiently.
+
+\vspace{3mm}
+\textbf{The Insight:}
+
+Updates $\Delta W$ are typically low-rank!
+
+Instead of full $\Delta W$, decompose:
+
+$$\Delta W = A \times B$$
+
+where $A \in \mathbb{R}^{d \times r}$, $B \in \mathbb{R}^{r \times d}$
+
+with $r \ll d$ (e.g., $r=8$, $d=4096$)
+
+\vspace{3mm}
+\textbf{Parameters:}
+\begin{itemize}
+\item Full $\Delta W$: $d^2 = 16.7M$
+\item LoRA $A+B$: $2dr = 65K$
+\item Reduction: 256x!
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{How It Works:}
+\begin{enumerate}
+\item Freeze pre-trained weights $W$
+\item Initialize $A$ (random), $B$ (zeros)
+\item During training:
+\begin{itemize}
+\item Forward: $h = (W + AB)x$
+\item Backward: Only update $A, B$
+\end{itemize}
+\item After training: Merge $W' = W + AB$
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Choosing Rank $r$:}
+\begin{itemize}
+\item $r=1$: Too restrictive, poor results
+\item $r=4$-$8$: Sweet spot
+\item $r=16$-$32$: Diminishing returns
+\item $r=64$+: No longer efficient
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Performance:}
+\begin{itemize}
+\item GPT-3 (175B), $r=4$: 94\% of full FT
+\item Parameters: 0.01\% vs 100\%
+\item Training: \$500 vs \$50,000
+\item No inference overhead (merge weights)
+\end{itemize}
+\end{columns}
+
+\bottomnote{LoRA is the go-to method for efficient fine-tuning in 2024}
+\end{frame}
+
+% Slides 20-21: Full Fine-Tuning
+\begin{frame}[t]{Full Fine-Tuning: When to Use Maximum Power}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What is Full Fine-Tuning?}
+
+Update ALL model parameters for your task.
+
+\vspace{3mm}
+\textbf{How It Works:}
+\begin{enumerate}
+\item Load pre-trained model
+\item Replace final layer for your task
+\item Unfreeze ALL weights
+\item Train on your dataset
+\item Save entire model
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{The Math:}
+
+Model: 175B parameters
+
+Training: Update all 175B weights
+
+Memory: $4 \times 175B = 700$GB (float32)
+
+Gradients: Another 700GB
+
+Optimizer states: Another 700GB
+
+Total: 2.1TB!
+
+\vspace{3mm}
+\textbf{Cost Reality:}
+\begin{itemize}
+\item 8x A100 GPUs (80GB each) = 640GB
+\item Not enough! Need distributed training
+\item Time: 1-2 weeks
+\item Cost: \$50,000-\$100,000
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{When to Use:}
+\begin{itemize}
+\item Need 95\%+ accuracy (critical task)
+\item Have 10K+ training examples
+\item Large budget available
+\item Task very different from pre-training
+\item Willing to maintain separate model
+\end{itemize}
+
+\vspace{3mm}
+\textbf{When NOT to Use:}
+\begin{itemize}
+\item Limited data ($<$1000 examples)
+\item Budget constrained
+\item Need multiple task adaptations
+\item Risk of catastrophic forgetting
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Real Examples:}
+\begin{itemize}
+\item Bloomberg GPT: \$2.7M+ training
+\item Trained on 363B finance tokens
+\item Result: SOTA on financial tasks
+\item But: Can't be used for general text
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Key Risk: Catastrophic Forgetting}
+
+Model forgets original capabilities!
+\end{columns}
+
+\bottomnote{Full FT gives maximum accuracy but at maximum cost and risk}
+\end{frame}
+
+\begin{frame}[t]{Catastrophic Forgetting: The Risk of Full Updates}
+\vspace{-3mm}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{../figures/catastrophic_forgetting.pdf}
+\end{center}
+
+\bottomnote{LoRA preserves original capabilities, full fine-tuning risks forgetting}
+\end{frame}
+
+% Slide 22: RLHF
+\begin{frame}[t]{RLHF: Aligning Models with Human Preferences}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Problem:}
+
+Pre-trained models aren't helpful or safe:
+\begin{itemize}
+\item Generate toxic content
+\item Provide unhelpful responses
+\item Don't follow instructions well
+\item No notion of ``better'' output
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Solution - 3 Steps:}
+
+\textbf{Step 1: Supervised Fine-tuning}
+\begin{itemize}
+\item Human labelers write ideal responses
+\item Train model on these examples
+\item Result: Somewhat helpful model
+\end{itemize}
+
+\textbf{Step 2: Reward Model Training}
+\begin{itemize}
+\item Generate multiple responses
+\item Humans rank them (A > B > C)
+\item Train reward model to predict rankings
+\item Result: Automatic quality scorer
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Step 3: RL Fine-tuning}
+\begin{itemize}
+\item Generate response
+\item Get score from reward model
+\item Update policy to maximize score
+\item Iterate thousands of times
+\item Result: Aligned model!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Why It Works:}
+\begin{itemize}
+\item Captures human preferences
+\item Handles subjective quality
+\item Learns safety guardrails
+\item Generalizes to new prompts
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Real Impact:}
+
+GPT-4 without RLHF: 70\% helpful
+
+GPT-4 with RLHF: 95\% helpful
+
+ChatGPT's helpfulness is mostly RLHF!
+
+\vspace{3mm}
+\textbf{Cost:}
+\begin{itemize}
+\item Human labeling: \$100K+
+\item RL training: \$100K+
+\item Total: \$200K-\$500K
+\end{itemize}
+\end{columns}
+
+\bottomnote{RLHF is expensive but crucial for user-facing applications}
+\end{frame}
+
+% ========== IV. PROBLEM-SOLUTION SEQUENCE ==========
+
+% Slide 24: Challenge Quantification
+\begin{frame}[t]{The \$50K Problem: Why Fine-Tuning is Expensive}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Challenge:}
+
+You want to fine-tune GPT-3 (175B parameters)
+
+\vspace{3mm}
+\textbf{Memory Requirements:}
+\begin{itemize}
+\item Model weights: 700GB (float32)
+\item Gradients: 700GB
+\item Optimizer states (Adam): 1.4TB
+\item Activations: 200GB
+\end{itemize}
+
+\textbf{Total: 3TB of memory!}
+
+\vspace{3mm}
+\textbf{Hardware Needed:}
+\begin{itemize}
+\item Single A100 GPU: 80GB
+\item Need: 40 GPUs minimum
+\item Reality: Use 8x nodes, each 8 GPUs
+\item Cost: \$10 per GPU-hour
+\item Time: 100 hours
+\item \textbf{Total: \$80,000!}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why So Expensive?}
+
+\textbf{1. Gradient Computation:}
+
+For each parameter $w$:
+$$w_{new} = w - \alpha \frac{\partial L}{\partial w}$$
+
+Need to compute $\frac{\partial L}{\partial w}$ for 175B parameters!
+
+\vspace{3mm}
+\textbf{2. Optimizer States:}
+
+Adam optimizer stores:
+\begin{itemize}
+\item First moment (mean): 700GB
+\item Second moment (variance): 700GB
+\end{itemize}
+
+\vspace{3mm}
+\textbf{3. Backward Pass:}
+
+Need to store activations from forward pass
+
+For deep models (96 layers), this adds up!
+
+\vspace{3mm}
+\textbf{The Impossibility:}
+
+For most companies:
+\begin{itemize}
+\item 64 GPUs = Impossible to access
+\item \$80K per training run = Too expensive
+\item 100 hours = Too slow
+\item Multiple experiments = Forget it!
+\end{itemize}
+\end{columns}
+
+\bottomnote{Full fine-tuning is prohibitively expensive for most organizations}
+\end{frame}
+
+% Slide 25: Initial Approach - Prompting
+\begin{frame}[t]{Initial Approach: Just Use Prompts}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The First Solution:}
+
+Don't train at all - just use clever prompts!
+
+\vspace{3mm}
+\textbf{Medical Diagnosis Example:}
+
+\colorbox{mllavender4}{\parbox{0.95\columnwidth}{\small
+\textbf{Prompt:} You are an expert medical doctor. Given the following symptoms, provide a likely diagnosis:
+
+Symptoms: Fever (101F), cough, fatigue, loss of taste
+
+Diagnosis:
+}}
+
+\vspace{3mm}
+\textbf{What Works Well:}
+\begin{itemize}
+\item Simple factual queries
+\item Common medical conditions
+\item Standard terminology
+\item Well-known procedures
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Example Success:}
+
+``What is the treatment for Type 2 diabetes?''
+
+Response: Accurate, helpful, 95\% correct!
+
+\column{0.48\textwidth}
+\textbf{What Fails:}
+\begin{itemize}
+\item Complex multi-symptom cases
+\item Rare diseases
+\item Hospital-specific protocols
+\item Custom terminology
+\item Differential diagnosis
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Example Failure:}
+
+``Based on labs (HbA1c 8.2, GFR 45, Cr 1.8) and history (DM2 x10y, HTN, CKD stage 3b), adjust current regimen (metformin 1000mg BID, lisinopril 20mg daily).''
+
+Response: Confused, unsafe, 40\% correct!
+
+\vspace{3mm}
+\textbf{The Problem:}
+\begin{itemize}
+\item Doesn't know specific protocols
+\item Can't handle domain jargon
+\item No experience with edge cases
+\item Inconsistent format
+\end{itemize}
+\end{columns}
+
+\bottomnote{Prompting works for simple cases but fails on complex domain-specific tasks}
+\end{frame}
+
+% Slide 26: Performance Analysis
+\begin{frame}[t]{Where Prompting Succeeds and Fails}
+\small
+\begin{center}
+\textbf{Performance Across Task Complexity (Medical Domain)}
+
+\vspace{3mm}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Task Type} & \textbf{Zero-Shot} & \textbf{Few-Shot} & \textbf{Required} \\
+\midrule
+Simple factual QA & 90\% & 92\% & 85\% \\
+Common diagnosis & 75\% & 82\% & 90\% \\
+Treatment planning & 60\% & 70\% & 95\% \\
+Complex cases & 40\% & 55\% & 98\% \\
+Rare diseases & 30\% & 45\% & 95\% \\
+Protocol following & 25\% & 40\% & 99\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Pattern:}
+\begin{itemize}
+\item Simple tasks: Prompting is good enough
+\item Medium tasks: Few-shot helps but not enough
+\item Complex tasks: Need fine-tuning
+\item Safety-critical: Must fine-tune
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Gap:}
+
+For production medical AI:
+\begin{itemize}
+\item Need: 95\%+ accuracy
+\item Zero-shot: 40-60\% on hard cases
+\item Few-shot: 55-70\% on hard cases
+\item \textbf{Gap: 25-40 percentage points!}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why the Gap Exists:}
+
+\textbf{Missing Domain Knowledge:}
+\begin{itemize}
+\item Hospital-specific protocols
+\item Local treatment guidelines
+\item Custom terminology
+\item Edge case patterns
+\end{itemize}
+
+\textbf{Missing Task Structure:}
+\begin{itemize}
+\item Expected output format
+\item Reasoning chain structure
+\item Confidence calibration
+\item Safety checks
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Conclusion:}
+
+For real-world deployment, we MUST fine-tune!
+
+But how to do it affordably?
+\end{columns}
+
+\bottomnote{Prompting leaves a 25-40\% accuracy gap for complex tasks - fine-tuning is necessary}
+\end{frame}
+
+% Slide 27: Root Cause Diagnosis
+\begin{frame}[t]{Root Cause: What Model Knows vs What It Needs}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What Pre-trained Model KNOWS:}
+
+\colorbox{green!20}{\parbox{0.95\columnwidth}{
+\textbf{General Knowledge (99\%):}
+\begin{itemize}
+\item English grammar
+\item Common vocabulary
+\item Basic medical terms
+\item General reasoning
+\item World knowledge
+\item Text structure
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Examples:}
+\begin{itemize}
+\item Knows: ``Diabetes is high blood sugar''
+\item Knows: ``Treatment involves medication''
+\item Knows: ``Labs measure various markers''
+\end{itemize}
+}}
+
+\vspace{3mm}
+\textbf{This Knowledge is Reusable!}
+
+Don't need to relearn basic language.
+
+\column{0.48\textwidth}
+\textbf{What Model DOESN'T KNOW:}
+
+\colorbox{red!20}{\parbox{0.95\columnwidth}{
+\textbf{Domain-Specific (1\%):}
+\begin{itemize}
+\item Your hospital's protocols
+\item Your treatment guidelines
+\item Your terminology (CKD3b, GFR, etc.)
+\item Your output format
+\item Your edge cases
+\item Your safety requirements
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Examples:}
+\begin{itemize}
+\item Doesn't know: Your specific dosing protocol
+\item Doesn't know: Your contraindication rules
+\item Doesn't know: Your documentation format
+\end{itemize}
+}}
+
+\vspace{3mm}
+\textbf{This is What We Need to Teach!}
+
+Only need to learn task-specific patterns.
+\end{columns}
+
+\vspace{5mm}
+\textbf{Root Cause:} Model needs to update weights to encode domain-specific patterns.
+
+\textbf{Question:} Do we really need to update ALL 175B parameters to learn 1\% of new knowledge?
+
+\bottomnote{99\% of knowledge is reusable - only 1\% is task-specific - exploit this asymmetry!}
+\end{frame}
+
+% Slide 28: Solution Insight
+\begin{frame}[t]{Solution Insight: Freeze 99\%, Adapt 1\%}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Observation:}
+
+When we fine-tune a model, most of the weight changes are SMALL.
+
+\vspace{3mm}
+\textbf{Experiment (2021):}
+
+Fine-tune GPT-3 on multiple tasks.
+
+Measure: How much does each weight change?
+
+\vspace{2mm}
+\textbf{Result:}
+\begin{itemize}
+\item 90\% of weights change < 0.001
+\item 5\% change 0.001-0.01
+\item 4\% change 0.01-0.1
+\item 1\% change > 0.1
+\end{itemize}
+
+\textbf{Insight:} Most weights barely change!
+
+\vspace{3mm}
+\textbf{Mathematical Property:}
+
+The update matrix $\Delta W$ is LOW-RANK!
+
+Meaning: Can represent as $A \times B$ where $A$ and $B$ are MUCH smaller than $\Delta W$.
+
+\column{0.48\textwidth}
+\textbf{The Hypothesis:}
+
+What if we ONLY update the 1\% that matters?
+
+\vspace{3mm}
+\textbf{Three Approaches:}
+
+\textbf{1. Adapters:}
+\begin{itemize}
+\item Insert small modules between layers
+\item Train only these modules
+\item Freeze everything else
+\end{itemize}
+
+\textbf{2. LoRA:}
+\begin{itemize}
+\item Decompose updates into low-rank
+\item Train $A$ and $B$, not full $\Delta W$
+\item Mathematically equivalent but cheaper
+\end{itemize}
+
+\textbf{3. Prompt Tuning:}
+\begin{itemize}
+\item Add learnable prompt tokens
+\item Train only these tokens
+\item Model weights completely frozen
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Promise:}
+
+If we can train 1\% of parameters and get 90\%+ of the performance...
+
+Cost: \$500 instead of \$50K (100x savings!)
+\end{columns}
+
+\bottomnote{Key insight: Exploit low-rank structure of weight updates for massive savings}
+\end{frame}
+
+% Slide 29: LoRA Mechanism
+\begin{frame}[t]{LoRA Mechanism: Low-Rank Matrix Decomposition}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Math (Zero Jargon):}
+
+\textbf{Problem:} Update weight matrix $W$ ($4096 \times 4096 = 16.7M$ numbers)
+
+\textbf{Solution:} Don't update $W$ directly. Instead:
+\begin{enumerate}
+\item Keep $W$ frozen
+\item Create two small matrices:
+\begin{itemize}
+\item $A$: $4096 \times 8$ (32K numbers)
+\item $B$: $8 \times 4096$ (32K numbers)
+\end{itemize}
+\item Multiply them: $A \times B$ (still $4096 \times 4096$)
+\item New weights: $W' = W + A \times B$
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Parameters to Train:}
+\begin{itemize}
+\item Original: 16.7M
+\item LoRA: 64K (0.4\%)
+\item Reduction: 256x!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Why Does This Work?}
+
+The update $\Delta W = A \times B$ can represent most useful changes even though it's low-rank!
+
+\column{0.48\textwidth}
+\textbf{Concrete Example:}
+
+\textbf{Task:} Fine-tune for medical QA
+
+\textbf{Setup:}
+\begin{itemize}
+\item Model: GPT-3 (175B params)
+\item LoRA rank: $r=8$
+\item Trainable: 18M params (0.01\%)
+\item Training data: 1000 QA pairs
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Training:}
+\begin{itemize}
+\item Time: 6 hours (vs 100 hours full FT)
+\item GPUs: 1x A100 (vs 64x A100)
+\item Cost: \$60 (vs \$80,000)
+\item Memory: 80GB (vs 3TB)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Results:}
+\begin{itemize}
+\item Zero-shot: 60\% accuracy
+\item LoRA FT: 93\% accuracy
+\item Full FT: 95\% accuracy
+\item \textbf{Gap: Only 2\%!}
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Win:}
+
+98\% of performance at 0.1\% of cost!
+\end{columns}
+
+\bottomnote{LoRA achieves 93-95\% of full fine-tuning performance at 0.1\% of the cost}
+\end{frame}
+
+% Slide 30: Full Numerical Example
+\begin{frame}[t,fragile]{Numerical Example: LoRA for Sentiment Analysis}
+\small
+\textbf{Task:} Fine-tune DistilBERT for sentiment analysis (positive/negative)
+
+\textbf{Step 1: Load Pre-trained Model}
+\begin{lstlisting}[language=Python]
+from transformers import AutoModel
+model = AutoModel.from_pretrained("distilbert-base")
+# Model: 66M parameters, 768 hidden dim
+\end{lstlisting}
+
+\textbf{Step 2: Add LoRA Layers (rank=8)}
+
+For each attention matrix ($W_q, W_k, W_v, W_o$):
+\begin{itemize}
+\item Original: $768 \times 768 = 590K$ parameters
+\item Add LoRA: $A$ ($768 \times 8$) + $B$ ($8 \times 768$) = 12K parameters
+\item Reduction per matrix: 49x
+\end{itemize}
+
+Total LoRA parameters: $4 \times 12K \times 6 \text{ layers} = 288K$ (0.4\% of 66M)
+
+\textbf{Step 3: Train Only LoRA}
+\begin{itemize}
+\item Freeze all 66M base parameters
+\item Train only 288K LoRA parameters
+\item Dataset: 1000 labeled reviews
+\item Training time: 15 minutes on single GPU
+\item Cost: \$0.50
+\end{itemize}
+
+\textbf{Step 4: Results}
+\begin{itemize}
+\item Zero-shot: 85\% accuracy
+\item LoRA fine-tuned: 94\% accuracy
+\item Full fine-tuned: 95\% accuracy
+\item \textbf{LoRA achieves 99\% of full FT performance!}
+\end{itemize}
+
+\bottomnote{Complete example: 15 minutes, \$0.50, 94\% accuracy with 0.4\% parameters}
+\end{frame}
+
+% Slide 31: Validation Evidence
+\begin{frame}[t]{Validation: LoRA vs Full Fine-tuning Across Tasks}
+\small
+\begin{center}
+\textbf{Performance Comparison on Standard Benchmarks}
+
+\vspace{3mm}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Task} & \textbf{Zero-Shot} & \textbf{LoRA} & \textbf{Full FT} & \textbf{LoRA/Full} \\
+\midrule
+MNLI (NLI) & 72.3\% & 90.2\% & 90.7\% & 99.4\% \\
+SST-2 (Sentiment) & 83.6\% & 95.1\% & 95.6\% & 99.5\% \\
+CoLA (Grammar) & 55.0\% & 68.2\% & 69.5\% & 98.1\% \\
+MRPC (Paraphrase) & 74.0\% & 88.9\% & 89.7\% & 99.1\% \\
+QQP (Question pairs) & 80.1\% & 90.7\% & 91.1\% & 99.6\% \\
+SQuAD (QA) & 78.5\% & 88.4\% & 88.9\% & 99.4\% \\
+\midrule
+\textbf{Average} & \textbf{73.9\%} & \textbf{86.9\%} & \textbf{87.6\%} & \textbf{99.2\%} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Key Observations:}
+\begin{itemize}
+\item LoRA gains 13\% over zero-shot
+\item LoRA achieves 99\%+ of full FT
+\item Consistent across all task types
+\item Gap is only 0.7 percentage points
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Cost Comparison:}
+\begin{itemize}
+\item LoRA: 0.1\% parameters
+\item LoRA: \$100-\$1,000
+\item Full FT: \$10,000-\$50,000
+\item \textbf{Ratio: 10-500x cheaper}
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Pattern:}
+
+\textbf{Biggest Gains Where Problem Was Worst:}
+\begin{itemize}
+\item CoLA (hardest): +13.2\% gain
+\item MRPC: +14.9\% gain
+\item SST-2 (easier): +11.5\% gain
+\end{itemize}
+
+\vspace{3mm}
+\textbf{When Does LoRA Work Best?}
+\begin{itemize}
+\item Classification tasks: Excellent
+\item Sequence labeling: Very good
+\item Generation: Good (slight gap)
+\item Few-shot scenarios: Ideal
+\end{itemize}
+
+\vspace{3mm}
+\textbf{When Might Full FT Be Better?}
+\begin{itemize}
+\item Need every 0.1\% accuracy
+\item Task very different from pre-training
+\item Huge dataset available (10K+)
+\end{itemize}
+\end{columns}
+
+\bottomnote{Evidence: LoRA consistently achieves 99\%+ of full FT performance across diverse tasks}
+\end{frame}
+
+% Slide 32: Decision Framework
+\begin{frame}[t]{Decision Framework: Which Method to Use?}
+\vspace{-3mm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/adaptation_decision_tree.pdf}
+\end{center}
+
+\bottomnote{Follow the decision tree based on your data, budget, and accuracy requirements}
+\end{frame}
+
+% ========== V. META-KNOWLEDGE ==========
+
+% Slide 33: When NOT to Use
+\begin{frame}[t]{When NOT to Use Each Method}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{DON'T Use Zero-Shot:}
+\begin{itemize}
+\item Need $>$80\% accuracy
+\item Safety-critical application
+\item Domain-specific terminology
+\item Complex reasoning required
+\item Consistent output format needed
+\end{itemize}
+
+\textbf{Example:} Medical diagnosis, legal advice, financial recommendations
+
+\vspace{3mm}
+\textbf{DON'T Use Few-Shot:}
+\begin{itemize}
+\item Need $>$85\% accuracy
+\item Task too complex for examples
+\item Inconsistent outputs problematic
+\item Have resources for training
+\end{itemize}
+
+\textbf{Example:} Production systems requiring reliability
+
+\vspace{3mm}
+\textbf{DON'T Use Prompt Engineering:}
+\begin{itemize}
+\item Tried for weeks, still $<$85\%
+\item Need guaranteed format
+\item Requires extensive testing per prompt
+\end{itemize}
+
+\textbf{Example:} Automated pipelines, structured output
+
+\column{0.48\textwidth}
+\textbf{DON'T Use LoRA:}
+\begin{itemize}
+\item Need absolute maximum accuracy
+\item That last 1-2\% is critical
+\item Have unlimited budget
+\item Task extremely different from pre-training
+\end{itemize}
+
+\textbf{Example:} Medical device AI (FDA regulated), financial trading
+
+\vspace{3mm}
+\textbf{DON'T Use Full Fine-Tuning:}
+\begin{itemize}
+\item Limited data ($<$1000 examples)
+\item Limited budget ($<$\$10K)
+\item Need multiple task adaptations
+\item Base model capabilities must be preserved
+\item Fast iteration required
+\end{itemize}
+
+\textbf{Example:} Startups, multiple customer adaptations
+
+\vspace{3mm}
+\textbf{DON'T Use RLHF:}
+\begin{itemize}
+\item No human feedback available
+\item Budget <\$100K
+\item Not user-facing application
+\item Clear objective metric exists
+\end{itemize}
+
+\textbf{Example:} Internal tools, batch processing
+\end{columns}
+
+\bottomnote{Knowing when NOT to use a method is as important as knowing when to use it}
+\end{frame}
+
+% Slide 34: Common Pitfalls
+\begin{frame}[t]{Common Pitfalls and How to Avoid Them}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Prompt Engineering Pitfalls:}
+
+\textbf{1. Over-engineering}
+\begin{itemize}
+\item Symptom: 10-page prompts
+\item Fix: Start simple, add incrementally
+\item Rule: If $>$200 words, consider fine-tuning
+\end{itemize}
+
+\textbf{2. Prompt Injection}
+\begin{itemize}
+\item Symptom: Users override instructions
+\item Fix: Use separate system/user prompts
+\item Guard: Input validation
+\end{itemize}
+
+\textbf{3. No Systematic Testing}
+\begin{itemize}
+\item Symptom: Works on examples, fails in production
+\item Fix: Test on diverse set (100+ cases)
+\item Track: Success rate per category
+\end{itemize}
+
+\vspace{3mm}
+\textbf{LoRA Pitfalls:}
+
+\textbf{1. Rank Too Small}
+\begin{itemize}
+\item Symptom: Poor accuracy ($<$85\%)
+\item Fix: Try $r=4, 8, 16$ and compare
+\item Sweet spot: Usually $r=8$
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{2. Rank Too Large}
+\begin{itemize}
+\item Symptom: No efficiency gain
+\item Fix: Don't exceed $r=32$
+\item Remember: Goal is efficiency!
+\end{itemize}
+
+\textbf{3. Wrong Layers}
+\begin{itemize}
+\item Symptom: Suboptimal performance
+\item Fix: Apply LoRA to attention layers
+\item Don't: Apply to all layers (expensive)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Full Fine-tuning Pitfalls:}
+
+\textbf{1. Catastrophic Forgetting}
+\begin{itemize}
+\item Symptom: Model forgets base capabilities
+\item Fix: Lower learning rate (1e-5)
+\item Fix: Mix in general data
+\end{itemize}
+
+\textbf{2. Overfitting}
+\begin{itemize}
+\item Symptom: 99\% train, 70\% test
+\item Fix: More data or use LoRA
+\item Fix: Stronger regularization
+\end{itemize}
+
+\textbf{3. Distribution Shift}
+\begin{itemize}
+\item Symptom: Works in lab, fails in production
+\item Fix: Train on production distribution
+\end{itemize}
+\end{columns}
+
+\bottomnote{Learn from others' mistakes - avoid these common pitfalls}
+\end{frame}
+
+% Slide 35: Success Metrics
+\begin{frame}[t]{Success Metrics Beyond Accuracy}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{1. Cost Efficiency:}
+\begin{itemize}
+\item \textbf{Training cost}: One-time expense
+\item \textbf{Inference cost}: Per-query expense
+\item \textbf{Maintenance cost}: Ongoing updates
+\end{itemize}
+
+\textbf{Example:}
+\begin{itemize}
+\item LoRA: \$500 train, \$0.001/query
+\item Full FT: \$50K train, \$0.001/query
+\item Prompting: \$0 train, \$0.002/query
+\end{itemize}
+
+\textbf{At 1M queries:} Prompting = \$2K, LoRA = \$1.5K
+
+\vspace{3mm}
+\textbf{2. Latency:}
+\begin{itemize}
+\item User-facing: $<$1 second required
+\item Prompting: Longer prompts = slower
+\item LoRA (merged): Zero overhead
+\item Adapters: +10-20ms overhead
+\end{itemize}
+
+\vspace{3mm}
+\textbf{3. Maintainability:}
+\begin{itemize}
+\item LoRA: Easy to swap/update
+\item Full FT: Must retrain entire model
+\item Multiple tasks: LoRA wins
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{4. Robustness:}
+\begin{itemize}
+\item Adversarial inputs
+\item Out-of-distribution data
+\item Edge cases
+\end{itemize}
+
+\textbf{Test:} Measure performance on hard cases
+
+\vspace{3mm}
+\textbf{5. Calibration:}
+\begin{itemize}
+\item Are confidence scores accurate?
+\item When model says 90\%, is it right 90\%?
+\end{itemize}
+
+\textbf{Measure:} Expected Calibration Error (ECE)
+
+\vspace{3mm}
+\textbf{6. Interpretability:}
+\begin{itemize}
+\item Can you explain predictions?
+\item Attention visualizations
+\item Feature importance
+\end{itemize}
+
+\vspace{3mm}
+\textbf{7. Fairness:}
+\begin{itemize}
+\item Equal performance across demographics
+\item No systematic biases
+\item Disparity metrics
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Balanced Scorecard:}
+
+Don't optimize accuracy alone!
+
+Consider: Cost + Latency + Robustness + Fairness
+\end{columns}
+
+\bottomnote{Optimize for the full system, not just accuracy}
+\end{frame}
+
+% ========== VI. INTEGRATION ==========
+
+% Slide 36: Unified Framework
+\begin{frame}[t]{Unified Framework: The Complete Picture}
+\vspace{-3mm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/finetuning_vs_prompting.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight:} Choose based on your constraints - there's no single best method
+\end{center}
+
+\bottomnote{All methods are tools - choose the right tool for your job}
+\end{frame}
+
+% Slide 37: Modern Applications
+\begin{frame}[t]{Modern Applications: State of Practice 2024}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Industry Trends:}
+
+\textbf{Startups (Limited Budget):}
+\begin{itemize}
+\item Primary: Prompt engineering
+\item Secondary: LoRA for core features
+\item Example: Customer service chatbot
+\item Cost: <\$1K total
+\end{itemize}
+
+\textbf{Mid-size Companies:}
+\begin{itemize}
+\item Primary: LoRA for all tasks
+\item Multiple adapters per base model
+\item Example: 50 different customer adaptations
+\item Cost: \$50K (vs \$2.5M for full FT)
+\end{itemize}
+
+\textbf{Large Enterprises:}
+\begin{itemize}
+\item Mix: LoRA (most), Full FT (critical)
+\item Example: Bloomberg GPT (full FT)
+\item Most other tasks: LoRA
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Open Source Tools:}
+\begin{itemize}
+\item Hugging Face PEFT library
+\item PyTorch LoRA implementation
+\item OpenAI fine-tuning API
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Real Deployments:}
+
+\textbf{GPT-4 Custom Instructions:}
+\begin{itemize}
+\item Method: Advanced prompting
+\item Users: Millions
+\item Cost per user: \$0
+\end{itemize}
+
+\textbf{GitHub Copilot:}
+\begin{itemize}
+\item Method: Full FT on code
+\item Performance: 43\% accept rate
+\item Revenue: \$100M+/year
+\end{itemize}
+
+\textbf{Jasper AI:}
+\begin{itemize}
+\item Method: Multiple LoRA adapters
+\item Use cases: 50+ writing templates
+\item Cost: \$50K (vs \$2.5M)
+\end{itemize}
+
+\textbf{Character.AI:}
+\begin{itemize}
+\item Method: LoRA per character
+\item Characters: 10M+
+\item Efficiency: Key to scaling
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Future (2025+):}
+
+Multi-adapter serving, dynamic rank selection, mixture-of-LoRAs
+\end{columns}
+
+\bottomnote{LoRA is becoming the default for production AI - efficient, scalable, maintainable}
+\end{frame}
+
+% Slide 38: Implementation Code
+\begin{frame}[t,fragile]{Implementation: LoRA in 20 Lines of PyTorch}
+\small
+\textbf{Complete LoRA Implementation:}
+
+\begin{lstlisting}[language=Python]
+import torch
+import torch.nn as nn
+
+class LoRALayer(nn.Module):
+    def __init__(self, in_dim, out_dim, rank=8, alpha=16):
+        super().__init__()
+        self.rank = rank
+        self.alpha = alpha
+
+        # Low-rank matrices A and B
+        self.lora_A = nn.Parameter(torch.randn(in_dim, rank))
+        self.lora_B = nn.Parameter(torch.zeros(rank, out_dim))
+
+        # Scaling factor
+        self.scaling = alpha / rank
+
+    def forward(self, x, W):
+        # Original path: W @ x
+        h = W @ x
+
+        # LoRA path: (A @ B) @ x, scaled
+        h = h + (x @ self.lora_A @ self.lora_B) * self.scaling
+        return h
+
+# Usage: Wrap any linear layer
+lora = LoRALayer(in_dim=768, out_dim=768, rank=8)
+output = lora(input_tensor, frozen_weight_matrix)
+\end{lstlisting}
+
+\textbf{That's it!} Apply to attention layers, train only LoRA parameters.
+
+\textbf{Lab:} You'll implement full LoRA fine-tuning for sentiment analysis!
+
+\bottomnote{LoRA is conceptually simple - just 20 lines of code!}
+\end{frame}
+
+% ========== VII. SUMMARY ==========
+
+% Slide 39: Key Takeaways
+\begin{frame}[t]{Key Takeaways: Week 10 Summary}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Core Concepts Mastered:}
+
+\textbf{1. The Adaptation Spectrum}
+\begin{itemize}
+\item Not binary (train vs don't train)
+\item Spectrum: 0\% to 100\% parameters
+\item Choose based on constraints
+\end{itemize}
+
+\textbf{2. Parameter Efficiency is Key}
+\begin{itemize}
+\item 99\% knowledge reusable
+\item Only 1\% task-specific
+\item LoRA exploits this asymmetry
+\end{itemize}
+
+\textbf{3. LoRA Changes Everything}
+\begin{itemize}
+\item 0.1\% parameters
+\item 90\%+ performance
+\item 100x cost reduction
+\item This is the 2024 standard
+\end{itemize}
+
+\textbf{4. Prompting is Powerful}
+\begin{itemize}
+\item Zero-cost, instant deployment
+\item Good for 70-85\% accuracy
+\item Start here, fine-tune if needed
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{5. Decision Framework}
+\begin{itemize}
+\item $<$10 examples: Prompting
+\item 10-100: Prompt engineering
+\item 100-1K: LoRA (sweet spot)
+\item 1K-10K: LoRA or full FT
+\item 10K$+$: Full FT for critical tasks
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Practical Wisdom:}
+
+\textbf{Start Simple:}
+\begin{enumerate}
+\item Try zero-shot prompting
+\item Add few-shot examples
+\item Engineer prompt carefully
+\item If still $<$85\%, use LoRA
+\item Only use full FT if critical
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Beyond Accuracy:}
+\begin{itemize}
+\item Consider: Cost, latency, maintenance
+\item LoRA wins on efficiency
+\item Full FT wins on accuracy
+\item Prompting wins on flexibility
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Future:}
+
+Multi-adapter serving, dynamic adaptation, mixture-of-experts
+\end{columns}
+
+\bottomnote{Model adaptation is now efficient, scalable, and accessible - you can fine-tune GPT-3!}
+\end{frame}
+
+% Slide 40: Next Steps
+\begin{frame}[t]{Next Steps: Lab \& Week 11}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{This Week's Lab:}
+
+\textbf{Part 1: Prompt Engineering}
+\begin{itemize}
+\item Zero-shot vs few-shot comparison
+\item Experiment with prompt patterns
+\item Chain-of-thought prompting
+\item Measure accuracy improvements
+\end{itemize}
+
+\textbf{Part 2: LoRA Implementation}
+\begin{itemize}
+\item Load pre-trained DistilBERT
+\item Add LoRA layers (rank=8)
+\item Fine-tune on sentiment analysis
+\item Compare to full fine-tuning
+\item Measure efficiency gains
+\end{itemize}
+
+\textbf{Part 3: Decision Framework}
+\begin{itemize}
+\item Given 5 scenarios
+\item Choose adaptation method
+\item Justify based on constraints
+\end{itemize}
+
+\textbf{Part 4: Real Application}
+\begin{itemize}
+\item Medical text classification
+\item Apply complete pipeline
+\item Evaluate all methods
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Key Questions to Explore:}
+\begin{itemize}
+\item How does rank affect performance?
+\item Where do we get maximum gains?
+\item When does prompting suffice?
+\item Cost-benefit analysis
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Next Week: Model Efficiency}
+
+\textbf{Topics:}
+\begin{itemize}
+\item Model compression
+\item Quantization (INT8, INT4)
+\item Knowledge distillation
+\item Pruning techniques
+\item Mobile deployment
+\item Edge computing
+\end{itemize}
+
+\textbf{Key Questions:}
+\begin{itemize}
+\item How to run GPT-3 on CPU?
+\item 4-bit quantization: 75\% size reduction
+\item Distillation: Teacher-student learning
+\item Deploy 175B model on laptop?
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Connection:}
+
+Week 10: Adapt efficiently (fewer parameters)
+
+Week 11: Run efficiently (smaller models)
+
+Together: Deploy powerful AI everywhere!
+\end{columns}
+
+\bottomnote{Lab due next week - explore LoRA hands-on and see 100x efficiency gains yourself!}
+\end{frame}
+
+\end{document}

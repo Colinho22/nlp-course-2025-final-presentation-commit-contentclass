@@ -1,0 +1,238 @@
+% Configuration Settings for Embeddings Presentation
+% Centralized configuration management
+
+% ====================================================================
+% PRESENTATION SETTINGS
+% ====================================================================
+
+% Difficulty Level (1=BSc, 2=MSc, 3=PhD, 4=Research)
+\newcommand{\difficultylevel}{2}
+
+% Language Setting (en=English, de=German, zh=Chinese)
+\newcommand{\presentationlang}{en}
+
+% Time Allocation (in minutes)
+\newcommand{\totalpresentationtime}{50}
+\newcommand{\timeperintro}{5}
+\newcommand{\timeperbasics}{15}
+\newcommand{\timeperadvanced}{20}
+\newcommand{\timeperappendix}{10}
+
+% Presentation Mode
+\newif\ifpresentationmode  \presentationmodetrue  % true for slides, false for handout
+\newif\ifshownotes         \shownotesfalse        % true to show presenter notes
+\newif\ifprintversion      \printversionfalse     % true for print-friendly
+\newif\ifwebversion        \webversionfalse       % true for HTML export
+
+% ====================================================================
+% FEATURE TOGGLES
+% ====================================================================
+
+% Content Features
+\newif\ifshowanimations    \showanimationstrue    % Enable/disable animations
+\newif\ifshowvideos        \showvideosfalse       % Include video links
+\newif\ifshowcode          \showcodefalse         % Show code examples
+\newif\ifshowmath          \showmathtrue          % Show mathematical details
+\newif\ifshowexercises     \showexercisestrue     % Include exercises
+\newif\ifshowreferences    \showreferencestrue    % Include references
+
+% Visual Features
+\newif\ifuseicons          \useiconstrue          % Use FontAwesome icons
+\newif\ifusecolors         \usecolorstrue         % Use color coding
+\newif\ifusecharts         \usechartstrue         % Include charts
+\newif\ifuse3d             \use3dtrue             % Include 3D visualizations
+
+% Advanced Features
+\newif\ifinteractive       \interactivefalse      % Interactive elements
+\newif\ifqrlinks           \qrlinksfalse          % QR codes for links
+\newif\ifaccessibility     \accessibilityfalse    % Accessibility features
+
+% ====================================================================
+% VISUAL SETTINGS
+% ====================================================================
+
+% Font Sizes
+\newcommand{\mainfontsize}{8pt}
+\newcommand{\titlefontsize}{\Large}
+\newcommand{\sectionfontsize}{\large}
+\newcommand{\subsectionfontsize}{\normalsize}
+\newcommand{\captionfontsize}{\small}
+\newcommand{\footnotefontsize}{\tiny}
+
+% Spacing
+\newcommand{\itemseparation}{0.5em}
+\newcommand{\paragraphseparation}{0.3cm}
+\newcommand{\sectionspace}{0.5cm}
+
+% Figure Defaults
+\newcommand{\defaultfigwidth}{0.8\textwidth}
+\newcommand{\defaultfigheight}{0.6\textheight}
+\newcommand{\smallfigwidth}{0.5\textwidth}
+\newcommand{\tinyfigwidth}{0.3\textwidth}
+
+% ====================================================================
+% PATH SETTINGS
+% ====================================================================
+
+% Figure Paths
+\newcommand{\figpath}{../figures/embeddings/}
+\newcommand{\chartpath}{../charts_3d/}
+\newcommand{\iconpath}{../icons/}
+
+% Code Paths
+\newcommand{\codepath}{../code/}
+\newcommand{\notebookpath}{../notebooks/}
+
+% Output Paths
+\newcommand{\buildpath}{build/}
+\newcommand{\outputpath}{output/}
+
+% ====================================================================
+% METADATA SETTINGS
+% ====================================================================
+
+% Version Information
+\newcommand{\presentationversion}{2.0}
+\newcommand{\lastupdate}{\today}
+\newcommand{\copyrighttext}{© 2024 Joerg R. Osterrieder}
+
+% Contact Information
+\newcommand{\authorname}{Joerg R. Osterrieder}
+\newcommand{\authorwebsite}{www.joergosterrieder.com}
+\newcommand{\authoremail}{contact@joergosterrieder.com}
+
+% Course Information
+\newcommand{\coursename}{Word Embeddings Deep Dive}
+\newcommand{\coursecode}{EMBED-101}
+\newcommand{\institution}{Independent}
+
+% ====================================================================
+% CONDITIONAL COMPILATION
+% ====================================================================
+
+% Helper macros for conditional content
+\newcommand{\ifdifficulty}[3]{%
+  \ifnum\difficultylevel<#1\relax
+    #3% Too difficult, show alternative
+  \else
+    #2% Show content
+  \fi
+}
+
+\newcommand{\beginneronly}[1]{%
+  \ifnum\difficultylevel=1\relax #1\fi
+}
+
+\newcommand{\advancedonly}[1]{%
+  \ifnum\difficultylevel>2\relax #1\fi
+}
+
+\newcommand{\iffeature}[3]{%
+  \csname if#1\endcsname #2\else #3\fi
+}
+
+% ====================================================================
+% LEARNING PATH CONFIGURATIONS
+% ====================================================================
+
+% Quick Overview Path (30 min)
+\newif\ifquickoverview \quickoverviewfalse
+
+% Standard Path (50 min)
+\newif\ifstandardpath \standardpathtrue
+
+% Deep Dive Path (90 min)
+\newif\ifdeepdive \deepdivefalse
+
+% Workshop Path (180 min)
+\newif\ifworkshop \workshopfalse
+
+% Path-specific content inclusion
+\newcommand{\quickonly}[1]{\ifquickoverview #1\fi}
+\newcommand{\standardonly}[1]{\ifstandardpath #1\fi}
+\newcommand{\deeponly}[1]{\ifdeepdive #1\fi}
+\newcommand{\workshoponly}[1]{\ifworkshop #1\fi}
+
+% ====================================================================
+% QUALITY SETTINGS
+% ====================================================================
+
+% Compilation Quality
+\newcommand{\draftmode}{false}  % true for draft, false for final
+\newcommand{\compresslevel}{3}  % PDF compression (0-9)
+
+% Image Quality
+\newcommand{\imagequality}{high}  % low, medium, high
+\newcommand{\imageformat}{pdf}    % pdf, png, jpg
+
+% ====================================================================
+% ACCESSIBILITY SETTINGS
+% ====================================================================
+
+\ifaccessibility
+  % High contrast colors
+  \renewcommand{\conceptEmbedding}{black}
+  \renewcommand{\conceptTraining}{darkgray}
+  
+  % Larger fonts
+  \renewcommand{\mainfontsize}{10pt}
+  
+  % Alt text for images
+  \newcommand{\alttext}[1]{[Alt: #1]}
+\else
+  \newcommand{\alttext}[1]{}
+\fi
+
+% ====================================================================
+% LOCALIZATION SETTINGS
+% ====================================================================
+
+% String translations
+\newcommand{\stringtrybox}{%
+  \ifcase\presentationlang
+    Try This!% English
+  \or
+    Probiere das!% German
+  \or
+    试试这个！% Chinese
+  \fi
+}
+
+\newcommand{\stringkeyinsight}{%
+  \ifcase\presentationlang
+    Key Insight% English
+  \or
+    Wichtige Erkenntnis% German
+  \or
+    关键见解% Chinese
+  \fi
+}
+
+% ====================================================================
+% AUTO-CONFIGURATION BASED ON MODE
+% ====================================================================
+
+\ifprintversion
+  \showanimationsfalse
+  \usevideosfalse
+  \usecolorsfalse
+  \qrlinksfalse
+\fi
+
+\ifwebversion
+  \showanimationsfalse
+  \interactivetrue
+  \qrlinkstrue
+\fi
+
+\ifquickoverview
+  \showmathfalse
+  \showexercisesfalse
+  \showreferencesfalse
+\fi
+
+\ifworkshop
+  \showcodetrue
+  \showexercisestrue
+  \interactivetrue
+\fi

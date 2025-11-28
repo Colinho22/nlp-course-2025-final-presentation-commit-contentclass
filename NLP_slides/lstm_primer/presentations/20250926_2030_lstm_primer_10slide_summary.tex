@@ -1,0 +1,559 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{listings}
+
+\definecolor{mainGray}{RGB}{64,64,64}
+\definecolor{annotGray}{RGB}{180,180,180}
+\definecolor{backGray}{RGB}{240,240,240}
+
+\definecolor{forgetRed}{RGB}{231,76,60}
+\definecolor{inputGreen}{RGB}{46,204,113}
+\definecolor{outputBlue}{RGB}{52,152,219}
+
+\newcommand{\given}{\mid}
+
+\title{LSTM Primer: Next Word Prediction}
+\subtitle{From Autocomplete to Modern Language Models}
+\author{BSc Level Introduction}
+\date{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{The Autocomplete Challenge}
+\begin{center}
+\textbf{You're typing on your phone\ldots}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/autocomplete_screenshot.pdf}
+
+\textbf{The Goal:}
+\begin{itemize}
+\item Predict what word comes next
+\item Based on what you've typed
+\item Fast and accurate
+\item Works for any context
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why It's Hard:}
+\begin{itemize}
+\item Context can be long
+\item Words far back still matter
+\item Grammar rules complex
+\item Meaning changes with context
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Example Challenges:}
+\begin{itemize}
+\item ``I love chocolate. But I prefer \_\_\_''
+\item Need to remember ``love/prefer'' pattern
+\item Forget specific ``chocolate''
+\item Context = 7 words back!
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This is a sequence modeling problem}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{What We've Tried So Far: N-grams}
+\begin{center}
+\textbf{Simple Baseline: Count Word Pairs}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{How N-grams Work:}
+\begin{itemize}
+\item Look at previous 1-2 words only
+\item Count what usually comes next
+\item Pick most common continuation
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Example:}
+\begin{itemize}
+\item Saw ``I love'' 100 times
+\item Followed by ``you'': 60 times
+\item Followed by ``chocolate'': 30 times
+\item Followed by ``pizza'': 10 times
+\item Predict: ``you'' (most common)
+\end{itemize}
+
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/context_window_comparison.pdf}
+
+\textbf{Fatal Limitations:}
+\begin{itemize}
+\item Only sees 1-2 words back
+\item Can't handle long context
+\item No real understanding
+\item Millions of word combinations
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}We need a better memory system}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{The Memory Problem}
+\begin{center}
+\textbf{Reading a Book: What Do You Remember?}
+\end{center}
+\vspace{5mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Human Memory:}
+\begin{itemize}
+\item You read 200 pages
+\item Don't remember every word
+\item Remember: Main plot
+\item Remember: Key characters
+\item Forget: Minor details
+\item Forget: Exact sentences
+\end{itemize}
+
+\vspace{5mm}
+\textbf{The Insight:}
+\begin{itemize}
+\item Memory is \textbf{selective}
+\item Keep important information
+\item Discard irrelevant details
+\item Update as story progresses
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{What We Need in AI:}
+\begin{itemize}
+\item Remember relevant past words
+\item Forget irrelevant words
+\item Decide what's important NOW
+\item Update memory as we read
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Example:}
+
+\textit{``I grew up in Paris. I learned to speak fluent \_\_\_''}
+
+\begin{itemize}
+\item Remember: ``Paris'' (8 words back)
+\item Forget: ``grew up'' (not needed now)
+\item Predict: ``French''
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}We need controllable memory}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{RNN - First Attempt at Memory}
+\begin{center}
+\textbf{Recurrent Neural Networks: A Loop of Memory}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The RNN Idea:}
+\begin{itemize}
+\item Hidden state = memory
+\item Update memory at each word
+\item Use memory to predict next word
+\item Memory flows through time
+\end{itemize}
+
+\vspace{3mm}
+\textbf{The Math:}
+\begin{align*}
+h_t &= \tanh(W_h h_{t-1} + W_x x_t) \\
+y_t &= \text{softmax}(W_y h_t)
+\end{align*}
+
+\begin{itemize}
+\item $h_t$ = memory at time $t$
+\item $x_t$ = current word
+\item $h_{t-1}$ = previous memory
+\item $y_t$ = prediction
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Problem:}
+
+When we train (backpropagation):
+\begin{itemize}
+\item Gradient flows backward through time
+\item Multiplied by same weight matrix
+\item After 10 steps: $0.9^{10} = 0.35$
+\item After 20 steps: $0.9^{20} = 0.12$
+\item After 50 steps: $0.9^{50} = 0.005$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Vanishing Gradient:}
+\begin{itemize}
+\item Signal gets weaker each step
+\item Can't learn from distant past
+\item Memory effectively only 5-10 words
+\item Same problem as n-grams!
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}We need a gradient highway}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{The Vanishing Gradient Problem}
+\begin{center}
+\textbf{Why RNNs Forget Long-Term Context}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{What Happens During Training:}
+
+\vspace{3mm}
+\textbf{Step 1:} Make prediction
+\begin{itemize}
+\item Forward pass through network
+\item Get prediction error
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Step 2:} Compute gradient
+\begin{itemize}
+\item How much to adjust weights?
+\item Flow gradient backward in time
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Step 3:} Problem appears
+\begin{itemize}
+\item Gradient multiplied at each step
+\item $\frac{\partial h_t}{\partial h_{t-1}} \approx 0.9$
+\item After $n$ steps: $0.9^n$
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Numbers:}
+
+\begin{center}
+\begin{tabular}{cc}
+\textbf{Steps Back} & \textbf{Gradient Strength} \\
+\hline
+1 & 0.90 (90\%) \\
+5 & 0.59 (59\%) \\
+10 & 0.35 (35\%) \\
+20 & 0.12 (12\%) \\
+50 & 0.005 (0.5\%) \\
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{The Impact:}
+\begin{itemize}
+\item Word 50 steps back: Almost no learning
+\item Network can't learn long-term patterns
+\item Effectively limited to 5-10 words
+\item Need 50-100+ word context!
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Solution: Create a direct path for gradients}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{LSTM Solution: Selective Memory with Gates}
+\begin{center}
+\textbf{Long Short-Term Memory: Three Gates Control Information Flow}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\includegraphics[width=\textwidth]{../figures/lstm_architecture.pdf}
+
+\textbf{Traffic Light Analogy:}
+\begin{itemize}
+\item {\color{forgetRed}Red Gate (Forget)}: What to remove from memory
+\item {\color{inputGreen}Green Gate (Input)}: What to add to memory
+\item {\color{outputBlue}Blue Gate (Output)}: What to reveal now
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{How It Works:}
+
+\vspace{3mm}
+{\color{forgetRed}\textbf{Forget Gate:}} (0 to 1)
+\begin{itemize}
+\item 0.0 = Completely forget
+\item 1.0 = Keep everything
+\item Example: 0.9 at period = forget old topic
+\end{itemize}
+
+\vspace{3mm}
+{\color{inputGreen}\textbf{Input Gate:}} (0 to 1)
+\begin{itemize}
+\item 0.0 = Ignore new word
+\item 1.0 = Fully store
+\item Example: 0.95 on ``Paris'' = remember!
+\end{itemize}
+
+\vspace{3mm}
+{\color{outputBlue}\textbf{Output Gate:}} (0 to 1)
+\begin{itemize}
+\item 0.0 = Hide memory
+\item 1.0 = Reveal everything
+\item Example: 0.8 when predicting = use memory
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Gates are learned from data}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Inside the LSTM: Gate Equations}
+\begin{center}
+\textbf{From Intuition to Mathematics}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Four Equations:}
+
+\vspace{3mm}
+{\color{forgetRed}\textbf{1. Forget Gate:}}
+$$f_t = \sigma(W_f [h_{t-1}, x_t] + b_f)$$
+
+{\color{inputGreen}\textbf{2. Input Gate:}}
+$$i_t = \sigma(W_i [h_{t-1}, x_t] + b_i)$$
+$$\tilde{C}_t = \tanh(W_C [h_{t-1}, x_t] + b_C)$$
+
+\textbf{3. Update Cell State:}
+$$C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$$
+
+{\color{outputBlue}\textbf{4. Output Gate:}}
+$$o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)$$
+$$h_t = o_t \odot \tanh(C_t)$$
+
+\column{0.48\textwidth}
+\textbf{Concrete Example:}
+
+Input: ``I love''
+
+\vspace{3mm}
+\textbf{Values at ``love'':}
+\begin{itemize}
+\item $f_t = 0.3$ (forget 70\% of ``I'')
+\item $i_t = 0.9$ (strongly store ``love'')
+\item $\tilde{C}_t = [0.8, -0.3, 0.5, \ldots]$ (new info)
+\item $C_t = 0.3 \cdot C_{t-1} + 0.9 \cdot \tilde{C}_t$
+\item $o_t = 0.7$ (reveal 70\% of memory)
+\item $h_t = 0.7 \cdot \tanh(C_t)$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Key Insight:}
+\begin{itemize}
+\item $\sigma$ = sigmoid (0 to 1)
+\item $\odot$ = element-wise multiply
+\item $C_t$ = cell state (long-term memory)
+\item $h_t$ = hidden state (short-term output)
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}All gates learned automatically during training}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Training Progression: Watching It Learn}
+\begin{center}
+\textbf{How LSTM Improves Over Time}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/training_progression.pdf}
+
+\column{0.42\textwidth}
+\textbf{What's Happening:}
+
+\vspace{3mm}
+\textbf{Epoch 1 (Random):}
+\begin{itemize}
+\item Gates untrained
+\item Random predictions
+\item No pattern learning
+\item Loss: 8.5
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Epoch 10 (Bigrams):}
+\begin{itemize}
+\item Learns immediate pairs
+\item ``I'' $\rightarrow$ ``love'' pattern
+\item Still struggles with context
+\item Loss: 4.2
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Epoch 50 (Context):}
+\begin{itemize}
+\item Gates start working
+\item Remembers further back
+\item Better predictions
+\item Loss: 2.1
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Epoch 200 (Mastery):}
+\begin{itemize}
+\item Gates fine-tuned
+\item Long-term dependencies
+\item Coherent predictions
+\item Loss: 0.8
+\end{itemize}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Why LSTMs Work: The Gradient Highway}
+\begin{center}
+\textbf{Comparing RNN vs LSTM Gradient Flow}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{../figures/gradient_flow_comparison.pdf}
+
+\column{0.42\textwidth}
+\textbf{RNN Problem:}
+\begin{itemize}
+\item Gradient: $0.9^{10} = 0.35$
+\item Multiplied at every step
+\item Exponential decay
+\item Can't learn long-term
+\end{itemize}
+
+\vspace{5mm}
+\textbf{LSTM Solution:}
+\begin{itemize}
+\item Gradient: $1.0^{10} = 1.0$
+\item Addition in cell state
+\item No multiplication!
+\item Learns 50+ steps back
+\end{itemize}
+
+\vspace{5mm}
+\textbf{The Key Equation:}
+$$C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$$
+
+\begin{itemize}
+\item Addition ($+$) not multiplication
+\item Gradient flows directly
+\item No vanishing problem
+\item ``Highway'' for information
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}This is why LSTMs revolutionized sequence modeling}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Modern Applications \& Summary}
+\begin{center}
+\textbf{From Theory to Real-World Impact}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Where LSTMs Are Used:}
+\begin{itemize}
+\item \textbf{Autocomplete}: Phone keyboards
+\item \textbf{Translation}: Google Translate (2016-2019)
+\item \textbf{Speech Recognition}: Siri, Alexa
+\item \textbf{Sentiment Analysis}: Product reviews
+\item \textbf{Text Generation}: Creative writing
+\item \textbf{Music Generation}: Compose melodies
+\item \textbf{Video Captioning}: Describe videos
+\end{itemize}
+
+\vspace{3mm}
+\textbf{PyTorch Implementation:}
+\begin{lstlisting}[language=Python,basicstyle=\tiny\ttfamily]
+import torch.nn as nn
+lstm = nn.LSTM(input_size=100,
+  hidden_size=256, num_layers=2)
+output, (h_n, c_n) = lstm(input)
+\end{lstlisting}
+
+\column{0.48\textwidth}
+\textbf{Key Takeaways:}
+
+\vspace{3mm}
+\textbf{1. The Problem:}
+\begin{itemize}
+\item Need to remember long context
+\item RNNs couldn't learn beyond 5-10 words
+\item Vanishing gradient problem
+\end{itemize}
+
+\vspace{3mm}
+\textbf{2. The Solution:}
+\begin{itemize}
+\item Three gates control memory
+\item Cell state = gradient highway
+\item Additive updates preserve gradients
+\end{itemize}
+
+\vspace{3mm}
+\textbf{3. The Impact:}
+\begin{itemize}
+\item 50-100+ word context
+\item Breakthrough in NLP (2015-2018)
+\item Foundation for modern transformers
+\end{itemize}
+
+\vspace{3mm}
+\textbf{What's Next:}
+\begin{itemize}
+\item Transformers (2017): Attention mechanism
+\item BERT, GPT models built on these ideas
+\item LSTMs still used in many applications
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}LSTMs solved the memory problem}
+
+\end{columns}
+\end{frame}
+
+\end{document}

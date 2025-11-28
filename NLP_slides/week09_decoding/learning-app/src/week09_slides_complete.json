@@ -1,0 +1,3751 @@
+{
+  "metadata": {
+    "totalSlides": 62,
+    "source": "20251119_1100_week09_decoding_fixed.tex",
+    "extractionDate": "2025-11-20",
+    "sections": {
+      "intro": 3,
+      "extremes": 7,
+      "toolbox": 33,
+      "quiz1": 1,
+      "problems": 7,
+      "quiz2": 1,
+      "integration": 4,
+      "quiz3": 1,
+      "conclusion": 2,
+      "appendix": 3
+    },
+    "features": {
+      "pauseSlides": 4,
+      "columnSlides": 9,
+      "colorboxSlides": 6,
+      "tikzSlides": 1
+    }
+  },
+  "slides": [
+    {
+      "id": 1,
+      "frameOptions": "plain",
+      "title": "",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "beamercolorbox",
+          "content": "NEEDS_MANUAL_EXTRACTION"
+        },
+        {
+          "type": "vspace",
+          "value": "0.3cm"
+        },
+        {
+          "type": "vspace",
+          "value": "0.5cm"
+        },
+        {
+          "type": "text",
+          "content": "{Week 9: From Probabilities to Text} {November 2025}",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": null,
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": true,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": [
+          "normalsize",
+          "Large",
+          "Huge"
+        ]
+      },
+      "section": "intro"
+    },
+    {
+      "id": 2,
+      "frameOptions": "t",
+      "title": "The Decoding Challenge: Choosing From 50,000 Words",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "vocabulary_probability_bsc.pdf",
+          "width": 0.8,
+          "options": "width=0.80\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**The Question**: Given these probabilities for \"The cat __\", which word should we pick?",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "At each step, model outputs probability distribution over entire vocabulary - how do we choose?",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "intro"
+    },
+    {
+      "id": 3,
+      "frameOptions": "t",
+      "title": "Context: How We Got Here",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "prediction_to_text_pipeline_bsc.pdf",
+          "width": 0.75,
+          "options": "width=0.75\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Our Journey**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "enumerate",
+          "items": [
+            "We trained models (Weeks 3-7: RNN $$ Transformers $$ BERT/GPT)",
+            "They learned to predict: $P(word | context)$",
+            "They output probability distributions over 50,000+ words",
+            "**Today**: How do we convert these probabilities into actual text?"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Today**: How do we convert these probabilities into actual text?",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Models predict probabilities. Decoding converts probabilities to text.",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "intro"
+    },
+    {
+      "id": 4,
+      "frameOptions": "t",
+      "title": "Extreme Case 1: Greedy Decoding (Too Narrow)",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "extreme_greedy_single_path_bsc.pdf",
+          "width": 0.9,
+          "options": "width=0.90\\textwidth"
+        }
+      ],
+      "bottomNote": "Extreme 1: Too narrow - misses 99.9999999% of search space",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "extremes"
+    },
+    {
+      "id": 5,
+      "frameOptions": "t",
+      "title": "What If We Explored More Paths?",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.2cm"
+        },
+        {
+          "type": "coloredText",
+          "color": "mlgreen",
+          "content": "sat"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**But it ignored these alternatives**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "coloredText",
+          "color": "mlorange",
+          "content": "walked"
+        },
+        {
+          "type": "coloredText",
+          "color": "mlorange",
+          "content": "jumped"
+        },
+        {
+          "type": "coloredText",
+          "color": "mlorange",
+          "content": "slept"
+        },
+        {
+          "type": "coloredText",
+          "color": "mlorange",
+          "content": "ran"
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "colorbox",
+          "color": "mllavender4",
+          "content": "{0.85"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "text",
+          "content": [
+            "}}"
+          ],
+          "pauseBefore": false
+        },
+        {
+          "type": "pause"
+        },
+        {
+          "type": "coloredText",
+          "color": "mlred",
+          "content": "{Answer"
+        }
+      ],
+      "bottomNote": "From 1 path to ALL paths - what could go wrong?",
+      "metadata": {
+        "hasPause": true,
+        "hasColumns": false,
+        "hasColorbox": true,
+        "hasTikz": false,
+        "hasTabular": true,
+        "hasMath": false,
+        "fontSizes": [
+          "normalsize",
+          "Large"
+        ]
+      },
+      "section": "extremes"
+    },
+    {
+      "id": 6,
+      "frameOptions": "t",
+      "title": "Greedy's Fatal Flaw: Missing Better Paths",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "greedy_suboptimal_comparison_bsc.pdf",
+          "width": 0.75,
+          "options": "width=0.75\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "2mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**The Problem**: High first-step probability $$ Best complete sentence",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Greedy commits early, missing narratively richer paths despite lower initial probability",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": []
+      },
+      "section": "extremes"
+    },
+    {
+      "id": 7,
+      "frameOptions": "t",
+      "title": "Extreme Case 2: Full Search Space (Too Broad)",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "extreme_full_beam_explosion_bsc.pdf",
+          "width": 0.7,
+          "options": "width=0.70\\textwidth"
+        }
+      ],
+      "bottomNote": "Extreme 2: Too broad - exponential explosion makes this impossible",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "extremes"
+    },
+    {
+      "id": 8,
+      "frameOptions": "t",
+      "title": "Full Exploration: From One Path to Billions",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "full_exploration_tree_graphviz.pdf",
+          "width": 0.65,
+          "options": "width=0.65\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "1mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**The Problem**: How do we explore more than 1 but less than 10 billion paths?",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Exponential explosion: 100 → 10,000 → 1,000,000 → 10 billion paths",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "extremes"
+    },
+    {
+      "id": 9,
+      "frameOptions": "t",
+      "title": "The Extremes: Why Neither Works",
+      "layout": "two-column-equal",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "extreme_coverage_comparison_bsc.pdf",
+          "width": 0.65,
+          "options": "width=0.65\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "2mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Greedy (0.01% coverage)**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Too narrow - misses better paths",
+            "Fast but low quality",
+            "Prone to repetition loops"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Full Search (100% coverage)**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Too narrow - misses better paths",
+            "Fast but low quality",
+            "Prone to repetition loops"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Key Insight**: We need methods that explore 1-5% of space intelligently",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Neither extreme is practical - the solution lies in between",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": true,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "extremes"
+    },
+    {
+      "id": 10,
+      "frameOptions": "t",
+      "title": "The Sweet Spot: Balanced Exploration",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "practical_methods_coverage_bsc.pdf",
+          "width": 0.75,
+          "options": "width=0.75\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**The Solution: 1-5% Coverage**",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "**Not too narrow**: Explores enough paths to find good sequences",
+            "**Not too broad**: Computationally feasible (seconds, not days)",
+            "**Strategic exploration**: Focus on promising regions of search space"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Not too narrow**: Explores enough paths to find good sequences",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Not too broad**: Computationally feasible (seconds, not days)",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Strategic exploration**: Focus on promising regions of search space",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Coming Next**: Learn 6 specific methods that achieve this balance",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "The sweet spot: Methods that intelligently explore 1-5% of the search space",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "extremes"
+    },
+    {
+      "id": 11,
+      "frameOptions": "t",
+      "title": "Method 1: Greedy Decoding",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.2cm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Core Mechanism**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "w_t = \\argmax_{w \\in V} P(w \\mid w_1, \\ldots, w_{t-1})"
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Characteristics**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Deterministic (same input → same output)",
+            "Fast: O(1) per step",
+            "No exploration"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "At each step, pick the single word with highest probability",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Method 1 of 6: Greedy = always pick argmax",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 12,
+      "frameOptions": "t",
+      "title": "Method 2: Beam Search",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.2cm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Core Mechanism**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Characteristics**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Explores k paths simultaneously (typically k=3-5)",
+            "Trade exploration vs computation",
+            "Still deterministic for fixed k"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Maintain k hypotheses (\"beams\") at each step Expand each hypothesis, keep top-k by cumulative probability",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Method 2 of 6: Beam = keep top-k paths",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 13,
+      "frameOptions": "t",
+      "title": "Beam Search: Step-by-Step Example",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "beam_search_tree_graphviz.pdf",
+          "width": 0.65,
+          "options": "width=0.65\\textwidth"
+        }
+      ],
+      "bottomNote": "Worked example shows why beam search finds better sequences than greedy",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 14,
+      "frameOptions": "t",
+      "title": "Beam Search: Algorithm & Settings",
+      "layout": "two-column-equal",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Algorithm**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "enumerate",
+          "items": [
+            "Start: Keep top-k tokens",
+            "Expand: Generate continuations for each",
+            "Score: Multiply probabilities",
+            "Prune: Keep top-k sequences",
+            "Repeat until END token"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Scoring**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "\\text{score}(y_1...y_t) = \\prod_{i=1}^t P(y_i | y_{<i})"
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "\\text{score} = \\frac{1}{t} \\sum_{i=1}^t \\log P(y_i | y_{<i})"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Best For**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Machine translation",
+            "Summarization",
+            "Question answering",
+            "Tasks with \"correct\" answer"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Parameters**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Tradeoffs**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "With length normalization: Width = 3-5 (translation) Width = 10 (diverse outputs) + Better quality than greedy + Diverse hypotheses - Still deterministic - 4-5$$ slower than greedy",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Beam search is the workhorse for deterministic tasks",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": true,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 15,
+      "frameOptions": "t",
+      "title": "Method 3: Temperature Sampling",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.2cm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Core Mechanism**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "P_T(w_i) = \\frac{\\exp(z_i / T)}{\\sum_j \\exp(z_j / T)}"
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Characteristics**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "$T < 1$: More focused (sharper distribution)",
+            "$T > 1$: More random (flatter distribution)",
+            "Stochastic: different output each time"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Reshape probability distribution with temperature T, then sample",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Method 3 of 6: Temperature = control randomness",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 16,
+      "frameOptions": "t",
+      "title": "Temperature Sampling: Control Randomness",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "temperature_effects_bsc.pdf",
+          "width": 0.65,
+          "options": "width=0.65\\textwidth"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Key Insight**: Temperature reshapes probability distribution",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "T $<$ 1: more focused. T = 1: unchanged. T $>$ 1: more random",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 17,
+      "frameOptions": "t",
+      "title": "Temperature: Worked Example",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "temperature_calculation_bsc.pdf",
+          "width": 0.7,
+          "options": "width=0.70\\textwidth"
+        }
+      ],
+      "bottomNote": "Concrete numbers show how temperature scaling works",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 18,
+      "frameOptions": "t",
+      "title": "Method 4: Top-k Sampling",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.2cm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Core Mechanism**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Characteristics**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Filters out low-probability \"junk\" words",
+            "Fixed cutoff (always k words)",
+            "Can combine with temperature"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "1. Sort words by probability 2. Keep only top k words (e.g., k=50) 3. Renormalize and sample from these k",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Method 4 of 6: Top-k = filter then sample",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 19,
+      "frameOptions": "t",
+      "title": "Top-k Sampling: Filter the Tail",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "topk_filtering_bsc.pdf",
+          "width": 0.7,
+          "options": "width=0.70\\textwidth"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Key Insight**: Only sample from top-k most likely tokens",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Prevents sampling from long tail of unlikely words",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 20,
+      "frameOptions": "t",
+      "title": "Top-k: Worked Example",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "topk_example_bsc.pdf",
+          "width": 0.7,
+          "options": "width=0.70\\textwidth"
+        }
+      ],
+      "bottomNote": "Concrete numbers show k=50 filtering process",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 21,
+      "frameOptions": "t",
+      "title": "Method 5: Nucleus (Top-p) Sampling",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.2cm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Core Mechanism**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Characteristics**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Adaptive: number of words varies",
+            "Focuses on \"nucleus\" of probability mass (typically p=0.9)",
+            "Adjusts to distribution shape"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "1. Sort words by probability 2. Keep minimum set where cumulative probability $$ p 3. Sample from this set",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Method 5 of 6: Nucleus = adaptive probability mass",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 22,
+      "frameOptions": "t",
+      "title": "Nucleus (Top-p) Sampling: Dynamic Cutoff",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "nucleus_process_bsc.pdf",
+          "width": 0.7,
+          "options": "width=0.70\\textwidth"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Key Insight**: Adapt vocabulary size to distribution shape",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Nucleus size grows/shrinks based on probability spread",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 23,
+      "frameOptions": "t",
+      "title": "Nucleus: How Distribution Shape Matters",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "nucleus_cumulative_bsc.pdf",
+          "width": 0.7,
+          "options": "width=0.70\\textwidth"
+        }
+      ],
+      "bottomNote": "Same p value gives different vocabulary sizes for peaked vs flat distributions",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 24,
+      "frameOptions": "t",
+      "title": "Method 6: Contrastive Search",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.2cm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Core Mechanism**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "\\text{score} = (1-\\alpha) \\cdot \\text{model probability} - \\alpha \\cdot \\text{similarity to previous}"
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Characteristics**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Explicitly avoids repetition",
+            "Balances coherence and diversity",
+            "Deterministic with hyperparameter $$"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Choose word that maximizes: Penalize words similar to already-generated text",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Method 6 of 6: Contrastive = penalize repetition",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 25,
+      "frameOptions": "t",
+      "title": "The Degeneration Problem",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "degeneration_problem_bsc.pdf",
+          "width": 0.7,
+          "options": "width=0.70\\textwidth"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Discovery Question**: Why do models repeat themselves?",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Greedy and beam search maximize probability - but high probability = repeating recent context",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 26,
+      "frameOptions": "t",
+      "title": "Contrastive Search: Penalize Repetition",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "vspace",
+          "value": "-3mm"
+        },
+        {
+          "type": "figure",
+          "path": "contrastive_mechanism_bsc.pdf",
+          "width": 0.6,
+          "options": "width=0.60\\textwidth"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Key Insight**: Balance probability with diversity penalty",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Explicitly avoid copying recent context - prevents degeneration in long texts",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 27,
+      "frameOptions": "t",
+      "title": "Contrastive vs Nucleus: Direct Comparison",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "contrastive_vs_nucleus_bsc.pdf",
+          "width": 0.62,
+          "options": "width=0.62\\textwidth"
+        }
+      ],
+      "bottomNote": "Contrastive adds explicit similarity penalty that Nucleus lacks",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 28,
+      "frameOptions": "t",
+      "title": "Checkpoint Quiz 1: Match the Method",
+      "layout": "two-column-asymmetric",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Methods:**",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "enumerate",
+          "items": [
+            "Greedy",
+            "Beam Search",
+            "Temperature",
+            "Top-k",
+            "Nucleus",
+            "Contrastive"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Match to Mechanisms:**",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": []
+        },
+        {
+          "type": "formattedText",
+          "content": "[**A.**] Sample from reshaped distribution",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "[**B.**] Keep top-k paths at each step",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "[**C.**] Always pick argmax",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "[**D.**] Filter to k words, then sample",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "[**E.**] Penalize similarity to previous",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "[**F.**] Adaptive probability mass cutoff",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "pause"
+        },
+        {
+          "type": "colorbox",
+          "color": "mlgreen!30",
+          "content": "{0.85"
+        },
+        {
+          "type": "formattedText",
+          "content": "*Now you know the toolbox - let's see WHY each tool exists!*",
+          "formatting": [
+            "italic"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "}}",
+          "pauseBefore": true
+        }
+      ],
+      "bottomNote": "Quiz 1: Can you match each method to its mechanism?",
+      "metadata": {
+        "hasPause": true,
+        "hasColumns": true,
+        "hasColorbox": true,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 29,
+      "frameOptions": "t",
+      "title": "Why Beam Search? Problem: Repetition Loops",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.5cm"
+        },
+        {
+          "type": "figure",
+          "path": "problem1_repetition_output_bsc.pdf",
+          "width": 0.75,
+          "options": "width=0.75\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "2mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Greedy's Problem**: Trapped in loops, can't escape",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Why Beam Helps**: Explores k=3-5 paths, avoids greedy trap",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Problem 1 of 6: Greedy decoding creates loops → Beam search explores alternatives",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 30,
+      "frameOptions": "t",
+      "title": "Why Temperature? Problem: No Diversity",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.5cm"
+        },
+        {
+          "type": "figure",
+          "path": "problem2_diversity_output_bsc.pdf",
+          "width": 0.75,
+          "options": "width=0.75\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "2mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Greedy & Beam's Problem**: Same input → same output always",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Why Temperature Helps**: Sampling introduces randomness, enables creativity",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Problem 2 of 6: Deterministic methods lack variation → Temperature adds controlled randomness",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 31,
+      "frameOptions": "t",
+      "title": "Why Top-k? Problem: Too Boring or Too Crazy",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.5cm"
+        },
+        {
+          "type": "figure",
+          "path": "problem3_balance_output_bsc.pdf",
+          "width": 0.75,
+          "options": "width=0.75\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "2mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Temperature's Problem**: Pure sampling includes low-quality words",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Why Top-k Helps**: Filter to k=50 best words, then sample",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Problem 3 of 6: Can't balance quality & creativity → Top-k filters unlikely words",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 32,
+      "frameOptions": "t",
+      "title": "Beam Search Limitation: Missing Better Paths",
+      "layout": "four-figure-grid",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-2mm"
+        },
+        {
+          "type": "vspace",
+          "value": "-0.5cm"
+        },
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "problem4_search_tree_pruning_bsc.pdf",
+          "width": 0.75,
+          "options": "width=\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "2mm"
+        },
+        {
+          "type": "figure",
+          "path": "problem4_path_comparison_bsc.pdf",
+          "width": 0.75,
+          "options": "width=\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "problem4_probability_evolution_bsc.pdf",
+          "width": 0.75,
+          "options": "width=\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "2mm"
+        },
+        {
+          "type": "figure",
+          "path": "problem4_recovery_problem_bsc.pdf",
+          "width": 0.75,
+          "options": "width=\\textwidth"
+        }
+      ],
+      "bottomNote": "Problem 4 of 6: Even beam search prunes early, cannot recover optimal path - 4 perspectives",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": true,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 33,
+      "frameOptions": "t",
+      "title": "Why Nucleus? Problem: Distribution Tail Contains Junk",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.5cm"
+        },
+        {
+          "type": "figure",
+          "path": "problem5_distribution_output_bsc.pdf",
+          "width": 0.75,
+          "options": "width=0.75\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "2mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Top-k's Problem**: Fixed k doesn't adapt to distribution shape",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Why Nucleus Helps**: Adaptive cutoff at p=0.9 probability mass",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Problem 5 of 6: Tail contains junk → Nucleus adapts to distribution",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 34,
+      "frameOptions": "t",
+      "title": "Why Contrastive? Problem: Generic Repetitive Text",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.5cm"
+        },
+        {
+          "type": "figure",
+          "path": "problem6_speed_output_bsc.pdf",
+          "width": 0.75,
+          "options": "width=0.75\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "2mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**All Methods' Problem**: Can still produce generic, repetitive text",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Why Contrastive Helps**: Explicitly penalizes similarity to previous tokens",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Problem 6 of 6: Generic text persists → Contrastive reduces repetition",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 35,
+      "frameOptions": "t",
+      "title": "The Quality-Diversity Tradeoff",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "quality_diversity_scatter_bsc.pdf",
+          "width": 0.63,
+          "options": "width=0.63\\textwidth"
+        },
+        {
+          "type": "vspace",
+          "value": "1mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Key Insight**: We saw problems and their solutions. Each method balances quality vs diversity.",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "All 6 problems relate to balancing coherence with creativity",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 36,
+      "frameOptions": "t",
+      "title": "Checkpoint Quiz 2: Which Method for Which Problem?",
+      "layout": "two-column-custom",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Match Solution to Problem:**",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "enumerate",
+          "items": [
+            "Beam Search → ?",
+            "Temperature → ?",
+            "Top-k → ?",
+            "Nucleus → ?",
+            "Contrastive → ?"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Problems to Solve:**",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": []
+        },
+        {
+          "type": "formattedText",
+          "content": "[**A.**] Too boring OR too crazy",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "[**B.**] Repetition loops",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "[**C.**] No diversity",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "[**D.**] Fixed k doesn't adapt",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "[**E.**] Generic repetitive text",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "pause"
+        },
+        {
+          "type": "colorbox",
+          "color": "mllavender3",
+          "content": "{0.85"
+        },
+        {
+          "type": "formattedText",
+          "content": "*Each method targets a specific failure mode!*",
+          "formatting": [
+            "italic"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "}}",
+          "pauseBefore": true
+        }
+      ],
+      "bottomNote": "Quiz 2: Understanding the method-problem mapping",
+      "metadata": {
+        "hasPause": true,
+        "hasColumns": true,
+        "hasColorbox": true,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 37,
+      "frameOptions": "t",
+      "title": "All Methods on Quality-Diversity Space",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "quality_diversity_pareto_bsc.pdf",
+          "width": 0.63,
+          "options": "width=0.63\\textwidth"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Pareto Frontier**: No method dominates all others",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Choose based on task: deterministic tasks (left), creative tasks (right)",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 38,
+      "frameOptions": "t",
+      "title": "Choosing the Right Method: Decision Tree",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "task_method_decision_tree_bsc.pdf",
+          "width": 0.7,
+          "options": "width=0.70\\textwidth"
+        }
+      ],
+      "bottomNote": "Start with task requirements, follow tree to recommended method",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 39,
+      "frameOptions": "t",
+      "title": "Task-Specific Recommendations (2025)",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "task_recommendations_table_bsc.pdf",
+          "width": 0.75,
+          "options": "width=0.75\\textwidth"
+        }
+      ],
+      "bottomNote": "Comprehensive mapping from 8 common tasks to optimal decoding strategies",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 40,
+      "frameOptions": "t",
+      "title": "Checkpoint Quiz 3: Choose the Right Method",
+      "layout": "two-column-custom",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Given these tasks, which method would you use?**",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "enumerate",
+          "items": [
+            "**Medical report summary** itemize",
+            "Needs: Accuracy, no hallucination itemize",
+            "**Creative story writing** itemize",
+            "Needs: Diversity, creativity itemize",
+            "**Code generation** itemize",
+            "Needs: Correctness, explore options itemize"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Medical report summary**",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Needs: Accuracy, no hallucination"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Creative story writing**",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Needs: Accuracy, no hallucination"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Code generation**",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Needs: Accuracy, no hallucination"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "enumerate",
+          "items": [
+            "**Medical report summary** itemize",
+            "Needs: Accuracy, no hallucination itemize",
+            "**Creative story writing** itemize",
+            "Needs: Diversity, creativity itemize",
+            "**Code generation** itemize",
+            "Needs: Correctness, explore options itemize"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Customer service chat**",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Needs: Accuracy, no hallucination"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Legal document**",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Needs: Accuracy, no hallucination"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Long blog post**",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Needs: Accuracy, no hallucination"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "pause"
+        },
+        {
+          "type": "colorbox",
+          "color": "mlblue!20",
+          "content": "{0.95"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Answers:**\\\\",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "1. Greedy/Low temp (T=0.1-0.3) 2. Nucleus (p=0.95, T=1.0) 3. Beam Search (k=3-5)\\\\ 4. Nucleus (p=0.9, T=0.7) 5. Greedy (T=0) 6. Contrastive ($$=0.6) }}",
+          "pauseBefore": true
+        }
+      ],
+      "bottomNote": "Quiz 3: Real-world task selection is crucial for quality",
+      "metadata": {
+        "hasPause": true,
+        "hasColumns": true,
+        "hasColorbox": true,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 41,
+      "frameOptions": "t",
+      "title": "Key Takeaways",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "list",
+          "listType": "enumerate",
+          "items": [
+            "**6 Problems $$ 6 Solutions**: Each method solves specific failure mode",
+            "**Deterministic** (Greedy, Beam): High quality, no diversity - factual tasks",
+            "**Stochastic** (Temperature, Top-k, Nucleus): Diverse but variable quality",
+            "**Balanced** (Contrastive): Explicit degeneration prevention",
+            "**Task matters**: Translation $$ Beam | Dialogue $$ Nucleus | Stories $$ Contrastive",
+            "**Tradeoffs**: Speed vs Quality, Diversity vs Coherence"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**6 Problems $$ 6 Solutions**: Each method solves specific failure mode",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Deterministic** (Greedy, Beam): High quality, no diversity - factual tasks",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Stochastic** (Temperature, Top-k, Nucleus): Diverse but variable quality",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Balanced** (Contrastive): Explicit degeneration prevention",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Task matters**: Translation $$ Beam | Dialogue $$ Nucleus | Stories $$ Contrastive",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Tradeoffs**: Speed vs Quality, Diversity vs Coherence",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Modern Standard**: Nucleus (top-p=0.9) + Temperature (T=0.7) for most applications",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Next**: Lab - Implement all 6 methods, measure quality-diversity tradeoffs",
+          "formatting": [
+            "bold"
+          ]
+        }
+      ],
+      "bottomNote": "Decoding strategy matters as much as model architecture",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": []
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 42,
+      "frameOptions": "t",
+      "title": "From Probabilities to Text: The Complete Journey",
+      "layout": "tikz-diagram",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "[above=0.2cm] at (0,0) {**Probabilities**};",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "[above=0.2cm] at (3.3,0) {**6 Problems**};",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "[above=0.2cm] at (6.6,0) {**6 Solutions**};",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "[above=0.2cm] at (10,0) {**Quality Text**};",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "1cm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**What We Learned**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Models give us probability distributions (Week 3-7)",
+            "Converting to text has 6 fundamental challenges",
+            "Each decoding method addresses specific problems",
+            "No universal best - choose based on task requirements",
+            "Production systems use hybrid methods (Nucleus + Temperature)"
+          ]
+        }
+      ],
+      "bottomNote": "Complete pipeline from model training to text generation",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": true,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 43,
+      "frameOptions": "t",
+      "title": "",
+      "layout": "appendix-divider",
+      "sections": [
+        {
+          "type": "beamercolorbox",
+          "content": "NEEDS_MANUAL_EXTRACTION"
+        },
+        {
+          "type": "vspace",
+          "value": "0.5cm"
+        },
+        {
+          "type": "vspace",
+          "value": "0.5cm"
+        },
+        {
+          "type": "coloredText",
+          "color": "mlpurple",
+          "content": "{A1-A5: Beam Search Mathematics"
+        },
+        {
+          "type": "coloredText",
+          "color": "mlpurple",
+          "content": "{A6-A10: Sampling Mathematics"
+        },
+        {
+          "type": "coloredText",
+          "color": "mlpurple",
+          "content": "{A11-A14: Contrastive Search & Degeneration"
+        },
+        {
+          "type": "coloredText",
+          "color": "mlpurple",
+          "content": "{A15-A19: Advanced Topics & Production"
+        },
+        {
+          "type": "coloredText",
+          "color": "mlpurple",
+          "content": "{A20-A25: The 6 Problems - Technical Analysis (NEW)"
+        }
+      ],
+      "bottomNote": null,
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": true,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": [
+          "large",
+          "Huge"
+        ]
+      },
+      "section": "toolbox"
+    },
+    {
+      "id": 44,
+      "frameOptions": "t",
+      "title": "A1: Beam Search Formulation",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Objective**: Find sequence $y^* = P(y | x)$",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Decomposition**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "P(y | x) = \\prod_{t=1}^T P(y_t | y_{<t}, x)"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Log-probability** (more stable):",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "\\log P(y | x) = \\sum_{t=1}^T \\log P(y_t | y_{<t}, x)"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Beam Search Approximation**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Complexity**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Instead of exploring all $V^T$ sequences, maintain top-k hypotheses at each step Time: $O(k V T)$ where $k$ = beam width, $V$ = vocabulary, $T$ = length Space: $O(k T)$ to store hypotheses",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Beam search is tractable approximation to exact search",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "quiz1"
+    },
+    {
+      "id": 45,
+      "frameOptions": "t",
+      "title": "A2: Length Normalization",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Problem**: Longer sequences have lower probabilities (more terms multiplied)",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "P(y_1, y_2, y_3, y_4) = \\underbrace{0.5}_{y_1} \\times \\underbrace{0.5}_{y_2} \\times \\underbrace{0.5}_{y_3} \\times \\underbrace{0.5}_{y_4} = 0.0625"
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "P(y_1, y_2) = 0.5 \\times 0.5 = 0.25 > 0.0625"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Solution**: Length normalization",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "\\text{score}(y) = \\frac{1}{|y|^\\alpha} \\log P(y)"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Effect**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Bias toward shorter sequences! where $[0.5, 1.0]$ (typically 0.6-0.7) Without: Beam search heavily biases toward short outputs With: Fair comparison across different lengths",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Length normalization is essential for beam search quality",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "problems"
+    },
+    {
+      "id": 46,
+      "frameOptions": "t",
+      "title": "A3: Beam Search Variants",
+      "layout": "two-column-equal",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Diverse Beam Search**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Constrained Beam Search**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Stochastic Beam Search**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Block n-gram Beam**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Partition beams into groups Penalize within-group similarity Result: More diverse hypotheses Force certain tokens to appear Useful for: Keywords, entities Applications: Controllable generation Sample beams instead of argmax Combines beam + sampling More diverse than standard beam Penalize n-gram repetition Prevents \"the city is a city\" loops Common in summarization",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Many beam search variants exist for specific requirements",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": true,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "problems"
+    },
+    {
+      "id": 47,
+      "frameOptions": "t",
+      "title": "A4: Beam Search Stopping Criteria",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**When to stop expanding beams**?",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Method 1**: Fixed length",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Method 2**: END token",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Method 3**: Score threshold",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "\\frac{\\text{best\\_incomplete}}{\\text{best\\_complete}} < \\text{threshold}"
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Method 4**: Timeout",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Stop at $T_{}$ tokens (simple but rigid) Stop when beam generates special token (most common) Stop when best score cannot improve enough Computational budget exceeded (production systems)",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Choice of stopping criterion affects output length distribution",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "problems"
+    },
+    {
+      "id": 48,
+      "frameOptions": "t",
+      "title": "A5: Beam Search Limitations",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Fundamental Issues**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "enumerate",
+          "items": [
+            "**Exposure bias**: Trained with teacher forcing, tested with own outputs",
+            "**Label bias**: Cannot compare sequences of different prefixes fairly",
+            "**Repetition**: Still can loop (\"the city is a major city\")",
+            "**Bland outputs**: Maximizes probability, not interestingness",
+            "**Search errors**: May miss better sequences outside beam"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Exposure bias**: Trained with teacher forcing, tested with own outputs",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Label bias**: Cannot compare sequences of different prefixes fairly",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Repetition**: Still can loop (\"the city is a major city\")",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Bland outputs**: Maximizes probability, not interestingness",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Search errors**: May miss better sequences outside beam",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**When Beam Search Fails**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "text",
+          "content": "Open-ended generation (dialogue, stories) Long-form text (repetition accumulates) Creative tasks (probability $$ quality) $$ Need sampling-based methods",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Beam search optimizes wrong objective for creative tasks",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "problems"
+    },
+    {
+      "id": 49,
+      "frameOptions": "t",
+      "title": "A6: Sampling as Inference",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Goal**: Sample $y P(y | x)$ instead of $P(y | x)$",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Ancestral Sampling**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Properties**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Variants**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "For $t = 1$ to $T$: Stochastic: Different output each time Explores full distribution (in expectation) Can generate low-probability sequences Temperature: Reshape distribution before sampling Top-k: Truncate distribution before sampling Nucleus: Dynamic truncation before sampling",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Sampling enables diversity but loses quality guarantees",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "problems"
+    },
+    {
+      "id": 50,
+      "frameOptions": "t",
+      "title": "A7: Temperature Mathematics",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Softmax with Temperature**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "p_i(T) = \\frac{\\exp(z_i / T)}{\\sum_{j=1}^V \\exp(z_j / T)}"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Limiting Cases**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Entropy Analysis**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "$T 0$: $p_i cases 1 & if i = z \\\\ 0 & otherwise cases$ (greedy) $T $: $p_i 1/V$ (uniform) Entropy $H(p) = -p_i p_i$ measures randomness $H$ increases monotonically with $T$ Low $T$ ($<$0.5): $H 0$ (deterministic) High $T$ ($>$2.0): $H V$ (maximum entropy)",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Temperature provides continuous control over distribution entropy",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "problems"
+    },
+    {
+      "id": 51,
+      "frameOptions": "t",
+      "title": "A8: Top-k Mathematics",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Formal Definition**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "V_k = \\{w_{\\sigma(1)}, w_{\\sigma(2)}, ..., w_{\\sigma(k)}\\}"
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "p'(w) = \\begin{cases} \\frac{p(w)}{\\sum_{w' \\in V_k} p(w')} & \\text{if } w \\in V_k \\\\ 0 & \\text{otherwise} \\end{cases}"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Information Loss**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Let $$ = permutation sorting probabilities descending Truncated distribution: Original entropy: $H(p) = -_{i=1}^V p_i p_i$ After top-k: $H(p') = -_{i=1}^k p'_i p'_i < H(p)$ Loss $_{i=k+1}^V p_i (1/p_i)$ (tail information)",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Top-k sacrifices tail probability mass for sampling quality",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "problems"
+    },
+    {
+      "id": 52,
+      "frameOptions": "t",
+      "title": "A9: Nucleus (Top-p) Mathematics",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Formal Definition**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "V_p = \\min \\left\\{ V' \\subseteq V : \\sum_{w \\in V'} p(w) \\geq p \\right\\}"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Dynamic Vocabulary Size**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "|V_p| = \\min \\{k : \\sum_{i=1}^k p_{\\sigma(i)} \\geq p\\}"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Why Nucleus $>$ Top-k**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Smallest set with cumulative mass $p$ Adapts to distribution shape: Peaked: Small $|V_p|$ (2-5 tokens) Flat: Large $|V_p|$ (50+ tokens) Top-k: Fixed $k$ regardless of $p(w)$ distribution Nucleus: Adapts $k$ to achieve consistent probability mass",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Nucleus automatically adjusts vocabulary to distribution characteristics",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "quiz2"
+    },
+    {
+      "id": 53,
+      "frameOptions": "t",
+      "title": "A10: Sampling Quality Metrics",
+      "layout": "two-column-equal",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Quality Metrics**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Perplexity**: $(-1{T} p(y_t))$",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**BLEU** (translation):",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Human evaluation**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Diversity Metrics**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Distinct-n**: ${unique n-grams}{total n-grams}$",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Self-BLEU**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Repetition Rate**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Lower = better N-gram overlap with reference 0-100 scale Fluency (1-5) Relevance (1-5) Higher = more diverse BLEU of output vs other outputs Lower = more diverse ${repeated n-grams}{total n-grams}$ Lower = less repetitive",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Need both quality AND diversity metrics to evaluate decoding",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": true,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "integration"
+    },
+    {
+      "id": 54,
+      "frameOptions": "t",
+      "title": "A11: The Degeneration Problem (Formal)",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Definition**: Model-generated text with unnatural repetitions",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Why It Happens**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "enumerate",
+          "items": [
+            "Model trained on natural text (low repetition)",
+            "But generation maximizes $P(y_t | y_{<t})$",
+            "Recent context $y_{<t}$ influences $P$",
+            "Creates positive feedback: high prob word $$ context $$ same high prob word"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Quantifying Degeneration**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Examples**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "\"*The city is a major city in the United States. The city...*\"",
+          "formatting": [
+            "italic"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "\"*I think that I think that I think...*\"",
+          "formatting": [
+            "italic"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Repetition rate in greedy: 15-30% (depending on domain) Repetition rate in human text: 2-5% Gap = degeneration problem",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Maximizing probability does not equal natural text",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "integration"
+    },
+    {
+      "id": 55,
+      "frameOptions": "t",
+      "title": "A12: Contrastive Search Objective",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Scoring Function**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "\\text{score}(w_t) = (1 - \\alpha) \\times \\underbrace{P(w_t | y_{<t})}_{\\text{model confidence}} - \\alpha \\times \\underbrace{\\max_{w_i \\in y_{<t}} \\text{sim}(w_t, w_i)}_{\\text{context similarity}}"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Similarity Function**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "\\text{sim}(w_i, w_j) = \\frac{h_i \\cdot h_j}{||h_i|| \\cdot ||h_j||}"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Algorithm**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "enumerate",
+          "items": [
+            "Get top-k candidates by probability",
+            "For each candidate, compute similarity to all tokens in $y_{<t}$",
+            "Apply penalty: score = prob - $$ max_similarity",
+            "Select candidate with highest score"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "where $[0, 1]$ controls tradeoff using token embeddings $h$",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Contrastive search explicitly penalizes copying recent context",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "integration"
+    },
+    {
+      "id": 56,
+      "frameOptions": "t",
+      "title": "A13: Contrastive Search Parameters",
+      "layout": "two-column-equal",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Alpha** ($$):",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Typical Settings**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Top-k for Candidates**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Computational Cost**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Compute similarities: $O(k t)$",
+            "$t$ grows with generation"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "$= 0$: Pure greedy (no penalty) $= 0.6$: Balanced (recommended) $= 1.0$: Maximum diversity (risky) Short text ($<$100 tokens): $= 0.4-0.5$ Medium ($<$500): $= 0.5-0.6$ Long (500+): $= 0.6-0.7$ $k = 4$: Fast, focused $k = 6$: Balanced (default) $k = 10$: Diverse For each step: Total: $O(k T^2)$ 12$$ slower than greedy",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Hugging Face default: $$=0.6, k=4",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": true,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "integration"
+    },
+    {
+      "id": 57,
+      "frameOptions": "t",
+      "title": "A14: Degeneration Analysis",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Research Findings** (2024-2025):",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "itemize",
+          "items": [
+            "Greedy decoding repetition: 18-25% (GPT-2), 12-18% (GPT-3)",
+            "Nucleus sampling repetition: 8-12% (still above human 3-5%)",
+            "Contrastive search repetition: 4-7% (closest to human)"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Why Probability Maximization Fails**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Solutions Hierarchy**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "enumerate",
+          "items": [
+            "Temperature/Top-k/Nucleus: Reduce greedy's determinism",
+            "Contrastive: Explicit degeneration penalty",
+            "RLHF/DPO: Align model with human preferences (different lecture)"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Training objective: Next token prediction But generation requires: Global coherence Mismatch: Local optimum $$ global quality",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Contrastive search addresses fundamental limitation of likelihood-based decoding",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "quiz3"
+    },
+    {
+      "id": 58,
+      "frameOptions": "t",
+      "title": "A15: Hybrid Decoding Methods",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Combining Strategies**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Nucleus + Temperature**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formula",
+          "display": true,
+          "content": "p_i(T) = \\softmax(z / T), \\quad \\text{then} \\quad V_p \\gets \\text{nucleus}(p_i(T))"
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Beam + Sampling**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Contrastive + Nucleus**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Apply temperature THEN nucleus Used by GPT-3 API, ChatGPT Beam search with stochastic selection Keep top-k, sample from them (not argmax) Nucleus for candidate generation Contrastive scoring for selection Best of both worlds",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Hybrid methods leverage complementary strengths",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "conclusion"
+    },
+    {
+      "id": 59,
+      "frameOptions": "t",
+      "title": "A16: Constrained Decoding (2025)",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Goal**: Force certain tokens/patterns to appear",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Lexically Constrained**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Format Constraints**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**NeuroLogic Decoding** (2021):",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Production Use Cases**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Must include keywords: \\{\"AI\", \"ethics\", \"safety\"\\} Beam search variant: Track constraint satisfaction JSON output: Force structure \\{\"key\": \"value\"\\} Code: Force syntactic validity Beam search + constraint satisfaction Optimal for: Keyword-based generation Structured data extraction (force JSON) Controllable summarization (force keywords) Code generation (force syntax)",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Constrained decoding enables controllable generation",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "conclusion"
+    },
+    {
+      "id": 60,
+      "frameOptions": "t",
+      "title": "A17: Computational Complexity Comparison",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Method** & **Time per token** & **Total complexity** & **Relative speed** \\\\",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Key Insight**: Contrastive's $T^2$ term makes it expensive for long sequences",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "3mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Practical Impact** (1000-token generation):",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Greedy & $O(V)$ & $O(V T)$ & 1.0$$ (baseline) \\\\ Temperature & $O(V)$ & $O(V T)$ & 1.1$$ (softmax overhead) \\\\ Top-k & $O(V)$ & $O(V T)$ & 1.2$$ (sorting) \\\\ Nucleus & $O(V V)$ & $O(V V T)$ & 1.3$$ (sort + cumsum) \\\\ Beam (k=5) & $O(k V)$ & $O(k V T)$ & 4.5$$ (k=5) \\\\ Contrastive & $O(k T)$ & $O(k T^2)$ & 12$$ (similarity) \\\\ Greedy: 2.5 seconds Nucleus: 3.2 seconds (best choice) Beam: 11 seconds Contrastive: 30 seconds (only if quality critical)",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Computational cost matters for production deployment",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": true,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "appendix"
+    },
+    {
+      "id": 61,
+      "frameOptions": "t",
+      "title": "A18: Production Settings (Real-World APIs)",
+      "layout": "single-column-figure",
+      "sections": [
+        {
+          "type": "vspace",
+          "value": "-0.3cm"
+        },
+        {
+          "type": "figure",
+          "path": "production_settings_bsc.pdf",
+          "width": 0.75,
+          "options": "width=0.75\\textwidth"
+        }
+      ],
+      "bottomNote": "What ChatGPT, Claude, and other production systems actually use",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": false,
+        "fontSizes": []
+      },
+      "section": "appendix"
+    },
+    {
+      "id": 62,
+      "frameOptions": "t",
+      "title": "A19: Future Directions & Open Problems",
+      "layout": "single-column-text",
+      "sections": [
+        {
+          "type": "formattedText",
+          "content": "**Active Research Areas** (2025):",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "list",
+          "listType": "enumerate",
+          "items": [
+            "**Quality-diversity optimization**: Multi-objective search methods",
+            "**Learned decoding**: Train models to decode better (RLHF, DPO)",
+            "**Speculative decoding**: Parallel generation for speed (4-8$$ faster)",
+            "**Adaptive methods**: Choose strategy dynamically during generation",
+            "**Energy-based decoding**: Score sequences globally (not token-by-token)"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Quality-diversity optimization**: Multi-objective search methods",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Learned decoding**: Train models to decode better (RLHF, DPO)",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Speculative decoding**: Parallel generation for speed (4-8$$ faster)",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Adaptive methods**: Choose strategy dynamically during generation",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "formattedText",
+          "content": "**Energy-based decoding**: Score sequences globally (not token-by-token)",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Open Problems**:",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "vspace",
+          "value": "5mm"
+        },
+        {
+          "type": "formattedText",
+          "content": "**Trend**: Moving from hand-tuned parameters to learned decoding strategies",
+          "formatting": [
+            "bold"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "How to automatically select best $T$, $p$, $k$, $$ for new task? How to balance fluency + factuality + creativity simultaneously? How to decode efficiently for 100K+ token outputs?",
+          "pauseBefore": false
+        }
+      ],
+      "bottomNote": "Decoding is an active research area with many open questions",
+      "metadata": {
+        "hasPause": false,
+        "hasColumns": false,
+        "hasColorbox": false,
+        "hasTikz": false,
+        "hasTabular": false,
+        "hasMath": true,
+        "fontSizes": [
+          "small"
+        ]
+      },
+      "section": "appendix"
+    }
+  ]
+}

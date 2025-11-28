@@ -1,0 +1,1033 @@
+% Neural Networks Primer: Teaching Computers to Read Your Handwriting
+% A Journey from Impossible Rules to Learning Machines
+% BSc Level - No Prerequisites Required
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+% Color definitions - minimalist style
+\definecolor{mainGray}{RGB}{64,64,64}
+\definecolor{accentGray}{RGB}{180,180,180}
+\definecolor{lightGray}{RGB}{240,240,240}
+\definecolor{highlightRed}{RGB}{220,50,50}
+\definecolor{learnGreen}{RGB}{50,180,50}
+
+\setbeamercolor{structure}{fg=mainGray}
+\setbeamercolor{normal text}{fg=mainGray}
+\setbeamertemplate{navigation symbols}{}
+
+% Commands
+\newcommand{\highlight}[1]{{\color{highlightRed}#1}}
+\newcommand{\secondary}[1]{{\color{accentGray}#1}}
+\newcommand{\success}[1]{{\color{learnGreen}#1}}
+
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{graphicx}
+
+\title{Teaching Computers to Read Your Handwriting}
+\subtitle{How Machines Learn Without Being Programmed}
+\author{NLP Course 2025}
+\date{}
+
+\begin{document}
+
+% Title Slide
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}
+\secondary{\small From impossible rules to learning machines: A journey anyone can understand}
+\end{center}
+\end{frame}
+
+% PART 1: THE PROBLEM
+% Slide 1: Your Handwriting is Unique
+\begin{frame}{Everyone Writes Differently}
+\begin{center}
+{\Large \textbf{Can you recognize all these A's?}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.6\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/handwriting_variations.pdf}
+\end{center}
+
+\column{0.38\textwidth}
+\textbf{You can see they're all "A" because:}
+\begin{itemize}
+\item You learned from examples
+\item You recognize patterns
+\item You don't need exact rules
+\end{itemize}
+
+\vspace{5mm}
+\textbf{But a computer...}
+\begin{itemize}
+\item Needs exact instructions
+\item Can't "just see" patterns
+\item Fails with variations
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize This is the fundamental challenge of pattern recognition}
+\end{frame}
+
+% Slide 2: The Challenge
+\begin{frame}{Why Can't We Just Program It?}
+\begin{center}
+\textbf{Let's try to write rules for recognizing "A"}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Attempt 1: Describe the shape}
+\begin{itemize}
+\item Two diagonal lines meeting at top
+\item Horizontal line in middle
+\item Forms triangle shape
+\end{itemize}
+\highlight{Problem:} What about curved A's? Stylized A's?
+
+\vspace{5mm}
+\textbf{Attempt 2: List all variations}
+\begin{itemize}
+\item If pixels match pattern 1, or
+\item If pixels match pattern 2, or
+\item If pixels match pattern 3...
+\end{itemize}
+\highlight{Problem:} Infinite variations!
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/rules_vs_learning.pdf}
+\end{center}
+
+\textbf{The Insight:}
+\begin{itemize}
+\item Rules can't capture all variations
+\item Every person writes differently
+\item Context and style change
+\item \success{We need learning, not programming}
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize Traditional programming: Tell computer HOW. Machine learning: Show computer EXAMPLES}
+\end{frame}
+
+% Slide 3: From Pictures to Numbers
+\begin{frame}{Everything Must Become Numbers}
+\begin{center}
+\textbf{Computers only understand numbers, not shapes}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.55\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/pixel_to_numbers.pdf}
+\end{center}
+
+\column{0.43\textwidth}
+\textbf{The Transformation:}
+\begin{enumerate}
+\item Start with handwritten letter
+\item Divide into grid (pixels)
+\item Black = 1, White = 0
+\item Now it's just numbers!
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Example for 5×5 grid:}
+\begin{itemize}
+\item Total: 25 numbers
+\item Each is 0 or 1
+\item Patterns in the numbers = shapes
+\item Computer can now process it
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize A 28×28 image (like MNIST) becomes 784 numbers - that's our input}
+\end{frame}
+
+% Slide 4: How Children Learn
+\begin{frame}{Learning Like a Child}
+\begin{center}
+{\Large \textbf{How did YOU learn to read?}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{A Child Learning:}
+\begin{enumerate}
+\item Sees many examples of "A"
+\item Makes mistakes
+\item Gets corrected
+\item Adjusts understanding
+\item Tries again
+\item Eventually gets it right
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{No Explicit Rules!}
+\begin{itemize}
+\item Nobody lists all ways to write "A"
+\item Child discovers patterns
+\item Builds internal model
+\item Generalizes to new examples
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{What if computers could learn this way?}
+
+\vspace{5mm}
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{
+\textbf{The Big Idea:}\\[2mm]
+Instead of programming rules,\\
+show many examples and let\\
+the computer figure out patterns
+}}
+\end{center}
+
+\vspace{5mm}
+\textbf{Requirements:}
+\begin{itemize}
+\item Way to process examples
+\item Method to measure mistakes
+\item Mechanism to improve
+\item Patience for many iterations
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize This idea, born in 1957, would change everything}
+\end{frame}
+
+% PART 2: THE FIRST NEURON
+% Slide 5: Meet Your First Neuron
+\begin{frame}{Your First Artificial Neuron}
+\begin{center}
+{\Large \textbf{A Neuron is a Decision Maker}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/neuron_as_voter.pdf}
+\end{center}
+
+\textbf{Think of it like voting:}
+\begin{itemize}
+\item Inputs = votes from different sources
+\item Weights = how much each vote counts
+\item Sum = total votes
+\item Decision = is total enough to say "yes"?
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Real Example: Is this pixel pattern an "A"?}
+
+\vspace{3mm}
+Pixel values (inputs):
+\begin{itemize}
+\item Top center: 1 (black)
+\item Middle left: 1 (black)
+\item Middle right: 1 (black)
+\item Bottom: 0 (white)
+\end{itemize}
+
+Importance (weights):
+\begin{itemize}
+\item Top center: +3 (very important!)
+\item Middle left: +2 (important)
+\item Middle right: +2 (important)
+\item Bottom: -1 (should be white)
+\end{itemize}
+
+Total: $1×3 + 1×2 + 1×2 + 0×(-1) = 7$
+
+Decision: 7 > 5? \success{Yes! Probably an "A"}
+\end{columns}
+\vfill
+\secondary{\footnotesize A neuron just adds up weighted inputs and makes a decision}
+\end{frame}
+
+% Slide 6: Learning from Mistakes
+\begin{frame}{Learning = Adjusting the Importance}
+\begin{center}
+{\Large \textbf{What Happens When the Neuron is Wrong?}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.55\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/weight_adjustment_visual.pdf}
+\end{center}
+
+\column{0.43\textwidth}
+\textbf{The Learning Process:}
+\begin{enumerate}
+\item Neuron sees input
+\item Makes prediction
+\item Gets told correct answer
+\item Calculates error
+\item Adjusts weights
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Adjustment Rules:}
+\begin{itemize}
+\item Wrong + input was 1: \highlight{increase} weight
+\item Wrong + input was 0: \highlight{decrease} weight
+\item Correct: \success{keep} weight
+\item Bigger error = bigger change
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize After many examples, weights converge to useful values}
+\end{frame}
+
+% Slide 7: Watching It Learn
+\begin{frame}{Learning in Action: 5 Training Steps}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/training_steps_numbered.pdf}
+\end{center}
+\vfill
+\secondary{\footnotesize Each mistake makes the neuron better at recognizing the pattern}
+\end{frame}
+
+% Slide 8: Success on Simple Problems
+\begin{frame}{Victory! Teaching OR Logic}
+\begin{center}
+\textbf{Can a neuron learn: "Output 1 if ANY input is 1"?}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.45\textwidth}
+\textbf{Training Data:}
+\begin{center}
+\begin{tabular}{cc|c}
+Input 1 & Input 2 & Output \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 1 \\
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{After Training:}
+\begin{itemize}
+\item Weight 1: 1.0
+\item Weight 2: 1.0
+\item Threshold: 0.5
+\end{itemize}
+
+\column{0.53\textwidth}
+\textbf{Testing Our Trained Neuron:}
+
+\vspace{3mm}
+Example 1: (0, 1)
+\begin{itemize}
+\item Sum: $0×1 + 1×1 = 1$
+\item Is 1 > 0.5? \success{Yes! Output: 1 ✓}
+\end{itemize}
+
+\vspace{3mm}
+Example 2: (0, 0)
+\begin{itemize}
+\item Sum: $0×1 + 0×1 = 0$
+\item Is 0 > 0.5? No! Output: 0 ✓
+\end{itemize}
+
+\vspace{5mm}
+\begin{center}
+\fbox{\success{Perfect! The neuron learned OR}}
+\end{center}
+\end{columns}
+\vfill
+\secondary{\footnotesize This same principle scales to recognizing handwritten letters}
+\end{frame}
+
+% Slide 9: The Breaking Point
+\begin{frame}{The Limit: When One Neuron Fails}
+\begin{center}
+{\Large \textbf{The XOR Problem: Impossible for One Neuron}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{XOR: Output 1 if inputs are DIFFERENT}
+\begin{center}
+\begin{tabular}{cc|c}
+Input 1 & Input 2 & Output \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & \highlight{1} \\
+1 & 0 & \highlight{1} \\
+1 & 1 & 0 \\
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{Why It's Impossible:}
+\begin{itemize}
+\item Need to separate red from blue
+\item One line can't do it!
+\item Single neuron = single line
+\item Some patterns need combinations
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/xor_impossible_line.pdf}
+\end{center}
+
+\textbf{The Revelation:}
+\begin{itemize}
+\item Not all patterns are linearly separable
+\item Real-world problems are complex
+\item \highlight{We need multiple neurons!}
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize This discovery in 1969 nearly killed neural network research}
+\end{frame}
+
+% PART 3: HIDDEN LAYERS
+% Slide 10: The Hidden Layer Solution
+\begin{frame}{The Breakthrough: Hidden Layers}
+\begin{center}
+{\Large \textbf{Two Simple Questions Solve XOR}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.55\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/xor_two_questions.pdf}
+\end{center}
+
+\column{0.43\textwidth}
+\textbf{Break It Down:}
+
+\vspace{3mm}
+Hidden Neuron 1: \emph{"Is it (0,1)?"}
+\begin{itemize}
+\item Learns to detect top-left corner
+\item Outputs 1 only for (0,1)
+\end{itemize}
+
+\vspace{3mm}
+Hidden Neuron 2: \emph{"Is it (1,0)?"}
+\begin{itemize}
+\item Learns to detect bottom-right
+\item Outputs 1 only for (1,0)
+\end{itemize}
+
+\vspace{3mm}
+Output Neuron: \emph{"Is either true?"}
+\begin{itemize}
+\item Combines both answers
+\item Implements OR on hidden outputs
+\item \success{Solves XOR perfectly!}
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize Complex patterns = combinations of simple patterns}
+\end{frame}
+
+% Slide 11: Hidden Layers Visualized
+\begin{frame}{How Hidden Layers Work}
+\begin{center}
+{\Large \textbf{The Assembly Line of Pattern Recognition}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.55\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/hidden_layer_factory.pdf}
+\end{center}
+
+\column{0.43\textwidth}
+\textbf{Layer by Layer:}
+
+\vspace{3mm}
+\textbf{Input Layer:}
+\begin{itemize}
+\item Raw pixel values
+\item No processing yet
+\item Just passes data forward
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Hidden Layer:}
+\begin{itemize}
+\item Detects simple features
+\item Each neuron finds one pattern
+\item Outputs are feature strengths
+\item We don't specify what to find!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Output Layer:}
+\begin{itemize}
+\item Combines features
+\item Makes final decision
+\item "Given these features, what is it?"
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize Hidden = we don't directly set what they learn, they discover useful features}
+\end{frame}
+
+% Slide 12: Feature Hierarchy
+\begin{frame}{Building Complex from Simple}
+\begin{center}
+{\Large \textbf{How Deep Networks Recognize Letters}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.6\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/feature_hierarchy.pdf}
+\end{center}
+
+\column{0.38\textwidth}
+\textbf{Layer 1: Edges}
+\begin{itemize}
+\item Horizontal lines
+\item Vertical lines
+\item Diagonal lines
+\item Curves
+\end{itemize}
+
+\textbf{Layer 2: Parts}
+\begin{itemize}
+\item Corners
+\item Intersections
+\item Loops
+\item Line endings
+\end{itemize}
+
+\textbf{Layer 3: Components}
+\begin{itemize}
+\item Triangle tops
+\item Cross bars
+\item Letter segments
+\end{itemize}
+
+\textbf{Output: Letters}
+\begin{itemize}
+\item Complete A, B, C...
+\item Confidence scores
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize Each layer builds on the previous - like LEGO blocks forming structures}
+\end{frame}
+
+% PART 4: BACKPROPAGATION
+% Slide 13: The Credit Assignment Problem
+\begin{frame}{Learning with Multiple Layers: Who's to Blame?}
+\begin{center}
+{\Large \textbf{When Wrong, Which Weights Should Change?}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Challenge:}
+\begin{itemize}
+\item Network predicts "B"
+\item Correct answer was "A"
+\item Many neurons involved
+\item Many weights contributed
+\item Who caused the error?
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Like a Team Project:}
+\begin{itemize}
+\item Project fails
+\item Multiple people worked on it
+\item Need to find what went wrong
+\item Everyone must improve their part
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/blame_distribution.pdf}
+\end{center}
+
+\textbf{The Solution: Backpropagation}
+\begin{enumerate}
+\item Calculate error at output
+\item Pass blame backward
+\item Each layer gets its share
+\item Adjust weights accordingly
+\end{enumerate}
+\end{columns}
+\vfill
+\secondary{\footnotesize Backpropagation = systematically distributing blame for mistakes}
+\end{frame}
+
+% Slide 14: Backprop Visualized
+\begin{frame}{Backpropagation: Error Flows Backward}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/error_flow_backward.pdf}
+\end{center}
+\vfill
+\secondary{\footnotesize Error signal flows backward, telling each weight how to improve}
+\end{frame}
+
+% Slide 15: Gradient Descent
+\begin{frame}{Finding the Best Weights: Rolling Down the Hill}
+\begin{center}
+{\Large \textbf{Gradient Descent: Nature's Way to Find Minimum}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/gradient_landscape_3d.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{The Landscape:}
+\begin{itemize}
+\item Height = error amount
+\item Position = weight values
+\item Goal = find lowest point
+\item Path = gradient descent
+\end{itemize}
+
+\vspace{5mm}
+\textbf{The Algorithm:}
+\begin{enumerate}
+\item Start somewhere random
+\item Find downhill direction
+\item Take small step down
+\item Repeat until flat
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Learning Rate:}
+\begin{itemize}
+\item Too big: overshoot valley
+\item Too small: takes forever
+\item Just right: smooth descent
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize Like a ball rolling down a hill, weights naturally find good values}
+\end{frame}
+
+% PART 5: TRAINING PROCESS
+% Slide 16: Watching Networks Learn
+\begin{frame}{Training in Action: From Random to Recognition}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/learning_curve_smooth.pdf}
+\end{center}
+\vfill
+\secondary{\footnotesize Each epoch (pass through data) improves recognition accuracy}
+\end{frame}
+
+% Slide 17: What Hidden Neurons Learn
+\begin{frame}{Inside the Black Box: Feature Detectors}
+\begin{center}
+{\Large \textbf{What Do Hidden Neurons Actually Learn?}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.55\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/learned_features_visualization.pdf}
+\end{center}
+
+\column{0.43\textwidth}
+\textbf{Visualizing Weights:}
+\begin{itemize}
+\item Each hidden neuron develops preferences
+\item Bright = this pixel is important
+\item Dark = this pixel should be off
+\item Patterns emerge automatically!
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Discovered Features:}
+\begin{itemize}
+\item Neuron 1: Vertical strokes
+\item Neuron 2: Diagonal lines
+\item Neuron 3: Curves
+\item Neuron 4: Intersections
+\item Neuron 5: Loops
+\end{itemize}
+
+\vspace{3mm}
+\highlight{Nobody programmed these!}\\
+Network discovered them from data
+\end{columns}
+\vfill
+\secondary{\footnotesize These feature detectors combine to recognize any handwriting style}
+\end{frame}
+
+% Slide 18: Overfitting
+\begin{frame}{The Memorization Trap: Overfitting}
+\begin{center}
+{\Large \textbf{When Learning Goes Too Far}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Like a Student Who:}
+\begin{itemize}
+\item Memorizes practice problems
+\item Gets 100\% on homework
+\item Fails the real exam
+\item Didn't understand concepts
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Network Overfitting:}
+\begin{itemize}
+\item Perfect on training data
+\item Terrible on new examples
+\item Memorized, not learned
+\item Too complex for the pattern
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/overfitting_memorization.pdf}
+\end{center}
+
+\textbf{Solutions:}
+\begin{itemize}
+\item \success{More training data}
+\item \success{Simpler network}
+\item \success{Stop training earlier}
+\item \success{Dropout: randomly ignore neurons}
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize The goal is generalization, not memorization}
+\end{frame}
+
+% PART 6: MODERN DEEP LEARNING
+% Slide 19: The Deep Learning Revolution
+\begin{frame}{From Handwriting to ImageNet}
+\begin{center}
+{\Large \textbf{2012: The Year Everything Changed}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Before 2012:}
+\begin{itemize}
+\item MNIST digits: 99\% accuracy
+\item Simple patterns only
+\item Shallow networks (2-3 layers)
+\item Limited to small images
+\end{itemize}
+
+\vspace{5mm}
+\textbf{AlexNet Changes Everything:}
+\begin{itemize}
+\item 1000 object categories
+\item Real-world photos
+\item 8 layers deep
+\item 60 million parameters
+\item GPU acceleration
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/scale_comparison.pdf}
+\end{center}
+
+\textbf{The Same Principles:}
+\begin{itemize}
+\item Neurons compute weighted sums
+\item Layers build features
+\item Backprop adjusts weights
+\item Just MUCH bigger scale
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize From 784 inputs (MNIST) to 150,528 inputs (ImageNet) - same math!}
+\end{frame}
+
+% Slide 20: Convolutions
+\begin{frame}{The Convolution Trick: Sliding Windows}
+\begin{center}
+{\Large \textbf{How to Handle Large Images Efficiently}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.55\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/convolution_sliding_window.pdf}
+\end{center}
+
+\column{0.43\textwidth}
+\textbf{The Problem:}
+\begin{itemize}
+\item Full connection: too many weights
+\item 1000×1000 image = 1M inputs!
+\item Would need billions of weights
+\end{itemize}
+
+\vspace{5mm}
+\textbf{The Solution: Convolution}
+\begin{itemize}
+\item Small detector (e.g., 3×3)
+\item Slide across entire image
+\item Same detector everywhere
+\item Share weights = fewer parameters
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Why It Works:}
+\begin{itemize}
+\item Edges are edges anywhere
+\item Reuse same feature detector
+\item Translation invariant
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize A 3×3 detector has only 9 weights but can find patterns anywhere in the image}
+\end{frame}
+
+% Slide 21: Modern Scale
+\begin{frame}{The Scale of Modern Networks}
+\begin{center}
+{\Large \textbf{From Perceptron to GPT: 70 Years of Growth}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.6\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/network_evolution_timeline.pdf}
+\end{center}
+
+\column{0.38\textwidth}
+\textbf{The Growth:}
+\begin{itemize}
+\item 1957: 20 weights
+\item 1989: 10,000 weights
+\item 2012: 60 million
+\item 2020: 175 billion
+\item 2023: 1.7 trillion
+\end{itemize}
+
+\vspace{5mm}
+\textbf{But Still:}
+\begin{itemize}
+\item Same neurons (weighted sum)
+\item Same learning (gradient descent)
+\item Same layers (feature hierarchy)
+\item Just massively parallel
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize The principles you learned today power ChatGPT - just at incredible scale}
+\end{frame}
+
+% PART 7: PRACTICAL APPLICATION
+% Slide 22: Building Your First Network
+\begin{frame}[fragile]{Your Turn: Build a Digit Recognizer}
+\begin{center}
+{\Large \textbf{From Theory to Practice}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.58\textwidth}
+\begin{lstlisting}[language=Python, basicstyle=\tiny]
+import numpy as np
+
+# Your first neural network!
+class SimpleNetwork:
+    def __init__(self):
+        # 784 inputs (28x28 pixels)
+        # 128 hidden neurons
+        # 10 outputs (digits 0-9)
+        self.weights1 = np.random.randn(784, 128) * 0.01
+        self.weights2 = np.random.randn(128, 10) * 0.01
+
+    def forward(self, pixels):
+        # Layer 1: pixels -> hidden
+        hidden = np.maximum(0, pixels @ self.weights1)
+        # Layer 2: hidden -> output
+        output = hidden @ self.weights2
+        return output
+
+    def train_step(self, pixels, correct_digit):
+        # Forward pass
+        output = self.forward(pixels)
+        # Calculate error
+        error = output - correct_digit
+        # Backprop (simplified)
+        # ... gradient calculations ...
+        # Update weights
+        self.weights2 -= learning_rate * gradients2
+        self.weights1 -= learning_rate * gradients1
+\end{lstlisting}
+
+\column{0.4\textwidth}
+\textbf{What This Does:}
+\begin{enumerate}
+\item Takes 784 pixel values
+\item Passes through hidden layer
+\item Outputs 10 scores (one per digit)
+\item Highest score = prediction
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Training Loop:}
+\begin{enumerate}
+\item Show image
+\item Get prediction
+\item Calculate error
+\item Update weights
+\item Repeat 10,000 times
+\item \success{97\% accuracy!}
+\end{enumerate}
+
+\vspace{5mm}
+\highlight{You now understand every line!}
+\end{columns}
+\vfill
+\secondary{\footnotesize This simple network can read handwriting better than many humans}
+\end{frame}
+
+% Slide 23: Common Mistakes to Avoid
+\begin{frame}{Debugging Neural Networks: Common Issues}
+\begin{center}
+{\Large \textbf{When Things Go Wrong (They Will!)}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{"My network won't learn!"}
+\begin{itemize}
+\item Learning rate too high/low
+\item Weights initialized poorly
+\item Data not normalized
+\item Wrong activation function
+\end{itemize}
+
+\vspace{5mm}
+\textbf{"Loss is NaN!"}
+\begin{itemize}
+\item Numbers got too big
+\item Gradient explosion
+\item Fix: smaller learning rate
+\item Fix: gradient clipping
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{"Perfect training, bad testing!"}
+\begin{itemize}
+\item Classic overfitting
+\item Network memorized data
+\item Fix: more data
+\item Fix: simpler network
+\item Fix: dropout
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Debug Strategy:}
+\begin{enumerate}
+\item Start with tiny network
+\item Overfit single example first
+\item Gradually add complexity
+\item Monitor everything
+\end{enumerate}
+\end{columns}
+\vfill
+\secondary{\footnotesize "If it's not working, it's probably the learning rate" - Everyone who's trained networks}
+\end{frame}
+
+% PART 8: CONCLUSION
+% Slide 24: What You've Learned
+\begin{frame}{From Handwriting to Understanding Intelligence}
+\begin{center}
+{\Large \textbf{Your Journey Through Neural Networks}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Core Concepts:}
+\begin{itemize}
+\item Rules can't capture all patterns
+\item Neurons: weighted sum + decision
+\item Learning: adjust weights from errors
+\item Layers: build complex from simple
+\item Backprop: distribute blame backward
+\item Training: gradient descent
+\end{itemize}
+
+\vspace{5mm}
+\textbf{The Bigger Picture:}
+\begin{itemize}
+\item Same math from 1957 to GPT
+\item Scale changes everything
+\item Principles remain constant
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{You Can Now Understand:}
+\begin{itemize}
+\item How computers read handwriting
+\item Why deep learning works
+\item What training a network means
+\item How ChatGPT learns patterns
+\item Why AI seems "intelligent"
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Next Steps:}
+\begin{itemize}
+\item RNNs: Networks with memory
+\item Attention: Focus mechanisms
+\item Transformers: Modern architecture
+\item Applications: NLP, vision, more
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize You've mastered the foundation that powers all modern AI}
+\end{frame}
+
+% Final Slide
+\begin{frame}{The Journey Continues}
+\begin{center}
+{\Huge \textbf{You Now Understand Neural Networks!}}
+\end{center}
+\vspace{10mm}
+
+\begin{center}
+\Large
+From recognizing handwritten letters\\
+to understanding the principles behind ChatGPT\\[5mm]
+
+\normalsize
+The same neurons that learned to read your handwriting\\
+can learn to write poetry, translate languages,\\
+diagnose diseases, and drive cars\\[5mm]
+
+\highlight{It's all weighted sums and gradient descent}\\[10mm]
+
+\large
+\textbf{Next Week: Teaching Networks to Remember}\\
+Recurrent Neural Networks and Sequential Processing
+\end{center}
+
+\vfill
+\begin{center}
+\secondary{\small "The question is not whether machines can learn, but what they cannot learn"}
+\end{center}
+\end{frame}
+
+\end{document}

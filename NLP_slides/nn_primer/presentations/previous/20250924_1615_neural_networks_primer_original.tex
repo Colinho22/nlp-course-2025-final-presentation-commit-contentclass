@@ -1,0 +1,1112 @@
+% Neural Networks Primer: Teaching Machines to See Patterns
+% A Problem-Solving Journey from 1950s to Today
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+% Color definitions
+\definecolor{mainGray}{RGB}{64,64,64}
+\definecolor{accentGray}{RGB}{180,180,180}
+\definecolor{lightGray}{RGB}{240,240,240}
+
+\setbeamercolor{structure}{fg=mainGray}
+\setbeamercolor{normal text}{fg=mainGray}
+\setbeamertemplate{navigation symbols}{}
+
+% Commands
+\newcommand{\highlight}[1]{{\color{red}#1}}
+\newcommand{\secondary}[1]{{\color{accentGray}#1}}
+
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{graphicx}
+
+\title{Teaching Machines to See Patterns}
+\subtitle{A Neural Networks Primer: Why We Needed Each Piece of the Puzzle}
+\author{NLP Course 2025}
+\date{}
+
+\begin{document}
+
+% Title Slide
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}
+\secondary{\small From the 1950s mail sorting crisis to ChatGPT: How humanity taught machines to think}
+\end{center}
+\end{frame}
+
+% Act I: The Problem That Started Everything
+\begin{frame}{Act I: The Problem That Started Everything}
+\begin{center}
+{\Large \textbf{1950s: The Mail Sorting Crisis}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Challenge:}
+\begin{itemize}
+\item 150 million letters per day
+\item Hand-written addresses
+\item Human sorters: slow, expensive, error-prone
+\item Traditional programming: useless
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why Traditional Code Failed:}
+\begin{itemize}
+\item Can't write rules for every handwriting style
+\item Too many variations of each letter
+\item Context matters: "I" vs "l" vs "1"
+\item This wasn't computation—it was \highlight{pattern recognition}
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize This problem would take 40 years to solve properly}
+\end{frame}
+
+% Why Rules Don't Work
+\begin{frame}[fragile]{Why Can't We Just Write Rules?}
+\begin{center}
+\textbf{Problem: Recognize the Letter "A"}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Traditional Approach (Failed):}
+\begin{lstlisting}[basicstyle=\tiny]
+if (has_triangle_top AND
+    has_horizontal_bar AND
+    two_diagonal_lines) {
+  return "A"
+}
+\end{lstlisting}
+\secondary{\small But what about...}
+\begin{itemize}
+\item Handwritten A's?
+\item Different fonts?
+\item Rotated A's?
+\item Partial A's?
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/various_a_styles.pdf}
+\end{center}
+\secondary{\small Just for the letter "A", we'd need thousands of rules!}
+\end{columns}
+\vfill
+\secondary{\footnotesize The breakthrough: What if machines could learn patterns like children do?}
+\end{frame}
+
+% 1957: The First Attempt
+\begin{frame}{1957: The First Attempt - The Perceptron}
+\begin{center}
+\textbf{Frank Rosenblatt's Radical Idea: Copy the Brain}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Biological Inspiration:}
+\begin{itemize}
+\item Neurons receive signals
+\item Signals have different strengths
+\item Neuron "fires" if total signal exceeds threshold
+\item Learning = adjusting signal strengths
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Mathematical Translation:}
+\begin{itemize}
+\item Inputs: $x_1, x_2, ..., x_n$
+\item Weights: $w_1, w_2, ..., w_n$
+\item Sum: $z = \sum_{i=1}^{n} w_i x_i + b$
+\item Output: $y = \begin{cases} 1 & \text{if } z > 0 \\ 0 & \text{if } z \leq 0 \end{cases}$
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize The New York Times, 1958: "The Navy revealed the embryo of an electronic computer that will be able to walk, talk, see, write, reproduce itself and be conscious of its existence."}
+\end{frame}
+
+% The Math Behind It (Simple)
+\begin{frame}{Making It Concrete: Teaching OR Logic}
+\begin{center}
+\textbf{Problem: Learn OR function (output 1 if ANY input is 1)}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Training Data:}
+\begin{center}
+\begin{tabular}{cc|c}
+$x_1$ & $x_2$ & Output \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 1 \\
+\end{tabular}
+\end{center}
+
+\textbf{The Perceptron:}
+\begin{align*}
+z &= w_1 \cdot x_1 + w_2 \cdot x_2 + b \\
+\text{output} &= \begin{cases} 1 & \text{if } z > 0 \\ 0 & \text{if } z \leq 0 \end{cases}
+\end{align*}
+
+\column{0.5\textwidth}
+\textbf{Learning Process:}
+\begin{enumerate}
+\item Start with random weights
+\item For each example:
+   \begin{itemize}
+   \item Calculate output
+   \item If wrong: adjust weights
+   \item If correct: keep weights
+   \end{itemize}
+\item Repeat until all correct
+\end{enumerate}
+
+\textbf{Final Solution:}
+$w_1 = 1$, $w_2 = 1$, $b = -0.5$
+\end{columns}
+\vfill
+\secondary{\footnotesize Success! But this was just the beginning...}
+\end{frame}
+
+% Notation Explained
+\begin{frame}{Understanding the Notation}
+\begin{center}
+\textbf{Breaking Down the Math Symbols}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Inputs and Weights:}
+\begin{itemize}
+\item $x_i$ = input value (what we see)
+\item $w_i$ = weight (importance/strength)
+\item $b$ = bias (threshold adjuster)
+\end{itemize}
+
+\textbf{The Computation:}
+$$z = \sum_{i=1}^{n} w_i x_i + b$$
+
+This means:
+\begin{itemize}
+\item Multiply each input by its weight
+\item Add them all up
+\item Add the bias
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Real Example:}
+\begin{center}
+Should I go outside? \\[3mm]
+\begin{tabular}{lcc}
+Factor & Value & Weight \\
+\hline
+Sunny? & 1 & +2 \\
+Raining? & 0 & -3 \\
+Weekend? & 1 & +1 \\
+\hline
+\end{tabular}
+\end{center}
+$$z = (1 \times 2) + (0 \times -3) + (1 \times 1) = 3$$
+$$\text{Decision: } z > 0 \text{, so YES!}$$
+\end{columns}
+\vfill
+\secondary{\footnotesize This simple math would evolve into deep learning}
+\end{frame}
+
+% 1969: The Crisis
+\begin{frame}{1969: The Crisis - XOR Problem}
+\begin{center}
+\textbf{Minsky \& Papert's Devastating Discovery}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{XOR (Exclusive OR):}
+\begin{center}
+\begin{tabular}{cc|c}
+$x_1$ & $x_2$ & Output \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\end{tabular}
+\end{center}
+
+\textbf{The Problem:}
+\begin{itemize}
+\item Can't draw a single line to separate
+\item Perceptron only learns linear boundaries
+\item Real-world problems are non-linear!
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/xor_visualization.pdf}
+\end{center}
+\textbf{Impact:}
+\begin{itemize}
+\item Funding dried up
+\item "AI Winter" begins
+\item Neural networks abandoned
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize The field would be dormant for over a decade...}
+\end{frame}
+
+% Act II: The Journey
+\begin{frame}{Act II: The Journey Back}
+\begin{center}
+{\Large \textbf{1980s: The Hidden Layer Revolution}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Insight:}
+\begin{itemize}
+\item Stack multiple layers!
+\item First layer: detect simple features
+\item Hidden layer: combine features
+\item Output layer: final decision
+\end{itemize}
+
+\textbf{Solving XOR:}
+\begin{itemize}
+\item Hidden neuron 1: Is it (0,1)?
+\item Hidden neuron 2: Is it (1,0)?
+\item Output: OR of hidden neurons
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/multilayer_network.pdf}
+\end{center}
+\textbf{New Architecture:}
+\begin{itemize}
+\item Input layer: raw data
+\item Hidden layer(s): feature extraction
+\item Output layer: final classification
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize But how do we train multiple layers?}
+\end{frame}
+
+% Backpropagation
+\begin{frame}{1986: Backpropagation - Teaching Networks to Learn}
+\begin{center}
+\textbf{The Credit Assignment Problem: Who's to Blame?}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Challenge:}
+\begin{itemize}
+\item Network makes error at output
+\item Many neurons contributed
+\item Which weights should change?
+\item By how much?
+\end{itemize}
+
+\textbf{The Solution: Chain Rule}
+\begin{itemize}
+\item Calculate error at output
+\item Propagate error backwards
+\item Each layer gets its "share of blame"
+\item Adjust weights proportionally
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Mathematical Insight:}
+$$\frac{\partial E}{\partial w_{ij}} = \frac{\partial E}{\partial out_j} \cdot \frac{\partial out_j}{\partial net_j} \cdot \frac{\partial net_j}{\partial w_{ij}}$$
+
+\textbf{In Simple Terms:}
+\begin{enumerate}
+\item How wrong were we? (Error)
+\item How sensitive is error to this weight?
+\item Adjust weight in opposite direction
+\item Repeat for all weights, back to front
+\end{enumerate}
+\end{columns}
+\vfill
+\secondary{\footnotesize This algorithm is still the foundation of all deep learning today}
+\end{frame}
+
+% Activation Functions
+\begin{frame}{Why Linear Doesn't Work: Activation Functions}
+\begin{center}
+\textbf{The Need for Non-Linearity}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Problem with Linear:}
+\begin{itemize}
+\item Stack of linear layers = still linear!
+\item $f(g(x)) = (wx + b_1)w' + b_2 = w'wx + ...$
+\item Can't learn complex patterns
+\end{itemize}
+
+\textbf{Solution: Activation Functions}
+\begin{itemize}
+\item Add non-linearity after each layer
+\item Allows learning complex boundaries
+\item Different functions for different needs
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Common Activation Functions:}
+\begin{itemize}
+\item \textbf{Sigmoid:} $\sigma(x) = \frac{1}{1 + e^{-x}}$
+   \begin{itemize}
+   \item Smooth, outputs 0-1
+   \item Good for probabilities
+   \end{itemize}
+\item \textbf{ReLU:} $f(x) = \max(0, x)$
+   \begin{itemize}
+   \item Simple, fast
+   \item Solves vanishing gradient
+   \end{itemize}
+\item \textbf{Tanh:} $\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$
+   \begin{itemize}
+   \item Outputs -1 to 1
+   \item Zero-centered
+   \end{itemize}
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize ReLU's simplicity revolutionized deep learning in 2011}
+\end{frame}
+
+% Simple 2D Example
+\begin{frame}{Visualizing Learning: 2D Classification}
+\begin{center}
+\textbf{Teaching a Network to Separate Red from Blue Points}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Setup:}
+\begin{itemize}
+\item Input: (x, y) coordinates
+\item Output: Red or Blue class
+\item Network: 2 → 4 → 2 neurons
+\end{itemize}
+
+\textbf{Training Process:}
+\begin{enumerate}
+\item Epoch 1: Random boundary
+\item Epoch 10: Rough separation
+\item Epoch 50: Good boundary
+\item Epoch 100: Perfect fit
+\end{enumerate}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/2d_classification_evolution.pdf}
+\end{center}
+\textbf{What Each Layer Learns:}
+\begin{itemize}
+\item Layer 1: Simple boundaries
+\item Hidden: Combine boundaries
+\item Output: Final decision
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize This same principle scales to millions of parameters}
+\end{frame}
+
+% Act III: The Breakthrough
+\begin{frame}{Act III: The Breakthrough Years}
+\begin{center}
+{\Large \textbf{1998-2012: From Digits to ImageNet}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{1998 - LeNet: First Success}
+\begin{itemize}
+\item Yann LeCun's CNN for digits
+\item 32×32 pixels → 10 classes
+\item 60,000 parameters
+\item Banks adopt for check reading
+\end{itemize}
+
+\textbf{Key Innovation: Convolutions}
+\begin{itemize}
+\item Share weights across image
+\item Detect features anywhere
+\item Build complexity layer by layer
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{2012 - AlexNet: The Revolution}
+\begin{itemize}
+\item 1000 ImageNet classes
+\item 60 million parameters
+\item GPUs enable training
+\item Error rate: 26\% → 16\%
+\end{itemize}
+
+\textbf{What Changed:}
+\begin{itemize}
+\item Big Data (millions of images)
+\item GPU computing (100x faster)
+\item ReLU activation
+\item Dropout regularization
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize This victory ended the second AI winter permanently}
+\end{frame}
+
+% Understanding Convolutions
+\begin{frame}{The Convolution Innovation: See Like Humans Do}
+\begin{center}
+\textbf{How We Actually Recognize Objects}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Human Vision Process:}
+\begin{enumerate}
+\item Detect edges
+\item Find shapes
+\item Identify parts
+\item Recognize object
+\end{enumerate}
+
+\textbf{CNN Mimics This:}
+\begin{itemize}
+\item Layer 1: Edge detectors
+\item Layer 2: Corner/curve detectors
+\item Layer 3: Part detectors
+\item Layer 4: Object detectors
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/cnn_feature_hierarchy.pdf}
+\end{center}
+\textbf{Key Insight:}
+\begin{itemize}
+\item A "wheel detector" works anywhere in image
+\item Share the same detector across positions
+\item Reduces parameters dramatically
+\item Makes network translation-invariant
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize This is why CNNs dominate computer vision}
+\end{frame}
+
+% The Mathematics of Learning
+\begin{frame}{The Mathematics of Learning: Gradient Descent}
+\begin{center}
+\textbf{Finding the Best Weights: Like Hiking Down a Mountain}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Optimization Problem:}
+\begin{itemize}
+\item Millions of weights to adjust
+\item Each affects the error
+\item Need to find best combination
+\end{itemize}
+
+\textbf{Gradient Descent:}
+\begin{enumerate}
+\item Calculate error (loss)
+\item Find slope (gradient) for each weight
+\item Step downhill: $w = w - \alpha \cdot \nabla L$
+\item Repeat until bottom
+\end{enumerate}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/gradient_descent.pdf}
+\end{center}
+\textbf{Learning Rate ($\alpha$):}
+\begin{itemize}
+\item Too small: takes forever
+\item Too large: overshoot minimum
+\item Just right: smooth convergence
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize Modern optimizers like Adam adapt the learning rate automatically}
+\end{frame}
+
+% Types of Learning
+\begin{frame}{Types of Learning: Different Problems, Different Approaches}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Supervised Learning:}
+\begin{itemize}
+\item Have input-output pairs
+\item Learn mapping function
+\item Examples: Classification, Regression
+\end{itemize}
+
+\textbf{Unsupervised Learning:}
+\begin{itemize}
+\item Only have inputs
+\item Find patterns/structure
+\item Examples: Clustering, Compression
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Reinforcement Learning:}
+\begin{itemize}
+\item Learn through trial/error
+\item Maximize reward signal
+\item Examples: Games, Robotics
+\end{itemize}
+
+\textbf{Self-Supervised (Modern):}
+\begin{itemize}
+\item Create labels from data itself
+\item Predict next word, masked words
+\item Examples: GPT, BERT
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize Self-supervised learning powers all modern language models}
+\end{frame}
+
+% Overfitting Problem
+\begin{frame}{The Overfitting Problem: When Learning Goes Too Far}
+\begin{center}
+\textbf{Memorization vs. Understanding}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Problem:}
+\begin{itemize}
+\item Network memorizes training data
+\item Fails on new, unseen data
+\item Like student memorizing answers
+\end{itemize}
+
+\textbf{Signs of Overfitting:}
+\begin{itemize}
+\item Training accuracy: 99\%
+\item Test accuracy: 60\%
+\item Complex decision boundaries
+\item High variance
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/overfitting_visualization.pdf}
+\end{center}
+\textbf{Solutions:}
+\begin{itemize}
+\item \textbf{More data:} Can't memorize everything
+\item \textbf{Dropout:} Randomly disable neurons
+\item \textbf{Regularization:} Penalize complexity
+\item \textbf{Early stopping:} Stop before overfitting
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize "With four parameters I can fit an elephant, with five I can make him wiggle his trunk" - von Neumann}
+\end{frame}
+
+% Act IV: The Revolution
+\begin{frame}{Act IV: The Deep Learning Revolution}
+\begin{center}
+{\Large \textbf{2014-Present: Networks That Changed the World}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Depth Revolution:}
+\begin{itemize}
+\item 2014 - VGGNet: 19 layers
+\item 2015 - ResNet: 152 layers
+\item 2017 - Transformers: Attention
+\item 2020 - GPT-3: 175B parameters
+\end{itemize}
+
+\textbf{Why Depth Matters:}
+\begin{itemize}
+\item Each layer = abstraction level
+\item Deep = complex reasoning
+\item Hierarchical feature learning
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Real-World Impact:}
+\begin{itemize}
+\item \textbf{Vision:} Self-driving cars
+\item \textbf{Language:} Google Translate
+\item \textbf{Speech:} Siri, Alexa
+\item \textbf{Medicine:} Disease diagnosis
+\item \textbf{Science:} Protein folding
+\end{itemize}
+
+\textbf{The Scale:}
+\begin{itemize}
+\item Billions of parameters
+\item Trained on internet-scale data
+\item Months of GPU time
+\item Emergent abilities appear
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize We went from recognizing digits to passing the bar exam in 25 years}
+\end{frame}
+
+% ResNet Innovation
+\begin{frame}{2015: ResNet - The Skip Connection Revolution}
+\begin{center}
+\textbf{Problem: Networks Couldn't Get Deeper}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Vanishing Gradient:}
+\begin{itemize}
+\item Gradients multiply through layers
+\item Become exponentially small
+\item Deep layers stop learning
+\item 20 layers was the limit
+\end{itemize}
+
+\textbf{The Breakthrough: Skip Connections}
+\begin{itemize}
+\item Add input directly to output
+\item $F(x) + x$ instead of just $F(x)$
+\item Gradients flow directly backward
+\item Can train 1000+ layers!
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/resnet_skip_connection.pdf}
+\end{center}
+\textbf{Why It Works:}
+\begin{itemize}
+\item Learn residual (difference) only
+\item Identity mapping is easy default
+\item Gradients have direct path
+\item Each layer refines previous result
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize This simple trick enabled the deep learning revolution}
+\end{frame}
+
+% Batch Normalization
+\begin{frame}{Batch Normalization: Keeping Networks Stable}
+\begin{center}
+\textbf{The Internal Covariate Shift Problem}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Issue:}
+\begin{itemize}
+\item Each layer's input distribution changes
+\item As previous layers update
+\item Makes learning unstable
+\item Requires tiny learning rates
+\end{itemize}
+
+\textbf{The Solution:}
+\begin{itemize}
+\item Normalize inputs to each layer
+\item Mean = 0, Variance = 1
+\item Learn scale and shift parameters
+\item Apply during training and testing
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{BatchNorm Algorithm:}
+\begin{align*}
+\mu_B &= \frac{1}{m} \sum_{i=1}^{m} x_i \\
+\sigma_B^2 &= \frac{1}{m} \sum_{i=1}^{m} (x_i - \mu_B)^2 \\
+\hat{x}_i &= \frac{x_i - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}} \\
+y_i &= \gamma \hat{x}_i + \beta
+\end{align*}
+
+\textbf{Benefits:}
+\begin{itemize}
+\item 10x faster training
+\item Higher learning rates OK
+\item Less sensitive to initialization
+\item Acts as regularization
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize Now standard in every deep network}
+\end{frame}
+
+% Different Architectures
+\begin{frame}{Neural Network Architectures: Right Tool for Right Job}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Feedforward Networks:}
+\begin{itemize}
+\item Information flows forward only
+\item Fixed-size input and output
+\item Good for: Classification, regression
+\end{itemize}
+
+\textbf{Convolutional (CNN):}
+\begin{itemize}
+\item Spatial feature detection
+\item Translation invariance
+\item Good for: Images, video
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Recurrent (RNN):}
+\begin{itemize}
+\item Process sequences
+\item Maintain memory/state
+\item Good for: Text, time-series
+\end{itemize}
+
+\textbf{Transformer:}
+\begin{itemize}
+\item Attention mechanism
+\item Parallel processing
+\item Good for: Language, everything else
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize Each architecture encodes different assumptions about the data}
+\end{frame}
+
+% Modern Training Techniques
+\begin{frame}{Modern Training: Standing on Shoulders of Giants}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Transfer Learning:}
+\begin{itemize}
+\item Start with pre-trained network
+\item Fine-tune on your task
+\item 100x less data needed
+\item Days → Hours training
+\end{itemize}
+
+\textbf{Data Augmentation:}
+\begin{itemize}
+\item Create variations of training data
+\item Rotations, crops, color shifts
+\item Prevents overfitting
+\item Free performance boost
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Advanced Optimizers:}
+\begin{itemize}
+\item \textbf{SGD:} Basic gradient descent
+\item \textbf{Momentum:} Remember past gradients
+\item \textbf{Adam:} Adaptive learning rates
+\item \textbf{AdamW:} With weight decay
+\end{itemize}
+
+\textbf{Mixed Precision:}
+\begin{itemize}
+\item Use 16-bit floats where possible
+\item Keep 32-bit for critical ops
+\item 2-3x speedup
+\item Same accuracy
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize These techniques make deep learning practical for everyone}
+\end{frame}
+
+% Why Now?
+\begin{frame}{Why Deep Learning Exploded Now: The Perfect Storm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{1. Data Explosion:}
+\begin{itemize}
+\item Internet = infinite training data
+\item ImageNet: 14M labeled images
+\item Common Crawl: 300TB of text
+\item YouTube: 500 hours/minute
+\end{itemize}
+
+\textbf{2. Hardware Revolution:}
+\begin{itemize}
+\item GPUs: 100x faster than CPUs
+\item TPUs: Built for neural nets
+\item Cloud computing: Rent supercomputers
+\item Mobile chips with NPUs
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{3. Algorithm Breakthroughs:}
+\begin{itemize}
+\item ReLU activation (2011)
+\item Batch normalization (2015)
+\item Skip connections (2015)
+\item Attention mechanism (2017)
+\end{itemize}
+
+\textbf{4. Open Source Culture:}
+\begin{itemize}
+\item TensorFlow, PyTorch free
+\item Pre-trained models shared
+\item Papers with code
+\item Collaborative research
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize The same ideas from 1980s finally had the resources to work}
+\end{frame}
+
+% Understanding Scale
+\begin{frame}{Understanding Scale: From Perceptron to GPT-4}
+\begin{center}
+\textbf{The Exponential Growth of Neural Networks}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Parameter Growth:}
+\begin{itemize}
+\item 1957 Perceptron: 20 weights
+\item 1989 NetTalk: 18,000
+\item 1998 LeNet: 60,000
+\item 2012 AlexNet: 60 million
+\item 2018 BERT: 340 million
+\item 2020 GPT-3: 175 billion
+\item 2023 GPT-4: ~1.8 trillion
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/scale_growth_chart.pdf}
+\end{center}
+\textbf{What Scale Brings:}
+\begin{itemize}
+\item Emergent abilities
+\item Zero-shot learning
+\item Multi-task capability
+\item Common sense reasoning
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize Each 10x increase unlocks new capabilities}
+\end{frame}
+
+% Practical Implementation
+\begin{frame}[fragile]{From Theory to Practice: Your First Network}
+\begin{center}
+\textbf{Building a Digit Classifier in 10 Lines}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.58\textwidth}
+\textbf{PyTorch Implementation:}
+\begin{lstlisting}[language=Python,basicstyle=\tiny]
+import torch
+import torch.nn as nn
+
+class SimpleNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(784, 128)
+        self.fc2 = nn.Linear(128, 10)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        return self.fc2(x)
+
+# Train
+model = SimpleNet()
+optimizer = torch.optim.Adam(model.parameters())
+criterion = nn.CrossEntropyLoss()
+\end{lstlisting}
+
+\column{0.38\textwidth}
+\textbf{What This Does:}
+\begin{itemize}
+\item Input: 28×28 pixel image
+\item Hidden: 128 neurons
+\item Output: 10 digit classes
+\item Activation: ReLU
+\item Training: Adam optimizer
+\end{itemize}
+
+\textbf{Training Loop:}
+\begin{itemize}
+\item Forward pass
+\item Calculate loss
+\item Backward pass
+\item Update weights
+\item Repeat
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize This simple network achieves 97\% accuracy on MNIST}
+\end{frame}
+
+% Common Pitfalls
+\begin{frame}{Common Pitfalls: Learn from Others' Mistakes}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Data Problems:}
+\begin{itemize}
+\item Not enough data
+\item Unbalanced classes
+\item Data leakage
+\item No validation set
+\end{itemize}
+
+\textbf{Architecture Issues:}
+\begin{itemize}
+\item Too deep without skip connections
+\item Wrong activation functions
+\item Incorrect output layer
+\item Bad initialization
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Training Mistakes:}
+\begin{itemize}
+\item Learning rate too high/low
+\item No normalization
+\item Overfitting ignored
+\item Wrong loss function
+\end{itemize}
+
+\textbf{Debugging Tips:}
+\begin{itemize}
+\item Start simple, add complexity
+\item Overfit single batch first
+\item Monitor gradients
+\item Visualize predictions
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize "It's not working" usually means one of these issues}
+\end{frame}
+
+% The Future
+\begin{frame}{The Future: What's Next?}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Current Frontiers:}
+\begin{itemize}
+\item Multimodal models (text+image+audio)
+\item Efficient models for phones
+\item Neuromorphic hardware
+\item Quantum neural networks
+\end{itemize}
+
+\textbf{Unsolved Problems:}
+\begin{itemize}
+\item True reasoning ability
+\item Learning from few examples
+\item Explaining decisions
+\item Energy efficiency
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Next Breakthroughs?}
+\begin{itemize}
+\item Models that update continuously
+\item Networks that program themselves
+\item Biological-digital hybrids
+\item AGI (Artificial General Intelligence)?
+\end{itemize}
+
+\textbf{Your Role:}
+\begin{itemize}
+\item This field is 70 years young
+\item Major breakthroughs every 2-3 years
+\item Anyone can contribute
+\item The best is yet to come
+\end{itemize}
+\end{columns}
+\vfill
+\secondary{\footnotesize "We're still in the steam engine era of AI" - Geoffrey Hinton}
+\end{frame}
+
+% Key Takeaways
+\begin{frame}{Key Takeaways: From Mail Sorting to ChatGPT}
+\begin{center}
+{\Large \textbf{The Journey So Far}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Core Concepts:}
+\begin{enumerate}
+\item \textbf{Neurons:} $y = f(\sum w_i x_i + b)$
+\item \textbf{Learning:} Adjust weights to minimize error
+\item \textbf{Depth:} Each layer adds abstraction
+\item \textbf{Backpropagation:} Distribute error backwards
+\item \textbf{Non-linearity:} Enables complex functions
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{Historical Lessons:}
+\begin{enumerate}
+\item Every limitation spawned innovation
+\item Simple ideas + scale = revolution
+\item Biology inspires but doesn't limit
+\item Persistence pays (40-year problem!)
+\item We're just getting started
+\end{enumerate}
+\end{columns}
+\vspace{5mm}
+\begin{center}
+\textbf{Remember: Neural networks are just functions that learn from examples}
+\end{center}
+\vfill
+\secondary{\footnotesize Next: RNNs - Teaching networks to remember}
+\end{frame}
+
+% Final Slide
+\begin{frame}{Your Neural Network Journey Begins}
+\begin{center}
+{\Large \textbf{From Here to RNNs and Beyond}}
+\end{center}
+\vspace{10mm}
+
+\textbf{What You Now Understand:}
+\begin{itemize}
+\item Why traditional programming failed for pattern recognition
+\item How neurons compute: inputs → weights → sum → activation → output
+\item Why we need multiple layers and non-linearity
+\item How networks learn through backpropagation
+\item The historical journey from Perceptron to GPT-4
+\end{itemize}
+
+\vspace{5mm}
+
+\textbf{Next Steps:}
+\begin{itemize}
+\item \textbf{Week 3:} RNNs - Adding memory for sequences
+\item \textbf{Week 4:} Seq2Seq - Teaching translation
+\item \textbf{Week 5:} Transformers - The attention revolution
+\item \textbf{Week 6:} Pre-trained models - Standing on giants
+\end{itemize}
+
+\vfill
+\begin{center}
+\secondary{\small "The question is not whether machines can think, but whether humans do" - B.F. Skinner}
+\end{center}
+\end{frame}
+
+\end{document}

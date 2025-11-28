@@ -1,0 +1,588 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{multicol}
+
+\title{Neural Networks: Complete Summary}
+\subtitle{From Zero to Understanding in 10 Slides}
+\author{NLP Course 2025}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{1. The Problem \& Motivation}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Why Traditional Programming Fails}
+
+Traditional code: IF-THEN-ELSE rules
+
+\textbf{But how to code:}
+\begin{itemize}
+\item Handwritten digit recognition?
+\item Spam detection?
+\item Chess at grandmaster level?
+\end{itemize}
+
+\vspace{3mm}
+\textbf{1959 Mail Sorting Crisis}
+\begin{itemize}
+\item U.S. Postal Service: millions of ZIP codes
+\item Every person writes differently
+\item Traditional OCR failed
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Paradigm Shift}
+
+Instead of programming rules, let computers \textit{learn patterns from examples}!
+
+\vspace{3mm}
+\textbf{Historical Timeline}
+\begin{itemize}
+\item 1943: McCulloch-Pitts neuron
+\item 1958: Perceptron (first learning)
+\item 1969: Limitations proved (AI Winter)
+\item 1986: Backpropagation rediscovered
+\item 1998: LeNet reads bank checks
+\item 2012: AlexNet (deep learning revolution)
+\end{itemize}
+
+\vspace{3mm}
+\colorbox{blue!20}{\parbox{0.95\textwidth}{\small \textbf{Key:} Neural networks excel at pattern recognition where rules are unclear}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{2. The Neuron: Building Block}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Mathematical Definition}
+\[
+z = \sum_{i=1}^n w_ix_i + b
+\]
+
+\textbf{Components:}
+\begin{itemize}
+\item $x_i$ = inputs (data)
+\item $w_i$ = weights (importance)
+\item $b$ = bias (baseline)
+\item $z$ = output (score)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Party Decision Example}
+
+Alex's formula:
+\[
+\text{Score} = -2 \cdot \text{Distance} + 3 \cdot \text{Friends} - 5
+\]
+
+If Score $> 0 \rightarrow$ GO, else STAY
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/handout/neuron_schematic_simple.pdf}
+\end{center}
+
+\vspace{3mm}
+\textbf{Geometric Interpretation}
+
+Decision boundary: line where Score = 0
+\[
+-2d + 3f - 5 = 0 \quad \Rightarrow \quad f = \frac{2d + 5}{3}
+\]
+
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/handout/party_decision_scatter.pdf}
+\end{center}
+
+\colorbox{green!20}{\parbox{0.95\textwidth}{\small \textbf{Key:} Single neuron = linear boundary (straight line)}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{3. Activation Functions: The Secret to Power}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{The Linearity Problem}
+
+Without activation: multiple neurons = another linear function!
+\[
+z_2 = w_1(w_2x + b_2) + b_1 = (w_1w_2)x + (w_1b_2 + b_1)
+\]
+
+\textbf{Solution:} Add non-linear activation
+\[
+a = f(z) = f\left(\sum_i w_ix_i + b\right)
+\]
+
+\vspace{3mm}
+\textbf{Common Activations}
+\begin{itemize}
+\item \textbf{Sigmoid:} $\sigma(z) = \frac{1}{1+e^{-z}}$ (0 to 1)
+\item \textbf{ReLU:} $\max(0, z)$ (modern standard)
+\item \textbf{Tanh:} $\frac{e^z - e^{-z}}{e^z + e^{-z}}$ (-1 to 1)
+\item \textbf{Leaky ReLU:} $\max(0.01z, z)$ (prevents dying)
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/activation_functions_comparison.pdf}
+\end{center}
+
+\vspace{3mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/neuron_without_with_activation.pdf}
+\end{center}
+
+\vspace{3mm}
+\colorbox{blue!20}{\parbox{0.95\textwidth}{\small \textbf{Critical:} Without activation, 100 layers = 1 neuron!}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{4. The XOR Crisis}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{XOR Problem}
+
+Output 1 if inputs different, 0 if same
+
+\vspace{3mm}
+\begin{center}
+\begin{tabular}{|c|c||c|}
+\hline
+$x_1$ & $x_2$ & Output \\
+\hline\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{3mm}
+\textbf{Challenge:} Draw ONE line separating 1's from 0's
+
+\textbf{Result:} \textit{Impossible!}
+
+\vspace{3mm}
+\textbf{Geometric Proof}
+\begin{itemize}
+\item (0,1) and (1,0) must be on one side
+\item (0,0) and (1,1) on the other
+\item No straight line separates opposite corners!
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/xor_solution_3panel.pdf}
+\end{center}
+
+\vspace{3mm}
+\textbf{Historical Impact (1969)}
+
+Minsky \& Papert proved single-layer networks cannot solve XOR
+
+$\Rightarrow$ \textbf{First AI Winter}
+
+Funding dried up for decades
+
+\vspace{3mm}
+\colorbox{red!20}{\parbox{0.95\textwidth}{\small \textbf{Limitation:} Single neurons only solve \textit{linearly separable} problems}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{5. Hidden Layers: The Breakthrough}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{The Solution}
+
+Use TWO neurons in hidden layer, combine outputs!
+
+\vspace{3mm}
+\textbf{Architecture}
+\begin{itemize}
+\item Input layer: 2 neurons ($x_1, x_2$)
+\item Hidden layer: 2 neurons (two boundaries)
+\item Output layer: 1 neuron (combines)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Geometric Intuition}
+\begin{itemize}
+\item Hidden 1: Separates (0,0) from others
+\item Hidden 2: Separates (1,1) from others
+\item Output: Finds \textit{intersection}
+\item Only (0,1) and (1,0) satisfy both!
+\end{itemize}
+
+\vspace{3mm}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{../figures/handout/two_neurons_combining.pdf}
+\end{center}
+
+\column{0.48\textwidth}
+\textbf{Forward Pass Example}
+
+Given weights:
+\begin{itemize}
+\item Hidden 1: $w=[1,1], b=-0.5$
+\item Hidden 2: $w=[1,1], b=-1.5$
+\item Output: $w=[1,-1], b=0$
+\end{itemize}
+
+\vspace{3mm}
+For input $(1,0)$:
+\begin{align*}
+h_1 &= \sigma(1 \cdot 1 + 1 \cdot 0 - 0.5) \\
+&= \sigma(0.5) \approx 0.62 \\
+h_2 &= \sigma(1 \cdot 1 + 1 \cdot 0 - 1.5) \\
+&= \sigma(-0.5) \approx 0.38 \\
+y &= \sigma(1 \cdot 0.62 - 1 \cdot 0.38) \\
+&= \sigma(0.24) \approx 0.56 \text{ (close to 1!)}
+\end{align*}
+
+\vspace{3mm}
+\colorbox{green!20}{\parbox{0.95\textwidth}{\small \textbf{Why it works:} Each neuron learns different feature. Enough neurons $\rightarrow$ any boundary!}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{6. Backpropagation: How Networks Learn}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Credit Assignment Problem}
+
+Given output error, which weights to adjust by how much?
+
+\vspace{3mm}
+\textbf{The Algorithm (4 steps)}
+
+\textbf{1. Forward Pass}
+\[
+z^{[l]} = W^{[l]}a^{[l-1]} + b^{[l]}, \quad a^{[l]} = f(z^{[l]})
+\]
+
+\textbf{2. Compute Error}
+\[
+L = \frac{1}{2}(y_{\text{pred}} - y_{\text{true}})^2
+\]
+
+\textbf{3. Backward Pass (chain rule)}
+\[
+\frac{\partial L}{\partial w} = \frac{\partial L}{\partial a} \cdot \frac{\partial a}{\partial z} \cdot \frac{\partial z}{\partial w}
+\]
+
+\textbf{4. Update Weights}
+\[
+w \leftarrow w - \eta \frac{\partial L}{\partial w}
+\]
+
+where $\eta$ = learning rate (step size)
+
+\column{0.48\textwidth}
+\textbf{Gradient Descent Intuition}
+
+Hiking in fog to reach valley:
+\begin{enumerate}
+\item Feel slope under feet (gradient)
+\item Take step downhill (update)
+\item Repeat until can't go lower (converge)
+\end{enumerate}
+
+\begin{center}
+\includegraphics[width=0.9\textwidth]{../figures/gradient_landscape_3d.pdf}
+\end{center}
+
+\vspace{3mm}
+\textbf{Historical Note}
+
+Invented 1970s, famous 1986 (Rumelhart/Hinton/Williams)
+
+Foundation of modern deep learning
+
+\vspace{3mm}
+\colorbox{blue!20}{\parbox{0.95\textwidth}{\small \textbf{Key:} Using calculus, compute how each weight contributed to error!}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{7. Universal Approximation Theorem}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Cybenko's Theorem (1989)}
+
+Network with:
+\begin{itemize}
+\item One hidden layer
+\item Finite neurons
+\item Sigmoid activation
+\end{itemize}
+
+can approximate \textit{any} continuous function to \textit{any} accuracy!
+
+\vspace{3mm}
+\textbf{How It Works}
+
+Each sigmoid = smooth step function
+
+Position steps at different locations/heights $\rightarrow$ build any curve:
+\[
+f(x) \approx \sum_{i=1}^n a_i \sigma(w_ix + b_i)
+\]
+
+\vspace{3mm}
+\textbf{Caveats}
+\begin{itemize}
+\item Guarantees existence, not efficient learning
+\item May need exponential neurons
+\item Deep networks often better than wide
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/universal_approximation_sine.pdf}
+\end{center}
+
+\vspace{3mm}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{../figures/handout/error_vs_neuron_count.pdf}
+\end{center}
+
+\vspace{3mm}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/handout/multiple_function_examples.pdf}
+\end{center}
+
+\colorbox{green!20}{\parbox{0.95\textwidth}{\small \textbf{Practical:} If task = find patterns, network \textit{can} learn it!}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{8. From Theory to Modern Practice}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Key Breakthroughs Timeline}
+\begin{itemize}
+\item 1998 LeNet-5: First CNN, read checks
+\item 2012 AlexNet: ImageNet 26\% $\rightarrow$ 16\%
+\item 2015 ResNet: Skip connections, 152 layers
+\item 2017 Transformers: Attention revolutionized NLP
+\item 2022 ChatGPT: LLMs mainstream
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Why 2012 Was Different}
+\begin{enumerate}
+\item \textbf{ReLU}: Solved vanishing gradients
+\item \textbf{Dropout}: Prevents overfitting
+\item \textbf{GPUs}: 50x faster training
+\item \textbf{Big Data}: ImageNet 14M images
+\item \textbf{Batch Norm}: Stabilizes layers
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Modern Architectures}
+\begin{itemize}
+\item \textbf{CNNs:} Images (ResNet, EfficientNet)
+\item \textbf{RNNs:} Sequences (LSTM, GRU)
+\item \textbf{Transformers:} Everything (BERT, GPT, ViT)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Real-World Applications Today}
+
+\begin{multicols}{2}
+\small
+\begin{itemize}
+\item Medical diagnosis
+\item Autonomous vehicles
+\item Drug discovery
+\item Language translation
+\item Code generation
+\item Art generation
+\item Speech recognition
+\item Recommendation systems
+\item Protein folding
+\item Climate modeling
+\item Fraud detection
+\item Robotics
+\end{itemize}
+\end{multicols}
+
+\vspace{3mm}
+\textbf{Key Innovation: Transfer Learning}
+
+Pre-train large model $\rightarrow$ Fine-tune for specific task
+
+Examples: BERT, GPT-3, DALL-E, AlphaFold
+
+\vspace{3mm}
+\colorbox{orange!20}{\parbox{0.95\textwidth}{\small \textbf{Today:} Neural networks power most modern AI systems}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{9. Building Your First Network}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{7-Step Process}
+
+\textbf{1. Define Problem}
+\begin{itemize}
+\item Classification vs Regression?
+\item Input/output sizes?
+\item Target accuracy?
+\end{itemize}
+
+\textbf{2. Prepare Data}
+\begin{itemize}
+\item Split: 70\% train, 15\% val, 15\% test
+\item Normalize: [0,1] or mean=0, std=1
+\item Augment: flip, rotate, paraphrase
+\end{itemize}
+
+\textbf{3. Design Architecture}
+\begin{itemize}
+\item Start simple: 1-2 hidden, 32-128 neurons
+\item ReLU hidden, sigmoid/softmax output
+\item Add dropout (0.2-0.5)
+\end{itemize}
+
+\textbf{4. Hyperparameters}
+\begin{itemize}
+\item Learning rate: 0.001 (most critical!)
+\item Batch size: 32-256
+\item Optimizer: Adam
+\item Loss: CrossEntropy/MSE
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{5. Train}
+
+Forward $\rightarrow$ Loss $\rightarrow$ Backward $\rightarrow$ Update
+
+\textbf{6. Debug Common Issues}
+
+\vspace{2mm}
+{\small
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Symptom} & \textbf{Solution} \\
+\hline
+Loss not decreasing & Try 10x higher/lower LR \\
+Train good, val bad & Dropout, more data \\
+Loss = NaN & Lower LR, clip gradients \\
+\hline
+\end{tabular}
+}
+
+\vspace{3mm}
+\textbf{7. Evaluate}
+\begin{itemize}
+\item Never touch test until final!
+\item Multiple metrics (Accuracy, F1, Precision)
+\item Visualize: confusion matrix, learning curves
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Best Practices}
+\begin{itemize}
+\item Start simple, add complexity
+\item Log everything
+\item Save checkpoints
+\item Monitor training (TensorBoard)
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\begin{frame}{10. Summary: The Complete Picture}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Essential Formulas}
+
+{\small
+\begin{tabular}{|l|l|}
+\hline
+Neuron & $z = \sum_i w_ix_i + b$ \\
+\hline
+Sigmoid & $\sigma(z) = 1/(1+e^{-z})$ \\
+\hline
+ReLU & $\max(0,z)$ \\
+\hline
+Forward & $a^{[l]} = f(W^{[l]}a^{[l-1]} + b^{[l]})$ \\
+\hline
+Loss & $L = \frac{1}{n}\sum (y_{pred} - y_{true})^2$ \\
+\hline
+Gradient & $w \leftarrow w - \eta \frac{\partial L}{\partial w}$ \\
+\hline
+\end{tabular}
+}
+
+\vspace{3mm}
+\textbf{Logical Flow}
+
+{\small
+Problem $\rightarrow$ Neuron $\rightarrow$ Activation $\rightarrow$ XOR Crisis $\rightarrow$ Hidden Layers $\rightarrow$ Backprop $\rightarrow$ Theory $\rightarrow$ Practice $\rightarrow$ Applications
+}
+
+\vspace{3mm}
+\textbf{Key Concepts Checklist}
+
+\begin{multicols}{2}
+{\tiny
+\begin{itemize}
+\item Neuron = weighted sum
+\item Weights control importance
+\item Activation adds non-linearity
+\item Single neuron = linear
+\item Hidden layers = non-linear
+\item XOR impossible alone
+\item Backprop assigns credit
+\item Gradient descent optimizes
+\end{itemize}
+}
+\end{multicols}
+
+\column{0.48\textwidth}
+\textbf{What's Next}
+
+\textbf{Implement:}
+\begin{itemize}
+\item Code from scratch (NumPy)
+\item Use frameworks (PyTorch/TensorFlow)
+\end{itemize}
+
+\textbf{Learn:}
+\begin{itemize}
+\item Fast.ai, CS231n, Coursera
+\item Papers: LeNet, AlexNet, ResNet, Attention
+\end{itemize}
+
+\textbf{Build:}
+\begin{itemize}
+\item Image classifier
+\item Text generator
+\item Game AI
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Resources}
+\begin{itemize}
+\item Book: Deep Learning (Goodfellow et al.)
+\item Viz: playground.tensorflow.org
+\item Code: github.com/pytorch/examples
+\item Papers: arxiv-sanity.com
+\end{itemize}
+
+\vspace{3mm}
+\colorbox{green!20}{\parbox{0.95\textwidth}{\small \textbf{You now understand the fundamentals powering modern AI!}}}
+\end{columns}
+\end{frame}
+
+\end{document}

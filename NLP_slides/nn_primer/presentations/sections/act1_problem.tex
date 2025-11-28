@@ -1,0 +1,160 @@
+% Act I: The Problem That Started Everything
+\begin{frame}{Act I: The Problem That Started Everything}
+\begin{center}
+{\Large \textbf{1950s: The Mail Sorting Crisis}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Challenge:}
+\begin{itemize}
+\item 150 million letters per day
+\item Hand-written addresses
+\item Human sorters: slow, expensive, error-prone
+\item Traditional programming: useless
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why Traditional Code Failed:}
+\begin{itemize}
+\item Can't write rules for every handwriting style
+\item Too many variations of each letter
+\item Context matters: "I" vs "l" vs "1"
+\item This wasn't computation---it was \highlight{pattern recognition}
+\end{itemize}
+\end{columns}
+\bottomnote{ This problem would take 40 years to solve properly}
+\end{frame}
+
+% NEW: Historical Timeline
+\begin{frame}{80 Years of Neural Networks: The Complete Journey}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/historical_timeline.pdf}
+\end{center}
+\bottomnote{ From theoretical neurons to ChatGPT: Each breakthrough built on previous failures}
+\end{frame}
+
+% Why Rules Don't Work
+\begin{frame}[fragile]{Why Can't We Just Write Rules?}
+\begin{center}
+\textbf{Problem: Recognize the Letter "A"}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Traditional Approach (Failed):}
+\begin{lstlisting}[basicstyle=\tiny]
+if (has_triangle_top AND
+    has_horizontal_bar AND
+    two_diagonal_lines) {
+  return "A"
+}
+\end{lstlisting}
+\secondary{\small But what about...}
+\begin{itemize}
+\item Handwritten A's?
+\item Different fonts?
+\item Rotated A's?
+\item Partial A's?
+\end{itemize}
+
+\column{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/various_a_styles.pdf}
+\end{center}
+\secondary{\small Just for the letter "A", we'd need thousands of rules!}
+\end{columns}
+\bottomnote{ The breakthrough: What if machines could learn patterns like children do?}
+\end{frame}
+
+% NEW: McCulloch-Pitts Historical Context
+\begin{frame}{1943: The First Spark - McCulloch \& Pitts}
+\begin{center}
+\textbf{The Birth of Computational Neuroscience}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Revolutionary Paper:}
+\begin{itemize}
+\item "A Logical Calculus of Ideas Immanent in Nervous Activity"
+\item First mathematical model of neurons
+\item Proved: Networks can compute ANY logical function
+\item Inspired von Neumann's computer architecture
+\end{itemize}
+
+\textbf{Key Insight:}
+\begin{itemize}
+\item Neurons = Logic gates
+\item Brain = Computing machine
+\item Thinking = Computation
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Model:}
+\begin{itemize}
+\item Binary neurons (0 or 1)
+\item Threshold activation
+\item Fixed connections
+\item No learning yet!
+\end{itemize}
+
+\textbf{Historical Impact:}
+\begin{itemize}
+\item Founded field of neural networks
+\item Influenced cybernetics movement
+\item Set stage for AI research
+\item "The brain is a computer" metaphor
+\end{itemize}
+\end{columns}
+\bottomnote{ 14 years later, Rosenblatt would add the missing piece: learning}
+\end{frame}
+
+% 1957: The First Attempt
+\begin{frame}{1957: The First Learning Machine - The Perceptron}
+\begin{center}
+\textbf{Frank Rosenblatt's Radical Idea: Neurons That Learn}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Beyond McCulloch-Pitts:}
+\begin{itemize}
+\item Adjustable weights (not fixed!)
+\item Learning from mistakes
+\item Physical machine built (Mark I)
+\item Could recognize simple patterns
+\end{itemize}
+
+\textbf{The Hardware:}
+\begin{itemize}
+\item 400 photocells (20$\times$20 ``retina'')
+\item 512 motor-driven potentiometers
+\item Weights adjusted by electric motors
+\item Took 5 minutes to learn patterns
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Mathematical Model:}
+\begin{itemize}
+\item Inputs: $x_1, x_2, ..., x_n$
+\item Weights: $w_1, w_2, ..., w_n$
+\item Sum: $z = \sum_{i=1}^{n} w_i x_i + b$
+\item Output: $y = \begin{cases} 1 & \text{if } z > 0 \\ 0 & \text{if } z \leq 0 \end{cases}$
+\end{itemize}
+
+\plainmath{Each input gets a vote (weight). We add up all votes plus a bias. If total is positive, output 1; otherwise 0.}
+
+\textbf{Learning Rule:}
+If wrong: $w_i = w_i + \eta \cdot error \cdot x_i$
+\end{columns}
+\bottomnote{ The New York Times, 1958: "The Navy revealed the embryo of an electronic computer that will be able to walk, talk, see, write, reproduce itself and be conscious of its existence."}
+\end{frame}
+
+% NEW: Perceptron Hardware Visualization
+\begin{frame}{The Mark I Perceptron: A Physical Learning Machine}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{../figures/perceptron_hardware.pdf}
+\end{center}
+\bottomnote{ The first neural network wasn't software---it was a room-sized machine with motors and photocells}
+\end{frame}

@@ -1,0 +1,909 @@
+\documentclass[8pt,aspectratio=169,8pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm2e}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{subfigure}
+\usepackage{hyperref}
+
+% Theme settings
+\usetheme{Frankfurt}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Custom colors
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{173,216,230}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codegray}{RGB}{150,150,150}
+\definecolor{codepurple}{RGB}{128,0,128}
+\definecolor{backcolor}{RGB}{245,245,245}
+
+% Code listing settings
+\lstset{
+    backgroundcolor=\color{backcolor},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    showstringspaces=false,
+    frame=single,
+    numbers=left,
+    language=Python
+}
+
+% Include slide layouts
+\input{../slide_layouts.tex}
+
+\title[Week 11: Efficiency]{Natural Language Processing Course}
+\subtitle{Week 11: Efficiency and Deployment}
+\author{Joerg R. Osterrieder \\ \url{www.joergosterrieder.com}}
+\date{}
+
+\begin{document}
+
+% Title page
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\section{Week 11: Efficiency and Deployment}
+
+% Title slide
+\begin{frame}
+    \centering
+    \vspace{2cm}
+    {\Large \textbf{Week 11}}\\
+    \vspace{0.5cm}
+    {\huge \textbf{Efficiency \& Deployment}}\\
+    \vspace{1cm}
+    {\large From Cloud Giants to Pocket-Sized Models}
+\end{frame}
+
+% Motivation: The deployment crisis
+\begin{frame}[t]{Why Your Phone Can't Run GPT-4 (Yet)}
+    \textbf{The shocking reality of modern models:}
+    
+    \vspace{0.5em}
+    \begin{itemize}
+        \item GPT-3: 175B parameters = 350GB in FP16\footnotemark
+        \item Your phone: 6GB RAM
+        \item Inference cost: \$0.06 per 1K tokens
+        \item Latency: 100ms+ per token
+        \item Energy: 0.1 kWh per conversation
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{red!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            One ChatGPT query = 10x the energy of a Google search
+        }
+    }
+    \end{center}
+    
+    \vspace{0.5em}
+    \textbf{The challenge:}
+    \begin{itemize}
+        \item Users want instant responses
+        \item Privacy requires on-device processing
+        \item Costs are unsustainable at scale
+        \item Edge devices have limited resources
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textit{This week: How to shrink giants into pocket-sized assistants}
+    
+    \footnotetext{Brown et al. (2020); Strubell et al. (2019) on model carbon footprint}
+\end{frame}
+
+% The efficiency landscape
+\begin{frame}[t]{From Supercomputers to Smartphones: The Deployment Journey}
+    \centering
+    \includegraphics[width=0.9\textwidth]{../figures/model_compression_landscape.pdf}
+    
+    \vspace{0.5em}
+    \textbf{The compression toolkit:}
+    \begin{itemize}
+        \item Quantization: 32-bit → 8-bit (4x smaller)
+        \item Distillation: Teacher → Student (10x smaller)
+        \item Pruning: Remove redundant weights (2-5x)
+        \item Mobile architectures: Designed for edge
+    \end{itemize}
+\end{frame}
+
+% Real-world impact
+\begin{frame}[t]{Efficient Models in Production (2024)}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Success Stories:}
+            \begin{itemize}
+                \item iPhone: On-device Siri (5B → 200M)\footnotemark
+                \item Google: Pixel voice typing
+                \item Microsoft: Excel formula suggestions
+                \item WhatsApp: Real-time translation
+                \item Tesla: In-car voice commands
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Business Impact:}
+            \begin{itemize}
+                \item 100x cost reduction
+                \item 10ms latency (from 1s)
+                \item Works offline
+                \item Privacy preserved
+                \item Scales to billions
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Efficiency Techniques:}
+            \begin{itemize}
+                \item INT8 quantization: Standard
+                \item INT4/Binary: Emerging
+                \item Distillation: 95\% performance
+                \item Structured pruning: Hardware-friendly
+                \item Flash attention: Memory efficient
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Deployment Targets:}
+            \begin{itemize}
+                \item Mobile phones: 2-4GB limit
+                \item Browsers: WebAssembly
+                \item IoT devices: MCUs
+                \item Edge servers: Local processing
+                \item Specialized chips: NPUs/TPUs
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            2024: Every device runs neural networks - efficiency made it possible
+        }
+    }
+    \end{center}
+    
+    \footnotetext{Apple ML Research Blog (2023); Google I/O presentations}
+\end{frame}
+
+% Learning objectives
+\begin{frame}[t]{Week 11: What You'll Master}
+    \textbf{By the end of this week, you will:}
+    \begin{itemize}
+        \item \textbf{Understand} why models are so large
+        \item \textbf{Implement} quantization techniques
+        \item \textbf{Master} knowledge distillation
+        \item \textbf{Apply} pruning strategies
+        \item \textbf{Deploy} models to edge devices
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            \textbf{Core Insight:} 90\% of weights do 10\% of the work
+        }
+    }
+    \end{center}
+\end{frame}
+
+% Why models are large
+\begin{frame}[t]{Why Are Models So Large? The Overparameterization Mystery}
+    \textbf{The paradox:}
+    
+    Models have way more parameters than necessary!
+    
+    \vspace{0.5em}
+    \textbf{Evidence:}
+    \begin{itemize}
+        \item Lottery Ticket Hypothesis: Small subnetworks work just as well\footnotemark
+        \item Magnitude pruning: Remove 90\% weights, maintain accuracy
+        \item Low-rank decomposition: Matrices are redundant
+        \item Quantization: 32 bits → 4 bits still works
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Why overparameterize?}
+    \begin{itemize}
+        \item Easier optimization landscape
+        \item Better generalization (surprisingly!)
+        \item Redundancy provides robustness
+        \item Training dynamics require it
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{yellow!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            Large models are like rough marble blocks - we can carve out efficient versions
+        }
+    }
+    \end{center}
+    
+    \footnotetext{Frankle \& Carbin (2019) "The Lottery Ticket Hypothesis"}
+\end{frame}
+
+% Quantization overview
+\begin{frame}[t]{Quantization: From Float32 to Int8 and Beyond}
+    \centering
+ %   \includegraphics[width=0.6  5\textwidth]{  ../figures/quantization_levels.pdf}
+    
+    \vspace{0.5em}
+    \textbf{The quantization spectrum:}
+    \begin{itemize}
+        \item FP32 (32 bits): Training precision
+        \item FP16 (16 bits): Mixed precision training
+        \item INT8 (8 bits): Standard deployment
+        \item INT4 (4 bits): Aggressive compression
+        \item Binary (1 bit): Research frontier
+    \end{itemize}
+\end{frame}
+
+% Quantization implementation
+\begin{frame}[fragile]{Implementing Post-Training Quantization}
+    \begin{columns}[T]
+        \column{0.55\textwidth}
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+import torch
+import torch.nn as nn
+
+def quantize_tensor(x, num_bits=8):
+    """Quantize tensor to n bits"""
+    qmin = -(2**(num_bits-1))
+    qmax = 2**(num_bits-1) - 1
+    
+    min_val = x.min()
+    max_val = x.max()
+    
+    scale = (max_val - min_val) / (qmax - qmin)
+    zero_point = qmin - min_val / scale
+    
+    q_x = torch.round(x / scale + zero_point)
+    q_x = torch.clamp(q_x, qmin, qmax)
+    
+    return q_x, scale, zero_point
+
+def dequantize_tensor(q_x, scale, zero_point):
+    """Dequantize back to float"""
+    return scale * (q_x - zero_point)
+
+class QuantizedLinear(nn.Module):
+    def __init__(self, weight, bias, num_bits=8):
+        super().__init__()
+        
+        self.q_weight, self.w_scale, self.w_zp = quantize_tensor(weight, num_bits)
+        self.q_weight = self.q_weight.to(torch.int8)
+        
+        if bias is not None:
+            self.q_bias, self.b_scale, self.b_zp = quantize_tensor(bias, num_bits)
+        else:
+            self.q_bias = None
+            
+        self.num_bits = num_bits
+        
+    def forward(self, x):
+        w_float = dequantize_tensor(self.q_weight.float(), 
+                                   self.w_scale, self.w_zp)
+        out = F.linear(x, w_float)
+        
+        if self.q_bias is not None:
+            b_float = dequantize_tensor(self.q_bias.float(),
+                                       self.b_scale, self.b_zp)
+            out += b_float
+            
+        return out
+
+def quantize_model(model, num_bits=8):
+    """Quantize entire model"""
+    for name, module in model.named_modules():
+        if isinstance(module, nn.Linear):
+            quantized = QuantizedLinear(
+                module.weight.data,
+                module.bias.data if module.bias is not None else None,
+                num_bits
+            )
+            parent_name = name.rsplit('.', 1)[0] if '.' in name else ''
+            child_name = name.rsplit('.', 1)[1] if '.' in name else name
+            parent = model.get_submodule(parent_name) if parent_name else model
+            setattr(parent, child_name, quantized)
+    
+    return model
+\end{lstlisting}
+        \column{0.43\textwidth}
+        \codeexplanation{
+            \textbf{Quantization Impact:}
+            \begin{itemize}
+                \item Memory: 4x reduction (INT8)
+                \item Speed: 2-4x on CPUs
+                \item Accuracy: -1\% typical
+                \item Energy: 10x savings
+            \end{itemize}
+            
+            \vspace{0.3em}
+            \textbf{Advanced Techniques:}
+            \begin{itemize}
+                \item Symmetric vs asymmetric
+                \item Per-channel quantization
+                \item Quantization-aware training
+                \item Mixed bit-width
+            \end{itemize}
+            
+            \vspace{0.3em}
+            \textbf{Hardware Support:}
+            \begin{itemize}
+                \item INT8: All modern chips
+                \item INT4: Newer GPUs/NPUs
+                \item Binary: Research only
+            \end{itemize}
+        }
+    \end{columns}
+\end{frame}
+
+% Knowledge distillation
+\begin{frame}[t]{Knowledge Distillation: Teaching Small Models to Think Big}
+    \textbf{The teacher-student paradigm:}\footnotemark
+    
+    \vspace{0.5em}
+    \centering
+    \includegraphics[width=0.6\textwidth]{../figures/knowledge_distillation.pdf}
+    
+    \vspace{0.5em}
+    \textbf{Key insight: Soft labels contain more information}
+    \begin{itemize}
+        \item Hard label: "cat" (probability = 1.0)
+        \item Soft labels: cat=0.9, tiger=0.05, dog=0.03, ...
+        \item Student learns relationships between classes
+        \item Mimics teacher's reasoning, not just answers
+    \end{itemize}
+    
+    \footnotetext{Hinton et al. (2015) "Distilling the Knowledge in a Neural Network"}
+\end{frame}
+
+% Distillation implementation
+\begin{frame}[fragile]{Implementing Knowledge Distillation}
+    \begin{columns}[T]
+                \column{0.65\textwidth}
+
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class DistillationLoss(nn.Module):
+    def __init__(self, temperature=3.0, alpha=0.7):
+        """
+        temperature: Softens probability distributions
+        alpha: Weight between distillation and true label loss
+        """
+        super().__init__()
+        self.temperature = temperature
+        self.alpha = alpha
+        self.ce_loss = nn.CrossEntropyLoss()
+        
+    def forward(self, student_logits, teacher_logits, labels):
+        soft_targets = F.softmax(teacher_logits / self.temperature, dim=-1)
+        soft_prob = F.log_softmax(student_logits / self.temperature, dim=-1)
+        
+        distillation_loss = F.kl_div(soft_prob, soft_targets, 
+                                     reduction='batchmean') * (self.temperature ** 2)
+        
+        student_loss = self.ce_loss(student_logits, labels)
+        
+        loss = self.alpha * distillation_loss + (1 - self.alpha) * student_loss
+        return loss
+
+def train_student(student_model, teacher_model, dataloader, 
+                  epochs=10, temperature=3.0):
+    """Train student to mimic teacher"""
+    teacher_model.eval()
+    optimizer = torch.optim.Adam(student_model.parameters(), lr=1e-3)
+    criterion = DistillationLoss(temperature=temperature)
+    
+    for epoch in range(epochs):
+        for batch in dataloader:
+            inputs, labels = batch
+            
+            with torch.no_grad():
+                teacher_outputs = teacher_model(inputs)
+            
+            student_outputs = student_model(inputs)
+            
+            loss = criterion(student_outputs, teacher_outputs, labels)
+            
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            
+        print(f"Epoch {epoch}: Loss = {loss.item():.4f}")
+    
+    return student_model
+
+class TinyBERT(nn.Module):
+    """Example: 6-layer student from 12-layer teacher"""
+    def __init__(self, teacher_config):
+        super().__init__()
+        self.hidden_size = teacher_config.hidden_size // 2
+        self.num_layers = 6  
+        self.num_heads = teacher_config.num_heads // 2
+        
+        self.embeddings = nn.Embedding(teacher_config.vocab_size, 
+                                      self.hidden_size)
+        self.encoder = nn.TransformerEncoder(
+            nn.TransformerEncoderLayer(
+                d_model=self.hidden_size,
+                nhead=self.num_heads,
+                dim_feedforward=self.hidden_size * 4
+            ),
+            num_layers=self.num_layers
+        )
+        
+        self.projection = nn.Linear(self.hidden_size, 
+                                   teacher_config.vocab_size)
+\end{lstlisting}
+                \column{0.35\textwidth}
+
+        \codeexplanation{
+            \textbf{Distillation Results:}
+            \begin{itemize}
+                \item Size: 10-100x smaller
+                \item Speed: 5-50x faster
+                \item Accuracy: 95-98\% retained
+                \item Examples: DistilBERT, TinyBERT
+            \end{itemize}
+            
+            \vspace{0.3em}
+            \textbf{Temperature Effect:}
+            \begin{itemize}
+                \item T=1: Normal softmax
+                \item T=3-5: Typical for NLP
+                \item T$>$10: Very soft labels
+                \item Higher T = more dark knowledge
+            \end{itemize}
+            
+            \vspace{0.3em}
+            \textbf{Advanced Methods:}
+            \begin{itemize}
+                \item Feature distillation
+                \item Attention transfer
+                \item Progressive distillation
+            \end{itemize}
+        }
+    \end{columns}
+\end{frame}
+
+% Pruning strategies
+\begin{frame}[t]{Pruning: Finding the Essential Subnetwork}
+    \centering
+    \includegraphics[width=0.65\textwidth]{../figures/pruning_strategies.pdf}
+    
+    \vspace{0.5em}
+    \textbf{Pruning approaches:}
+    \begin{itemize}
+        \item Magnitude pruning: Remove small weights
+        \item Structured pruning: Remove entire channels/heads
+        \item Movement pruning: Track weight importance during training
+        \item Lottery tickets: Find winning subnetworks
+    \end{itemize}
+\end{frame}
+
+% Mobile architectures
+\begin{frame}[t]{Mobile-First Architectures: Designed for Efficiency}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{MobileBERT:}\footnotemark
+            \begin{itemize}
+                \item Bottleneck structure
+                \item 4.3x smaller, 5.5x faster
+                \item Depth-wise convolutions
+                \item Progressive knowledge transfer
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{ALBERT:}
+            \begin{itemize}
+                \item Parameter sharing
+                \item Factorized embeddings
+                \item 18x fewer parameters
+                \item Same performance as BERT
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{EdgeBERT:}
+            \begin{itemize}
+                \item Hardware-aware design
+                \item Adaptive computation
+                \item Early exit mechanisms
+                \item Dynamic depth/width
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Design Principles:}
+            \begin{itemize}
+                \item Prefer depth over width
+                \item Share parameters
+                \item Use separable operations
+                \item Minimize memory access
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{green!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            Mobile architectures: Not compressed models, but efficient by design
+        }
+    }
+    \end{center}
+    
+    \footnotetext{Sun et al. (2020) "MobileBERT"; Lan et al. (2020) "ALBERT"}
+\end{frame}
+
+% Deployment optimization
+\resultslide{Deployment Optimization Pipeline}{
+    \centering
+    \includegraphics[width=0.65\textwidth]{../figures/deployment_pipeline.pdf}
+}{
+    \begin{itemize}
+        \item Start with pretrained model
+        \item Apply compression techniques
+        \item Optimize for target hardware
+        \item Profile and iterate
+        \item Deploy with runtime optimizations
+    \end{itemize}
+}
+
+% Hardware acceleration
+\begin{frame}[t]{Hardware Acceleration: From GPUs to Edge TPUs}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Compute Platforms:}
+            \begin{itemize}
+                \item GPUs: Training \& cloud inference
+                \item TPUs: Optimized for transformers
+                \item NPUs: Mobile inference
+                \item DSPs: Ultra-low power
+                \item FPGAs: Custom acceleration
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Optimization Techniques:}
+            \begin{itemize}
+                \item Kernel fusion
+                \item Memory pooling
+                \item Graph optimization
+                \item Operator scheduling
+                \item Cache optimization
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Framework Support:}
+            \begin{itemize}
+                \item TensorFlow Lite: Mobile/edge
+                \item ONNX Runtime: Cross-platform
+                \item Core ML: iOS devices
+                \item TensorRT: NVIDIA optimization
+                \item OpenVINO: Intel hardware
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Performance Gains:}
+            \begin{itemize}
+                \item Quantization: 2-4x speedup
+                \item Pruning: 2-10x speedup
+                \item Hardware opt: 5-50x
+                \item Combined: 100x+ possible
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{yellow!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            2024: Every major chip has AI acceleration built-in
+        }
+    }
+    \end{center}
+\end{frame}
+
+% Real deployment example
+\begin{frame}[fragile]{Real-World Deployment: BERT on Mobile}
+    \begin{columns}[T]
+        \column{0.65\textwidth}
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\tiny]
+import torch
+import torch.quantization as quant
+from transformers import BertModel
+
+def prepare_mobile_bert(model_name='bert-base-uncased'):
+    """Complete pipeline for mobile deployment"""
+    
+    model = BertModel.from_pretrained(model_name)
+    model.eval()
+    
+    print(f"Original size: {get_model_size(model):.1f} MB")
+    
+    distilled_model = distill_bert(model, num_layers=6)
+    print(f"After distillation: {get_model_size(distilled_model):.1f} MB")
+    
+    model.qconfig = quant.get_default_qconfig('qnnpack')
+    quant.prepare(model, inplace=True)
+    quant.convert(model, inplace=True)
+    print(f"After INT8 quantization: {get_model_size(model):.1f} MB")
+    
+    pruned_model = magnitude_prune(model, sparsity=0.9)
+    print(f"After pruning: {get_model_size(pruned_model):.1f} MB")
+    
+    optimized_model = torch.jit.script(pruned_model)
+    optimized_model.save("mobile_bert.pt")
+    
+    print("\nDeployment stats:")
+    print(f"Final size: {get_model_size(optimized_model):.1f} MB")
+    print(f"Inference time: {benchmark_model(optimized_model):.1f} ms")
+    print(f"Memory usage: {get_memory_usage(optimized_model):.1f} MB")
+    
+    return optimized_model
+
+def export_to_mobile(model, example_input):
+    """Export for iOS/Android"""
+    traced = torch.jit.trace(model, example_input)
+    
+    traced.save("model_mobile.pt")
+    
+    torch.onnx.export(model, example_input, "model.onnx",
+                     export_params=True,
+                     opset_version=11,
+                     do_constant_folding=True,
+                     input_names=['input'],
+                     output_names=['output'],
+                     dynamic_axes={'input': {0: 'batch_size'},
+                                  'output': {0: 'batch_size'}})
+    
+    import coremltools as ct
+    mlmodel = ct.convert(traced, inputs=[ct.TensorType(shape=example_input.shape)])
+    mlmodel.save("model.mlmodel")
+    
+    print("Exported to: PyTorch Mobile, ONNX, Core ML")
+
+def benchmark_deployment():
+    """Compare deployment options"""
+    results = {
+        'Cloud (V100)': {'latency': 10, 'cost': 0.001, 'privacy': 'Low'},
+        'Edge Server': {'latency': 50, 'cost': 0.0001, 'privacy': 'Medium'},
+        'Mobile (INT8)': {'latency': 100, 'cost': 0, 'privacy': 'High'},
+        'Mobile (INT4)': {'latency': 150, 'cost': 0, 'privacy': 'High'},
+    }
+    return results
+\end{lstlisting}
+        \column{0.35\textwidth}
+        \codeexplanation{
+            \textbf{Compression Results:}
+            \begin{itemize}
+                \item BERT-base: 440MB → 13MB
+                \item 33x size reduction
+                \item 20x speedup on mobile
+                \item 95\% accuracy retained
+            \end{itemize}
+            
+            \vspace{0.3em}
+            \textbf{Deployment Checklist:}
+            \begin{itemize}
+                \item Profile target device
+                \item Choose compression mix
+                \item Validate accuracy
+                \item Optimize runtime
+                \item Monitor in production
+            \end{itemize}
+        }
+    \end{columns}
+\end{frame}
+
+% Energy efficiency
+\begin{frame}[t]{The Green AI Movement: Energy-Efficient Models}
+    \textbf{The environmental cost of AI:}\footnotemark
+    
+    \vspace{0.5em}
+    \begin{itemize}
+        \item Training GPT-3: 1,287 MWh (123 cars for a year)
+        \item One ChatGPT query: 0.0003 kWh
+        \item Global AI energy: Doubling every 3.4 months
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Efficiency improvements:}
+    \begin{itemize}
+        \item Sparse models: 10x less energy
+        \item Quantization: 4x less energy
+        \item Better algorithms: 100x over 10 years
+        \item Hardware efficiency: 1000x since 2012
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figures/energy_efficiency_trends.pdf}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{green!20}{
+        \parbox{0.8\textwidth}{
+            \centering
+            Efficient models aren't just faster - they're saving the planet
+        }
+    }
+    \end{center}
+    
+    \footnotetext{Patterson et al. (2021) "Carbon Emissions of ML"; Strubell et al. (2019)}
+\end{frame}
+
+% Future directions
+\begin{frame}[t]{The Future of Efficient AI (2024 and Beyond)}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Emerging Techniques:}
+            \begin{itemize}
+                \item 1-bit models (BitNet)
+                \item Mixture of Experts (MoE)
+                \item Dynamic neural networks
+                \item Neuromorphic computing
+                \item Photonic processors
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Research Frontiers:}
+            \begin{itemize}
+                \item Sub-1-bit quantization
+                \item Learned compression
+                \item Architecture search for efficiency
+                \item Federated model compression
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Industry Trends:}
+            \begin{itemize}
+                \item Every device runs AI (AIoT)
+                \item Privacy-preserving inference
+                \item Real-time translation everywhere
+                \item Personalized on-device models
+                \item Zero-latency assistants
+            \end{itemize}
+            
+            \vspace{0.5em}
+            \textbf{Hardware Evolution:}
+            \begin{itemize}
+                \item Analog AI chips
+                \item In-memory computing
+                \item Quantum advantage?
+                \item Brain-inspired chips
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5em}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            The future: AI everywhere, invisible, instant, and sustainable
+        }
+    }
+    \end{center}
+\end{frame}
+
+% Exercise
+\begin{frame}[t]{Week 11 Exercise: Deploy Your Own Mobile Model}
+    \textbf{Your Mission:} Take a large model and make it mobile-ready
+    
+    \vspace{0.5em}
+    \textbf{Part 1: Baseline and Profiling}
+    \begin{itemize}
+        \item Choose a pretrained model (BERT, GPT-2, etc.)
+        \item Profile: size, latency, memory, energy
+        \item Identify bottlenecks
+        \item Set target constraints (e.g., 50MB, 100ms)
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Part 2: Apply Compression}
+    \begin{itemize}
+        \item Implement INT8 quantization
+        \item Distill to smaller student
+        \item Apply magnitude pruning
+        \item Combine techniques
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Part 3: Deploy and Benchmark}
+    \begin{itemize}
+        \item Export to ONNX/TFLite
+        \item Run on real device (phone/Raspberry Pi)
+        \item Measure real-world performance
+        \item Compare accuracy vs efficiency
+        \item Create deployment package
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Bonus:} Build demo app showcasing your efficient model!
+\end{frame}
+
+% Summary
+\begin{frame}[t]{Key Takeaways: Efficiency Enables Everything}
+    \textbf{What we learned:}
+    \begin{itemize}
+        \item Models are vastly overparameterized
+        \item 90\% compression with minimal loss
+        \item Quantization: Smaller and faster
+        \item Distillation: Transfer capabilities
+        \item Hardware matters immensely
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{The efficiency toolkit:}
+    \begin{center}
+    \colorbox{lightblue!30}{
+        \parbox{0.8\textwidth}{
+            \centering
+            Quantization → Distillation → Pruning → Hardware optimization
+        }
+    }
+    \end{center}
+    
+    \vspace{0.5em}
+    \textbf{Why it matters:}
+    \begin{itemize}
+        \item Enables edge deployment
+        \item Reduces costs dramatically
+        \item Improves user experience
+        \item Environmental sustainability
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \textbf{Next week: Ethics and Future Directions}
+    
+    With great power comes great responsibility - what should we build?
+\end{frame}
+
+% References
+\begin{frame}[t]{References and Further Reading}
+    \textbf{Foundational Papers:}
+    \begin{itemize}
+        \item Hinton et al. (2015). "Distilling the Knowledge in a Neural Network"
+        \item Han et al. (2016). "Deep Compression: Compressing DNNs"
+        \item Frankle \& Carbin (2019). "The Lottery Ticket Hypothesis"
+    \end{itemize}
+    
+    \textbf{Quantization:}
+    \begin{itemize}
+        \item Jacob et al. (2018). "Quantization and Training of Neural Networks"
+        \item Gholami et al. (2021). "A Survey of Quantization Methods"
+        \item Dettmers et al. (2022). "LLM.int8(): 8-bit Matrix Multiplication"
+    \end{itemize}
+    
+    \textbf{Practical Resources:}
+    \begin{itemize}
+        \item PyTorch Quantization Documentation
+        \item TensorFlow Lite Guide
+        \item ONNX Runtime Optimization
+        \item Edge Impulse Platform
+    \end{itemize}
+\end{frame}
+\end{document}

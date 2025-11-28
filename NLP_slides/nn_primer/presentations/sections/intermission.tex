@@ -1,0 +1,208 @@
+% Intermission: From Story to Science
+\begin{frame}{Intermission: From Story to Science}
+\begin{center}
+{\Large \textbf{Let's Understand How This Actually Works}}
+\end{center}
+\vspace{10mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{We've Seen the History...}
+\begin{itemize}
+\item McCulloch-Pitts invented the neuron
+\item Rosenblatt made it learn
+\item The perceptron was born
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Now Let's See the Science:}
+\begin{itemize}
+\item How does a neuron calculate?
+\item What does learning mean?
+\item Why was XOR so hard?
+\end{itemize}
+\end{columns}
+
+\vspace{10mm}
+\begin{center}
+\colorbox{checkpointBlue!20}{\parbox{0.7\textwidth}{
+\centering
+\textbf{Next 5 slides: Hands-on calculations and exercises}\\
+\small Get your pencil ready - we're going to work through real examples!
+}}
+\end{center}
+
+\bottomnote{ Don't worry - we'll return to the story once you understand the basics}
+\end{frame}
+
+% NEW: Understanding Checkpoint
+\begin{frame}{Understanding Check: Can You Answer These?}
+\begin{center}
+\textbf{\checkpoint{Let's Make Sure We're Together}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Quick Questions:}
+\begin{enumerate}
+\item Why couldn't traditional programming solve mail sorting?
+\item What does a weight represent in simple terms?
+\item Why do we need the bias term?
+\item What was revolutionary about Rosenblatt's perceptron?
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{Think About It:}
+\begin{itemize}
+\item A weight is like the importance/trust we give to each input
+\item Bias shifts our decision threshold
+\item Learning = adjusting these weights
+\item The perceptron was the first machine that could learn!
+\end{itemize}
+\end{columns}
+\vspace{5mm}
+\tryit{Draw a simple perceptron with 2 inputs. Label the weights, bias, and output. What would the weights be to compute AND logic?}
+\bottomnote{ If any of these are unclear, revisit the previous slides before continuing}
+\end{frame}
+
+% The Math Behind It (Simple)
+\begin{frame}{Making It Concrete: Teaching OR Logic}
+\begin{center}
+\textbf{Problem: Learn OR function (output 1 if ANY input is 1)}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Training Data:}
+\begin{center}
+\begin{tabular}{cc|c}
+$x_1$ & $x_2$ & Output \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 1 \\
+\end{tabular}
+\end{center}
+
+\textbf{The Perceptron:}
+\begin{align*}
+z &= w_1 \cdot x_1 + w_2 \cdot x_2 + b \\
+\text{output} &= \begin{cases} 1 & \text{if } z > 0 \\ 0 & \text{if } z \leq 0 \end{cases}
+\end{align*}
+\plainmath{Multiply first input by first weight, second input by second weight, add bias, check if positive}
+
+\column{0.5\textwidth}
+\textbf{Learning Process:}
+\begin{enumerate}
+\item Start with random weights
+\item For each example:
+  \begin{itemize}
+  \item Calculate output
+  \item If wrong: adjust weights
+  \item If correct: keep weights
+  \end{itemize}
+\item Repeat until all correct
+\end{enumerate}
+
+\textbf{Final Solution:}
+$w_1 = 1$, $w_2 = 1$, $b = -0.5$
+\end{columns}
+\bottomnote{ Success! But this was just the beginning...}
+\end{frame}
+
+% NEW: Let's Calculate Together - Spam Detection
+\begin{frame}{Let's Calculate Together: Is This Email Spam?}
+\begin{center}
+\textbf{\checkpoint{A Real Perceptron Calculation You Can Follow}}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Email:}
+\fbox{\parbox{0.9\textwidth}{\small
+"FREE money! Click here NOW for amazing offer!!!"
+}}
+
+\textbf{Our Features (Inputs):}
+\begin{itemize}
+\item $x_1$ = Has "FREE"? = 1
+\item $x_2$ = Has "money"? = 1
+\item $x_3$ = Many "!"? = 1
+\item $x_4$ = From friend? = 0
+\end{itemize}
+
+\textbf{Learned Weights:}
+\begin{itemize}
+\item $w_1$ = +3 (FREE is very spammy)
+\item $w_2$ = +2 (money is suspicious)
+\item $w_3$ = +2 (!!! is aggressive)
+\item $w_4$ = -5 (friends are trusted)
+\item $b$ = -2 (threshold)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Let's Calculate:}
+\begin{align*}
+z &= w_1 \cdot x_1 + w_2 \cdot x_2 + w_3 \cdot x_3 + w_4 \cdot x_4 + b \\
+  &= 3 \cdot 1 + 2 \cdot 1 + 2 \cdot 1 + (-5) \cdot 0 + (-2) \\
+  &= 3 + 2 + 2 + 0 - 2 \\
+  &= 5
+\end{align*}
+
+\textbf{Decision:}
+\begin{itemize}
+\item $z = 5 > 0$
+\item Output = 1 = SPAM!
+\end{itemize}
+
+\tryit{What if this email WAS from a friend ($x_4 = 1$)? Recalculate! Would it still be spam?}
+
+\textbf{Answer:} $z = 5 - 5 = 0$, borderline!
+\end{columns}
+\bottomnote{ This is exactly how early spam filters worked - and why they failed on clever spam}
+\end{frame}
+
+% Notation Explained
+\begin{frame}{Understanding the Notation}
+\begin{center}
+\textbf{Breaking Down the Math Symbols}
+\end{center}
+\vspace{5mm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{Inputs and Weights:}
+\begin{itemize}
+\item $x_i$ = input value (what we see)
+\item $w_i$ = weight (importance/strength)
+\item $b$ = bias (threshold adjuster)
+\end{itemize}
+
+\textbf{The Computation:}
+$$z = \sum_{i=1}^{n} w_i x_i + b$$
+
+This means:
+\begin{itemize}
+\item Multiply each input by its weight
+\item Add them all up
+\item Add the bias
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Real Example:}
+\begin{center}
+Should I go outside? \\[3mm]
+\begin{tabular}{lcc}
+Factor & Value & Weight \\
+\hline
+Sunny? & 1 & +2 \\
+Raining? & 0 & -3 \\
+Weekend? & 1 & +1 \\
+\hline
+\end{tabular}
+\end{center}
+$$z = (1 \times 2) + (0 \times -3) + (1 \times 1) = 3$$
+$$\text{Decision: } z > 0 \text{, so YES!}$$
+\end{columns}
+\bottomnote{ This simple math would evolve into deep learning}
+\end{frame}

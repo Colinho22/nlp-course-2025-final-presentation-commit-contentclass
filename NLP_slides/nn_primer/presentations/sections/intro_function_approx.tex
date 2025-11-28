@@ -1,0 +1,182 @@
+% FOUNDATIONAL CONCEPT: Neural Networks as Function Approximators
+% These three slides establish the core mathematical concept before the historical narrative
+
+% Slide 1: What is Function Approximation?
+\begin{frame}{The Core Idea: Neural Networks are Function Approximators}
+\begin{center}
+\textbf{What does this actually mean?}
+\end{center}
+\vspace{1mm}
+
+\begin{columns}
+\column{0.32\textwidth}
+\textbf{The Problem:}
+\begin{itemize}
+\item We have inputs (x)
+\item We want outputs (y)
+\item But we don't know the formula!
+\item Examples:
+  \begin{itemize}
+  \footnotesize
+  \item Size $\rightarrow$ Price
+  \item Image $\rightarrow$ Label
+  \item Text $\rightarrow$ Sentiment
+  \end{itemize}
+\end{itemize}
+
+\column{0.32\textwidth}
+\textbf{Traditional Approach:}
+\begin{itemize}
+\item Guess the formula
+\item Write explicit rules
+\item Hope it works
+\item \warning{Problem:} Real world is too complex!
+\end{itemize}
+
+\vspace{3mm}
+\textit{Example:}\\
+\footnotesize
+Price = a $\times$ Size + b\\
+(Too simple for real data!)
+
+\column{0.32\textwidth}
+\textbf{Neural Network Approach:}
+\begin{itemize}
+\item Learn from examples
+\item Build the formula automatically
+\item Adjust until it fits
+\item \success{Works for ANY pattern!}
+\end{itemize}
+
+\vspace{3mm}
+\textit{Magic:}\\
+\footnotesize
+NN learns: f(x) $\approx$ y\\
+No formula needed!
+\end{columns}
+
+\vspace{2mm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/function_approx_basics.pdf}
+\end{center}
+
+\vspace{2mm}
+\plainmath{A function approximator finds patterns in data without being told what the pattern is}
+\end{frame}
+
+% Slide 2: How Neural Networks Build Functions
+\begin{frame}{How NNs Build Complex Functions from Simple Pieces}
+\begin{center}
+\textbf{The LEGO Principle: Combine Simple Parts to Build Anything}
+\end{center}
+\vspace{1mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Building Blocks:}
+\begin{enumerate}
+\item \textbf{Individual Neurons:} Simple decisions
+   \begin{itemize}
+   \footnotesize
+   \item "Is input > threshold?"
+   \item Outputs: on/off (smooth version)
+   \end{itemize}
+
+\item \textbf{Combine Neurons:} Weight and add
+   \begin{itemize}
+   \footnotesize
+   \item Create complex shapes
+   \end{itemize}
+
+\item \textbf{Stack Layers:} Build hierarchy
+   \begin{itemize}
+   \footnotesize
+   \item Each layer adds abstraction
+   \end{itemize}
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{Real-World Analogy:}
+
+\textit{Making a Cake from Ingredients:}
+\begin{itemize}
+\footnotesize
+\item Flour + Sugar + Eggs
+\item Mix right amounts
+\item $\rightarrow$ Perfect cake!
+\end{itemize}
+
+\textbf{In Neural Networks:}
+\begin{itemize}
+\footnotesize
+\item Edges + Curves + Colors
+\item Combine with weights
+\item $\rightarrow$ Recognize faces!
+\end{itemize}
+\end{columns}
+
+\begin{center}
+\includegraphics[width=0.55\textwidth]{../figures/nn_building_blocks.pdf}
+\end{center}
+\end{frame}
+
+% Slide 3: Universal Approximation Theorem in Plain English
+\begin{frame}{The Universal Approximation Theorem: Why This Always Works}
+\begin{center}
+\textbf{The Most Important Theorem in Deep Learning (Cybenko, 1989)}
+\end{center}
+\vspace{1mm}
+
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{The Theorem (Plain English):}
+
+\colorbox{checkpointBlue!20}{\parbox{0.95\columnwidth}{
+\centering
+\textit{"A neural network with enough neurons can approximate \textbf{ANY} continuous function to \textbf{ANY} desired accuracy"}
+}}
+
+\vspace{2mm}
+\textbf{What This Means:}
+\begin{itemize}
+\item \success{Universal:} Works for any smooth pattern
+\item \success{Guaranteed:} Not hoping, but proving
+\item \success{Practical:} Just add more neurons!
+\end{itemize}
+
+\vspace{1mm}
+\textbf{The Catch:}
+\begin{itemize}
+\item \warning{How many neurons?} Could be millions
+\item \warning{How to train?} That's the art
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Intuitive Proof:}
+
+\textit{Pixel art analogy:}
+\begin{itemize}
+\footnotesize
+\item 4 pixels: Blocky
+\item 100 pixels: Recognizable
+\item 10,000 pixels: Photo-realistic
+\end{itemize}
+
+\textit{Same with neurons:}
+\begin{itemize}
+\footnotesize
+\item Few: Rough
+\item More: Better
+\item Many: Nearly perfect
+\end{itemize}
+
+\vspace{1mm}
+\end{columns}
+
+\begin{center}
+\includegraphics[width=0.55\textwidth]{../figures/universal_approximation.pdf}
+\end{center}
+
+\vspace{2mm}
+\confusion{Common mistake: "Universal" doesn't mean "easy" or "fast" - it just means "possible"!}
+\end{frame}

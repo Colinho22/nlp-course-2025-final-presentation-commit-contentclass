@@ -1,0 +1,459 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+
+% Packages
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+
+% Math commands
+\newcommand{\given}{\mid}
+
+% BSc Pedagogical boxes
+\newtcolorbox{checkpoint}[1][]{
+    colback=yellow!10!white,
+    colframe=yellow!75!black,
+    title=\textbf{Checkpoint: #1},
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{intuition}[1][]{
+    colback=purple!5!white,
+    colframe=purple!75!black,
+    title=\textbf{Intuition: #1},
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{realworld}[1][]{
+    colback=orange!5!white,
+    colframe=orange!75!black,
+    title=\textbf{Real World: #1},
+    fonttitle=\bfseries
+}
+
+% Title information
+\title{LSTM - Long Short-Term Memory}
+\subtitle{Solving the Vanishing Gradient Problem}
+\author{}
+\date{}
+
+\begin{document}
+
+% Slide 1: Title
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Slide 2: CHART - The Problem with RNNs
+\begin{frame}{The Problem: Vanishing Gradients}
+    \begin{center}
+        \includegraphics[width=0.85\textwidth]{../figures/vanishing_gradient_problem_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Why RNNs Fail:}
+            \begin{itemize}
+                \item Gradients multiply at each step
+                \item Small numbers $\times$ small numbers = tiny
+                \item Long sequences = many multiplications
+                \item Early information gets lost
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{LSTM Solution:}
+            \begin{itemize}
+                \item Uses \textcolor{orange}{\textbf{addition}} not multiplication
+                \item Cell state acts as information highway
+                \item Gradients flow directly backward
+                \item Long-term dependencies preserved
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 3: EXAMPLE - Long-term Dependency Problem
+\begin{frame}{Example: Why We Need LSTM}
+    \begin{columns}[T]
+        \begin{column}{0.55\textwidth}
+            \textbf{The Challenge:}
+
+            \vspace{0.5em}
+            Sentence:
+
+            ``The \textcolor{blue}{\textbf{cat}} that chased the mouse that ate the cheese that sat on the table \textcolor{red}{\textbf{was}} hungry.''
+
+            \vspace{1em}
+            \textbf{Problem:} Predict ``was'' (singular) based on ``cat'' (15 words earlier)
+
+            \vspace{1em}
+            \textbf{RNN Result:} Forgets ``cat'', might predict ``were''
+
+            \textbf{LSTM Result:} Remembers ``cat'', correctly predicts ``was''
+        \end{column}
+
+        \begin{column}{0.43\textwidth}
+            \begin{intuition}[The Memory Gap]
+            Standard RNN:
+            \begin{itemize}
+                \item Memory fades after 5-10 words
+                \item Cannot handle long dependencies
+                \item Gradient vanishes over time
+            \end{itemize}
+
+            \vspace{0.5em}
+            LSTM:
+            \begin{itemize}
+                \item Memory persists 100+ words
+                \item Handles long dependencies
+                \item Gradient flows through cell state
+            \end{itemize}
+            \end{intuition}
+
+            \vspace{1em}
+            \textbf{Real Impact:}
+            \begin{itemize}
+                \item Better grammar understanding
+                \item Improved translation quality
+                \item More coherent text generation
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 4: CHART - LSTM Architecture Overview
+\begin{frame}{LSTM Architecture: The Big Picture}
+    \begin{center}
+        \includegraphics[width=0.9\textwidth]{../figures/lstm_architecture_overview_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.32\textwidth}
+            \textbf{\textcolor{red}{Forget Gate:}}
+            \begin{itemize}
+                \item What to erase?
+                \item 0 = forget completely
+                \item 1 = keep everything
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.32\textwidth}
+            \textbf{\textcolor{blue}{Input Gate:}}
+            \begin{itemize}
+                \item What to remember?
+                \item Adds new information
+                \item Updates cell state
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.32\textwidth}
+            \textbf{\textcolor{green}{Output Gate:}}
+            \begin{itemize}
+                \item What to output?
+                \item Filters cell state
+                \item Controls information flow
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 5: EXAMPLE - Smart Notebook Analogy
+\begin{frame}{Example: LSTM as a Smart Notebook}
+    \begin{columns}[T]
+        \begin{column}{0.55\textwidth}
+            \textbf{Imagine taking notes in class:}
+
+            \vspace{1em}
+            \textbf{1. Forget Gate (Eraser):}
+            \begin{itemize}
+                \item Professor changes topic
+                \item You cross out old notes
+                \item Make room for new information
+            \end{itemize}
+
+            \vspace{0.5em}
+            \textbf{2. Input Gate (Pen):}
+            \begin{itemize}
+                \item Write down important points
+                \item Decide what's worth noting
+                \item Add to existing notes
+            \end{itemize}
+
+            \vspace{0.5em}
+            \textbf{3. Output Gate (Highlighter):}
+            \begin{itemize}
+                \item Highlight relevant parts
+                \item Focus on what's needed now
+                \item Share selected information
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.43\textwidth}
+            \begin{realworld}[Notebook = Cell State]
+            \textbf{Cell State ($C_t$):} Your notebook
+
+            \begin{itemize}
+                \item Stores all important information
+                \item Persists across time steps
+                \item Protected by gates
+                \item Information highway
+            \end{itemize}
+            \end{realworld}
+
+            \vspace{1em}
+            \textbf{Key Difference from RNN:}
+
+            \textbf{RNN:} Rewrites entire memory each time
+
+            \textbf{LSTM:} Selectively updates memory
+            \begin{itemize}
+                \item Keeps what's important
+                \item Erases what's not
+                \item Adds new information
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 6: THEORY - Forget Gate
+\begin{frame}{Theory: Forget Gate in Detail}
+    \begin{center}
+        \includegraphics[width=0.85\textwidth]{../figures/forget_gate_detail_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Mathematical Formula:}
+            \[
+            f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)
+            \]
+
+            \textbf{Components:}
+            \begin{itemize}
+                \item $h_{t-1}$: Previous output
+                \item $x_t$: Current input
+                \item $\sigma$: Sigmoid function (0 to 1)
+                \item $W_f$: Learned weights
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{How It Works:}
+            \begin{enumerate}
+                \item Look at current input and previous output
+                \item Compute forget decision (0 to 1)
+                \item Multiply with cell state: $C_t = f_t \odot C_{t-1}$
+                \item Values near 0 = forget
+                \item Values near 1 = keep
+            \end{enumerate}
+
+            \vspace{0.5em}
+            \textbf{Example:} New subject $\rightarrow$ $f_t = 0.1$ $\rightarrow$ forget old subject
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 7: THEORY - Input Gate
+\begin{frame}{Theory: Input Gate in Detail}
+    \begin{center}
+        \includegraphics[width=0.85\textwidth]{../figures/input_gate_detail_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Mathematical Formulas:}
+            \[
+            i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i)
+            \]
+            \[
+            \tilde{C}_t = \tanh(W_C \cdot [h_{t-1}, x_t] + b_C)
+            \]
+
+            \textbf{Two-Part Process:}
+            \begin{enumerate}
+                \item \textbf{Input Gate ($i_t$):} How much to add?
+                \item \textbf{Candidate ($\tilde{C}_t$):} What to add?
+                \item \textbf{Combination:} $i_t * \tilde{C}_t$
+            \end{enumerate}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{How It Works:}
+            \begin{enumerate}
+                \item Create candidate values ($\tanh$ gives -1 to 1)
+                \item Decide how much to use ($\sigma$ gives 0 to 1)
+                \item Multiply: filtered new information
+                \item Add to cell state: $C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$
+            \end{enumerate}
+
+            \vspace{0.5em}
+            \textbf{Example:} See ``dog'' $\rightarrow$ $i_t = 0.9$ $\rightarrow$ add new subject info
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 8: THEORY - Output Gate
+\begin{frame}{Theory: Output Gate in Detail}
+    \begin{center}
+        \includegraphics[width=0.85\textwidth]{../figures/output_gate_detail_bsc.pdf}
+    \end{center}
+
+    \vspace{-0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Mathematical Formulas:}
+            \[
+            o_t = \sigma(W_o \cdot [h_{t-1}, x_t] + b_o)
+            \]
+            \[
+            h_t = o_t \odot \tanh(C_t)
+            \]
+
+            \textbf{Purpose:}
+            \begin{itemize}
+                \item Cell state contains everything
+                \item Output only relevant parts
+                \item Filter based on current context
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{How It Works:}
+            \begin{enumerate}
+                \item Compute output decision ($o_t$)
+                \item Apply $\tanh$ to cell state (normalize to -1 to 1)
+                \item Multiply: $h_t = o_t \odot \tanh(C_t)$
+                \item Send $h_t$ to next layer/prediction
+            \end{enumerate}
+
+            \vspace{0.5em}
+            \textbf{Example:} Need verb form $\rightarrow$ output subject info (``dog''), hide other details
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 9: EXAMPLE - Complete Walkthrough
+\begin{frame}{Example: Processing a Sentence}
+    \textbf{Sentence:} ``The cat was hungry. The dog was sleeping.''
+
+    \vspace{0.5em}
+    \begin{center}
+    \begin{tabular}{|c|l|l|l|l|}
+    \hline
+    \textbf{Word} & \textbf{Forget Gate} & \textbf{Input Gate} & \textbf{Output Gate} & \textbf{Cell State} \\
+    \hline
+    ``The'' & Keep all (0.9) & Add article (0.3) & Output little (0.2) & [article] \\
+    \hline
+    ``cat'' & Keep article (0.8) & Add subject (0.9) & Output subject (0.8) & [cat, article] \\
+    \hline
+    ``was'' & Keep subject (0.9) & Add verb (0.7) & Output for pred. (0.9) & [cat, was] \\
+    \hline
+    ``hungry'' & Keep subject (0.8) & Add state (0.8) & Output state (0.7) & [cat, hungry] \\
+    \hline
+    ``.'' & Reduce old (0.3) & New sentence (0.4) & Low output (0.3) & [sentence end] \\
+    \hline
+    ``The'' & Clear old (0.1) & New article (0.8) & Low output (0.2) & [article] \\
+    \hline
+    ``dog'' & Keep article (0.7) & New subject (0.9) & Output subject (0.9) & [dog, article] \\
+    \hline
+    ``was'' & Keep subject (0.9) & Add verb (0.8) & Output for pred. (0.9) & [dog, was] \\
+    \hline
+    \end{tabular}
+    \end{center}
+
+    \vspace{0.5em}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Key Observations:}
+            \begin{itemize}
+                \item Forget gate clears old subject at period
+                \item Input gate adds new subject (``dog'')
+                \item Output gate adjusts based on task
+                \item Cell state maintains context
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{checkpoint}[Understanding]
+            \textbf{Q:} Why forget ``cat'' when seeing ``.''?
+
+            \textbf{A:} New sentence starting, old subject no longer relevant for predictions
+            \end{checkpoint}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 10: Summary
+\begin{frame}{Summary: LSTM in Practice}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{When to Use LSTM:}
+            \begin{enumerate}
+                \item Long sequences (100+ words)
+                \item Long-term dependencies needed
+                \item Sequential data with context
+                \item Grammar and structure matter
+            \end{enumerate}
+
+            \vspace{1em}
+            \textbf{LSTM vs RNN:}
+
+            \begin{tabular}{|l|c|c|}
+            \hline
+            & \textbf{RNN} & \textbf{LSTM} \\
+            \hline
+            Memory span & 5-10 steps & 100+ steps \\
+            \hline
+            Parameters & Fewer & More \\
+            \hline
+            Training time & Faster & Slower \\
+            \hline
+            Accuracy & Lower & Higher \\
+            \hline
+            Best for & Short text & Long text \\
+            \hline
+            \end{tabular}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{realworld}[Applications]
+            \textbf{Where LSTMs Excel:}
+            \begin{itemize}
+                \item \textbf{Machine Translation:} Google Translate
+                \item \textbf{Speech Recognition:} Siri, Alexa
+                \item \textbf{Text Generation:} Story writing
+                \item \textbf{Video Analysis:} Action recognition
+                \item \textbf{Music Generation:} Composition
+                \item \textbf{Handwriting Recognition:} OCR systems
+            \end{itemize}
+            \end{realworld}
+
+            \vspace{1em}
+            \textbf{Key Takeaways:}
+            \begin{itemize}
+                \item 3 gates control information flow
+                \item Cell state is the memory highway
+                \item Solves vanishing gradient problem
+                \item Essential for modern NLP
+            \end{itemize}
+        \end{column}
+    \end{columns}
+
+    \vspace{1em}
+    \begin{center}
+        \Large \textbf{Questions?}
+    \end{center}
+\end{frame}
+
+\end{document}

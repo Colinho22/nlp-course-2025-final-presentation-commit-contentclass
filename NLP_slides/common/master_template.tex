@@ -1,0 +1,297 @@
+% Master Template for NLP Course
+% Optimal Readability Layout Standard
+% All presentations should include this template
+
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\setbeamertemplate{navigation symbols}{}
+
+% ====================================
+% OPTIMAL READABILITY COLOR PALETTE
+% ====================================
+\definecolor{PureBlack}{HTML}{000000}      % Main text (21:1 contrast)
+\definecolor{DeepBlue}{HTML}{003D7A}       % Primary accent (12.6:1 contrast)
+\definecolor{DarkGray}{HTML}{4A4A4A}       % Secondary text (9.7:1 contrast)
+\definecolor{LightGray}{HTML}{E5E5E5}      % Borders and grids
+\definecolor{ChartBlue}{HTML}{0066CC}      % Chart primary
+\definecolor{ChartOrange}{HTML}{FF8800}    % Chart secondary
+\definecolor{ChartTeal}{HTML}{00A0A0}      % Chart tertiary
+\definecolor{ChartPurple}{HTML}{8B4789}    % Chart quaternary
+\definecolor{DarkGreen}{HTML}{228B22}      % Success/positive
+\definecolor{DarkRed}{HTML}{CC0000}        % Warning/negative
+
+% ====================================
+% BEAMER COLOR CONFIGURATION
+% ====================================
+\setbeamercolor{structure}{fg=PureBlack}
+\setbeamercolor{frametitle}{fg=PureBlack,bg=white}
+\setbeamercolor{title}{fg=PureBlack,bg=white}
+\setbeamercolor{subtitle}{fg=DarkGray}
+\setbeamercolor{author}{fg=DarkGray}
+\setbeamercolor{date}{fg=DarkGray}
+\setbeamercolor{institute}{fg=DarkGray}
+
+% Blocks - no backgrounds
+\setbeamercolor{block title}{fg=PureBlack,bg=white}
+\setbeamercolor{block body}{fg=PureBlack,bg=white}
+\setbeamercolor{block title example}{fg=DarkGreen,bg=white}
+\setbeamercolor{block body example}{fg=PureBlack,bg=white}
+\setbeamercolor{block title alerted}{fg=DarkRed,bg=white}
+\setbeamercolor{block body alerted}{fg=PureBlack,bg=white}
+
+% Lists
+\setbeamercolor{item}{fg=DeepBlue}
+\setbeamercolor{subitem}{fg=ChartBlue}
+\setbeamercolor{enumerate item}{fg=DeepBlue}
+\setbeamercolor{enumerate subitem}{fg=ChartBlue}
+
+% Text
+\setbeamercolor{normal text}{fg=PureBlack,bg=white}
+\setbeamercolor{alerted text}{fg=DarkRed}
+\setbeamercolor{example text}{fg=DarkGreen}
+
+% Footer
+\setbeamercolor{footline}{fg=DarkGray,bg=white}
+\setbeamercolor{page number in head/foot}{fg=DarkGray}
+
+% ====================================
+% FONT CONFIGURATION
+% ====================================
+\setbeamerfont{normal text}{size=\normalsize}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{title}{size=\huge,series=\bfseries}
+\setbeamerfont{subtitle}{size=\large}
+\setbeamerfont{author}{size=\normalsize}
+\setbeamerfont{date}{size=\small}
+\setbeamerfont{institute}{size=\small}
+
+% ====================================
+% REQUIRED PACKAGES
+% ====================================
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{algorithm2e}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{subcaption}
+
+% ====================================
+% CUSTOM COMMANDS
+% ====================================
+% Text highlighting commands
+\newcommand{\highlight}[1]{\textcolor{DeepBlue}{\textbf{#1}}}
+\newcommand{\secondary}[1]{\textcolor{DarkGray}{#1}}
+\newcommand{\success}[1]{\textcolor{DarkGreen}{#1}}
+\newcommand{\warning}[1]{\textcolor{DarkRed}{#1}}
+\newcommand{\data}[1]{\textcolor{ChartBlue}{#1}}
+\newcommand{\dataalt}[1]{\textcolor{ChartOrange}{#1}}
+
+% Mathematical notation
+\newcommand{\given}{\mid}
+\newcommand{\prob}[1]{P(#1)}
+\newcommand{\argmax}{\operatorname*{argmax}}
+\newcommand{\argmin}{\operatorname*{argmin}}
+\newcommand{\softmax}{\operatorname{softmax}}
+
+% Box commands for emphasis
+\newcommand{\keypoint}[1]{%
+  \begin{center}
+  \fbox{\parbox{0.9\textwidth}{\centering\textbf{#1}}}
+  \end{center}
+}
+
+\newcommand{\formula}[1]{%
+  \begin{center}
+  \colorbox{LightGray}{\parbox{0.8\textwidth}{\centering$\displaystyle #1$}}
+  \end{center}
+}
+
+% ====================================
+% LISTINGS CONFIGURATION
+% ====================================
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{DeepBlue}\bfseries,
+  commentstyle=\color{DarkGray}\itshape,
+  stringstyle=\color{ChartOrange},
+  numbers=left,
+  numberstyle=\tiny\color{DarkGray},
+  stepnumber=1,
+  numbersep=5pt,
+  backgroundcolor=\color{white},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  frame=single,
+  frameround=tttt,
+  rulecolor=\color{LightGray},
+  tabsize=2,
+  captionpos=b,
+  breaklines=true,
+  breakatwhitespace=true,
+  language=Python,
+  escapeinside={(*@}{@*)},
+  morekeywords={self, yield, assert, with, as}
+}
+
+% ====================================
+% STANDARD SLIDE LAYOUTS
+% ====================================
+
+% Two-column layout with title
+\newcommand{\twocolslide}[3]{%
+  \begin{frame}{#1}
+  \begin{columns}[T]
+  \column{0.48\textwidth}
+  #2
+  \column{0.48\textwidth}
+  #3
+  \end{columns}
+  \end{frame}
+}
+
+% Three-column layout
+\newcommand{\threecolslide}[4]{%
+  \begin{frame}{#1}
+  \begin{columns}[T]
+  \column{0.32\textwidth}
+  #2
+  \column{0.32\textwidth}
+  #3
+  \column{0.32\textwidth}
+  #4
+  \end{columns}
+  \end{frame}
+}
+
+% Chart slide with caption
+\newcommand{\chartslide}[3]{%
+  \begin{frame}{#1}
+  \begin{center}
+  \includegraphics[width=#2\textwidth]{#3}
+  \end{center}
+  \end{frame}
+}
+
+% Full chart slide - optimized to 0.85 for proper margins
+\newcommand{\fullchartslide}[2]{%
+  \begin{frame}{#1}
+  \begin{center}
+  \includegraphics[width=0.85\textwidth]{#2}
+  \end{center}
+  \end{frame}
+}
+
+% Code slide
+\newcommand{\codeslide}[3]{%
+  \begin{frame}[fragile]{#1}
+  \begin{lstlisting}[language=#2]
+#3
+  \end{lstlisting}
+  \end{frame}
+}
+
+% Concept slide with figure
+\newcommand{\conceptslide}[3]{%
+  \begin{frame}{#1}
+  \begin{columns}[T]
+  \column{0.6\textwidth}
+  #2
+  \column{0.35\textwidth}
+  \begin{center}
+  \includegraphics[width=0.95\textwidth]{#3}
+  \end{center}
+  \end{columns}
+  \end{frame}
+}
+
+% Table slide
+\newcommand{\tableslide}[2]{%
+  \begin{frame}{#1}
+  \begin{center}
+  \Large
+  \renewcommand{\arraystretch}{1.5}
+  #2
+  \end{center}
+  \end{frame}
+}
+
+% Summary slide
+\newcommand{\summaryslide}[2]{%
+  \begin{frame}{#1}
+  \begin{center}
+  \Large
+  #2
+  \end{center}
+  \vfill
+  \begin{center}
+  \keypoint{Key Takeaway}
+  \end{center}
+  \end{frame}
+}
+
+% ====================================
+% REMOVE DECORATIONS
+% ====================================
+\setbeamertemplate{blocks}[default]
+\setbeamertemplate{title page}[default][colsep=-4bp,rounded=false]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[subsections numbered]
+
+% ====================================
+% PAGE NUMBERING
+% ====================================
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\secondary{\insertshortauthor}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\secondary{\insertshorttitle}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \usebeamerfont{date in head/foot}\secondary{\insertshortdate{}\hspace*{2em}
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+% ====================================
+% TABLE OF CONTENTS STYLE
+% ====================================
+\setbeamertemplate{section in toc}{%
+  \leavevmode\leftskip=1.5em%
+  \llap{%
+    \usebeamerfont{section in toc}%
+    \usebeamercolor[fg]{section in toc}%
+    \inserttocsectionnumber.%
+  }%
+  \usebeamerfont{section in toc}%
+  \usebeamercolor[fg]{section in toc}%
+  \inserttocsection\par%
+}
+
+\setbeamertemplate{subsection in toc}{%
+  \leavevmode\leftskip=3em%
+  \llap{%
+    \usebeamerfont{subsection in toc}%
+    \usebeamercolor[fg]{subsection in toc}%
+    \inserttocsectionnumber.\inserttocsubsectionnumber%
+  }%
+  \usebeamerfont{subsection in toc}%
+  \usebeamercolor[fg]{subsection in toc}%
+  \inserttocsubsection\par%
+}
+
+% ====================================
+% END OF MASTER TEMPLATE
+% ====================================

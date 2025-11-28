@@ -1,0 +1,150 @@
+% Section 6: LSTM Architecture Overview
+
+\begin{frame}[t]{LSTM Architecture: The Solution}
+\begin{center}
+\textbf{Long Short-Term Memory: Gated Memory Cells}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[t]
+\column{0.55\textwidth}
+\includegraphics[width=0.9\textwidth]{../figures/lstm_architecture.pdf}
+
+\vspace{3mm}
+\textbf{Key Innovation: Separate Memory Path}
+
+\begin{itemize}
+\item \textbf{Cell state} $C_t$: Long-term memory highway
+\item \textbf{Hidden state} $h_t$: Short-term working memory
+\item \textbf{Three gates}: Control information flow
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{The Three Gates:}
+
+\vspace{3mm}
+{\color{forgetRed}\textbf{Forget Gate}} ($f_t$):
+\begin{itemize}
+\item What to remove from memory
+\item 0 = completely forget
+\item 1 = keep everything
+\item Example: 0.9 at period
+\end{itemize}
+
+\vspace{3mm}
+{\color{inputGreen}\textbf{Input Gate}} ($i_t$):
+\begin{itemize}
+\item What to add to memory
+\item 0 = ignore new information
+\item 1 = fully store
+\item Example: 0.95 on ``Paris''
+\end{itemize}
+
+\vspace{3mm}
+{\color{outputBlue}\textbf{Output Gate}} ($o_t$):
+\begin{itemize}
+\item What to reveal from memory
+\item 0 = hide everything
+\item 1 = expose all
+\item Example: 0.8 when predicting
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Why It Works:}
+\begin{itemize}
+\item Cell state uses \textbf{addition}, not multiplication
+\item Gradients flow directly backward
+\item Can remember 50-100+ steps
+\item Learns what to remember/forget
+\end{itemize}
+
+\vspace{3mm}
+{\footnotesize\color{annotGray}Gates are learned automatically from data}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Checkpoint: Understanding LSTM Architecture}
+\begin{center}
+\textbf{Test Your Understanding}
+\end{center}
+\vspace{5mm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Quick Quiz:}
+
+\vspace{3mm}
+\textbf{Question 1:} What's the key difference between RNN and LSTM?
+
+\begin{itemize}
+\item[A)] LSTM has more parameters
+\item[B)] LSTM uses addition instead of multiplication
+\item[C)] LSTM is faster to train
+\item[D)] LSTM uses different activation functions
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Question 2:} Which gate controls what enters memory?
+
+\begin{itemize}
+\item[A)] Forget gate
+\item[B)] Input gate
+\item[C)] Output gate
+\item[D)] Cell gate
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Question 3:} When does the forget gate activate strongly (high value)?
+
+\begin{itemize}
+\item[A)] At punctuation marks
+\item[B)] On important words
+\item[C)] During normal continuation
+\item[D)] When predicting
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Answers:}
+
+\vspace{3mm}
+\textbf{Answer 1:} B - LSTM uses addition for cell state
+
+\begin{itemize}
+\item Cell state: $C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t$
+\item Addition creates direct gradient path
+\item No repeated matrix multiplication
+\item This is the key innovation!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Answer 2:} B - Input gate
+
+\begin{itemize}
+\item Controls how much new information to store
+\item High value = store strongly
+\item Low value = ignore
+\item Works with candidate cell state $\tilde{C}_t$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Answer 3:} C - During normal continuation
+
+\begin{itemize}
+\item High forget gate = keep memory
+\item Low forget gate = clear memory
+\item Punctuation typically triggers low values
+\item Network learns these patterns
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Key Concepts to Remember:}
+\begin{itemize}
+\item Cell state = memory highway (addition)
+\item Three gates = learned controllers
+\item Gates output values 0-1 (sigmoid)
+\item Everything is differentiable
+\end{itemize}
+
+\end{columns}
+\end{frame}

@@ -1,0 +1,310 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\setbeamertemplate{navigation symbols}{}
+
+% Ink & Accent Color Scheme - No Background Colors
+\definecolor{PureBlack}{HTML}{000000}
+\definecolor{WarmCoral}{HTML}{EF4444}
+\definecolor{SlateGray}{HTML}{64748B}
+\definecolor{SuccessGreen}{HTML}{10B981}
+\definecolor{WarningAmber}{HTML}{F59E0B}
+\definecolor{InfoBlue}{HTML}{3B82F6}
+\definecolor{NeutralGray}{HTML}{9CA3AF}
+
+% Apply colors to beamer elements - WHITE BACKGROUNDS ONLY
+\setbeamercolor{structure}{fg=PureBlack}
+\setbeamercolor{frametitle}{fg=PureBlack,bg=white}
+\setbeamercolor{title}{fg=PureBlack,bg=white}
+\setbeamercolor{subtitle}{fg=SlateGray}
+\setbeamercolor{author}{fg=SlateGray}
+\setbeamercolor{date}{fg=SlateGray}
+\setbeamercolor{institute}{fg=SlateGray}
+
+% Blocks with no background - just colored text and thin borders
+\setbeamercolor{block title}{fg=PureBlack,bg=white}
+\setbeamercolor{block body}{fg=black,bg=white}
+\setbeamercolor{block title example}{fg=SuccessGreen,bg=white}
+\setbeamercolor{block body example}{fg=black,bg=white}
+\setbeamercolor{block title alerted}{fg=WarmCoral,bg=white}
+\setbeamercolor{block body alerted}{fg=black,bg=white}
+
+% Items and enumerations
+\setbeamercolor{item}{fg=WarmCoral}
+\setbeamercolor{subitem}{fg=InfoBlue}
+\setbeamercolor{enumerate item}{fg=WarmCoral}
+\setbeamercolor{enumerate subitem}{fg=InfoBlue}
+
+% Text colors
+\setbeamercolor{normal text}{fg=PureBlack,bg=white}
+\setbeamercolor{alerted text}{fg=WarmCoral}
+\setbeamercolor{example text}{fg=SuccessGreen}
+
+% Footer with no background
+\setbeamercolor{footline}{fg=SlateGray,bg=white}
+\setbeamercolor{page number in head/foot}{fg=SlateGray}
+
+% Remove shadows and rounded corners
+\setbeamertemplate{blocks}[default]
+\setbeamertemplate{title page}[default][colsep=-4bp,rounded=false]
+
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{booktabs}
+
+% Custom commands for colored elements
+\newcommand{\highlight}[1]{\textcolor{WarmCoral}{\textbf{#1}}}
+\newcommand{\secondary}[1]{\textcolor{SlateGray}{#1}}
+\newcommand{\success}[1]{\textcolor{SuccessGreen}{#1}}
+\newcommand{\info}[1]{\textcolor{InfoBlue}{#1}}
+
+\title{\textcolor{PureBlack}{Ink \& Accent Color Scheme}}
+\subtitle{\textcolor{SlateGray}{Clean, Professional, No Backgrounds}}
+\author{Template Demonstration}
+\date{\today}
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}
+\secondary{\footnotesize All backgrounds are pure white - colors used only for text and accents}
+\end{center}
+\end{frame}
+
+% Color Palette Overview
+\begin{frame}{Color Palette}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Primary Colors}
+\begin{itemize}
+\item \textcolor{PureBlack}{\rule{1cm}{3mm}} Pure Black - Headers \& Main Text
+\item \textcolor{WarmCoral}{\rule{1cm}{3mm}} Warm Coral - Primary Accents
+\item \textcolor{SlateGray}{\rule{1cm}{3mm}} Slate Gray - Secondary Text
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Supporting Colors}
+\begin{itemize}
+\item \textcolor{SuccessGreen}{\rule{1cm}{3mm}} Success Green - Positive
+\item \textcolor{WarningAmber}{\rule{1cm}{3mm}} Warning Amber - Attention
+\item \textcolor{InfoBlue}{\rule{1cm}{3mm}} Info Blue - Information
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Note: No colored backgrounds - maintaining clean white space throughout}
+\end{frame}
+
+% Typography Examples
+\begin{frame}{Typography Hierarchy}
+\begin{columns}[T]
+\column{0.48\textwidth}
+{\Large \textbf{Large Header}}\\[2mm]
+{\large \highlight{Highlighted Subheader}}\\[2mm]
+Regular body text appears in Pure Black\\[2mm]
+\secondary{Secondary information in Slate Gray}\\[2mm]
+\info{Information callouts in Info Blue}\\[2mm]
+\success{Success messages in green}
+
+\column{0.48\textwidth}
+\begin{itemize}
+\item \highlight{Primary} bullet points
+\item Regular list items
+\item \secondary{Secondary information}
+\end{itemize}
+
+\begin{enumerate}
+\item \info{Numbered} items
+\item With different \success{accents}
+\item For \highlight{emphasis}
+\end{enumerate}
+\end{columns}
+\end{frame}
+
+% Mathematical Content
+\begin{frame}{Mathematical Formulas}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Attention Mechanism}
+\begin{align*}
+\text{score}(h_t, \bar{h}_s) &= h_t^T W_a \bar{h}_s\\
+\alpha_{ts} &= \frac{\exp(\text{score}(h_t, \bar{h}_s))}{\sum_{s'} \exp(\text{score}(h_t, \bar{h}_{s'}))}\\
+c_t &= \sum_s \alpha_{ts} \cdot \bar{h}_s
+\end{align*}
+
+\column{0.48\textwidth}
+\textbf{Key Components}
+\begin{itemize}
+\item $h_t$ - \secondary{decoder hidden state}
+\item $\bar{h}_s$ - \secondary{encoder hidden states}
+\item $\alpha_{ts}$ - \highlight{attention weights}
+\item $c_t$ - \secondary{context vector}
+\end{itemize}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Clean presentation with accent colors only on key elements}
+\end{frame}
+
+% Blocks without backgrounds
+\begin{frame}{Content Blocks - No Backgrounds}
+\begin{columns}[T]
+\column{0.48\textwidth}
+
+\begin{block}{\textcolor{PureBlack}{Definition}}
+\textcolor{black}{A \highlight{sequence-to-sequence} model transforms variable-length input to variable-length output.}
+\end{block}
+
+\begin{exampleblock}{\textcolor{SuccessGreen}{Example}}
+\textcolor{black}{Translation: ``Hello'' $\rightarrow$ ``Bonjour''}
+\end{exampleblock}
+
+\column{0.48\textwidth}
+
+\begin{alertblock}{\textcolor{WarmCoral}{Important Note}}
+\textcolor{black}{Attention mechanisms solve the \highlight{bottleneck problem} in vanilla seq2seq models.}
+\end{alertblock}
+
+\begin{block}{\textcolor{InfoBlue}{Information}}
+\textcolor{black}{Modern transformers use \info{multi-head attention} for parallel processing.}
+\end{block}
+
+\end{columns}
+\end{frame}
+
+% Code Example
+\begin{frame}[fragile]{Code Highlighting}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Python Implementation}
+\begin{verbatim}
+def attention(query, keys, values):
+    # Calculate scores
+    scores = torch.matmul(
+        query, keys.transpose(-2, -1)
+    )
+    # Apply softmax
+    weights = F.softmax(scores, dim=-1)
+    # Weighted sum
+    output = torch.matmul(weights, values)
+    return output, weights
+\end{verbatim}
+
+\column{0.48\textwidth}
+\textbf{Key Points}
+\begin{itemize}
+\item \highlight{Query} - what we're looking for
+\item \info{Keys} - what we compare against
+\item \success{Values} - what we aggregate
+\item \secondary{Weights} - attention distribution
+\end{itemize}
+
+\vspace{5mm}
+\secondary{\footnotesize Clean code presentation without distracting backgrounds}
+\end{columns}
+\end{frame}
+
+% Data Visualization Mock-up
+\begin{frame}{Data Visualization Style}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Chart Guidelines}
+\begin{itemize}
+\item \highlight{Primary data} in Warm Coral
+\item \info{Comparison data} in Info Blue
+\item \secondary{Grid lines} in light gray
+\item White background always
+\item Minimal borders (thin gray)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Visual Hierarchy}
+\begin{enumerate}
+\item \textbf{Bold titles} in Deep Ink Blue
+\item \highlight{Key metrics} highlighted
+\item \secondary{Annotations} in gray
+\item \success{Improvements} in green
+\item \textcolor{WarningAmber}{Warnings} in amber
+\end{enumerate}
+\end{columns}
+
+\vfill
+\begin{center}
+\tikz{
+\draw[color=NeutralGray, very thin] (0,0) grid (10,2);
+\draw[color=WarmCoral, line width=2pt] (0,0.5) -- (3,1.5) -- (6,1.2) -- (10,1.8);
+\draw[color=InfoBlue, line width=1.5pt, dashed] (0,0.3) -- (3,0.8) -- (6,1.0) -- (10,1.4);
+\node[color=SlateGray] at (5,-0.5) {\footnotesize Sample visualization with clean style};
+}
+\end{center}
+\end{frame}
+
+% Comparison Layout
+\begin{frame}{Comparison Layout}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Traditional Approach}
+\begin{itemize}
+\item Fixed context
+\item \secondary{Information bottleneck}
+\item Limited range
+\end{itemize}
+\highlight{Performance}: 78.5\%
+
+\column{0.32\textwidth}
+\textbf{With Attention}
+\begin{itemize}
+\item Dynamic context
+\item \success{Direct connections}
+\item Full sequence access
+\end{itemize}
+\highlight{Performance}: \success{92.3\%}
+
+\column{0.32\textwidth}
+\textbf{Transformer}
+\begin{itemize}
+\item Parallel processing
+\item \info{Multi-head attention}
+\item Positional encoding
+\end{itemize}
+\highlight{Performance}: \success{95.7\%}
+\end{columns}
+
+\vfill
+\secondary{\footnotesize Clean three-column comparison without background distractions}
+\end{frame}
+
+% Summary Slide
+\begin{frame}{Design Principles}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Core Principles}
+\begin{enumerate}
+\item \highlight{No colored backgrounds} - pure white only
+\item \info{Strategic color use} - text and accents
+\item \secondary{Hierarchy through typography}
+\item Minimal borders and dividers
+\item Clean, professional appearance
+\end{enumerate}
+
+\column{0.48\textwidth}
+\textbf{Benefits}
+\begin{itemize}
+\item Maximum readability
+\item \success{Reduced visual clutter}
+\item Professional appearance
+\item \info{Better printing}
+\item Accessibility friendly
+\end{itemize}
+\end{columns}
+
+\vfill
+\begin{center}
+\Large
+\highlight{Clean} $\cdot$ \info{Professional} $\cdot$ \success{Effective}
+\end{center}
+\end{frame}
+
+\end{document}

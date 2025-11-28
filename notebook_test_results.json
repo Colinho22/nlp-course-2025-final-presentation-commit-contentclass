@@ -1,0 +1,106 @@
+[
+  {
+    "week": "week02_neural_lm",
+    "notebook": "week02_word_embeddings_lab.ipynb",
+    "path": "NLP_slides\\week02_neural_lm\\lab\\week02_word_embeddings_lab.ipynb",
+    "success": false,
+    "execution_time": 89.2253623008728,
+    "error": "rtapp.py\", line 526, in write_single_notebook\n    return self.writer.write(output, resources, notebook_name=notebook_name)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\OsterriederJRO\\AppData\\Local\\anaconda3\\Lib\\site-packages\\nbconvert\\writers\\files.py\", line 152, in write\n    with open(dest_path, \"w\", encoding=\"utf-8\") as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '\\\\dev\\\\null.ipynb'\n"
+  },
+  {
+    "week": "week03_rnn",
+    "notebook": "week03_rnn_lab.ipynb",
+    "path": "NLP_slides\\week03_rnn\\lab\\week03_rnn_lab.ipynb",
+    "success": false,
+    "execution_time": 34.078622341156006,
+    "error": "rtapp.py\", line 526, in write_single_notebook\n    return self.writer.write(output, resources, notebook_name=notebook_name)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\OsterriederJRO\\AppData\\Local\\anaconda3\\Lib\\site-packages\\nbconvert\\writers\\files.py\", line 152, in write\n    with open(dest_path, \"w\", encoding=\"utf-8\") as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '\\\\dev\\\\null.ipynb'\n"
+  },
+  {
+    "week": "week03_rnn",
+    "notebook": "week03_rnn_lab_enhanced.ipynb",
+    "path": "NLP_slides\\week03_rnn\\lab\\week03_rnn_lab_enhanced.ipynb",
+    "success": false,
+    "execution_time": 34.501627683639526,
+    "error": "rtapp.py\", line 526, in write_single_notebook\n    return self.writer.write(output, resources, notebook_name=notebook_name)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\OsterriederJRO\\AppData\\Local\\anaconda3\\Lib\\site-packages\\nbconvert\\writers\\files.py\", line 152, in write\n    with open(dest_path, \"w\", encoding=\"utf-8\") as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '\\\\dev\\\\null.ipynb'\n"
+  },
+  {
+    "week": "week04_seq2seq",
+    "notebook": "week04_seq2seq_lab.ipynb",
+    "path": "NLP_slides\\week04_seq2seq\\lab\\week04_seq2seq_lab.ipynb",
+    "success": false,
+    "execution_time": 32.818286180496216,
+    "error": "rtapp.py\", line 526, in write_single_notebook\n    return self.writer.write(output, resources, notebook_name=notebook_name)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\OsterriederJRO\\AppData\\Local\\anaconda3\\Lib\\site-packages\\nbconvert\\writers\\files.py\", line 152, in write\n    with open(dest_path, \"w\", encoding=\"utf-8\") as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '\\\\dev\\\\null.ipynb'\n"
+  },
+  {
+    "week": "week04_seq2seq",
+    "notebook": "week04_seq2seq_lab_enhanced.ipynb",
+    "path": "NLP_slides\\week04_seq2seq\\lab\\week04_seq2seq_lab_enhanced.ipynb",
+    "success": false,
+    "execution_time": 29.884130239486694,
+    "error": "all_states\u001b[38;5;241m.\u001b[39mappend(hidden\u001b[38;5;241m.\u001b[39mcopy())\n\u001b[1;32m---> 46\u001b[0m \u001b[38;5;28mprint\u001b[39m(\u001b[38;5;124mf\u001b[39m\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124m\\u2705 Encoding complete. Context vector: \u001b[39m\u001b[38;5;132;01m{\u001b[39;00mhidden[:\u001b[38;5;241m3\u001b[39m]\u001b[38;5;132;01m:\u001b[39;00m\u001b[38;5;124m.2f\u001b[39m\u001b[38;5;132;01m}\u001b[39;00m\u001b[38;5;124m...\u001b[39m\u001b[38;5;124m\"\u001b[39m)\n\u001b[0;32m     47\u001b[0m \u001b[38;5;28;01mreturn\u001b[39;00m hidden, all_states\n\n\u001b[1;31mTypeError\u001b[0m: unsupported format string passed to numpy.ndarray.__format__\n\n"
+  },
+  {
+    "week": "week05_transformers",
+    "notebook": "week05_transformer_lab.ipynb",
+    "path": "NLP_slides\\week05_transformers\\lab\\week05_transformer_lab.ipynb",
+    "success": false,
+    "execution_time": 42.549811363220215,
+    "error": ", out\u001b[38;5;241m=\u001b[39mout, \u001b[38;5;241m*\u001b[39m\u001b[38;5;241m*\u001b[39mpasskwargs)\n\u001b[1;32m---> 88\u001b[0m \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[43mufunc\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mreduce\u001b[49m\u001b[43m(\u001b[49m\u001b[43mobj\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43maxis\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mdtype\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mout\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[38;5;241;43m*\u001b[39;49m\u001b[38;5;241;43m*\u001b[39;49m\u001b[43mpasskwargs\u001b[49m\u001b[43m)\u001b[49m\n\n\u001b[1;31mValueError\u001b[0m: zero-size array to reduction operation maximum which has no identity\n\n"
+  },
+  {
+    "week": "week06_pretrained",
+    "notebook": "week06_bert_finetuning.ipynb",
+    "path": "NLP_slides\\week06_pretrained\\lab\\week06_bert_finetuning.ipynb",
+    "success": false,
+    "execution_time": 730.4876706600189,
+    "error": "Execution timeout (>10 minutes)"
+  },
+  {
+    "week": "week07_advanced",
+    "notebook": "week07_advanced_transformers_lab.ipynb",
+    "path": "NLP_slides\\week07_advanced\\lab\\week07_advanced_transformers_lab.ipynb",
+    "success": false,
+    "execution_time": 813.1485857963562,
+    "error": "Execution timeout (>10 minutes)"
+  },
+  {
+    "week": "week08_tokenization",
+    "notebook": "week08_tokenization_lab.ipynb",
+    "path": "NLP_slides\\week08_tokenization\\lab\\week08_tokenization_lab.ipynb",
+    "success": false,
+    "execution_time": 35.23266124725342,
+    "error": "device: {device}')\n------------------\n\n\n\u001b[1;36m  Cell \u001b[1;32mIn[1], line 1\u001b[1;36m\u001b[0m\n\u001b[1;33m    import torch\\nimport numpy as np\\nimport matplotlib.pyplot as plt\\nfrom transformers import AutoTokenizer, AutoModel\\n\\n# Setup\\nprint('Week 8: Tokenization & Vocabulary')\\ndevice = torch.device('cuda' if torch.cuda.is_available() else 'cpu')\\nprint(f'Using device: {device}')\u001b[0m\n\u001b[1;37m                 ^\u001b[0m\n\u001b[1;31mSyntaxError\u001b[0m\u001b[1;31m:\u001b[0m unexpected character after line continuation character\n\n\n"
+  },
+  {
+    "week": "week09_decoding",
+    "notebook": "week09_decoding_lab.ipynb",
+    "path": "NLP_slides\\week09_decoding\\lab\\week09_decoding_lab.ipynb",
+    "success": false,
+    "execution_time": 15.098657369613647,
+    "error": "Using device: {device}')\n------------------\n\n\n\u001b[1;36m  Cell \u001b[1;32mIn[1], line 1\u001b[1;36m\u001b[0m\n\u001b[1;33m    import torch\\nimport numpy as np\\nimport matplotlib.pyplot as plt\\nfrom transformers import AutoTokenizer, AutoModel\\n\\n# Setup\\nprint('Week 9: Decoding Strategies')\\ndevice = torch.device('cuda' if torch.cuda.is_available() else 'cpu')\\nprint(f'Using device: {device}')\u001b[0m\n\u001b[1;37m                 ^\u001b[0m\n\u001b[1;31mSyntaxError\u001b[0m\u001b[1;31m:\u001b[0m unexpected character after line continuation character\n\n\n"
+  },
+  {
+    "week": "week10_finetuning",
+    "notebook": "week10_finetuning_lab.ipynb",
+    "path": "NLP_slides\\week10_finetuning\\lab\\week10_finetuning_lab.ipynb",
+    "success": false,
+    "execution_time": 13.477545738220215,
+    "error": "{device}')\n------------------\n\n\n\u001b[1;36m  Cell \u001b[1;32mIn[1], line 1\u001b[1;36m\u001b[0m\n\u001b[1;33m    import torch\\nimport numpy as np\\nimport matplotlib.pyplot as plt\\nfrom transformers import AutoTokenizer, AutoModel\\n\\n# Setup\\nprint('Week 10: Fine-tuning & Prompt Engineering')\\ndevice = torch.device('cuda' if torch.cuda.is_available() else 'cpu')\\nprint(f'Using device: {device}')\u001b[0m\n\u001b[1;37m                 ^\u001b[0m\n\u001b[1;31mSyntaxError\u001b[0m\u001b[1;31m:\u001b[0m unexpected character after line continuation character\n\n\n"
+  },
+  {
+    "week": "week11_efficiency",
+    "notebook": "week11_efficiency_lab.ipynb",
+    "path": "NLP_slides\\week11_efficiency\\lab\\week11_efficiency_lab.ipynb",
+    "success": false,
+    "execution_time": 12.587932348251343,
+    "error": "evice: {device}')\n------------------\n\n\n\u001b[1;36m  Cell \u001b[1;32mIn[1], line 1\u001b[1;36m\u001b[0m\n\u001b[1;33m    import torch\\nimport numpy as np\\nimport matplotlib.pyplot as plt\\nfrom transformers import AutoTokenizer, AutoModel\\n\\n# Setup\\nprint('Week 11: Efficiency & Optimization')\\ndevice = torch.device('cuda' if torch.cuda.is_available() else 'cpu')\\nprint(f'Using device: {device}')\u001b[0m\n\u001b[1;37m                 ^\u001b[0m\n\u001b[1;31mSyntaxError\u001b[0m\u001b[1;31m:\u001b[0m unexpected character after line continuation character\n\n\n"
+  },
+  {
+    "week": "week12_ethics",
+    "notebook": "week12_ethics_lab.ipynb",
+    "path": "NLP_slides\\week12_ethics\\lab\\week12_ethics_lab.ipynb",
+    "success": false,
+    "execution_time": 18.944210290908813,
+    "error": "'Using device: {device}')\n------------------\n\n\n\u001b[1;36m  Cell \u001b[1;32mIn[1], line 1\u001b[1;36m\u001b[0m\n\u001b[1;33m    import torch\\nimport numpy as np\\nimport matplotlib.pyplot as plt\\nfrom transformers import AutoTokenizer, AutoModel\\n\\n# Setup\\nprint('Week 12: Ethics & Fairness')\\ndevice = torch.device('cuda' if torch.cuda.is_available() else 'cpu')\\nprint(f'Using device: {device}')\u001b[0m\n\u001b[1;37m                 ^\u001b[0m\n\u001b[1;31mSyntaxError\u001b[0m\u001b[1;31m:\u001b[0m unexpected character after line continuation character\n\n\n"
+  }
+]

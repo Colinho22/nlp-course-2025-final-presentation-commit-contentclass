@@ -1,0 +1,1508 @@
+% Week 1: Foundations and Statistical Language Modeling
+% BSc Discovery-Based Presentation using Educational Framework
+% Complete rewrite with problem-driven narrative
+
+\input{../../common/master_template.tex}
+
+% Define bottomnote command for slide annotations
+\newcommand{\bottomnote}[1]{%
+    \vspace{0.2cm}
+    \begin{center}
+    \footnotesize\secondary{#1}
+    \end{center}
+}
+
+\title{Foundations of NLP}
+\subtitle{\secondary{Week 1 - From Dice to Text Prediction}}
+\author{NLP Course 2025}
+\date{October 26, 2025}
+
+\begin{document}
+
+% ===== OPENING SEQUENCE (Slides 1-5) =====
+
+% Slide 1: Title
+\begin{frame}
+\titlepage
+\vfill
+\begin{center}
+\secondary{\footnotesize BSc Discovery-Based Presentation}
+\end{center}
+\end{frame}
+
+% Slide 2: Hook - Same Model, Different Quality
+\begin{frame}[t]{Same Model, Different Text Quality}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/text_quality_progression_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Better models predict next words more accurately
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Your phone keyboard uses these models - but how do they work?}
+\end{frame}
+
+% Slide 3: Discovery Question
+\begin{frame}[t]{A Thought Experiment}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Rolling a Die}
+
+\vspace{3mm}
+\begin{itemize}
+\item Six possible outcomes: 1, 2, 3, 4, 5, 6
+\item Each has probability: $\frac{1}{6} = 0.167$
+\item No memory: Previous rolls don't matter
+\item Fair die: All outcomes equally likely
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Question}: Can we predict the next roll?
+
+\column{0.48\textwidth}
+\textbf{Predicting Words}
+
+\vspace{3mm}
+\begin{itemize}
+\item Thousands of possible words
+\item Each has \textit{different} probability
+\item \highlight{Memory matters}: Previous words help
+\item Not equally likely: ``the'' more common than ``xylophone''
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Question}: Can we predict the next word?
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Both are probability problems - but text prediction is harder}
+\end{frame}
+
+% Slide 4: Visual - Dice Probability
+\begin{frame}[t]{Dice Probability: The Foundation}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/dice_probability_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: When all outcomes equally likely, $P(outcome) = \frac{1}{\text{number of outcomes}}$
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{This is the simplest case - text is more complex}
+\end{frame}
+
+% Slide 5: Bridge to Text
+\begin{frame}[t]{From Dice to Text Prediction}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{What We Know from Dice}:
+\begin{itemize}
+\item Probability quantifies uncertainty
+\item Sum of all probabilities = 1
+\item More data $\rightarrow$ better estimates
+\end{itemize}
+
+\vspace{5mm}
+\textbf{New Challenges for Text}:
+\begin{itemize}
+\item Outcomes NOT equally likely
+\item Context matters (``the cat'' vs ``the xylophone'')
+\item How to estimate probabilities?
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Our Goal}:
+
+Predict next word given previous words
+
+\vspace{3mm}
+\textbf{Example}:
+\begin{itemize}
+\item Given: ``The cat sat on the''
+\item Predict: ``mat'' (likely) or ``xylophone'' (unlikely)
+\end{itemize}
+
+\vspace{5mm}
+\textbf{How}?
+
+Use \highlight{conditional probability} based on what we've seen before
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Next: Build conditional probability from first principles}
+\end{frame}
+
+% ===== FOUNDATION BUILDING (Slides 6-15) =====
+
+% Slide 6: Visual - Conditional Probability with Dice
+\begin{frame}[t]{Conditional Probability: A Simple Example}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/conditional_probability_tree_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Knowing previous outcomes changes our predictions
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{P(next $|$ previous) reads as ``probability of next GIVEN previous''}
+\end{frame}
+
+% Slide 7: Detail - Conditional Probability Mathematics
+\begin{frame}[t]{Conditional Probability: The Mathematics}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Definition}:
+
+$$P(A|B) = \frac{P(A \cap B)}{P(B)}$$
+
+Reads: ``Probability of A given B''
+
+\vspace{3mm}
+\textbf{Worked Example with Cards}:
+
+Given: Drew a face card (J, Q, K)
+
+Question: What's probability it's a King?
+
+\vspace{3mm}
+\begin{itemize}
+\item Total face cards: 12 (4 Jacks, 4 Queens, 4 Kings)
+\item Kings among face cards: 4
+\item $P(\text{King}|\text{Face}) = \frac{4}{12} = \frac{1}{3}$
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{For Text Prediction}:
+
+$$P(w_n | w_1, w_2, ..., w_{n-1})$$
+
+Reads: ``Probability of word $n$ given all previous words''
+
+\vspace{3mm}
+\textbf{Example}:
+
+Given: ``The cat sat on the''
+
+Question: What's $P(\text{mat}| \text{the cat sat on the})$?
+
+\vspace{3mm}
+\textbf{Answer}: Count how many times we've seen this pattern!
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Conditional probability is the foundation of language modeling}
+\end{frame}
+
+% Slide 8: Visual - Text as Sequence
+\begin{frame}[t]{Text as a Sequence of Decisions}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/text_sequence_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Each word is a prediction given all previous words
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{But how do we get these probabilities?}
+\end{frame}
+
+% Slide 9: Detail - Word Prediction as Probability
+\begin{frame}[t]{Word Prediction: The Core Problem}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Chain Rule}:
+
+For a sequence $w_1, w_2, ..., w_n$:
+
+\begin{align*}
+P(w_1, w_2, ..., w_n) &= P(w_1) \\
+&\times P(w_2|w_1) \\
+&\times P(w_3|w_1, w_2) \\
+&\times ... \\
+&\times P(w_n|w_1, ..., w_{n-1})
+\end{align*}
+
+\textbf{Challenge}: How to estimate $P(w_n|w_1, ..., w_{n-1})$?
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Example: ``The cat sat''}:
+
+\begin{align*}
+P(\text{the, cat, sat}) &= P(\text{the}) \\
+&\times P(\text{cat}|\text{the}) \\
+&\times P(\text{sat}|\text{the, cat})
+\end{align*}
+
+\vspace{3mm}
+\textbf{Problem}:
+
+Infinitely many possible histories!
+
+\vspace{3mm}
+\textbf{Solution}:
+
+Make a simplifying assumption (coming next)
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{We need a practical way to estimate these probabilities}
+\end{frame}
+
+% Slide 10: Visual - Counting Co-occurrences
+\begin{frame}[t]{The Solution: Count What We've Seen}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/corpus_statistics_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Probability $\approx$ Frequency in large corpus
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{This is Maximum Likelihood Estimation}
+\end{frame}
+
+% Slide 11: Detail - Maximum Likelihood Estimation
+\begin{frame}[t]{Maximum Likelihood Estimation (MLE)}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Idea}:
+
+Estimate probabilities from observed counts
+
+\vspace{3mm}
+\textbf{Formula}:
+
+$$P(w|context) = \frac{\text{count}(context, w)}{\text{count}(context)}$$
+
+\vspace{3mm}
+\textbf{Example from Shakespeare}:
+
+\begin{itemize}
+\item count(``to be'') = 150 times
+\item count(``to be or'') = 42 times
+\item $P(\text{or}|\text{to be}) = \frac{42}{150} = 0.28$
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Why This Works}:
+
+\begin{itemize}
+\item Law of Large Numbers
+\item As corpus size $\rightarrow \infty$, relative frequency $\rightarrow$ true probability
+\item Real corpora: millions/billions of words
+\end{itemize}
+
+\vspace{5mm}
+\textbf{When to Use}:
+
+\begin{itemize}
+\item Have large text corpus
+\item Want simple, interpretable model
+\item Need fast training and inference
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{MLE is simple but effective - used in production systems}
+\end{frame}
+
+% Slide 12: Visual - N-gram Context Windows
+\begin{frame}[t]{N-gram Models: The Markov Assumption}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/ngram_context_windows_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Only last $n-1$ words matter for prediction
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{This is the Markov assumption - limited memory}
+\end{frame}
+
+% Slide 13: Detail - N-gram Formula and Markov Assumption
+\begin{frame}[t]{N-gram Models: Making It Practical}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Markov Assumption}:
+
+$$P(w_i|w_1, ..., w_{i-1}) \approx P(w_i|w_{i-n+1}, ..., w_{i-1})$$
+
+Only last $n-1$ words matter
+
+\vspace{3mm}
+\textbf{Different N-gram Models}:
+
+\begin{itemize}
+\item \textbf{Unigram} ($n=1$): $P(w_i)$
+\item \textbf{Bigram} ($n=2$): $P(w_i|w_{i-1})$
+\item \textbf{Trigram} ($n=3$): $P(w_i|w_{i-2}, w_{i-1})$
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Why This Helps}:
+
+\begin{itemize}
+\item Reduces number of parameters
+\item More data per pattern
+\item Tractable computation
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Trade-off}:
+
+\begin{itemize}
+\item Small $n$: Fast, robust, but misses long-range dependencies
+\item Large $n$: Captures context, but sparse data
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Typical Choice}: $n=3$ (trigram) balances both
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{N-grams are the workhorse of statistical language modeling}
+\end{frame}
+
+% Slide 14: Worked Example - Computing Bigram Probabilities
+\begin{frame}[t]{Worked Example: Bigram Probabilities}
+\small
+\textbf{Given Shakespeare corpus extract}:
+
+``To be or not to be that is the question whether''
+
+\vspace{3mm}
+\textbf{Task}: Compute $P(\text{be}|\text{to})$
+
+\vspace{3mm}
+\textbf{Step 1}: Count all bigrams starting with ``to''
+
+\begin{center}
+\begin{tabular}{ll}
+Bigram & Count \\
+\hline
+(to, be) & 2 \\
+\end{tabular}
+\end{center}
+
+\textbf{Step 2}: Count total occurrences of ``to''
+
+count(to) = 2
+
+\vspace{3mm}
+\textbf{Step 3}: Apply MLE formula
+
+$$P(\text{be}|\text{to}) = \frac{\text{count}(\text{to, be})}{\text{count}(\text{to})} = \frac{2}{2} = 1.0$$
+
+\vspace{3mm}
+\textbf{Interpretation}: In this tiny corpus, ``to'' is always followed by ``be''!
+
+\vspace{0.2cm}
+\bottomnote{Real corpora give more nuanced probabilities}
+\end{frame}
+
+% Slide 15: Checkpoint Quiz
+\begin{frame}[t]{Checkpoint: Test Your Understanding}
+\begin{center}
+\textbf{Quick Quiz}
+\end{center}
+\vspace{3mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Question 1}:
+
+Given corpus: ``the cat sat on the mat the dog''
+
+What is $P(\text{cat}|\text{the})$?
+
+\vspace{3mm}
+\textbf{A)} 1/3 \\
+\textbf{B)} 1/2 \\
+\textbf{C)} 2/3 \\
+\textbf{D)} 1/8
+
+\vspace{5mm}
+\textbf{Question 2}:
+
+Why do we use the Markov assumption?
+
+\vspace{3mm}
+\textbf{A)} It's always correct \\
+\textbf{B)} Reduces parameters \\
+\textbf{C)} Improves accuracy \\
+\textbf{D)} Runs faster
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Answer 1}: \textbf{A) 1/3}
+
+\begin{itemize}
+\item count(the) = 3
+\item count(the, cat) = 1
+\item $P(\text{cat}|\text{the}) = 1/3$
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Answer 2}: \textbf{B) Reduces parameters}
+
+\begin{itemize}
+\item Without it: Infinite histories
+\item With it: Tractable parameter count
+\item Trade-off: Lose long-range info
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Understanding these foundations is critical for what comes next}
+\end{frame}
+
+% ===== TAXONOMY: N-GRAM TYPES (Slides 16-23) =====
+
+% Slide 16: Visual - Unigram Model
+\begin{frame}[t]{Unigram Model: The Simplest Baseline}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/unigram_frequencies_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Each word has fixed probability regardless of context
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Simple but ignores all context - like random word sampling}
+\end{frame}
+
+% Slide 17: Detail - Unigram Model
+\begin{frame}[t]{Unigram Model: When Context Doesn't Matter}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Formula}:
+
+$$P(w_1, w_2, ..., w_n) = \prod_{i=1}^{n} P(w_i)$$
+
+Each word independent
+
+\vspace{3mm}
+\textbf{MLE Estimation}:
+
+$$P(w) = \frac{\text{count}(w)}{\text{total words}}$$
+
+\vspace{3mm}
+\textbf{Example}:
+
+\begin{itemize}
+\item Total words: 1,000,000
+\item count(``the'') = 70,000
+\item $P(\text{the}) = 0.07$
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{When to Use}:
+
+\begin{itemize}
+\item Baseline comparison
+\item Document classification
+\item Bag-of-words features
+\item When word order truly doesn't matter
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Limitations}:
+
+\begin{itemize}
+\item Generates nonsense: ``the the the cat dog''
+\item No grammar
+\item No meaning
+\item High perplexity
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Unigrams are weak for generation but useful for other NLP tasks}
+\end{frame}
+
+% Slide 18: Visual - Bigram Model
+\begin{frame}[t]{Bigram Model: One Word of Memory}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/bigram_context_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Previous word dramatically narrows possibilities
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{``the'' is often followed by nouns, rarely by verbs}
+\end{frame}
+
+% Slide 19: Detail - Bigram Model
+\begin{frame}[t]{Bigram Model: The Sweet Spot}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Formula}:
+
+$$P(w_i|w_{i-1})$$
+
+Condition on previous word only
+
+\vspace{3mm}
+\textbf{MLE Estimation}:
+
+$$P(w_2|w_1) = \frac{\text{count}(w_1, w_2)}{\text{count}(w_1)}$$
+
+\vspace{3mm}
+\textbf{Worked Example}:
+
+\begin{itemize}
+\item count(``the'') = 70,000
+\item count(``the cat'') = 850
+\item $P(\text{cat}|\text{the}) = \frac{850}{70000} = 0.012$
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{When to Use}:
+
+\begin{itemize}
+\item Real-time applications (autocomplete)
+\item Limited memory/computation
+\item Reasonable text quality needed
+\item Standard baseline for comparison
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Performance}:
+
+\begin{itemize}
+\item Captures local grammar
+\item Generates coherent phrases
+\item Moderate perplexity (100-150)
+\item Still misses long-range dependencies
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Bigrams are widely used - good balance of simplicity and performance}
+\end{frame}
+
+% Slide 20: Visual - Trigram Model
+\begin{frame}[t]{Trigram Model: Two Words of Memory}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/trigram_context_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Two-word context captures richer patterns
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{``on the'' strongly suggests location noun: mat, floor, table}
+\end{frame}
+
+% Slide 21: Detail - Trigram Model and Performance
+\begin{frame}[t]{Trigram Model: More Context, Better Predictions}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Formula}:
+
+$$P(w_i|w_{i-2}, w_{i-1})$$
+
+Condition on two previous words
+
+\vspace{3mm}
+\textbf{MLE Estimation}:
+
+$$P(w_3|w_1, w_2) = \frac{\text{count}(w_1, w_2, w_3)}{\text{count}(w_1, w_2)}$$
+
+\vspace{3mm}
+\textbf{Example}:
+
+\begin{itemize}
+\item count(``on the'') = 5,200
+\item count(``on the mat'') = 127
+\item $P(\text{mat}|\text{on the}) = \frac{127}{5200} = 0.024$
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Comparison to Bigram}:
+
+\begin{center}
+\small
+\begin{tabular}{lcc}
+Model & Perplexity & Quality \\
+\hline
+Bigram & 125 & Good \\
+Trigram & 78 & Better \\
+\end{tabular}
+\end{center}
+
+\vspace{3mm}
+\textbf{When to Use}:
+
+\begin{itemize}
+\item Sufficient training data
+\item Quality matters more than speed
+\item Speech recognition, translation
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Limitation}: Data sparsity increases
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Trigrams are standard in production systems when data permits}
+\end{frame}
+
+% Slide 22: Visual - Higher-Order N-grams
+\begin{frame}[t]{Higher-Order N-grams: The Sparsity Wall}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/parameter_growth_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Parameters explode exponentially with $n$
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{This is why we rarely go beyond trigrams}
+\end{frame}
+
+% Slide 23: Detail - Context vs Sparsity Tradeoff
+\begin{frame}[t]{The Fundamental Tradeoff}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Parameter Count}:
+
+For vocabulary size $V$:
+
+\begin{itemize}
+\item Unigram: $V$ (e.g., 50,000)
+\item Bigram: $V^2$ (2.5 billion)
+\item Trigram: $V^3$ (125 trillion!)
+\item 4-gram: $V^4$ (6,250,000 trillion!)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Reality}: Most combinations never seen
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Dilemma}:
+
+\begin{itemize}
+\item More context $\rightarrow$ Better predictions
+\item More context $\rightarrow$ More parameters
+\item More parameters $\rightarrow$ Sparse data
+\item Sparse data $\rightarrow$ Poor estimates
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Practical Choice}:
+
+\begin{itemize}
+\item $n=2$ (bigram): Fast, robust
+\item $n=3$ (trigram): Standard
+\item $n \geq 4$: Rarely used
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{This limitation motivates smoothing (coming next) and neural models (Week 2)}
+\end{frame}
+
+% ===== PROBLEM-SOLUTION: SPARSITY (Slides 24-32) =====
+
+% Slide 24: Problem Quantification - Unseen N-grams
+\begin{frame}[t]{The Sparsity Problem: Quantified}
+\small
+\textbf{Experiment}: Train on 1 million words, test on held-out data
+
+\vspace{3mm}
+\begin{center}
+\begin{tabular}{lccc}
+Model & Seen in Training & Unseen in Test & OOV Rate \\
+\hline
+Unigram & 45,000 words & 2,300 words & 5\% \\
+Bigram & 523,000 pairs & 87,000 pairs & 14\% \\
+Trigram & 891,000 triples & 203,000 triples & 19\% \\
+4-gram & 958,000 quads & 347,000 quads & 27\% \\
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{Pattern}: As $n$ increases, more unseen combinations
+
+\vspace{3mm}
+\textbf{Problem}: MLE assigns $P = 0$ to unseen n-grams
+
+\vspace{3mm}
+\textbf{Consequence}: If any n-gram has $P=0$, entire sentence gets $P=0$!
+
+\vspace{0.2cm}
+\bottomnote{We need a way to handle unseen n-grams without destroying sentence probabilities}
+\end{frame}
+
+% Slide 25: Failure Case
+\begin{frame}[t]{Why Zero Probability is Catastrophic}
+\small
+\textbf{Example Sentence}: ``The cat sat on the xylophone''
+
+\vspace{3mm}
+\textbf{Using Bigram Model}:
+
+\begin{align*}
+P(\text{sentence}) &= P(\text{the}) \times P(\text{cat}|\text{the}) \times P(\text{sat}|\text{cat}) \\
+&\times P(\text{on}|\text{sat}) \times P(\text{the}|\text{on}) \times P(\text{xylophone}|\text{the})
+\end{align*}
+
+\vspace{3mm}
+\textbf{Problem}:
+
+If ``the xylophone'' never appeared in training:
+
+$$P(\text{xylophone}|\text{the}) = \frac{0}{70000} = 0$$
+
+\vspace{3mm}
+Therefore: $P(\text{entire sentence}) = 0$
+
+\vspace{5mm}
+\textbf{Consequence}:
+
+\begin{itemize}
+\item Can't rank this sentence
+\item Can't generate it
+\item Perplexity becomes infinite!
+\end{itemize}
+
+\vspace{0.2cm}
+\bottomnote{A single unseen n-gram destroys everything - we must fix this}
+\end{frame}
+
+% Slide 26: Root Cause Diagnosis
+\begin{frame}[t]{Root Cause: The Sparse Data Curse}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{What We Have}:
+
+\begin{itemize}
+\item Training corpus: 1M words
+\item Vocabulary: 50K words
+\item Possible bigrams: $50K^2 = 2.5$ billion
+\item Observed bigrams: ~500K
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Coverage}: $\frac{500K}{2.5B} = 0.02\%$
+
+\vspace{3mm}
+We've seen only 0.02\% of possible bigrams!
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Mathematics}:
+
+\begin{itemize}
+\item No smoothing: $P = 0$ for 99.98\% of bigrams
+\item Sentence of length 10: $P(\text{sentence}) = 0$ in 95\% of cases
+\item Useless for real applications
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Root Cause}:
+
+MLE assumes if we haven't seen it, it's impossible
+
+\vspace{3mm}
+\textbf{Reality}:
+
+Unseen $\neq$ Impossible
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{We need to reserve some probability mass for unseen events}
+\end{frame}
+
+% Slide 27: Visual - Smoothing Techniques Comparison
+\begin{frame}[t]{The Solution: Smoothing}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/smoothing_comparison_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Steal probability from seen events, give to unseen
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Many smoothing methods - we'll cover the most important}
+\end{frame}
+
+% Slide 28: Detail - Laplace Smoothing (Add-1)
+\begin{frame}[t]{Laplace Smoothing: The Simplest Fix}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Idea}:
+
+Pretend we've seen every n-gram one extra time
+
+\vspace{3mm}
+\textbf{Formula (Bigram)}:
+
+$$P_{smooth}(w_2|w_1) = \frac{\text{count}(w_1, w_2) + 1}{\text{count}(w_1) + V}$$
+
+where $V$ = vocabulary size
+
+\vspace{3mm}
+\textbf{Worked Example}:
+
+\begin{itemize}
+\item count(``the'') = 70,000
+\item count(``the cat'') = 850
+\item $V$ = 50,000
+\end{itemize}
+
+$$P(\text{cat}|\text{the}) = \frac{850 + 1}{70000 + 50000} = \frac{851}{120000} = 0.0071$$
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{For Unseen N-gram}:
+
+count(``the xylophone'') = 0
+
+$$P(\text{xylophone}|\text{the}) = \frac{0 + 1}{70000 + 50000} = \frac{1}{120000} = 8.3 \times 10^{-6}$$
+
+\vspace{3mm}
+Small but non-zero!
+
+\vspace{5mm}
+\textbf{Properties}:
+
+\begin{itemize}
+\item \textcolor{green}{Simple to implement}
+\item \textcolor{green}{Never gives $P=0$}
+\item \textcolor{red}{Too much mass to rare events}
+\item \textcolor{red}{Hurts frequent events}
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Laplace smoothing is too aggressive for language - we need something better}
+\end{frame}
+
+% Slide 29: Visual - Add-k Smoothing
+\begin{frame}[t]{Add-k Smoothing: A Better Balance}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/addk_smoothing_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Add $k < 1$ instead of 1 to balance probability redistribution
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Typical values: $k = 0.01$ to $k = 0.5$}
+\end{frame}
+
+% Slide 30: Detail - Advanced Smoothing (Concept)
+\begin{frame}[t]{Advanced Smoothing: Kneser-Ney}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{The Insight}:
+
+Not all words are equally likely in new contexts
+
+\vspace{3mm}
+\textbf{Example}:
+
+\begin{itemize}
+\item ``Francisco'' appears often
+\item But only after ``San''
+\item Shouldn't get high probability after other words!
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Solution}:
+
+Count \textit{how many different contexts} a word appears in, not just total frequency
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Kneser-Ney Benefits}:
+
+\begin{itemize}
+\item State-of-the-art for n-grams
+\item 15-20\% perplexity improvement
+\item Used in production systems
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Complexity}:
+
+\begin{itemize}
+\item More sophisticated than add-k
+\item Requires continuation counts
+\item Backoff to shorter n-grams
+\end{itemize}
+
+\vspace{3mm}
+\textbf{When to Use}:
+
+When quality matters most
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Full Kneser-Ney derivation beyond BSc scope - but know it exists}
+\end{frame}
+
+% Slide 31: Validation - Perplexity Comparison
+\begin{frame}[t]{Validation: Smoothing Improves Performance}
+\small
+\textbf{Experimental Setup}:
+
+Train on 1M words, test on 100K held-out words, trigram model
+
+\vspace{5mm}
+\begin{center}
+\begin{tabular}{lcc}
+Smoothing Method & Perplexity & Unseen N-gram Handling \\
+\hline
+None (MLE) & $\infty$ & \textcolor{red}{Fails} \\
+Add-1 (Laplace) & 245 & \textcolor{orange}{Poor} \\
+Add-0.1 & 156 & \textcolor{green}{Good} \\
+Add-0.01 & 132 & \textcolor{green}{Good} \\
+Kneser-Ney & 98 & \textcolor{green}{Best} \\
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+\textbf{Pattern}:
+
+\begin{itemize}
+\item Smaller $k$ better for large corpora
+\item Kneser-Ney best overall
+\item 35\% improvement over add-1
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Takeaway}: Smoothing is not optional - it's essential
+
+\vspace{0.2cm}
+\bottomnote{Modern systems use sophisticated smoothing as standard}
+\end{frame}
+
+% Slide 32: Implementation - Python Code
+\begin{frame}[fragile, t]{Implementation: Add-k Smoothing}
+\small
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{lstlisting}[language=Python]
+class SmoothBigram:
+    def __init__(self, k=0.01):
+        self.k = k
+        self.counts = defaultdict(
+            lambda: defaultdict(int)
+        )
+        self.vocab = set()
+
+    def train(self, text):
+        words = text.split()
+        for i in range(len(words)-1):
+            w1, w2 = words[i], words[i+1]
+            self.counts[w1][w2] += 1
+            self.vocab.update([w1, w2])
+
+    def probability(self, w1, w2):
+        V = len(self.vocab)
+        numerator = self.counts[w1][w2] + self.k
+        denominator = sum(
+            self.counts[w1].values()
+        ) + self.k * V
+        return numerator / denominator
+\end{lstlisting}
+
+\column{0.42\textwidth}
+\raggedright
+\textbf{Key Changes from MLE}:
+
+\begin{itemize}
+\item Add $k$ to numerator
+\item Add $k \times V$ to denominator
+\item Never returns 0!
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Usage}:
+
+\begin{lstlisting}[language=Python]
+model = SmoothBigram(k=0.01)
+model.train(corpus)
+p = model.probability(
+    "the", "xylophone"
+)
+# Returns small non-zero value
+\end{lstlisting}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Just 4 lines different from MLE - huge impact on performance}
+\end{frame}
+
+% ===== EVALUATION (Slides 33-37) =====
+
+% Slide 33: Visual - Perplexity Comparison
+\begin{frame}[t]{Evaluation: How Good is Our Model?}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/perplexity_comparison_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Lower perplexity = better predictions
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Perplexity is the standard metric for language models}
+\end{frame}
+
+% Slide 34: Detail - Perplexity Formula and Interpretation
+\begin{frame}[t]{Perplexity: Measuring Uncertainty}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Formula}:
+
+$$PP(W) = P(w_1, w_2, ..., w_N)^{-\frac{1}{N}}$$
+
+or equivalently:
+
+$$PP(W) = \sqrt[N]{\frac{1}{P(w_1, ..., w_N)}}$$
+
+\vspace{3mm}
+\textbf{Logarithmic Form}:
+
+$$\log_2 PP(W) = -\frac{1}{N} \sum_{i=1}^{N} \log_2 P(w_i|context)$$
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Interpretation}:
+
+``On average, how many equally likely words could come next?''
+
+\vspace{3mm}
+\begin{itemize}
+\item PP = 100: Choosing from 100 words
+\item PP = 50: Model is twice as confident
+\item PP = 10: Very good model
+\item PP = 1000: Poor model
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Properties}:
+
+\begin{itemize}
+\item Lower is better
+\item Minimized by true distribution
+\item Inverse of geometric mean probability
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Perplexity connects probability to human intuition about uncertainty}
+\end{frame}
+
+% Slide 35: Visual - Information Theory Basics
+\begin{frame}[t]{Information Theory: The Foundations}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/information_theory_bsc.pdf}
+\end{center}
+
+\begin{center}
+\textbf{Key Insight}: Rare events carry more information than common events
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{Claude Shannon founded information theory in 1948}
+\end{frame}
+
+% Slide 36: Detail - Shannon's Information Theory
+\begin{frame}[t]{Shannon's Information Theory}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Entropy} (Uncertainty):
+
+$$H(X) = -\sum_{x} P(x) \log_2 P(x)$$
+
+Measures average information per symbol
+
+\vspace{3mm}
+\textbf{Cross-Entropy}:
+
+$$H(P, Q) = -\sum_{x} P(x) \log_2 Q(x)$$
+
+Measures information loss when using $Q$ to approximate $P$
+
+\vspace{3mm}
+\textbf{Relationship to Perplexity}:
+
+$$PP = 2^{H(P, Q)}$$
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Example - Coin Flip}:
+
+Fair coin: $P(\text{heads}) = 0.5$
+
+$$H = -0.5 \log_2(0.5) - 0.5 \log_2(0.5) = 1 \text{ bit}$$
+
+\vspace{3mm}
+\textbf{Example - English Text}:
+
+Entropy $\approx$ 1-2 bits per character
+
+\vspace{3mm}
+\textbf{Why This Matters}:
+
+\begin{itemize}
+\item Fundamental limits on compression
+\item Optimal encoding
+\item Neural models minimize cross-entropy
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Information theory is the mathematical foundation of all NLP}
+\end{frame}
+
+% Slide 37: Worked Example - Computing Perplexity
+\begin{frame}[t]{Worked Example: Computing Perplexity}
+\small
+\textbf{Given}: Bigram model, test sentence: ``the cat sat''
+
+\vspace{3mm}
+\textbf{Model Probabilities}:
+
+\begin{itemize}
+\item $P(\text{the}) = 0.07$
+\item $P(\text{cat}|\text{the}) = 0.012$
+\item $P(\text{sat}|\text{cat}) = 0.08$
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Step 1}: Compute sentence probability
+
+\begin{align*}
+P(\text{the, cat, sat}) &= P(\text{the}) \times P(\text{cat}|\text{the}) \times P(\text{sat}|\text{cat}) \\
+&= 0.07 \times 0.012 \times 0.08 \\
+&= 0.0000672
+\end{align*}
+
+\vspace{3mm}
+\textbf{Step 2}: Apply perplexity formula
+
+$$PP = (0.0000672)^{-\frac{1}{3}} = (0.0000672)^{-0.333} = 126.7$$
+
+\vspace{3mm}
+\textbf{Interpretation}: Model is as uncertain as picking from ~127 equally likely words
+
+\vspace{0.2cm}
+\bottomnote{Lower perplexity means higher confidence in predictions}
+\end{frame}
+
+% ===== META-KNOWLEDGE (Slides 38-39) =====
+
+% Slide 38: When NOT to Use N-grams
+\begin{frame}[t]{When NOT to Use N-grams}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Failure Cases}:
+
+\begin{itemize}
+\item \textbf{Long-range dependencies}:
+
+  ``The author, who wrote several books about..., was awarded a prize.''
+
+  (``author'' $\rightarrow$ ``was'', but 10+ words apart)
+
+\item \textbf{Semantic understanding}:
+
+  ``The bank is closed'' vs ``The river bank''
+
+  (Same n-grams, different meanings)
+
+\item \textbf{Rare but valid constructions}:
+
+  Creative language, poetry, technical jargon
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Better Alternatives}:
+
+\begin{itemize}
+\item \textbf{Neural language models} (Week 2):
+
+  Learn distributed representations
+
+\item \textbf{RNN/LSTM} (Week 3):
+
+  Unbounded context window
+
+\item \textbf{Transformers} (Week 5):
+
+  Direct long-range connections
+\end{itemize}
+
+\vspace{5mm}
+\textbf{When to Stick with N-grams}:
+
+\begin{itemize}
+\item Speed critical
+\item Interpretability needed
+\item Limited data
+\item Baseline comparison
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Know your model's limitations - choose the right tool for the job}
+\end{frame}
+
+% Slide 39: Common Pitfalls
+\begin{frame}[t]{Common Pitfalls and How to Avoid Them}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Pitfall 1: Choosing n}
+
+\begin{itemize}
+\item Too small: Misses context
+\item Too large: Data sparsity
+\item \textcolor{green}{Solution}: Start with trigrams, validate on held-out data
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Pitfall 2: Forgetting smoothing}
+
+\begin{itemize}
+\item MLE gives zero probabilities
+\item \textcolor{green}{Solution}: Always use smoothing in production
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Pitfall 3: Train/test contamination}
+
+\begin{itemize}
+\item Testing on training data
+\item \textcolor{green}{Solution}: Strict data splits
+\end{itemize}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{Pitfall 4: Vocabulary mismatch}
+
+\begin{itemize}
+\item Test words not in training vocab
+\item \textcolor{green}{Solution}: UNK token for rare words
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Pitfall 5: Computational explosion}
+
+\begin{itemize}
+\item Storing all n-grams
+\item \textcolor{green}{Solution}: Pruning, hashing tricks
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Pitfall 6: Overfitting to corpus}
+
+\begin{itemize}
+\item Model learns corpus-specific patterns
+\item \textcolor{green}{Solution}: Large, diverse training data
+\end{itemize}
+
+\end{columns}
+
+\vspace{0.2cm}
+\bottomnote{Awareness of pitfalls is half the battle - test rigorously}
+\end{frame}
+
+% ===== SUMMARY (Slides 40-42) =====
+
+% Slide 40: Unified View
+\begin{frame}[t]{Unified View: Everything is Conditional Probability}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/unified_framework_bsc.pdf}
+\end{center}
+
+\vspace{3mm}
+\begin{center}
+\textbf{The Core Principle}:
+
+Language modeling = Estimating $P(\text{next}|\text{previous})$ from data
+
+\vspace{3mm}
+\begin{itemize}
+\item \textbf{Challenge}: Infinite possible histories
+\item \textbf{Solution}: Markov assumption (limited context)
+\item \textbf{Method}: Count and normalize (MLE)
+\item \textbf{Fix}: Smoothing for unseen events
+\item \textbf{Evaluation}: Perplexity (lower is better)
+\end{itemize}
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{This foundation supports all language models, including neural networks}
+\end{frame}
+
+% Slide 41: Key Takeaways
+\begin{frame}[t]{Key Takeaways}
+\begin{enumerate}
+\item \textbf{Conditional probability is the foundation}
+
+  Text prediction is estimating $P(w_n|w_1, ..., w_{n-1})$
+
+\item \textbf{N-grams make it practical}
+
+  Markov assumption limits context to last $n-1$ words
+
+\item \textbf{MLE estimates from counts}
+
+  $P(w|context) = \frac{\text{count}(context, w)}{\text{count}(context)}$
+
+\item \textbf{Smoothing is essential}
+
+  Unseen n-grams get non-zero probability
+
+\item \textbf{Perplexity measures quality}
+
+  Lower perplexity = better predictions
+
+\item \textbf{Trade-offs everywhere}
+
+  Context vs sparsity, speed vs quality, simplicity vs sophistication
+\end{enumerate}
+
+\vspace{0.2cm}
+\bottomnote{Master these foundations - they underpin all of NLP}
+\end{frame}
+
+% Slide 42: Lab Preview
+\begin{frame}[t]{Next: Hands-On Practice}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\raggedright
+\textbf{Lab Notebook Activities}:
+
+\begin{enumerate}
+\item Build unigram model from scratch
+\item Implement bigram with MLE
+\item Add smoothing (compare methods)
+\item Generate text and compare quality
+\item Compute perplexity on test data
+\item Visualize n-gram distributions
+\item Experiment with different $n$ values
+\end{enumerate}
+
+\column{0.48\textwidth}
+\raggedright
+\textbf{What You'll Learn}:
+
+\begin{itemize}
+\item Hands-on probability estimation
+\item See smoothing's impact
+\item Debug zero probability issues
+\item Understand perplexity intuitively
+\item Reproduce presentation charts
+\end{itemize}
+
+\vspace{5mm}
+\textbf{Corpus}: Shakespeare sonnets (interesting patterns!)
+
+\end{columns}
+
+\vspace{5mm}
+\begin{center}
+\Large
+\textbf{Let's build some language models!}
+\end{center}
+
+\vspace{0.2cm}
+\bottomnote{The lab cements understanding - theory alone is not enough}
+\end{frame}
+
+\end{document}

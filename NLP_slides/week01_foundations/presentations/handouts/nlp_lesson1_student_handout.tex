@@ -1,0 +1,295 @@
+\documentclass[8pt]{beamer}
+\usetheme{Madrid}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{NLP Course - Lesson 1}
+\subtitle{Group Exercise: Predicting the Next Word}
+\author{Natural Language Processing}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{Today's Challenge: How Do We Predict the Next Word?}
+\begin{block}{Your Mission}
+Work in groups of 3-4 students to figure out how YOU would predict the next word in a sentence.
+\end{block}
+
+\vspace{0.5cm}
+
+\textbf{No computers needed - just your brain!}
+
+\vspace{0.5cm}
+
+Think about:
+\begin{itemize}
+\item How do YOU know what word comes next when you read?
+\item What patterns do you notice?
+\item Can you create rules or a method?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Your Training Text}
+\begin{block}{The Dragon Story}
+\small
+Once upon a time, in a land filled with green meadows and tall mountains, there lived a friendly dragon. This friendly dragon loved to fly over the green meadows every morning. The villagers would watch the friendly dragon and wave. The dragon was not like other dragons; this dragon was kind and gentle. One day, a lost knight stumbled upon the land. The knight was afraid of the dragon, but the friendly dragon offered the knight a warm smile. The knight, seeing the kind dragon, was no longer afraid. The knight and the dragon became the best of friends, and they would often fly over the green meadows together.
+\end{block}
+\end{frame}
+
+\begin{frame}{Warm-Up: Complete These Sentences}
+Based on the story, what word would you predict comes next?
+
+\vspace{0.5cm}
+
+\begin{enumerate}
+\item ``The friendly \underline{\hspace{2cm}}''
+\vspace{0.3cm}
+\item ``The knight and the \underline{\hspace{2cm}}''
+\vspace{0.3cm}
+\item ``fly over the \underline{\hspace{2cm}}''
+\vspace{0.3cm}
+\item ``The dragon was \underline{\hspace{2cm}}''
+\vspace{0.3cm}
+\item ``in a land filled with \underline{\hspace{2cm}}''
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Question:} How did you decide? Write down your reasoning!
+\end{frame}
+
+\begin{frame}{Group Exercise Part 1: Count the Patterns (15 minutes)}
+\begin{block}{Task 1: Manual Counting}
+In your group, create a simple table counting what words follow these common words:
+\end{block}
+
+\begin{table}
+\centering
+\begin{tabular}{|l|l|c|}
+\hline
+\textbf{Word} & \textbf{Next Word} & \textbf{Count} \\
+\hline
+the & dragon & ? \\
+the & friendly & ? \\
+the & knight & ? \\
+the & green & ? \\
+the & ... & ? \\
+\hline
+friendly & dragon & ? \\
+friendly & ... & ? \\
+\hline
+dragon & was & ? \\
+dragon & loved & ? \\
+dragon & ... & ? \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Tip:} Focus on the most frequent word pairs!
+\end{frame}
+
+\begin{frame}{Group Exercise Part 2: Design Your Method (20 minutes)}
+\begin{block}{Task 2: Create Your Prediction Algorithm}
+Now design a METHOD to predict the next word. Consider:
+\end{block}
+
+\begin{enumerate}
+\item \textbf{Simple Approach:} 
+   \begin{itemize}
+   \item Look at the last word only?
+   \item What word most often follows it?
+   \end{itemize}
+   
+\item \textbf{Better Approach:}
+   \begin{itemize}
+   \item Look at the last 2 words?
+   \item Look at the last 3 words?
+   \end{itemize}
+   
+\item \textbf{Your Creative Ideas:}
+   \begin{itemize}
+   \item Consider word types (nouns, verbs)?
+   \item Consider sentence position?
+   \item Other patterns you noticed?
+   \end{itemize}
+\end{enumerate}
+
+\textbf{Write your method as simple steps (like a recipe)!}
+\end{frame}
+
+\begin{frame}{Group Exercise Part 3: Test Your Method (15 minutes)}
+\begin{block}{Task 3: Make Predictions}
+Use your method to predict the next word:
+\end{block}
+
+\begin{enumerate}
+\item ``The friendly dragon loved to \underline{\hspace{2cm}}''
+\item ``The villagers would \underline{\hspace{2cm}}''
+\item ``The knight was \underline{\hspace{2cm}}''
+\item ``They would often \underline{\hspace{2cm}}''
+\item ``Once upon a \underline{\hspace{2cm}}''
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\begin{block}{Evaluate Your Method}
+\begin{itemize}
+\item Does it give reasonable predictions?
+\item When does it work well?
+\item When does it fail?
+\item How could you improve it?
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Think Deeper: The Challenges}
+\begin{block}{Discussion Questions (10 minutes)}
+Discuss in your group:
+\end{block}
+
+\begin{enumerate}
+\item \textbf{Memory Problem:}\\
+   What if our story was 1000 times longer? How would you count all the patterns?
+   
+\item \textbf{New Words Problem:}\\
+   What if you see: ``The purple dragon...''\\
+   You've never seen ``purple'' before. What now?
+   
+\item \textbf{Context Problem:}\\
+   ``The dragon was...'' could be followed by many words.\\
+   How do you choose the BEST one?
+   
+\item \textbf{Meaning Problem:}\\
+   ``friendly'' and ``kind'' mean similar things.\\
+   Can your method understand this?
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Real-World Application}
+\begin{block}{Where is Next-Word Prediction Used?}
+\begin{itemize}
+\item \textbf{Your Phone:} Auto-complete when texting
+\item \textbf{Google:} Search suggestions
+\item \textbf{ChatGPT:} Generating entire conversations
+\item \textbf{Translation:} Converting between languages
+\item \textbf{Writing Assistants:} Helping write emails
+\end{itemize}
+\end{block}
+
+\vspace{0.5cm}
+
+\begin{block}{The Big Insight}
+All these systems started with the SAME problem you just solved:\\
+\textit{``Given some words, predict what comes next''}
+\end{block}
+\end{frame}
+
+\begin{frame}{Share Your Solutions}
+\begin{block}{Group Presentations (2 minutes each)}
+Each group presents:
+\end{block}
+
+\begin{enumerate}
+\item Your prediction method (in 3-4 simple steps)
+\item One example where it works well
+\item One example where it fails
+\item Your biggest challenge
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\begin{block}{Class Discussion}
+\begin{itemize}
+\item Which methods were similar?
+\item Which were creative/different?
+\item What problems did everyone face?
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Reflection: What You've Discovered}
+\begin{block}{Key Insights}
+Through this exercise, you've discovered:
+\end{block}
+
+\begin{itemize}
+\item \textbf{Patterns Matter:} Language has patterns we can count
+\item \textbf{Context Helps:} More context = better predictions
+\item \textbf{Frequency Works:} Common patterns are good predictors
+\item \textbf{It's Hard!:} Simple rules aren't enough for real language
+\end{itemize}
+
+\vspace{0.5cm}
+
+\begin{block}{What's Next?}
+In the coming lessons, we'll learn how computers solve these exact problems:
+\begin{itemize}
+\item N-gram models (counting patterns like you did!)
+\item Neural networks (learning patterns automatically)
+\item Word embeddings (understanding meaning)
+\item Transformers (what ChatGPT uses)
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Homework: Observe Language Patterns}
+\begin{block}{Before Next Class}
+\begin{enumerate}
+\item \textbf{Observation Task:}\\
+   Pay attention to your phone's autocomplete for one day.\\
+   Write down 3 times it was right and 3 times it was wrong.
+   
+\item \textbf{Think About:}\\
+   What patterns does it seem to use?\\
+   Why does it fail when it fails?
+   
+\item \textbf{Bring to Next Class:}\\
+   Your examples and observations
+\end{enumerate}
+\end{block}
+
+\vspace{0.5cm}
+
+\begin{block}{Remember}
+You just solved the fundamental problem of NLP!\\
+Everything else builds on what you discovered today.
+\end{block}
+\end{frame}
+
+\end{document}
