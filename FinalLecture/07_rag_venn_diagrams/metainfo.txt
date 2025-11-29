@@ -1,0 +1,19 @@
+Name of Quantlet: '07_rag_venn_diagrams'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Venn diagram interpretation of RAG probabilities p(Z|X) and p(Y|X,Z)'
+
+Keywords: 'RAG, Venn diagram, conditional probability, set theory, visualization'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'generate_rag_venn_diagrams.py'
+
+Output: 'rag_venn_diagrams.pdf'
+
+Example: 'python generate_rag_venn_diagrams.py'

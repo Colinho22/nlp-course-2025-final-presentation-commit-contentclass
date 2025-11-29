@@ -1,0 +1,19 @@
+Name of Quantlet: '02_hnsw_explanation'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Hierarchical Navigable Small World graph visualization for approximate nearest neighbor search'
+
+Keywords: 'HNSW, approximate nearest neighbor, vector search, graph algorithm, RAG'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'generate_hnsw_explanation.py'
+
+Output: 'hnsw_explanation.pdf'
+
+Example: 'python generate_hnsw_explanation.py'

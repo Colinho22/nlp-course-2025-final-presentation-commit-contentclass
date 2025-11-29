@@ -1,0 +1,19 @@
+Name of Quantlet: '01_ann_math_concept'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Visualization of artificial neural network mathematical formulation including input, hidden layers, and output'
+
+Keywords: 'neural network, deep learning, mathematical formulation, ANN, visualization'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'generate_ann_math_concept.py'
+
+Output: 'ann_math_concept.pdf'
+
+Example: 'python generate_ann_math_concept.py'
