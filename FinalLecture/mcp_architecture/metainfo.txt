@@ -1,0 +1,13 @@
+Name of Quantlet: mcp_architecture
+
+Published in: NLP Final Lecture - AI Agents
+
+Description: Architecture diagram of Model Context Protocol (MCP) showing how LLM applications connect to external tools through standardized JSON-RPC protocol and MCP servers for file systems, databases, and APIs
+
+Keywords: MCP, Model Context Protocol, Anthropic, tool integration, JSON-RPC, AI infrastructure
+
+Author: Joerg Osterrieder
+
+Submitted: 2025-11-30
+
+Output: mcp_architecture.pdf

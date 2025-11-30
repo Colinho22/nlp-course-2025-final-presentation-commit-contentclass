@@ -1,0 +1,13 @@
+Name of Quantlet: agent_memory_types
+
+Published in: NLP Final Lecture - AI Agents
+
+Description: Visualization of the three types of memory in AI agent systems - Short-Term Memory (context window, working memory), Long-Term Memory (vector database, persistent storage), and Episodic Memory (past task executions, experience replay)
+
+Keywords: AI agents, memory architecture, context window, vector database, episodic memory, agent design
+
+Author: Joerg Osterrieder
+
+Submitted: 2025-11-30
+
+Output: agent_memory_types.pdf

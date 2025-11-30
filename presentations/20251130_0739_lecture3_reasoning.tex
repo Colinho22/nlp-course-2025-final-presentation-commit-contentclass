@@ -1,0 +1,751 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+
+% Color definitions
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255, 127, 14}
+\definecolor{mlgreen}{RGB}{44, 160, 44}
+\definecolor{mlred}{RGB}{214, 39, 40}
+\definecolor{mlgray}{RGB}{127, 127, 127}
+\definecolor{lightgray}{RGB}{240, 240, 240}
+\definecolor{midgray}{RGB}{180, 180, 180}
+
+% Apply custom colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in toc}{fg=mlblue}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{block title}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{block body}{bg=mllavender4,fg=black}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% Command for bottom annotation
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+\title{LLM Reasoning}
+\subtitle{From Chain-of-Thought to Test-Time Compute}
+\author{NLP Course}
+\institute{MSc Program}
+\date{\today}
+
+\begin{document}
+
+% ==================== TITLE SLIDE ====================
+\begin{frame}[plain]
+\vspace{1cm}
+\begin{center}
+{\Huge LLM Reasoning}\\[0.3cm]
+{\Large From Chain-of-Thought to Test-Time Compute}\\[1cm]
+{\normalsize NLP Course -- Lecture 3}\\[0.3cm]
+{\small Advanced Topics in Natural Language Processing}
+\end{center}
+\end{frame}
+
+% ==================== LECTURE INTRO ====================
+\begin{frame}[t]{Why Do LLMs Struggle with Reasoning?}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Problem}
+\begin{itemize}
+\item LLMs give instant responses
+\item No ``working memory'' for computation
+\item Multi-step problems require planning
+\item Direct answers often wrong
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Solution}
+\begin{itemize}
+\item Chain-of-Thought: think step by step
+\item Test-time compute: think longer
+\item Process reward models: verify steps
+\item DeepSeek-R1: trained to reason
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{center}
+\textcolor{mlpurple}{\textbf{This lecture: Teaching LLMs to think before answering}}
+\end{center}
+\bottomnote{Reasoning capabilities have dramatically improved since 2022.}
+\end{frame}
+
+% ==================== MAIN CONTENT ====================
+\begin{frame}[t]{Current Agent Limitations}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Reliability Issues}
+\begin{itemize}
+\item Agents get stuck in loops
+\item Wrong tool selection
+\item Hallucinated tool parameters
+\item Failure to know when to stop
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Cost Accumulation}
+\begin{itemize}
+\item Each step = API call
+\item Complex tasks = many calls
+\item Costs can spiral quickly
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Security Concerns}
+\begin{itemize}
+\item Tool access = system access
+\item Prompt injection attacks
+\item Unintended actions
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{What Works Today}
+\begin{itemize}
+\item Well-defined, bounded tasks
+\item Human oversight/approval
+\item Retrieval-heavy workflows
+\item Single-domain expertise
+\end{itemize}
+\end{columns}
+
+\vspace{0.5em}
+\begin{center}
+\textit{``Agents are promising but not production-ready for autonomous operation.'' -- 2024 consensus}
+\end{center}
+
+\bottomnote{Connection to reasoning: Better reasoning = more reliable agents. This leads us to Act II...}
+\end{frame}
+
+% ==================== SECTION: REASONING ====================
+\section{Act II: Reasoning in LLMs -- Making LLMs Smart}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Act II: Reasoning in LLMs\par
+\vspace{0.3cm}
+\normalsize Chain-of-Thought, Test-Time Compute, and DeepSeek-R1
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% ==================== COT SECTION ====================
+\subsection{Chain-of-Thought Revolution}
+
+% ==================== COT DISCOVERY ====================
+\begin{frame}[t]{The Surprising Discovery (2022)}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Experiment}
+
+Google researchers found something remarkable:
+
+Simply adding \textit{``Let's think step by step''} to a prompt improved math accuracy by \textbf{40\%+}
+
+\vspace{0.5em}
+No model changes. No fine-tuning. Just a prompt.
+
+\vspace{0.5em}
+\textbf{Why?}
+\begin{itemize}
+\item Creates ``scratchpad'' for computation
+\item Forces sequential reasoning
+\item Mirrors human problem-solving
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Before CoT}
+
+Q: Roger has 5 tennis balls. He buys 2 cans of 3 balls each. How many does he have now?
+
+A: \textcolor{mlred}{11} \textit{(direct answer, sometimes wrong)}
+
+\vspace{0.5em}
+\textbf{After CoT}
+
+Q: [same question] \textit{Let's think step by step.}
+
+A: Roger starts with 5 balls.\\
+He buys 2 cans $\times$ 3 balls = 6 balls.\\
+Total = 5 + 6 = \textcolor{mlgreen}{11 balls}
+
+\textit{(reasoning chain makes answer verifiable)}
+\end{columns}
+
+\bottomnote{Wei et al. (2022): ``Chain-of-Thought Prompting Elicits Reasoning in Large Language Models''}
+\end{frame}
+
+% ==================== COT MATH ====================
+\begin{frame}[t]{Chain-of-Thought: The Mathematics}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Standard Prompting}
+
+Direct answer generation:
+$$p(\text{answer}|\text{question})$$
+
+The model jumps straight to the answer in a single forward pass.
+
+\vspace{0.5em}
+\textbf{Problem}
+
+Complex reasoning requires multiple ``steps'' -- but each token is generated independently.
+
+\column{0.48\textwidth}
+\textbf{Chain-of-Thought Prompting}
+
+Decompose into two stages:
+$$p(r|q) \cdot p(a|q, r)$$
+
+Where:
+\begin{itemize}
+\item $q$ = question
+\item $r$ = reasoning chain
+\item $a$ = final answer
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Key Insight}
+
+The reasoning tokens $r$ create intermediate computation space that the model can ``use'' to solve harder problems.
+\end{columns}
+
+\bottomnote{Connection to Week 9 (Decoding): CoT changes what the model generates, not how it decodes}
+\end{frame}
+
+% ==================== INTERMEDIATE COMPUTATION ====================
+\begin{frame}[t]{Intermediate Computation Space: Why CoT Works}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/intermediate_computation.pdf}
+\end{center}
+
+\bottomnote{Key insight: Reasoning tokens create a ``scratchpad'' that enables multi-step computation within a single generation}
+\end{frame}
+
+% ==================== COT VARIANTS ====================
+\begin{frame}[t]{Chain-of-Thought Variants}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Zero-Shot CoT}
+
+Just add: ``Let's think step by step''
+
+No examples needed. Works surprisingly well.
+
+\vspace{0.5em}
+\textbf{Few-Shot CoT}
+
+Provide examples with reasoning chains:
+
+\textit{Example 1: [problem] [reasoning] [answer]}\\
+\textit{Example 2: [problem] [reasoning] [answer]}\\
+\textit{Your turn: [problem]}
+
+\vspace{0.5em}
+More reliable but requires good examples.
+
+\column{0.48\textwidth}
+\textbf{Self-Consistency}
+
+Generate $N$ reasoning chains (with temperature $> 0$).
+
+Take majority vote on final answer:
+$$\hat{a} = \arg\max_a \sum_{i=1}^{N} \mathbf{1}[a_i = a]$$
+
+\vspace{0.5em}
+\textbf{Tree of Thoughts}
+
+Explore multiple reasoning \textit{paths}, not just one chain.
+
+Allows backtracking on dead ends.
+
+\vspace{0.5em}
+\textbf{Least-to-Most}
+
+Decompose into subproblems first, then solve.
+\end{columns}
+
+\bottomnote{CoT is the most powerful prompt engineering technique discovered so far}
+\end{frame}
+
+% ==================== SELF CONSISTENCY VOTING ====================
+\begin{frame}[t]{Self-Consistency: Sample and Vote}
+\begin{center}
+\includegraphics[width=0.55\textwidth]{../figures/self_consistency_voting.pdf}
+\end{center}
+
+\bottomnote{Self-consistency adds 5-10\% accuracy on top of CoT by marginalizing over reasoning paths}
+\end{frame}
+
+% ==================== COT EXAMPLES ====================
+\begin{frame}[t]{Chain-of-Thought: Worked Examples}
+\textbf{Example 1: Math Problem}
+
+\textit{Q: A farmer has 17 sheep. All but 9 die. How many are left?}
+
+\textcolor{mlblue}{Let's think step by step.} ``All but 9 die'' means 9 survive. Answer: \textbf{9 sheep}
+
+\vspace{0.3em}
+\rule{\textwidth}{0.3pt}
+\vspace{0.3em}
+
+\textbf{Example 2: Logic Puzzle}
+
+\textit{Q: If all roses are flowers and some flowers fade quickly, can we conclude that some roses fade quickly?}
+
+\textcolor{mlblue}{Let's analyze:} (1) All roses $\subset$ flowers. (2) Some flowers fade quickly -- but which ones? Could be non-rose flowers. (3) We cannot conclude roses fade quickly. Answer: \textbf{No, invalid inference}
+
+\vspace{0.3em}
+\rule{\textwidth}{0.3pt}
+\vspace{0.3em}
+
+\textbf{Example 3: Code Debugging}
+
+\textit{Q: Why does \texttt{sum([1,2,3][:2])} return 3, not 6?}
+
+\textcolor{mlblue}{Let's trace:} (1) \texttt{[1,2,3]} creates list. (2) \texttt{[:2]} slices indices 0,1 $\rightarrow$ \texttt{[1,2]}. (3) \texttt{sum([1,2])} = \textbf{3}. The slice excludes index 2.
+
+\bottomnote{CoT works across domains: math, logic, code -- wherever step-by-step reasoning helps}
+\end{frame}
+
+% ==================== TEST-TIME SECTION ====================
+\subsection{Test-Time Compute Scaling}
+
+% ==================== PARADIGM SHIFT ====================
+\begin{frame}[t]{The Paradigm Shift: Test-Time Compute}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Old Paradigm: Scale Training}
+
+$$\text{Performance} \propto \log(\text{Parameters})$$
+
+Bigger models = Better performance
+
+\vspace{0.3em}
+GPT-2 $\rightarrow$ GPT-3 $\rightarrow$ GPT-4
+
+\vspace{0.5em}
+\textbf{Problem}
+
+Training cost grows exponentially.\\
+Diminishing returns at scale.\\
+One-size-fits-all computation.
+
+\column{0.48\textwidth}
+\textbf{New Paradigm: Scale Inference}
+
+$$\text{Performance} \propto \log(\text{Test-Time Compute})$$
+
+Same model, more ``thinking'' = Better answers
+
+\vspace{0.5em}
+\textbf{Key Insight}
+
+Not all questions need the same compute.\\
+Hard problems deserve more thinking time.\\
+Let the model allocate compute adaptively.
+
+\vspace{0.5em}
+\textbf{This is revolutionary!}
+\end{columns}
+
+\bottomnote{Snell et al. (2024): ``Scaling LLM Test-Time Compute Optimally can be More Effective than Scaling Model Parameters''}
+\end{frame}
+
+% ==================== TEST-TIME SCALING CHART ====================
+\begin{frame}[t]{Test-Time vs Pre-Training Scaling}
+\begin{center}
+\includegraphics[width=0.55\textwidth]{../figures/test_time_scaling.pdf}
+\end{center}
+
+\bottomnote{For hard problems, test-time compute scaling can outperform pre-training scaling at equivalent FLOPs}
+\end{frame}
+
+% ==================== INFERENCE SCALING CURVE ====================
+\begin{frame}[t]{Inference Token Scaling: More Thinking = Better Answers}
+\begin{center}
+\includegraphics[width=0.55\textwidth]{../figures/inference_scaling_curve.pdf}
+\end{center}
+
+\bottomnote{Key insight: Reasoning models show log-linear improvement with inference tokens; standard models plateau}
+\end{frame}
+
+% ==================== TWO MECHANISMS ====================
+\begin{frame}[t]{Two Mechanisms for Test-Time Scaling}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{1. Best-of-N with Verifiers}
+
+Generate $N$ candidate solutions.\\
+Score each with a verifier (PRM).\\
+Select the best one.
+
+$$\hat{y} = \arg\max_{y \in \{y_1,...,y_N\}} r_{\text{PRM}}(y)$$
+
+\textbf{Process Reward Models (PRMs)}
+
+Score \textit{each step} of reasoning:
+$$r_{\text{PRM}}(s_1,...,s_T) = \prod_{t=1}^{T} p(\text{correct}|s_1,...,s_t)$$
+
+More compute = more candidates = better selection.
+
+\column{0.48\textwidth}
+\textbf{2. Extended Reasoning}
+
+Let the model think for more tokens.\\
+Longer reasoning = better answers.
+
+\textbf{How o1 Does It}
+
+Hidden ``thinking'' tokens before answering.\\
+Model trained to use this space productively.
+
+\vspace{0.5em}
+\textbf{Adaptive Allocation}
+
+Easy questions: Short reasoning\\
+Hard questions: Long reasoning
+
+The model learns to allocate compute based on difficulty.
+\end{columns}
+
+\bottomnote{Both mechanisms: more compute at inference = better results (with diminishing returns)}
+\end{frame}
+
+% ==================== COMPUTE TRADEOFF ====================
+\begin{frame}[t]{The Cost-Quality Tradeoff}
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Model} & \textbf{Tokens Generated} & \textbf{Accuracy} & \textbf{Relative Cost} \\
+\midrule
+GPT-4 (direct) & $\sim$50 & 78\% & 1x \\
+GPT-4 (CoT prompt) & $\sim$150 & 89\% & 3x \\
+o1-mini & $\sim$500 & 95\% & 10x \\
+o1 & $\sim$2000 & 97\% & 40x \\
+o1-pro & $\sim$5000+ & 99\% & 100x+ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\textbf{Practical Implication}
+
+You can choose your accuracy/cost tradeoff:
+\begin{itemize}
+\item Simple queries: Use fast, cheap model
+\item Complex reasoning: Invest in more compute
+\item Critical decisions: Use maximum reasoning
+\end{itemize}
+
+\bottomnote{This is like choosing car vs. plane -- different tools for different journeys}
+\end{frame}
+
+% ==================== DEEPSEEK SECTION ====================
+\subsection{DeepSeek-R1: The Open-Source Breakthrough}
+
+% ==================== DEEPSEEK INTRO ====================
+\begin{frame}[t]{January 2025: DeepSeek-R1}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Announcement}
+
+DeepSeek (Chinese lab) releases R1:
+\begin{itemize}
+\item Matches OpenAI o1 performance
+\item Fully open-source (weights + paper)
+\item Fraction of training cost
+\item Multiple distilled sizes available
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Why It Matters}
+
+Demonstrated that reasoning can be achieved with:
+\begin{itemize}
+\item Open research
+\item Smaller budgets
+\item Novel training approaches
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Key Results}
+
+AIME 2024 (math olympiad):\\
+\textbf{15.6\%} $\rightarrow$ \textbf{71.0\%} (pass@1)
+
+Matches o1-1217 on most benchmarks.
+
+\vspace{0.5em}
+\textbf{Available Models}
+
+DeepSeek-R1-Distill-Qwen:\\
+1.5B, 7B, 14B, 32B
+
+DeepSeek-R1-Distill-Llama:\\
+8B, 70B
+
+All on HuggingFace, open weights.
+\end{columns}
+
+\bottomnote{DeepSeek-AI (2025): ``DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning''}
+\end{frame}
+
+% ==================== DEEPSEEK ZERO ====================
+\begin{frame}[t]{DeepSeek-R1-Zero: The Revolutionary Finding}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Experiment}
+
+What if we train reasoning with \textit{pure RL}, no supervised fine-tuning?
+
+\vspace{0.5em}
+\textbf{DeepSeek-R1-Zero}
+\begin{itemize}
+\item Start from base model
+\item Apply RL directly
+\item Reward only final answer correctness
+\item No human demonstrations of reasoning
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Result}
+
+The model \textit{spontaneously} learned to:
+\begin{itemize}
+\item Generate reasoning chains
+\item Self-verify answers
+\item Reflect on mistakes
+\item Allocate more tokens to hard problems
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why This Is Shocking}
+
+``Reasoning'' emerged from the objective alone.
+
+No one told the model \textit{how} to reason -- just rewarded correct answers.
+
+\vspace{0.5em}
+\textbf{Emergent Behaviors}
+
+\textit{Self-verification:}\\
+``Let me check: 3 $\times$ 5 = 15, correct.''
+
+\textit{Reflection:}\\
+``Wait, I made an error. Let me reconsider...''
+
+\textit{Extended thinking:}\\
+Hard problems $\rightarrow$ longer reasoning traces
+
+\vspace{0.5em}
+\textbf{Implication}
+
+Reasoning might be more fundamental than we thought -- it emerges when you optimize for correctness.
+\end{columns}
+
+\bottomnote{This suggests reasoning is an ``attractor'' in the optimization landscape, not a special trick}
+\end{frame}
+
+% ==================== GRPO ====================
+\begin{frame}[t]{GRPO: Group Relative Policy Optimization}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Standard RL (PPO)}
+
+Requires:
+\begin{itemize}
+\item Critic network (value function)
+\item Reward model
+\item Complex optimization
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{GRPO Simplification}
+
+No critic network needed!
+
+Compute advantage relative to group:
+$$A(x, y) = r(y) - \frac{1}{|G|} \sum_{y' \in G} r(y')$$
+
+For each prompt, generate multiple outputs, compare to each other.
+
+\column{0.48\textwidth}
+\textbf{Rule-Based Rewards}
+
+No neural reward model either!
+
+\textit{Accuracy reward:}
+$$r_{\text{acc}} = \mathbf{1}[\text{answer correct}]$$
+
+\textit{Format reward:}
+$$r_{\text{fmt}} = \mathbf{1}[\text{<think>...</think> tags present}]$$
+
+\vspace{0.5em}
+\textbf{Why This Works}
+
+For math/code: correctness is verifiable.\\
+No need to learn ``what humans prefer.''
+\end{columns}
+
+\bottomnote{GRPO: Simpler than PPO, no reward model, no critic -- yet achieves state-of-the-art reasoning}
+\end{frame}
+
+% ==================== DEEPSEEK PIPELINE ====================
+\begin{frame}[t]{DeepSeek-R1 Full Pipeline}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Stage 1: Cold Start (Optional)}
+
+Small amount of SFT on reasoning examples.\\
+Teaches the format: \texttt{<think>...</think>}
+
+Not strictly necessary (R1-Zero skips this).
+
+\vspace{0.5em}
+\textbf{Stage 2: Reasoning RL}
+
+Pure RL with GRPO.\\
+Reward: correctness + format.\\
+Model learns to reason.
+
+\column{0.48\textwidth}
+\textbf{Stage 3: Rejection Sampling}
+
+Generate many responses from RL model.\\
+Filter for correct + well-formatted.\\
+Creates high-quality reasoning dataset.
+
+\vspace{0.5em}
+\textbf{Stage 4: Final SFT}
+
+Fine-tune on curated reasoning data.\\
+Adds general capabilities back.\\
+Balances reasoning with helpfulness.
+
+\vspace{0.5em}
+\textbf{Result: DeepSeek-R1}
+\end{columns}
+
+\bottomnote{Key insight: RL discovers reasoning, then SFT polishes and generalizes it}
+\end{frame}
+
+% ==================== DEEPSEEK R1 PIPELINE VISUAL ====================
+\begin{frame}[t]{DeepSeek-R1: The Four-Stage Training Pipeline}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/deepseek_r1_pipeline.pdf}
+\end{center}
+
+\bottomnote{DeepSeek-R1 shows that open-source reasoning can match proprietary models with clever training}
+\end{frame}
+
+% ==================== O1 COMPARISON ====================
+\begin{frame}[t]{o1 vs DeepSeek-R1: What We Know}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{OpenAI o1}
+\begin{itemize}
+\item Closed source, proprietary
+\item Hidden ``thinking'' tokens (not shown to user)
+\item Likely uses process supervision
+\item Rumored to use search/planning
+\item Available via API only
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Strengths}
+
+Polish, reliability, integration with OpenAI ecosystem.
+
+\column{0.48\textwidth}
+\textbf{DeepSeek-R1}
+\begin{itemize}
+\item Open source (weights + paper)
+\item Visible reasoning traces
+\item Pure RL approach documented
+\item Distilled to many sizes
+\item Run locally or via API
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Strengths}
+
+Transparency, customizability, research value.
+
+\vspace{0.5em}
+\textbf{Performance}
+
+Comparable on most benchmarks.
+\end{columns}
+
+\bottomnote{The gap between closed and open reasoning models is narrowing rapidly}
+\end{frame}
+% ==================== CLOSING ====================
+
+% ==================== KEY TAKEAWAYS ====================
+\begin{frame}[t]{Key Takeaways: LLM Reasoning}
+\begin{enumerate}
+\item \textbf{Chain-of-Thought} dramatically improves reasoning (+40\% on math)
+\item \textbf{Intermediate tokens} serve as computational scratchpad
+\item \textbf{Test-time compute} is the new scaling paradigm
+\item \textbf{DeepSeek-R1} showed pure RL can develop reasoning
+\item \textbf{Process reward models} enable verification of reasoning steps
+\end{enumerate}
+
+\vspace{0.3cm}
+\textbf{Key Insight:} ``Let the model think longer'' is often more effective than making models bigger.
+\bottomnote{Reasoning capabilities define the frontier of AI capabilities in 2025.}
+\end{frame}
+
+% ==================== RESOURCES ====================
+\begin{frame}[t]{Further Reading: LLM Reasoning}
+\textbf{Foundational Papers:}
+\begin{itemize}
+\item Wei et al. (2022) - ``Chain-of-Thought Prompting''
+\item Wang et al. (2023) - ``Self-Consistency''
+\item DeepSeek (2025) - ``DeepSeek-R1''
+\item OpenAI (2024) - ``o1 System Card''
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Key Concepts:}
+\begin{itemize}
+\item Test-time compute scaling
+\item Process Reward Models (PRMs)
+\item GRPO (Group Relative Policy Optimization)
+\end{itemize}
+\bottomnote{Repository: github.com/Digital-AI-Finance/Natural-Language-Processing}
+\end{frame}
+
+\end{document}
