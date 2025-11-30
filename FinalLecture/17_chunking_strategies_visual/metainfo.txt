@@ -1,0 +1,19 @@
+Name of Quantlet: '17_chunking_strategies_visual'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Visual comparison of different text chunking strategies for RAG systems'
+
+Keywords: 'chunking, text splitting, RAG, document processing, retrieval'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'chunking_strategies_visual.pdf'
+
+Example: 'View PDF chart'

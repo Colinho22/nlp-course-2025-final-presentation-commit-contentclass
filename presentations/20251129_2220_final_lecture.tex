@@ -1,0 +1,2946 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Color definitions
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255, 127, 14}
+\definecolor{mlgreen}{RGB}{44, 160, 44}
+\definecolor{mlred}{RGB}{214, 39, 40}
+\definecolor{mlgray}{RGB}{127, 127, 127}
+\definecolor{lightgray}{RGB}{240, 240, 240}
+\definecolor{midgray}{RGB}{180, 180, 180}
+
+% Apply custom colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in toc}{fg=mlblue}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{block title}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{block body}{bg=mllavender4,fg=black}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% Command for bottom annotation
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+\title{The Next Frontier of NLP}
+\subtitle{From Prediction to Intelligence}
+\author{NLP Course -- Final Lecture}
+\institute{MSc Program}
+\date{\today}
+
+\begin{document}
+
+% ==================== TITLE SLIDE ====================
+\begin{frame}[plain]
+\vspace{1cm}
+\begin{center}
+{\Huge The Next Frontier of NLP}\\[0.3cm]
+{\Large From Prediction to Intelligence}\\[1cm]
+{\normalsize MSc NLP Course -- Final Lecture}\\[0.3cm]
+{\small How do we go from predicting tokens to building AI that is\\
+\textcolor{mlblue}{USEFUL}, \textcolor{mlorange}{SMART}, and \textcolor{mlgreen}{SAFE}?}
+\end{center}
+\end{frame}
+
+% ====================================================================================
+% VISUAL ROADMAP: 10 SLIDES PREVIEWING THE LECTURE
+% ====================================================================================
+
+% ==================== ROADMAP 1: THE PROBLEM ====================
+\begin{frame}[plain]
+\begin{center}
+\vspace{1cm}
+{\Large \textcolor{mlpurple}{The Story in 10 Slides}}\\[0.5cm]
+{\large A Visual Roadmap of Today's Lecture}\\[2cm]
+{\Huge \textbf{1/10}}\\[0.5cm]
+{\LARGE The Problem}\\[0.8cm]
+{\large LLMs predict tokens brilliantly...\\[0.3cm]
+but they \textcolor{mlred}{hallucinate}, \textcolor{mlred}{can't access current info},\\[0.2cm]
+and \textcolor{mlred}{struggle with complex reasoning}}
+\end{center}
+\bottomnote{Key insight: Raw language models need augmentation to become truly useful systems.}
+\end{frame}
+
+% ==================== ROADMAP 2: RAG ====================
+\begin{frame}[plain]
+\begin{center}
+\vspace{0.3cm}
+{\large \textcolor{mlpurple}{2/10: RAG -- Retrieval-Augmented Generation}}\\[0.3cm]
+\includegraphics[width=0.55\textwidth]{../figures/rag_architecture.pdf}\\[0.3cm]
+{\large \textcolor{mlblue}{Solution \#1}: Give LLMs access to external knowledge}\\[0.2cm]
+{\small Query $\to$ Retrieve relevant docs $\to$ Augment prompt $\to$ Generate}
+\end{center}
+\bottomnote{RAG: The most widely deployed technique for grounding LLMs in real-world facts.}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/29_rag_architecture}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/29_rag_architecture}{\includegraphics[width=0.55cm]{../FinalLecture/29_rag_architecture/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/29_rag_architecture}{\tiny\texttt{\textcolor{gray}{29\_rag\_architecture}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== ROADMAP 3: VECTOR SEARCH ====================
+\begin{frame}[plain]
+\begin{center}
+\vspace{0.3cm}
+{\large \textcolor{mlpurple}{3/10: Vector Search -- How Retrieval Works}}\\[0.3cm]
+\includegraphics[width=0.55\textwidth]{../figures/hnsw_explanation.pdf}\\[0.3cm]
+{\large Find similar documents in \textcolor{mlblue}{milliseconds} from \textcolor{mlblue}{billions}}\\[0.2cm]
+{\small Approximate Nearest Neighbor: Trade 1-5\% accuracy for 1000$\times$ speedup}
+\end{center}
+\bottomnote{HNSW and ANN algorithms make RAG practical at scale -- billions of vectors, millisecond latency.}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/02_hnsw_explanation}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/02_hnsw_explanation}{\includegraphics[width=0.55cm]{../FinalLecture/02_hnsw_explanation/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/02_hnsw_explanation}{\tiny\texttt{\textcolor{gray}{02\_hnsw\_explanation}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== ROADMAP 4: AGENTS ====================
+\begin{frame}[plain]
+\begin{center}
+\vspace{0.3cm}
+{\large \textcolor{mlpurple}{4/10: Agents -- LLMs That Take Action}}\\[0.3cm]
+\includegraphics[width=0.50\textwidth]{../figures/agent_loop_equations.pdf}\\[0.3cm]
+{\large \textcolor{mlblue}{Solution \#2}: Let LLMs use tools and take actions}\\[0.2cm]
+{\small Think $\to$ Act $\to$ Observe $\to$ Repeat until done}
+\end{center}
+\bottomnote{Agents extend LLMs from passive responders to active problem solvers.}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/10_agent_loop_equations}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/10_agent_loop_equations}{\includegraphics[width=0.55cm]{../FinalLecture/10_agent_loop_equations/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/10_agent_loop_equations}{\tiny\texttt{\textcolor{gray}{10\_agent\_loop\_equations}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== ROADMAP 5: REASONING PROBLEM ====================
+\begin{frame}[plain]
+\begin{center}
+\vspace{1cm}
+{\Large \textcolor{mlpurple}{5/10}}\\[0.5cm]
+{\LARGE The Reasoning Problem}\\[1cm]
+{\large Standard prompting:}\\[0.3cm]
+{\small ``Q: If a train leaves at 9am traveling 60mph, and another at 10am at 90mph...''\\[0.2cm]
+``A: \textcolor{mlred}{The first train arrives first.}'' (often wrong)}\\[1cm]
+{\large LLMs give \textcolor{mlred}{instant but shallow} answers}\\[0.3cm]
+{\small They don't ``think through'' multi-step problems}
+\end{center}
+\bottomnote{The reasoning gap: Models generate fast but often skip the steps humans use to think.}
+\end{frame}
+
+% ==================== ROADMAP 6: CHAIN OF THOUGHT ====================
+\begin{frame}[plain]
+\begin{center}
+\vspace{0.3cm}
+{\large \textcolor{mlpurple}{6/10: Chain-of-Thought -- Teaching Models to Think}}\\[0.3cm]
+\includegraphics[width=0.50\textwidth]{../figures/intermediate_computation.pdf}\\[0.3cm]
+{\large \textcolor{mlorange}{Solution \#3}: ``Let's think step by step''}\\[0.2cm]
+{\small Intermediate tokens = scratchpad for computation}\\[0.2cm]
+{\small Result: \textcolor{mlgreen}{+40\% accuracy} on math/reasoning tasks}
+\end{center}
+\bottomnote{Chain-of-Thought: A simple prompt change that dramatically improves reasoning.}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/27_intermediate_computation}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/27_intermediate_computation}{\includegraphics[width=0.55cm]{../FinalLecture/27_intermediate_computation/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/27_intermediate_computation}{\tiny\texttt{\textcolor{gray}{27\_intermediate\_computation}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== ROADMAP 7: TEST-TIME COMPUTE ====================
+\begin{frame}[plain]
+\begin{center}
+\vspace{0.3cm}
+{\large \textcolor{mlpurple}{7/10: Test-Time Compute -- More Thinking = Better Answers}}\\[0.3cm]
+\includegraphics[width=0.50\textwidth]{../figures/test_time_scaling.pdf}\\[0.3cm]
+{\large The paradigm shift: \textcolor{mlorange}{Scale inference, not just training}}\\[0.2cm]
+{\small o1, DeepSeek-R1: Models trained to think longer on hard problems}
+\end{center}
+\bottomnote{Test-time compute: The new scaling law -- spending more compute at inference for harder problems.}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/35_test_time_scaling}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/35_test_time_scaling}{\includegraphics[width=0.55cm]{../FinalLecture/35_test_time_scaling/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/35_test_time_scaling}{\tiny\texttt{\textcolor{gray}{35\_test\_time\_scaling}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== ROADMAP 8: ALIGNMENT PROBLEM ====================
+\begin{frame}[plain]
+\begin{center}
+\vspace{1cm}
+{\Large \textcolor{mlpurple}{8/10}}\\[0.5cm]
+{\LARGE The Alignment Problem}\\[1cm]
+{\large Raw pre-trained models are...}\\[0.5cm]
+\begin{tabular}{ll}
+$\bullet$ & Not helpful (don't follow instructions)\\[0.2cm]
+$\bullet$ & Not safe (will generate harmful content)\\[0.2cm]
+$\bullet$ & Not honest (confidently wrong)
+\end{tabular}\\[1cm]
+{\large How do we align LLMs with \textcolor{mlgreen}{human values}?}
+\end{center}
+\bottomnote{Alignment: The critical challenge of making AI systems helpful, honest, and harmless.}
+\end{frame}
+
+% ==================== ROADMAP 9: RLHF/DPO ====================
+\begin{frame}[plain]
+\begin{center}
+\vspace{0.3cm}
+{\large \textcolor{mlpurple}{9/10: RLHF \& DPO -- Learning from Human Preferences}}\\[0.3cm]
+\includegraphics[width=0.50\textwidth]{../figures/rlhf_vs_dpo.pdf}\\[0.3cm]
+{\large \textcolor{mlgreen}{Solution \#4}: Train on human feedback}\\[0.2cm]
+{\small RLHF: Reward model + RL optimization}\\[0.1cm]
+{\small DPO: Direct preference optimization (simpler!)}
+\end{center}
+\bottomnote{RLHF/DPO: How ChatGPT and Claude learned to be helpful assistants, not just text predictors.}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/32_rlhf_vs_dpo}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/32_rlhf_vs_dpo}{\includegraphics[width=0.55cm]{../FinalLecture/32_rlhf_vs_dpo/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/32_rlhf_vs_dpo}{\tiny\texttt{\textcolor{gray}{32\_rlhf\_vs\_dpo}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== ROADMAP 10: CONVERGENCE ====================
+\begin{frame}[plain]
+\begin{center}
+\vspace{0.3cm}
+{\large \textcolor{mlpurple}{10/10: The Convergence -- Modern AI Systems}}\\[0.3cm]
+\includegraphics[width=0.50\textwidth]{../figures/convergence_diagram.pdf}\\[0.3cm]
+{\Large \textcolor{mlblue}{USEFUL} + \textcolor{mlorange}{SMART} + \textcolor{mlgreen}{SAFE}}\\[0.3cm]
+{\large RAG \& Agents + Reasoning + Alignment}\\[0.2cm]
+{\small This is how ChatGPT, Claude, Gemini actually work}
+\end{center}
+\bottomnote{Modern AI systems combine all these techniques -- retrieval, reasoning, and alignment working together.}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/19_convergence_diagram}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/19_convergence_diagram}{\includegraphics[width=0.55cm]{../FinalLecture/19_convergence_diagram/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/19_convergence_diagram}{\tiny\texttt{\textcolor{gray}{19\_convergence\_diagram}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ====================================================================================
+% END OF VISUAL ROADMAP
+% ====================================================================================
+
+% ==================== SECTION: OPENING ====================
+\section{Opening: The 18 Months That Changed AI}
+
+% ==================== OPENING HOOK ====================
+\begin{frame}[t]{The Most Important 18 Months in AI History}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/ai_timeline.pdf}
+\end{center}
+
+\bottomnote{What changed? The architecture is largely the same transformer you learned in Week 5. So what's different?}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/11_ai_timeline}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/11_ai_timeline}{\includegraphics[width=0.55cm]{../FinalLecture/11_ai_timeline/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/11_ai_timeline}{\tiny\texttt{\textcolor{gray}{11\_ai\_timeline}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== YOUR JOURNEY ====================
+\begin{frame}[t]{Your NLP Journey This Semester}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/course_journey.pdf}
+\end{center}
+
+\bottomnote{You learned to predict words. Today: how to make those predictions USEFUL, SMART, and SAFE.}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/21_course_journey}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/21_course_journey}{\includegraphics[width=0.55cm]{../FinalLecture/21_course_journey/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/21_course_journey}{\tiny\texttt{\textcolor{gray}{21\_course\_journey}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== CENTRAL QUESTION ====================
+\begin{frame}[t]{Today's Central Question}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What You Already Know}
+\begin{itemize}
+\item Transformers and attention
+\item Pre-training (BERT, GPT)
+\item Fine-tuning and LoRA
+\item Prompt engineering
+\item Efficiency and deployment
+\item Ethics and responsibility
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{What's Missing?}
+\begin{itemize}
+\item LLMs hallucinate and have knowledge cutoffs
+\item They struggle with multi-step reasoning
+\item Raw LLMs aren't naturally helpful or safe
+\item How do we deploy them in the real world?
+\end{itemize}
+\end{columns}
+
+\vspace{1em}
+\begin{center}
+\fbox{\parbox{0.8\textwidth}{\centering
+\textbf{Today's Answer:} Three breakthroughs that transformed language models\\
+from impressive demos into systems that might actually change how we work.
+}}
+\end{center}
+
+\bottomnote{Three topics: RAG \& Agents (USEFUL) | Reasoning (SMART) | Alignment (SAFE)}
+\end{frame}
+
+% ==================== SECTION: RAG & AGENTS ====================
+\section{Act I: RAG \& AI Agents -- Making LLMs Useful}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Act I: RAG \& AI Agents\par
+\vspace{0.3cm}
+\normalsize Making LLMs Useful in the Real World
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% ==================== RAG SECTION ====================
+\subsection{RAG: Giving LLMs Memory}
+
+% ==================== HALLUCINATION PROBLEM ====================
+\begin{frame}[t]{The Hallucination Problem}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Problem}
+
+LLMs confidently state wrong facts:
+\begin{itemize}
+\item ``The current CEO of OpenAI is...'' (outdated)
+\item ``The 2024 Olympic gold medalist was...'' (unknown)
+\item ``Your company's Q3 revenue was...'' (not in training data)
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Root Causes}
+\begin{itemize}
+\item Knowledge frozen at training time
+\item No access to private/recent information
+\item Model ``fills in gaps'' with plausible text
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why This Matters}
+
+For real applications, we need:
+\begin{itemize}
+\item Access to current information
+\item Grounding in verifiable sources
+\item Ability to say ``I don't know''
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Connection to Ethics Week}
+
+Remember: LLMs don't ``know'' anything -- they predict tokens. Without grounding, this is dangerous.
+\end{columns}
+
+\bottomnote{Solution: Don't try to store everything in parameters. Retrieve at inference time.}
+\end{frame}
+
+% ==================== RAG ARCHITECTURE ====================
+\begin{frame}[t]{RAG: The Elegant Solution}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/rag_architecture.pdf}
+\end{center}
+
+\bottomnote{Key insight: Separation of concerns -- parametric knowledge (the model) vs. retrieved knowledge (the database)}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/29_rag_architecture}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/29_rag_architecture}{\includegraphics[width=0.55cm]{../FinalLecture/29_rag_architecture/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/29_rag_architecture}{\tiny\texttt{\textcolor{gray}{29\_rag\_architecture}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== RAG EQUATION ====================
+\begin{frame}[t]{RAG: The Mathematics}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Core Idea}
+
+Instead of: $p(y|x)$ (generate from query alone)
+
+RAG marginalizes over retrieved documents:
+\[
+p(y|x) = \sum_{z \in \text{top-}k} p(z|x) \cdot p(y|x,z)
+\]
+
+\vspace{0.3em}
+\textbf{Why no $z$ on left?} We sum over all $z$ (marginalization) -- the result depends only on $x$.
+
+\vspace{0.3em}
+Where: $x$ = query, $z$ = retrieved doc, $y$ = response
+
+\column{0.48\textwidth}
+\textbf{Key Equation: Dense Retrieval}
+
+$$\text{sim}(q, d) = \frac{E_q(q)^T \cdot E_d(d)}{||E_q(q)|| \cdot ||E_d(d)||}$$
+
+Retrieval probability (softmax):
+$$p(z_i|x) = \frac{\exp(\text{sim}(x, z_i) / \tau)}{\sum_{j=1}^{k} \exp(\text{sim}(x, z_j) / \tau)}$$
+
+\vspace{0.5em}
+\textbf{You Already Know This!}
+
+This is just attention over an external memory.
+\end{columns}
+
+\bottomnote{Lewis et al. (2020): ``Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks''}
+\end{frame}
+
+% ==================== RAG EXAMPLE ====================
+\begin{frame}[t]{RAG Formula: A Concrete Example}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\textbf{Query $x$:} ``What is the capital of France?''
+
+\vspace{0.4em}
+\textbf{Retrieved Documents} (with similarity scores):
+
+\vspace{0.2em}
+\begin{tabular}{p{5.2cm}r}
+$z_1$: ``Paris is the capital and largest city of France...'' & \textcolor{mlgreen}{0.92} \\[0.3em]
+$z_2$: ``France is a country in Western Europe...'' & \textcolor{mlorange}{0.71} \\[0.3em]
+$z_3$: ``The Eiffel Tower is located in Paris...'' & \textcolor{mlblue}{0.65}
+\end{tabular}
+
+\vspace{0.4em}
+\textbf{Generation Probabilities} $p(y|x,z_i)$:
+
+For answer $y$ = ``Paris'':
+\begin{itemize}
+\item $p(y|x,z_1) = \mathbf{0.95}$ -- directly states ``Paris is capital''
+\item $p(y|x,z_2) = \mathbf{0.40}$ -- mentions France, not Paris
+\item $p(y|x,z_3) = \mathbf{0.70}$ -- mentions Paris, not as capital
+\end{itemize}
+
+\column{0.45\textwidth}
+\textbf{Step 1: Retrieval Probabilities}
+
+\vspace{0.2em}
+Softmax: $p(z_i|x) = \frac{e^{\text{sim}_i}}{\sum_j e^{\text{sim}_j}}$
+
+\vspace{0.3em}
+\begin{tabular}{lll}
+$p(z_1|x)$ & $= 0.52$ & (most relevant) \\
+$p(z_2|x)$ & $= 0.27$ & \\
+$p(z_3|x)$ & $= 0.21$ &
+\end{tabular}
+
+\vspace{0.5em}
+\textbf{Step 2: Marginalization}
+
+\vspace{0.2em}
+\[
+p(y|x) = \sum_{i=1}^{3} p(z_i|x) \cdot p(y|x,z_i)
+\]
+
+\vspace{0.2em}
+\begin{tabular}{rcl}
+$=$ & $0.52 \times 0.95$ & (from $z_1$) \\
+$+$ & $0.27 \times 0.40$ & (from $z_2$) \\
+$+$ & $0.21 \times 0.70$ & (from $z_3$) \\[0.3em]
+$=$ & \multicolumn{2}{l}{$0.494 + 0.108 + 0.147$} \\[0.2em]
+$=$ & \multicolumn{2}{l}{$\mathbf{0.75}$}
+\end{tabular}
+\end{columns}
+
+\bottomnote{Key: $p(z|x)$ = how relevant is doc? $p(y|x,z)$ = given this doc, how likely is answer?}
+\end{frame}
+
+% ==================== RAG CONDITIONAL PROBS VISUAL ====================
+\begin{frame}[t]{RAG Conditional Probabilities: Visual Intuition}
+\vspace{-0.5em}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/rag_conditional_probs.pdf}
+\end{center}
+\vspace{-1em}
+\bottomnote{Marginalization: Sum over all docs, each weighted by retrieval probability times generation probability}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/06_rag_conditional_probs}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/06_rag_conditional_probs}{\includegraphics[width=0.55cm]{../FinalLecture/06_rag_conditional_probs/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/06_rag_conditional_probs}{\tiny\texttt{\textcolor{gray}{06\_rag\_conditional\_probs}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== RAG VENN DIAGRAMS ====================
+\begin{frame}[t]{RAG Probabilities: Venn Diagram Interpretation}
+\vspace{-0.5em}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/rag_venn_diagrams.pdf}
+\end{center}
+\vspace{-1em}
+\bottomnote{Conditional probability: We restrict the sample space to the given event, then measure probability within it}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/07_rag_venn_diagrams}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/07_rag_venn_diagrams}{\includegraphics[width=0.55cm]{../FinalLecture/07_rag_venn_diagrams/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/07_rag_venn_diagrams}{\tiny\texttt{\textcolor{gray}{07\_rag\_venn\_diagrams}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== RAG NOTATION ====================
+\begin{frame}[t]{RAG Notation Reference}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Query and Response}
+\begin{itemize}
+\item $x$ -- User query (input question)
+\item $y$ -- Generated response (output)
+\item $q$ -- Query after embedding
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Documents and Retrieval}
+\begin{itemize}
+\item $z$ -- Retrieved document(s)
+\item $z_i$ -- The $i$-th retrieved document
+\item $\mathcal{Z}$ -- Full document corpus
+\item $d$ -- Single document in corpus
+\item $k$ -- Number of documents retrieved (top-$k$)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Embedding Functions}
+\begin{itemize}
+\item $E_q(\cdot)$ -- Query encoder (embeds queries)
+\item $E_d(\cdot)$ -- Document encoder (embeds documents)
+\item Often $E_q = E_d$ (same encoder for both)
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Similarity and Probability}
+\begin{itemize}
+\item $\text{sim}(q, d)$ -- Cosine similarity between query and document vectors
+\item $\tau$ -- Temperature parameter (controls softmax sharpness)
+\item $p(z|x)$ -- Probability of retrieving document $z$ given query $x$
+\item $p(y|x,z)$ -- Generation probability given query and retrieved docs
+\end{itemize}
+\end{columns}
+
+\bottomnote{Understanding notation: Embedding similarity drives retrieval, retrieval augments generation}
+\end{frame}
+
+% ==================== EMBEDDING SPACE ====================
+\begin{frame}[t]{Visualizing the Embedding Space}
+\vspace{-0.5em}
+\begin{center}
+\includegraphics[width=0.48\textwidth]{../figures/embedding_space_2d.pdf}
+\end{center}
+\vspace{-1em}
+\bottomnote{Dense retrieval works by finding documents whose embeddings are closest to the query embedding}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/24_embedding_space_2d}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/24_embedding_space_2d}{\includegraphics[width=0.55cm]{../FinalLecture/24_embedding_space_2d/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/24_embedding_space_2d}{\tiny\texttt{\textcolor{gray}{24\_embedding\_space\_2d}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== CHUNK SIZE TRADEOFF ====================
+\begin{frame}[t]{Chunking Trade-offs: Precision vs Recall}
+\begin{center}
+\includegraphics[width=0.62\textwidth]{../figures/chunk_size_tradeoff.pdf}
+\end{center}
+
+\bottomnote{Rule of thumb: Start with 512 tokens, adjust based on your retrieval quality metrics}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/18_chunk_size_tradeoff}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/18_chunk_size_tradeoff}{\includegraphics[width=0.55cm]{../FinalLecture/18_chunk_size_tradeoff/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/18_chunk_size_tradeoff}{\tiny\texttt{\textcolor{gray}{18\_chunk\_size\_tradeoff}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== RAG COMPONENTS ====================
+\begin{frame}[t]{RAG Components in Practice}
+\begin{columns}[T]
+\column{0.31\textwidth}
+\textbf{Embedding Models}
+\begin{itemize}
+\item Sentence transformers
+\item OpenAI embeddings
+\item Cohere, Voyage, etc.
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Output}
+
+Dense vectors (e.g., 1536-dim)
+
+\column{0.31\textwidth}
+\textbf{Vector Databases}
+\begin{itemize}
+\item FAISS (Facebook)
+\item Pinecone (managed)
+\item ChromaDB (local)
+\item Weaviate, Milvus
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Key Operation}
+
+Approximate nearest neighbor search
+
+\column{0.31\textwidth}
+\textbf{Chunking Strategies}
+\begin{itemize}
+\item Fixed-size (512 tokens)
+\item Semantic (by paragraph)
+\item Hierarchical (nested)
+\item Sliding window
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Trade-off}
+
+Small chunks = precise retrieval\\
+Large chunks = more context
+\end{columns}
+
+\bottomnote{The choice of chunking strategy significantly impacts retrieval quality}
+\end{frame}
+
+% ==================== VECTOR DATABASES ====================
+\begin{frame}[t]{Vector Databases Explained}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What Is a Vector Database?}
+
+Specialized database for storing and querying high-dimensional vectors (embeddings).
+
+\vspace{0.5em}
+\textbf{Key Operation: ANN Search}
+
+Approximate Nearest Neighbor (ANN):
+\begin{itemize}
+\item Exact search is $O(n)$ -- too slow
+\item ANN trades accuracy for speed
+\item Typical: 95\%+ recall at 10-100x speedup
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Index Structures}
+\begin{itemize}
+\item HNSW (Hierarchical Navigable Small World)
+\item IVF (Inverted File Index)
+\item LSH (Locality Sensitive Hashing)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Popular Vector Databases}
+
+\textit{Open Source:}
+\begin{itemize}
+\item FAISS (Meta) -- In-memory, very fast
+\item ChromaDB -- Simple, Python-native
+\item Milvus -- Distributed, scalable
+\item Weaviate -- GraphQL interface
+\end{itemize}
+
+\textit{Managed Services:}
+\begin{itemize}
+\item Pinecone -- Fully managed
+\item Qdrant -- Self-hosted or cloud
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Typical Workflow}
+\begin{enumerate}
+\item Embed documents $\rightarrow$ vectors
+\item Store vectors with metadata
+\item Query: embed query $\rightarrow$ find top-$k$ similar
+\end{enumerate}
+\end{columns}
+
+\bottomnote{Vector databases are the ``memory'' that makes RAG possible at scale}
+\end{frame}
+
+% ==================== VECTOR DB ARCHITECTURE ====================
+\begin{frame}[t]{Vector Database: Architecture and Role in RAG}
+\vspace{-0.5em}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/vector_db_architecture.pdf}
+\end{center}
+\vspace{-1em}
+\bottomnote{Vector DBs enable fast retrieval: embed documents once, search in milliseconds at query time}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/08_vector_db_architecture}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/08_vector_db_architecture}{\includegraphics[width=0.55cm]{../FinalLecture/08_vector_db_architecture/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/08_vector_db_architecture}{\tiny\texttt{\textcolor{gray}{08\_vector\_db\_architecture}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== ANN MATH AND CONCEPT ====================
+\begin{frame}[t]{Approximate Nearest Neighbor: Why and How}
+\vspace{-0.5em}
+\begin{center}
+\includegraphics[width=0.68\textwidth]{../figures/ann_math_concept.pdf}
+\end{center}
+\vspace{-1em}
+\bottomnote{ANN is the key enabler for billion-scale vector search: trade small accuracy for massive speedup}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/01_ann_math_concept}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/01_ann_math_concept}{\includegraphics[width=0.55cm]{../FinalLecture/01_ann_math_concept/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/01_ann_math_concept}{\tiny\texttt{\textcolor{gray}{01\_ann\_math\_concept}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== C-APPROXIMATE K-NN DEFINITION ====================
+\begin{frame}[t]{The $c$-Approximate $k$-NN Guarantee}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\textbf{Exact $k$-NN Problem}
+
+Given query $q$ and database $D = \{d_1, \ldots, d_n\}$, find:
+\[
+N_k(q) = \underset{S \subseteq D, |S|=k}{\arg\min} \max_{d \in S} \|q - d\|
+\]
+
+\vspace{0.8em}
+\textbf{$c$-Approximate $k$-NN}
+
+An algorithm returns $\text{ANN}_k(q)$ such that:
+\[
+\boxed{\forall d \in \text{ANN}_k(q): \quad \|q - d\| \leq c \cdot \|q - d^*\|}
+\]
+
+where $d^*$ is the \textbf{true $k$-th nearest neighbor} and $c \geq 1$ is the \textbf{approximation factor}.
+
+\column{0.42\textwidth}
+\textbf{What This Means}
+
+\vspace{0.5em}
+\begin{itemize}
+\item $c = 1.0$: Exact (no approximation)
+\item $c = 1.05$: At most 5\% farther
+\item $c = 1.10$: At most 10\% farther
+\end{itemize}
+
+\vspace{0.8em}
+\textbf{The Trade-off}
+
+\vspace{0.3em}
+\begin{tabular}{ll}
+$c \to 1$ & Slower, exact \\
+$c > 1$ & Faster, approximate
+\end{tabular}
+
+\vspace{0.8em}
+\textbf{In Practice}
+
+Most systems achieve $c \approx 1.01$ to $1.05$ with 100--1000$\times$ speedup.
+\end{columns}
+
+\vspace{0.5em}
+\bottomnote{The $c$-approximation guarantee means returned neighbors are at most $c$ times farther than the true nearest}
+\end{frame}
+
+% ==================== HNSW EXPLAINED ====================
+\begin{frame}[t]{HNSW: The Most Popular ANN Algorithm}
+\vspace{-0.5em}
+\begin{center}
+\includegraphics[width=0.62\textwidth]{../figures/hnsw_explanation.pdf}
+\end{center}
+\vspace{-1em}
+\bottomnote{HNSW builds a navigable graph: start at sparse top layers, greedily descend to find nearest neighbors}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/02_hnsw_explanation}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/02_hnsw_explanation}{\includegraphics[width=0.55cm]{../FinalLecture/02_hnsw_explanation/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/02_hnsw_explanation}{\tiny\texttt{\textcolor{gray}{02\_hnsw\_explanation}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== HNSW STRUCTURE ====================
+\begin{frame}[t]{HNSW: Hierarchical Graph Structure}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\textbf{The Key Idea}
+
+Combine two concepts:
+\begin{enumerate}
+\item \textbf{Skip Lists}: Hierarchical layers for $O(\log n)$ traversal
+\item \textbf{Navigable Small World}: Each node connected to ``nearby'' nodes
+\end{enumerate}
+
+\vspace{0.6em}
+\textbf{Layer Structure}
+
+\begin{itemize}
+\item Layer 0: All $n$ nodes (dense)
+\item Layer 1: $\sim n/m_L$ nodes
+\item Layer 2: $\sim n/m_L^2$ nodes
+\item Top: Few entry points
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{How are nodes assigned?}
+
+Each node's max layer is \textbf{random}:
+\[
+\ell = \lfloor -\ln(\text{uniform}(0,1)) \cdot m_L \rfloor
+\]
+Most nodes: layer 0 only. Few ``lucky'' nodes reach higher layers (like express stops).
+
+\column{0.45\textwidth}
+\textbf{Construction Algorithm}
+
+For each new vector $v$:
+\begin{enumerate}
+\item Sample max layer $\ell$ (formula on left)
+\item Insert $v$ into layers $0, 1, \ldots, \ell$
+\item At each layer, connect to $M$ nearest neighbors
+\end{enumerate}
+
+\vspace{0.5em}
+\textbf{Key Parameters}
+
+\vspace{0.3em}
+\begin{tabular}{ll}
+$M$ & Max connections/node \\
+$ef$ & Search beam width \\
+$m_L$ & Level multiplier
+\end{tabular}
+
+\vspace{0.4em}
+Typical: $M=16$, $ef=100$, $m_L=1/\ln(M)$
+
+\vspace{0.5em}
+\textbf{Intuition}: Like a subway system -- express lines (top layers) connect major hubs, local lines (layer 0) reach everywhere.
+\end{columns}
+
+\bottomnote{The hierarchical structure enables logarithmic search: coarse navigation at top, fine-grained at bottom}
+\end{frame}
+
+% ==================== HNSW SEARCH ====================
+\begin{frame}[t]{HNSW: The Search Algorithm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Greedy Search Procedure}
+
+\begin{enumerate}
+\item Start at entry point (top layer)
+\item At each layer:
+\begin{itemize}
+\item Greedily move to nearest neighbor
+\item Repeat until no closer neighbor exists
+\end{itemize}
+\item Descend to next layer
+\item At layer 0: expand search with beam width $ef$
+\item Return top-$k$ from candidates
+\end{enumerate}
+
+\vspace{0.5em}
+\textbf{Complexity}
+
+\vspace{0.3em}
+\begin{tabular}{ll}
+Search: & $O(\log n)$ \\
+Insert: & $O(\log n)$ \\
+Space: & $O(n \cdot M)$
+\end{tabular}
+
+\column{0.48\textwidth}
+\textbf{Why It Works}
+
+\vspace{0.3em}
+\textit{Small World Property}: Any two nodes connected by short path ($\sim \log n$ hops).
+
+\vspace{0.5em}
+\textit{Hierarchical Speedup}: Top layers skip large distances; bottom layers refine.
+
+\vspace{0.6em}
+\textbf{Pseudocode}
+
+{\footnotesize
+\texttt{search(q, k, ef):}\\
+\texttt{~~ep = entry\_point}\\
+\texttt{~~for layer in top...1:}\\
+\texttt{~~~~ep = greedy(q, ep, layer)}\\
+\texttt{~~cands = beam(q, ep, L0, ef)}\\
+\texttt{~~return top\_k(cands, k)}
+}
+
+\vspace{0.3em}
+\textit{ef} controls accuracy/speed trade-off.
+\end{columns}
+
+\bottomnote{HNSW achieves $>$99\% recall with 10--100$\times$ speedup; used in FAISS, Pinecone, Weaviate, Qdrant}
+\end{frame}
+
+% ==================== HNSW SIMPLE EXAMPLE ====================
+\begin{frame}[t]{HNSW: A Simple Example}
+\textbf{Setup}: 8 cities, find nearest to query ``Berlin''
+
+\vspace{0.5em}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Layer 2 (Top)} -- 2 nodes
+
+\vspace{0.2em}
+{\small Entry points: Paris, Tokyo}
+
+\vspace{0.3em}
+Query: Berlin $\to$ Check Paris, Tokyo\\
+$\to$ Paris closer $\to$ \textbf{go to Paris}
+
+\vspace{0.6em}
+\textbf{Layer 1} -- 4 nodes
+
+\vspace{0.2em}
+{\small Paris, Tokyo, London, Sydney}
+
+\vspace{0.3em}
+From Paris $\to$ Check neighbors\\
+$\to$ London closer $\to$ \textbf{go to London}
+
+\vspace{0.6em}
+\textbf{Layer 0 (Bottom)} -- all 8 nodes
+
+\vspace{0.2em}
+From London $\to$ Check all neighbors\\
+$\to$ \textbf{Found: Amsterdam} (nearest!)
+
+\column{0.48\textwidth}
+\textbf{What Happened}
+
+\vspace{0.3em}
+\begin{tabular}{cl}
+Layer 2: & 2 comparisons \\
+Layer 1: & 3 comparisons \\
+Layer 0: & 4 comparisons \\
+\hline
+Total: & \textbf{9 comparisons}
+\end{tabular}
+
+\vspace{0.6em}
+\textbf{Brute Force}
+
+8 comparisons (check all)
+
+\vspace{0.6em}
+\textbf{With 1 Billion Nodes}
+
+\vspace{0.2em}
+\begin{tabular}{ll}
+Brute: & 1,000,000,000 \\
+HNSW: & $\sim$30 (log scale!)
+\end{tabular}
+
+\vspace{0.6em}
+\textbf{Key Insight}
+
+Top layers = ``highways''\\
+Bottom layer = ``local streets''
+\end{columns}
+
+\bottomnote{HNSW is like using a map: zoom out to find the region, then zoom in to find the exact location}
+\end{frame}
+
+% ==================== HNSW CITIES VISUAL ====================
+\begin{frame}[t]{HNSW: Visual Walkthrough}
+\vspace{-0.5em}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/hnsw_cities_example.pdf}
+\end{center}
+\vspace{-1em}
+\bottomnote{Each layer narrows the search: start broad at the top, refine at the bottom}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/03_hnsw_cities_example}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/03_hnsw_cities_example}{\includegraphics[width=0.55cm]{../FinalLecture/03_hnsw_cities_example/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/03_hnsw_cities_example}{\tiny\texttt{\textcolor{gray}{03\_hnsw\_cities\_example}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== CHUNKING STRATEGIES ====================
+\begin{frame}[t]{Chunking Strategies Deep Dive}
+\begin{center}
+\includegraphics[width=0.68\textwidth]{../figures/chunking_strategies_visual.pdf}
+\end{center}
+
+\bottomnote{Chunking is often the difference between RAG that works and RAG that fails -- start with 512 tokens, 10\% overlap}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/17_chunking_strategies_visual}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/17_chunking_strategies_visual}{\includegraphics[width=0.55cm]{../FinalLecture/17_chunking_strategies_visual/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/17_chunking_strategies_visual}{\tiny\texttt{\textcolor{gray}{17\_chunking\_strategies\_visual}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== RAG EVOLUTION ====================
+\begin{frame}[t]{RAG Evolution: From Naive to Agentic}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Naive RAG}
+\begin{itemize}
+\item Simple retrieve-then-generate
+\item Fixed number of chunks
+\item No query preprocessing
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Advanced RAG}
+\begin{itemize}
+\item Query rewriting
+\item Re-ranking retrieved documents
+\item Iterative retrieval
+\item Multi-stage retrieval
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Modular RAG}
+\begin{itemize}
+\item Self-RAG: decide \textit{when} to retrieve
+\item CRAG: correct retrieval errors
+\item Adaptive: retrieve more if needed
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Agentic RAG (2024+)}
+\begin{itemize}
+\item Agent decides retrieval strategy
+\item Multiple retrieval sources
+\item Tool use for specialized queries
+\end{itemize}
+\end{columns}
+
+\bottomnote{Trend: More intelligence in the retrieval process, not just generation}
+\end{frame}
+
+% ==================== RAG LIMITATIONS ====================
+\begin{frame}[t]{When RAG Fails: Failure Points in the Pipeline}
+\vspace{-1em}
+\begin{center}
+\includegraphics[width=0.36\textwidth]{../figures/rag_failures_flowchart.pdf}
+\end{center}
+\vspace{-1.5em}
+\bottomnote{RAG requires careful engineering at every pipeline stage}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/05_rag_failures}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/05_rag_failures}{\includegraphics[width=0.55cm]{../FinalLecture/05_rag_failures/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/05_rag_failures}{\tiny\texttt{\textcolor{gray}{05\_rag\_failures}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== RAG FAILURE SOLUTIONS ====================
+\begin{frame}[t]{RAG Failure Mitigations}
+\begin{columns}[T]
+\column{0.31\textwidth}
+\textbf{Retrieval Fixes}
+\begin{itemize}
+\item Query expansion/rewriting
+\item Multi-stage retrieval
+\item Better chunking strategies
+\item Cross-encoder re-ranking
+\item Multiple retrieval passes
+\end{itemize}
+
+\column{0.31\textwidth}
+\textbf{Context Fixes}
+\begin{itemize}
+\item Smart chunk ordering
+\item Compression/summarization
+\item Relevance filtering
+\item Hierarchical retrieval
+\item Attention to chunk boundaries
+\end{itemize}
+
+\column{0.31\textwidth}
+\textbf{Generation Fixes}
+\begin{itemize}
+\item Instruction tuning for RAG
+\item Citation requirements
+\item Self-consistency checks
+\item Confidence calibration
+\item Fallback to ``I don't know''
+\end{itemize}
+\end{columns}
+
+\vspace{0.5em}
+\begin{center}
+\textit{``Lost in the middle'' problem:} LLMs often ignore content in the middle of long contexts.\\
+Solution: Place most relevant chunks at beginning and end.
+\end{center}
+
+\bottomnote{Each failure mode has specific mitigations -- production RAG requires all of them}
+\end{frame}
+
+% ==================== AGENTS SECTION ====================
+\subsection{AI Agents: Giving LLMs Agency}
+
+% ==================== BEYOND QA ====================
+\begin{frame}[t]{Beyond Question-Answering}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{LLMs Are Great At...}
+\begin{itemize}
+\item Generating text
+\item Summarizing documents
+\item Translating languages
+\item Answering questions
+\end{itemize}
+
+\vspace{0.5em}
+But what if we want them to \textbf{DO} things?
+
+\column{0.48\textwidth}
+\textbf{Real-World Tasks Require Action}
+\begin{itemize}
+\item Book a flight (API calls)
+\item Write and run code (execution)
+\item Search the web (retrieval)
+\item Manage files (system access)
+\item Send emails (communication)
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{The Gap:} LLMs generate text, but can't act.
+\end{columns}
+
+\vspace{1em}
+\begin{center}
+\fbox{\parbox{0.7\textwidth}{\centering
+\textbf{Solution:} Give LLMs the ability to use \textit{tools} and reason about \textit{when} to use them.
+}}
+\end{center}
+
+\bottomnote{This is the leap from ``AI assistant'' to ``AI agent''}
+\end{frame}
+
+% ==================== AGENT LOOP ====================
+\begin{frame}[t]{The Agent Loop: Perceive, Plan, Act, Observe}
+\begin{center}
+\includegraphics[width=0.75\textwidth,height=0.65\textheight,keepaspectratio]{../figures/agent_loop.pdf}
+\end{center}
+
+\vspace{-0.5em}
+\footnotesize
+\textbf{Core cycle:} User task $\rightarrow$ LLM decides action $\rightarrow$ Tool executes $\rightarrow$ Result feeds back $\rightarrow$ Repeat until done
+
+\bottomnote{Agents are LLMs in a loop -- the magic is in the orchestration, not a new architecture}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/09_agent_loop}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/09_agent_loop}{\includegraphics[width=0.55cm]{../FinalLecture/09_agent_loop/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/09_agent_loop}{\tiny\texttt{\textcolor{gray}{09\_agent\_loop}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== REACT PATTERN ====================
+\begin{frame}[t]{The ReAct Pattern: Reasoning + Acting}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\textbf{ReAct Example}
+
+\texttt{User: What's 15\% of Apple's current market cap?}
+
+\vspace{0.3em}
+\textcolor{mlblue}{\textbf{Thought:}} I need to find Apple's current market cap first.
+
+\textcolor{mlorange}{\textbf{Action:}} search\_web(``Apple market cap 2025'')
+
+\textcolor{mlgreen}{\textbf{Observation:}} Apple market cap: \$3.2 trillion
+
+\vspace{0.3em}
+\textcolor{mlblue}{\textbf{Thought:}} Now I can calculate 15\% of 3.2 trillion.
+
+\textcolor{mlorange}{\textbf{Action:}} calculate(``3200000000000 * 0.15'')
+
+\textcolor{mlgreen}{\textbf{Observation:}} 480000000000
+
+\vspace{0.3em}
+\textcolor{mlblue}{\textbf{Thought:}} I have the answer.
+
+\textbf{Final Answer:} 15\% of Apple's market cap is \$480 billion.
+
+\column{0.42\textwidth}
+\textbf{Key Innovation}
+
+Interleave:
+\begin{itemize}
+\item \textcolor{mlblue}{Reasoning} (Thought)
+\item \textcolor{mlorange}{Acting} (Tool use)
+\item \textcolor{mlgreen}{Observing} (Feedback)
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Why It Works}
+
+LLMs are good at reasoning about \textit{what to do next} given context.
+
+\vspace{0.5em}
+\textbf{Formal Loop}
+
+$\tau_t = \text{LLM}(c_t, h_{<t})$ (thought)\\
+$a_t = \text{LLM}(\tau_t, h_{<t})$ (action)\\
+$o_t = \text{Env}(a_t)$ (observation)
+\end{columns}
+
+\bottomnote{Yao et al. (2023): ``ReAct: Synergizing Reasoning and Acting in Language Models''}
+\end{frame}
+
+% ==================== FORMAL AGENT LOOP ====================
+\begin{frame}[t]{Formal Agent Loop: The Mathematics}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/agent_loop_equations.pdf}
+\end{center}
+
+\bottomnote{This formalism underlies all modern agent frameworks -- the LLM is both brain and narrator}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/10_agent_loop_equations}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/10_agent_loop_equations}{\includegraphics[width=0.55cm]{../FinalLecture/10_agent_loop_equations/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/10_agent_loop_equations}{\tiny\texttt{\textcolor{gray}{10\_agent\_loop\_equations}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== TOOL USE ====================
+\begin{frame}[t]{Tool Use: The Key Innovation}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Function Calling Format}
+
+LLMs learn to output structured tool calls:
+
+\vspace{0.3em}
+\texttt{\{\\
+~~``tool'': ``search\_web'',\\
+~~``parameters'': \{\\
+~~~~``query'': ``AAPL stock price''\\
+~~\}\\
+\}}
+
+\vspace{0.5em}
+\textbf{Available Tool Types}
+\begin{itemize}
+\item Web search
+\item Calculator / code interpreter
+\item File system access
+\item API calls (weather, stocks, etc.)
+\item Database queries
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{How It Works}
+
+1. Define tools with JSON schema\\
+2. Include tool definitions in prompt\\
+3. LLM outputs tool call (structured)\\
+4. System executes tool\\
+5. Return result to LLM\\
+6. Repeat until done
+
+\vspace{0.5em}
+\textbf{OpenAI Function Calling}
+
+Built into GPT-4, Claude, etc.:\\
+Models trained to output valid JSON for tool calls.
+
+\vspace{0.5em}
+\textbf{Connection to RAG}
+
+RAG is just a ``retrieval tool'' that agents can use!
+\end{columns}
+
+\bottomnote{Tool use transforms LLMs from text generators to action-capable systems}
+\end{frame}
+
+% ==================== AGENT FRAMEWORKS ====================
+\begin{frame}[t]{Agent Frameworks: Evolution}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Timeline}
+\begin{itemize}
+\item \textbf{2022:} ReAct (Google) -- Reasoning + Acting
+\item \textbf{2023:} Toolformer (Meta) -- Self-supervised tool learning
+\item \textbf{2023:} AutoGPT / BabyAGI -- Autonomous task completion
+\item \textbf{2024:} LangChain Agents -- Production frameworks
+\item \textbf{2024:} Microsoft AutoGen -- Multi-agent systems
+\item \textbf{2025:} Agentic AI -- Enterprise deployment
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Current Landscape}
+
+\textit{Frameworks:}
+\begin{itemize}
+\item LangChain / LangGraph
+\item LlamaIndex
+\item CrewAI
+\item AutoGen
+\end{itemize}
+
+\textit{Trends:}
+\begin{itemize}
+\item Multi-agent collaboration
+\item Specialized agents for tasks
+\item Human-in-the-loop workflows
+\item Enterprise security/compliance
+\end{itemize}
+\end{columns}
+
+\bottomnote{We're at the ``early internet'' stage of agents -- rapid evolution, no clear winner}
+\end{frame}
+
+% ==================== LANGCHAIN LANGGRAPH ====================
+\begin{frame}[t]{LangChain and LangGraph: Key Concepts}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{LangChain Core Concepts}
+
+\textit{LCEL (LangChain Expression Language):}
+\begin{itemize}
+\item \texttt{prompt | llm | parser} -- Pipe syntax
+\item Composable, streamable, async-ready
+\item Built-in retry/fallback logic
+\end{itemize}
+
+\vspace{0.3em}
+\textit{Key Abstractions:}
+\begin{itemize}
+\item \texttt{ChatModel} -- LLM interface
+\item \texttt{Tool} -- Function with schema
+\item \texttt{Retriever} -- Document search
+\item \texttt{Memory} -- Conversation history
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{LangGraph for Complex Agents}
+
+\textit{Graph-Based Workflows:}
+\begin{itemize}
+\item \texttt{StateGraph} -- Define typed state
+\item \texttt{add\_node()} -- Add processing steps
+\item \texttt{add\_edge()} -- Connect nodes
+\item \texttt{add\_conditional\_edges()} -- Branching
+\end{itemize}
+
+\vspace{0.3em}
+\textit{Key Features:}
+\begin{itemize}
+\item Cycles for iterative agents
+\item Checkpointing for recovery
+\item Human-in-the-loop breakpoints
+\item Multi-agent coordination
+\end{itemize}
+\end{columns}
+
+\vspace{0.3em}
+\textbf{When to Use:} LangChain for simple RAG/chains | LangGraph for stateful agents with cycles
+
+\bottomnote{LangChain ecosystem dominates (2024), but alternatives exist: LlamaIndex, CrewAI, AutoGen}
+\end{frame}
+
+% ==================== AGENT LIMITATIONS ====================
+\begin{frame}[t]{Current Agent Limitations}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Reliability Issues}
+\begin{itemize}
+\item Agents get stuck in loops
+\item Wrong tool selection
+\item Hallucinated tool parameters
+\item Failure to know when to stop
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Cost Accumulation}
+\begin{itemize}
+\item Each step = API call
+\item Complex tasks = many calls
+\item Costs can spiral quickly
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Security Concerns}
+\begin{itemize}
+\item Tool access = system access
+\item Prompt injection attacks
+\item Unintended actions
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{What Works Today}
+\begin{itemize}
+\item Well-defined, bounded tasks
+\item Human oversight/approval
+\item Retrieval-heavy workflows
+\item Single-domain expertise
+\end{itemize}
+\end{columns}
+
+\vspace{0.5em}
+\begin{center}
+\textit{``Agents are promising but not production-ready for autonomous operation.'' -- 2024 consensus}
+\end{center}
+
+\bottomnote{Connection to reasoning: Better reasoning = more reliable agents. This leads us to Act II...}
+\end{frame}
+
+% ==================== SECTION: REASONING ====================
+\section{Act II: Reasoning in LLMs -- Making LLMs Smart}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Act II: Reasoning in LLMs\par
+\vspace{0.3cm}
+\normalsize Chain-of-Thought, Test-Time Compute, and DeepSeek-R1
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% ==================== COT SECTION ====================
+\subsection{Chain-of-Thought Revolution}
+
+% ==================== COT DISCOVERY ====================
+\begin{frame}[t]{The Surprising Discovery (2022)}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Experiment}
+
+Google researchers found something remarkable:
+
+Simply adding \textit{``Let's think step by step''} to a prompt improved math accuracy by \textbf{40\%+}
+
+\vspace{0.5em}
+No model changes. No fine-tuning. Just a prompt.
+
+\vspace{0.5em}
+\textbf{Why?}
+\begin{itemize}
+\item Creates ``scratchpad'' for computation
+\item Forces sequential reasoning
+\item Mirrors human problem-solving
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Before CoT}
+
+Q: Roger has 5 tennis balls. He buys 2 cans of 3 balls each. How many does he have now?
+
+A: \textcolor{mlred}{11} \textit{(direct answer, sometimes wrong)}
+
+\vspace{0.5em}
+\textbf{After CoT}
+
+Q: [same question] \textit{Let's think step by step.}
+
+A: Roger starts with 5 balls.\\
+He buys 2 cans $\times$ 3 balls = 6 balls.\\
+Total = 5 + 6 = \textcolor{mlgreen}{11 balls}
+
+\textit{(reasoning chain makes answer verifiable)}
+\end{columns}
+
+\bottomnote{Wei et al. (2022): ``Chain-of-Thought Prompting Elicits Reasoning in Large Language Models''}
+\end{frame}
+
+% ==================== COT MATH ====================
+\begin{frame}[t]{Chain-of-Thought: The Mathematics}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Standard Prompting}
+
+Direct answer generation:
+$$p(\text{answer}|\text{question})$$
+
+The model jumps straight to the answer in a single forward pass.
+
+\vspace{0.5em}
+\textbf{Problem}
+
+Complex reasoning requires multiple ``steps'' -- but each token is generated independently.
+
+\column{0.48\textwidth}
+\textbf{Chain-of-Thought Prompting}
+
+Decompose into two stages:
+$$p(r|q) \cdot p(a|q, r)$$
+
+Where:
+\begin{itemize}
+\item $q$ = question
+\item $r$ = reasoning chain
+\item $a$ = final answer
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Key Insight}
+
+The reasoning tokens $r$ create intermediate computation space that the model can ``use'' to solve harder problems.
+\end{columns}
+
+\bottomnote{Connection to Week 9 (Decoding): CoT changes what the model generates, not how it decodes}
+\end{frame}
+
+% ==================== INTERMEDIATE COMPUTATION ====================
+\begin{frame}[t]{Intermediate Computation Space: Why CoT Works}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/intermediate_computation.pdf}
+\end{center}
+
+\bottomnote{Key insight: Reasoning tokens create a ``scratchpad'' that enables multi-step computation within a single generation}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/27_intermediate_computation}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/27_intermediate_computation}{\includegraphics[width=0.55cm]{../FinalLecture/27_intermediate_computation/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/27_intermediate_computation}{\tiny\texttt{\textcolor{gray}{27\_intermediate\_computation}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== COT VARIANTS ====================
+\begin{frame}[t]{Chain-of-Thought Variants}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Zero-Shot CoT}
+
+Just add: ``Let's think step by step''
+
+No examples needed. Works surprisingly well.
+
+\vspace{0.5em}
+\textbf{Few-Shot CoT}
+
+Provide examples with reasoning chains:
+
+\textit{Example 1: [problem] [reasoning] [answer]}\\
+\textit{Example 2: [problem] [reasoning] [answer]}\\
+\textit{Your turn: [problem]}
+
+\vspace{0.5em}
+More reliable but requires good examples.
+
+\column{0.48\textwidth}
+\textbf{Self-Consistency}
+
+Generate $N$ reasoning chains (with temperature $> 0$).
+
+Take majority vote on final answer:
+$$\hat{a} = \arg\max_a \sum_{i=1}^{N} \mathbf{1}[a_i = a]$$
+
+\vspace{0.5em}
+\textbf{Tree of Thoughts}
+
+Explore multiple reasoning \textit{paths}, not just one chain.
+
+Allows backtracking on dead ends.
+
+\vspace{0.5em}
+\textbf{Least-to-Most}
+
+Decompose into subproblems first, then solve.
+\end{columns}
+
+\bottomnote{CoT is the most powerful prompt engineering technique discovered so far}
+\end{frame}
+
+% ==================== SELF CONSISTENCY VOTING ====================
+\begin{frame}[t]{Self-Consistency: Sample and Vote}
+\begin{center}
+\includegraphics[width=0.55\textwidth]{../figures/self_consistency_voting.pdf}
+\end{center}
+
+\bottomnote{Self-consistency adds 5-10\% accuracy on top of CoT by marginalizing over reasoning paths}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/33_self_consistency_voting}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/33_self_consistency_voting}{\includegraphics[width=0.55cm]{../FinalLecture/33_self_consistency_voting/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/33_self_consistency_voting}{\tiny\texttt{\textcolor{gray}{33\_self\_consistency\_voting}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== COT EXAMPLES ====================
+\begin{frame}[t]{Chain-of-Thought: Worked Examples}
+\textbf{Example 1: Math Problem}
+
+\textit{Q: A farmer has 17 sheep. All but 9 die. How many are left?}
+
+\textcolor{mlblue}{Let's think step by step.} ``All but 9 die'' means 9 survive. Answer: \textbf{9 sheep}
+
+\vspace{0.3em}
+\rule{\textwidth}{0.3pt}
+\vspace{0.3em}
+
+\textbf{Example 2: Logic Puzzle}
+
+\textit{Q: If all roses are flowers and some flowers fade quickly, can we conclude that some roses fade quickly?}
+
+\textcolor{mlblue}{Let's analyze:} (1) All roses $\subset$ flowers. (2) Some flowers fade quickly -- but which ones? Could be non-rose flowers. (3) We cannot conclude roses fade quickly. Answer: \textbf{No, invalid inference}
+
+\vspace{0.3em}
+\rule{\textwidth}{0.3pt}
+\vspace{0.3em}
+
+\textbf{Example 3: Code Debugging}
+
+\textit{Q: Why does \texttt{sum([1,2,3][:2])} return 3, not 6?}
+
+\textcolor{mlblue}{Let's trace:} (1) \texttt{[1,2,3]} creates list. (2) \texttt{[:2]} slices indices 0,1 $\rightarrow$ \texttt{[1,2]}. (3) \texttt{sum([1,2])} = \textbf{3}. The slice excludes index 2.
+
+\bottomnote{CoT works across domains: math, logic, code -- wherever step-by-step reasoning helps}
+\end{frame}
+
+% ==================== TEST-TIME SECTION ====================
+\subsection{Test-Time Compute Scaling}
+
+% ==================== PARADIGM SHIFT ====================
+\begin{frame}[t]{The Paradigm Shift: Test-Time Compute}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Old Paradigm: Scale Training}
+
+$$\text{Performance} \propto \log(\text{Parameters})$$
+
+Bigger models = Better performance
+
+\vspace{0.3em}
+GPT-2 $\rightarrow$ GPT-3 $\rightarrow$ GPT-4
+
+\vspace{0.5em}
+\textbf{Problem}
+
+Training cost grows exponentially.\\
+Diminishing returns at scale.\\
+One-size-fits-all computation.
+
+\column{0.48\textwidth}
+\textbf{New Paradigm: Scale Inference}
+
+$$\text{Performance} \propto \log(\text{Test-Time Compute})$$
+
+Same model, more ``thinking'' = Better answers
+
+\vspace{0.5em}
+\textbf{Key Insight}
+
+Not all questions need the same compute.\\
+Hard problems deserve more thinking time.\\
+Let the model allocate compute adaptively.
+
+\vspace{0.5em}
+\textbf{This is revolutionary!}
+\end{columns}
+
+\bottomnote{Snell et al. (2024): ``Scaling LLM Test-Time Compute Optimally can be More Effective than Scaling Model Parameters''}
+\end{frame}
+
+% ==================== TEST-TIME SCALING CHART ====================
+\begin{frame}[t]{Test-Time vs Pre-Training Scaling}
+\begin{center}
+\includegraphics[width=0.55\textwidth]{../figures/test_time_scaling.pdf}
+\end{center}
+
+\bottomnote{For hard problems, test-time compute scaling can outperform pre-training scaling at equivalent FLOPs}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/35_test_time_scaling}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/35_test_time_scaling}{\includegraphics[width=0.55cm]{../FinalLecture/35_test_time_scaling/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/35_test_time_scaling}{\tiny\texttt{\textcolor{gray}{35\_test\_time\_scaling}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== INFERENCE SCALING CURVE ====================
+\begin{frame}[t]{Inference Token Scaling: More Thinking = Better Answers}
+\begin{center}
+\includegraphics[width=0.55\textwidth]{../figures/inference_scaling_curve.pdf}
+\end{center}
+
+\bottomnote{Key insight: Reasoning models show log-linear improvement with inference tokens; standard models plateau}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/26_inference_scaling_curve}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/26_inference_scaling_curve}{\includegraphics[width=0.55cm]{../FinalLecture/26_inference_scaling_curve/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/26_inference_scaling_curve}{\tiny\texttt{\textcolor{gray}{26\_inference\_scaling\_curve}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== TWO MECHANISMS ====================
+\begin{frame}[t]{Two Mechanisms for Test-Time Scaling}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{1. Best-of-N with Verifiers}
+
+Generate $N$ candidate solutions.\\
+Score each with a verifier (PRM).\\
+Select the best one.
+
+$$\hat{y} = \arg\max_{y \in \{y_1,...,y_N\}} r_{\text{PRM}}(y)$$
+
+\textbf{Process Reward Models (PRMs)}
+
+Score \textit{each step} of reasoning:
+$$r_{\text{PRM}}(s_1,...,s_T) = \prod_{t=1}^{T} p(\text{correct}|s_1,...,s_t)$$
+
+More compute = more candidates = better selection.
+
+\column{0.48\textwidth}
+\textbf{2. Extended Reasoning}
+
+Let the model think for more tokens.\\
+Longer reasoning = better answers.
+
+\textbf{How o1 Does It}
+
+Hidden ``thinking'' tokens before answering.\\
+Model trained to use this space productively.
+
+\vspace{0.5em}
+\textbf{Adaptive Allocation}
+
+Easy questions: Short reasoning\\
+Hard questions: Long reasoning
+
+The model learns to allocate compute based on difficulty.
+\end{columns}
+
+\bottomnote{Both mechanisms: more compute at inference = better results (with diminishing returns)}
+\end{frame}
+
+% ==================== COMPUTE TRADEOFF ====================
+\begin{frame}[t]{The Cost-Quality Tradeoff}
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Model} & \textbf{Tokens Generated} & \textbf{Accuracy} & \textbf{Relative Cost} \\
+\midrule
+GPT-4 (direct) & $\sim$50 & 78\% & 1x \\
+GPT-4 (CoT prompt) & $\sim$150 & 89\% & 3x \\
+o1-mini & $\sim$500 & 95\% & 10x \\
+o1 & $\sim$2000 & 97\% & 40x \\
+o1-pro & $\sim$5000+ & 99\% & 100x+ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\textbf{Practical Implication}
+
+You can choose your accuracy/cost tradeoff:
+\begin{itemize}
+\item Simple queries: Use fast, cheap model
+\item Complex reasoning: Invest in more compute
+\item Critical decisions: Use maximum reasoning
+\end{itemize}
+
+\bottomnote{This is like choosing car vs. plane -- different tools for different journeys}
+\end{frame}
+
+% ==================== DEEPSEEK SECTION ====================
+\subsection{DeepSeek-R1: The Open-Source Breakthrough}
+
+% ==================== DEEPSEEK INTRO ====================
+\begin{frame}[t]{January 2025: DeepSeek-R1}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Announcement}
+
+DeepSeek (Chinese lab) releases R1:
+\begin{itemize}
+\item Matches OpenAI o1 performance
+\item Fully open-source (weights + paper)
+\item Fraction of training cost
+\item Multiple distilled sizes available
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Why It Matters}
+
+Demonstrated that reasoning can be achieved with:
+\begin{itemize}
+\item Open research
+\item Smaller budgets
+\item Novel training approaches
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Key Results}
+
+AIME 2024 (math olympiad):\\
+\textbf{15.6\%} $\rightarrow$ \textbf{71.0\%} (pass@1)
+
+Matches o1-1217 on most benchmarks.
+
+\vspace{0.5em}
+\textbf{Available Models}
+
+DeepSeek-R1-Distill-Qwen:\\
+1.5B, 7B, 14B, 32B
+
+DeepSeek-R1-Distill-Llama:\\
+8B, 70B
+
+All on HuggingFace, open weights.
+\end{columns}
+
+\bottomnote{DeepSeek-AI (2025): ``DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning''}
+\end{frame}
+
+% ==================== DEEPSEEK ZERO ====================
+\begin{frame}[t]{DeepSeek-R1-Zero: The Revolutionary Finding}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Experiment}
+
+What if we train reasoning with \textit{pure RL}, no supervised fine-tuning?
+
+\vspace{0.5em}
+\textbf{DeepSeek-R1-Zero}
+\begin{itemize}
+\item Start from base model
+\item Apply RL directly
+\item Reward only final answer correctness
+\item No human demonstrations of reasoning
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Result}
+
+The model \textit{spontaneously} learned to:
+\begin{itemize}
+\item Generate reasoning chains
+\item Self-verify answers
+\item Reflect on mistakes
+\item Allocate more tokens to hard problems
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why This Is Shocking}
+
+``Reasoning'' emerged from the objective alone.
+
+No one told the model \textit{how} to reason -- just rewarded correct answers.
+
+\vspace{0.5em}
+\textbf{Emergent Behaviors}
+
+\textit{Self-verification:}\\
+``Let me check: 3 $\times$ 5 = 15, correct.''
+
+\textit{Reflection:}\\
+``Wait, I made an error. Let me reconsider...''
+
+\textit{Extended thinking:}\\
+Hard problems $\rightarrow$ longer reasoning traces
+
+\vspace{0.5em}
+\textbf{Implication}
+
+Reasoning might be more fundamental than we thought -- it emerges when you optimize for correctness.
+\end{columns}
+
+\bottomnote{This suggests reasoning is an ``attractor'' in the optimization landscape, not a special trick}
+\end{frame}
+
+% ==================== GRPO ====================
+\begin{frame}[t]{GRPO: Group Relative Policy Optimization}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Standard RL (PPO)}
+
+Requires:
+\begin{itemize}
+\item Critic network (value function)
+\item Reward model
+\item Complex optimization
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{GRPO Simplification}
+
+No critic network needed!
+
+Compute advantage relative to group:
+$$A(x, y) = r(y) - \frac{1}{|G|} \sum_{y' \in G} r(y')$$
+
+For each prompt, generate multiple outputs, compare to each other.
+
+\column{0.48\textwidth}
+\textbf{Rule-Based Rewards}
+
+No neural reward model either!
+
+\textit{Accuracy reward:}
+$$r_{\text{acc}} = \mathbf{1}[\text{answer correct}]$$
+
+\textit{Format reward:}
+$$r_{\text{fmt}} = \mathbf{1}[\text{<think>...</think> tags present}]$$
+
+\vspace{0.5em}
+\textbf{Why This Works}
+
+For math/code: correctness is verifiable.\\
+No need to learn ``what humans prefer.''
+\end{columns}
+
+\bottomnote{GRPO: Simpler than PPO, no reward model, no critic -- yet achieves state-of-the-art reasoning}
+\end{frame}
+
+% ==================== DEEPSEEK PIPELINE ====================
+\begin{frame}[t]{DeepSeek-R1 Full Pipeline}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Stage 1: Cold Start (Optional)}
+
+Small amount of SFT on reasoning examples.\\
+Teaches the format: \texttt{<think>...</think>}
+
+Not strictly necessary (R1-Zero skips this).
+
+\vspace{0.5em}
+\textbf{Stage 2: Reasoning RL}
+
+Pure RL with GRPO.\\
+Reward: correctness + format.\\
+Model learns to reason.
+
+\column{0.48\textwidth}
+\textbf{Stage 3: Rejection Sampling}
+
+Generate many responses from RL model.\\
+Filter for correct + well-formatted.\\
+Creates high-quality reasoning dataset.
+
+\vspace{0.5em}
+\textbf{Stage 4: Final SFT}
+
+Fine-tune on curated reasoning data.\\
+Adds general capabilities back.\\
+Balances reasoning with helpfulness.
+
+\vspace{0.5em}
+\textbf{Result: DeepSeek-R1}
+\end{columns}
+
+\bottomnote{Key insight: RL discovers reasoning, then SFT polishes and generalizes it}
+\end{frame}
+
+% ==================== DEEPSEEK R1 PIPELINE VISUAL ====================
+\begin{frame}[t]{DeepSeek-R1: The Four-Stage Training Pipeline}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/deepseek_r1_pipeline.pdf}
+\end{center}
+
+\bottomnote{DeepSeek-R1 shows that open-source reasoning can match proprietary models with clever training}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/22_deepseek_r1_pipeline}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/22_deepseek_r1_pipeline}{\includegraphics[width=0.55cm]{../FinalLecture/22_deepseek_r1_pipeline/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/22_deepseek_r1_pipeline}{\tiny\texttt{\textcolor{gray}{22\_deepseek\_r1\_pipeline}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== O1 COMPARISON ====================
+\begin{frame}[t]{o1 vs DeepSeek-R1: What We Know}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{OpenAI o1}
+\begin{itemize}
+\item Closed source, proprietary
+\item Hidden ``thinking'' tokens (not shown to user)
+\item Likely uses process supervision
+\item Rumored to use search/planning
+\item Available via API only
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Strengths}
+
+Polish, reliability, integration with OpenAI ecosystem.
+
+\column{0.48\textwidth}
+\textbf{DeepSeek-R1}
+\begin{itemize}
+\item Open source (weights + paper)
+\item Visible reasoning traces
+\item Pure RL approach documented
+\item Distilled to many sizes
+\item Run locally or via API
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Strengths}
+
+Transparency, customizability, research value.
+
+\vspace{0.5em}
+\textbf{Performance}
+
+Comparable on most benchmarks.
+\end{columns}
+
+\bottomnote{The gap between closed and open reasoning models is narrowing rapidly}
+\end{frame}
+
+% ==================== SECTION: ALIGNMENT ====================
+\section{Act III: RLHF \& Alignment -- Making LLMs Safe}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Act III: RLHF \& Alignment\par
+\vspace{0.3cm}
+\normalsize From GPT to ChatGPT: Making LLMs Safe and Helpful
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% ==================== RLHF SECTION ====================
+\subsection{From GPT to ChatGPT: The RLHF Story}
+
+% ==================== MISSING INGREDIENT ====================
+\begin{frame}[t]{The Missing Ingredient}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{GPT-3 (2020)}
+
+175 billion parameters.\\
+Impressive but... weird.
+
+\vspace{0.5em}
+\textbf{Problems}
+\begin{itemize}
+\item Would generate toxic content
+\item Refused simple helpful requests
+\item Rambling, off-topic responses
+\item No sense of ``what's appropriate''
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Root Cause}
+
+Trained to predict text, not to be helpful.\\
+Internet text includes everything -- good and bad.
+
+\column{0.48\textwidth}
+\textbf{InstructGPT / ChatGPT}
+
+Same architecture.\\
+Different training objective.
+
+\vspace{0.5em}
+\textbf{The Solution}
+
+Align with human preferences.
+
+\vspace{0.5em}
+\textbf{Shocking Result}
+
+\begin{center}
+\fbox{\parbox{0.9\columnwidth}{\centering
+1.3B model + RLHF\\
+$>$\\
+175B base model
+}}
+\end{center}
+
+Alignment > Scale (for usefulness)
+\end{columns}
+
+\bottomnote{Ouyang et al. (2022): ``Training language models to follow instructions with human feedback''}
+\end{frame}
+
+% ==================== RLHF PIPELINE ====================
+\begin{frame}[t]{The Three-Stage RLHF Pipeline}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/rlhf_vs_dpo.pdf}
+\end{center}
+
+\bottomnote{RLHF: Complex (3 stages, 3 models) but effective. DPO: Simpler (2 stages, 1 model).}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/32_rlhf_vs_dpo}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/32_rlhf_vs_dpo}{\includegraphics[width=0.55cm]{../FinalLecture/32_rlhf_vs_dpo/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/32_rlhf_vs_dpo}{\tiny\texttt{\textcolor{gray}{32\_rlhf\_vs\_dpo}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== RLHF DETAILED PIPELINE ====================
+\begin{frame}[t]{RLHF: The Complete Training Loop}
+\begin{center}
+\includegraphics[width=0.55\textwidth]{../figures/rlhf_detailed_pipeline.pdf}
+\end{center}
+
+\bottomnote{RLHF requires orchestrating 3 models: policy, reference, and reward model in an iterative loop}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/31_rlhf_detailed_pipeline}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/31_rlhf_detailed_pipeline}{\includegraphics[width=0.55cm]{../FinalLecture/31_rlhf_detailed_pipeline/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/31_rlhf_detailed_pipeline}{\tiny\texttt{\textcolor{gray}{31\_rlhf\_detailed\_pipeline}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== REWARD MODEL ====================
+\begin{frame}[t]{Stage 2: Reward Model Training}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Task}
+
+Learn to predict human preferences.
+
+\vspace{0.5em}
+\textbf{Data Collection}
+
+For each prompt, generate multiple responses.\\
+Humans rank: $y_w \succ y_l$ (winner vs loser)
+
+\vspace{0.5em}
+\textbf{Bradley-Terry Model}
+
+$$p(y_w \succ y_l) = \sigma(r(y_w) - r(y_l))$$
+
+Where $\sigma$ is sigmoid, $r$ is learned reward.
+
+\column{0.48\textwidth}
+\textbf{Loss Function}
+
+$$\mathcal{L}_{\text{RM}} = -\mathbb{E} \left[ \log \sigma(r(y_w) - r(y_l)) \right]$$
+
+Train to assign higher reward to preferred responses.
+
+\vspace{0.5em}
+\textbf{The Reward Model}
+
+Usually same architecture as LLM.\\
+Outputs scalar reward per response.\\
+Captures ``what humans prefer.''
+
+\vspace{0.5em}
+\textbf{Challenge}
+
+Requires many human comparisons.\\
+Expensive and slow to collect.
+\end{columns}
+
+\bottomnote{The reward model is the ``teacher'' that guides the policy optimization}
+\end{frame}
+
+% ==================== PPO ====================
+\begin{frame}[t]{Stage 3: PPO Optimization}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Goal}
+
+Maximize reward while staying close to original model.
+
+\vspace{0.5em}
+\textbf{Why KL Penalty?}
+
+Without it, model ``hacks'' the reward:\\
+Finds weird outputs that score high but aren't actually good.
+
+$$\mathcal{L} = \mathbb{E}[r(y)] - \beta \cdot \text{KL}(\pi_\theta || \pi_{\text{ref}})$$
+
+\column{0.48\textwidth}
+\textbf{PPO (Proximal Policy Optimization)}
+
+Clips policy updates to prevent instability:
+
+$$\mathcal{L}_{\text{PPO}} = \min \left( \frac{\pi_\theta}{\pi_{\text{old}}} A_t, \text{clip}(\cdot) A_t \right)$$
+
+\vspace{0.5em}
+\textbf{In Practice}
+
+Run 3 models simultaneously:
+\begin{itemize}
+\item Policy (being trained)
+\item Reference (original SFT model)
+\item Reward model
+\end{itemize}
+
+Expensive! Memory and compute intensive.
+\end{columns}
+
+\bottomnote{PPO is notoriously finicky -- hyperparameters matter a lot}
+\end{frame}
+
+% ==================== MODERN APPROACHES ====================
+\subsection{Modern Approaches: DPO and Constitutional AI}
+
+% ==================== RLHF PROBLEMS ====================
+\begin{frame}[t]{Problems with RLHF}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Complexity}
+
+3 stages, 3 models, many hyperparameters.
+
+\vspace{0.5em}
+\textbf{Instability}
+
+PPO training can diverge.\\
+Reward hacking is common.\\
+Results vary between runs.
+
+\vspace{0.5em}
+\textbf{Cost}
+
+Training RM requires many human labels.\\
+PPO needs 3 models in memory.\\
+Iteration is slow.
+
+\column{0.48\textwidth}
+\textbf{Reward Hacking}
+
+Model finds ``loopholes'':
+\begin{itemize}
+\item Verbosity (longer = higher reward?)
+\item Sycophancy (always agree with user)
+\item Gaming format preferences
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{The Question}
+
+Can we get alignment benefits without the complexity?
+
+\vspace{0.5em}
+\textbf{Answer: DPO}
+\end{columns}
+
+\bottomnote{2023 saw a wave of research on simpler alternatives to RLHF}
+\end{frame}
+
+% ==================== REWARD HACKING EXAMPLES ====================
+\begin{frame}[t]{Reward Hacking: When Models Game the System}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/reward_hacking_examples.pdf}
+\end{center}
+
+\bottomnote{Reward hacking is why RLHF uses KL penalty: prevent policy from drifting too far from reference}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/30_reward_hacking_examples}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/30_reward_hacking_examples}{\includegraphics[width=0.55cm]{../FinalLecture/30_reward_hacking_examples/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/30_reward_hacking_examples}{\tiny\texttt{\textcolor{gray}{30\_reward\_hacking\_examples}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== DPO ====================
+\begin{frame}[t]{DPO: Direct Preference Optimization}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Key Insight}
+
+The optimal RLHF policy has a closed form!
+
+$$\pi^*(y|x) \propto \pi_{\text{ref}}(y|x) \exp\left(\frac{r(y)}{\beta}\right)$$
+
+We can reparameterize to get reward:
+$$r(y) = \beta \log \frac{\pi^*(y|x)}{\pi_{\text{ref}}(y|x)} + \text{const}$$
+
+\vspace{0.5em}
+\textbf{Implication}
+
+No need to learn a separate reward model!\\
+The policy \textit{is} the reward model.
+
+\column{0.48\textwidth}
+\textbf{DPO Loss}
+
+$$\mathcal{L}_{\text{DPO}} = -\mathbb{E} \left[ \log \sigma \left( \beta \log \frac{\pi_\theta(y_w)}{\pi_{\text{ref}}(y_w)} - \beta \log \frac{\pi_\theta(y_l)}{\pi_{\text{ref}}(y_l)} \right) \right]$$
+
+\vspace{0.5em}
+\textbf{What This Means}
+
+Train directly on preference pairs!\\
+No reward model, no PPO.\\
+Just supervised learning on preferences.
+
+\vspace{0.5em}
+\textbf{Advantages}
+\begin{itemize}
+\item Much simpler
+\item More stable
+\item Cheaper to train
+\end{itemize}
+\end{columns}
+
+\bottomnote{Rafailov et al. (2024): ``Direct Preference Optimization: Your Language Model is Secretly a Reward Model''}
+\end{frame}
+
+% ==================== DPO VS RLHF COMPARISON ====================
+\begin{frame}[t]{DPO vs RLHF: Complexity Comparison}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/dpo_vs_rlhf_comparison.pdf}
+\end{center}
+
+\bottomnote{DPO achieves comparable results to RLHF with dramatically simpler training infrastructure}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/23_dpo_vs_rlhf_comparison}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/23_dpo_vs_rlhf_comparison}{\includegraphics[width=0.55cm]{../FinalLecture/23_dpo_vs_rlhf_comparison/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/23_dpo_vs_rlhf_comparison}{\tiny\texttt{\textcolor{gray}{23\_dpo\_vs\_rlhf\_comparison}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== CONSTITUTIONAL AI ====================
+\begin{frame}[t]{Constitutional AI: Self-Critique}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Idea}
+
+Instead of thousands of human annotators...
+
+Define a ``constitution'' (principles).\\
+Have the model critique itself.\\
+Train on self-improved outputs.
+
+\vspace{0.5em}
+\textbf{Example Principles}
+\begin{itemize}
+\item ``Choose the most helpful response''
+\item ``Choose the least harmful response''
+\item ``Choose the most honest response''
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Process}
+
+1. Generate initial response\\
+2. Critique against principles\\
+3. Revise based on critique\\
+4. Repeat until satisfactory\\
+5. Train on revised outputs
+
+\vspace{0.5em}
+\textbf{RLAIF (RL from AI Feedback)}
+
+Use AI model as the judge.\\
+Dramatically reduces human labeling cost.\\
+Enables scaling to diverse preferences.
+
+\vspace{0.5em}
+\textbf{Used By}
+
+Anthropic (Claude)
+\end{columns}
+
+\bottomnote{Constitutional AI: Alignment through principles rather than exhaustive human feedback}
+\end{frame}
+
+% ==================== COMPARISON TABLE ====================
+\begin{frame}[t]{Alignment Methods Comparison}
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Method} & \textbf{Human Labels} & \textbf{Models} & \textbf{Stability} & \textbf{Complexity} \\
+\midrule
+RLHF (PPO) & High & 3 & Low & High \\
+DPO & Medium & 1 & High & Low \\
+RLAIF & Low & 2 & Medium & Medium \\
+Constitutional AI & Very Low & 1 & High & Medium \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\textbf{Current Trend}
+
+Move away from PPO toward simpler methods.\\
+DPO becoming standard for fine-tuning.\\
+Constitutional AI for safety-critical applications.
+
+\vspace{0.5em}
+\textbf{Open Question}
+
+Do simpler methods achieve the same alignment quality as RLHF?\\
+(Evidence so far: mostly yes, sometimes no)
+
+\bottomnote{The field is converging on simpler, more stable alignment approaches}
+\end{frame}
+
+% ==================== ALIGNMENT TIMELINE ====================
+\begin{frame}[t]{The Evolution of Alignment Methods}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/alignment_timeline.pdf}
+\end{center}
+
+\bottomnote{Clear trend: From complex RL pipelines toward simpler, more direct preference optimization}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/12_alignment_timeline}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/12_alignment_timeline}{\includegraphics[width=0.55cm]{../FinalLecture/12_alignment_timeline/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/12_alignment_timeline}{\tiny\texttt{\textcolor{gray}{12\_alignment\_timeline}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== OPEN QUESTIONS ====================
+\begin{frame}[t]{Open Questions in Alignment}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Philosophical Questions}
+\begin{itemize}
+\item Whose values should AI embody?
+\item How do we handle value conflicts?
+\item Is ``alignment'' even well-defined?
+\item What about minority preferences?
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Technical Questions}
+\begin{itemize}
+\item How to align superhuman AI?
+\item Can we verify alignment actually works?
+\item How to prevent deceptive alignment?
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Alignment Tax}
+
+RLHF can degrade performance on some benchmarks.
+
+Trade-off: Safety vs. Capability
+
+Current research: Minimize this tax.
+
+\vspace{0.5em}
+\textbf{Connection to Reasoning}
+
+DeepSeek-R1: RL for reasoning capability.\\
+RLHF: RL for alignment.
+
+\vspace{0.5em}
+\textbf{Future Direction?}
+
+Unified frameworks that optimize for both reasoning AND alignment simultaneously.
+\end{columns}
+
+\bottomnote{We're not just building smart systems -- we're building systems that share our values}
+\end{frame}
+
+% ==================== SECTION: CLOSING ====================
+\section{Closing: The Next Frontier Is Yours}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Closing: The Next Frontier Is Yours\par
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% ==================== CONVERGENCE ====================
+\begin{frame}[t]{The Convergence}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/convergence_diagram.pdf}
+\end{center}
+
+\bottomnote{Modern AI systems combine all three: RAG for grounding, reasoning for capability, alignment for safety}
+
+  % Quantlet branding (auto-generated)
+  \begin{tikzpicture}[remember picture,overlay]
+    % Logo (clickable)
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.5cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/19_convergence_diagram}{\includegraphics[width=0.7cm]{../logo/quantlet.png}}
+    };
+    % QR Code (clickable)
+    \node[anchor=south east,xshift=-1.2cm,yshift=0.5cm,opacity=0.85] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/19_convergence_diagram}{\includegraphics[width=0.55cm]{../FinalLecture/19_convergence_diagram/qr_code.png}}
+    };
+    % URL text
+    \node[anchor=south east,xshift=-0.3cm,yshift=0.15cm] at (current page.south east) {
+      \href{https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/19_convergence_diagram}{\tiny\texttt{\textcolor{gray}{19\_convergence\_diagram}}}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ==================== WHAT YOU NOW KNOW ====================
+\begin{frame}[t]{What You Now Know}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{From This Semester}
+\begin{itemize}
+\item How language models work (transformers, attention)
+\item How to adapt them (fine-tuning, LoRA)
+\item How to prompt them effectively
+\item How to deploy them efficiently
+\item How to use them responsibly
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{From Today}
+\begin{itemize}
+\item How to make them useful (RAG, agents)
+\item How to make them reason (CoT, test-time compute)
+\item How to make them safe (RLHF, DPO, CAI)
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{You Can Now...}
+\begin{itemize}
+\item Read papers published yesterday
+\item Evaluate new techniques critically
+\item Build on the frontier
+\end{itemize}
+\end{columns}
+
+\bottomnote{You have the foundation to navigate -- and contribute to -- the rapidly evolving field of NLP}
+\end{frame}
+
+% ==================== WHAT'S COMING ====================
+\begin{frame}[t]{What's Coming Next}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Near-Term (2025)}
+\begin{itemize}
+\item Multimodal reasoning (vision + text + code)
+\item Longer context windows (1M+ tokens)
+\item More efficient inference
+\item Better open-source models
+\item Enterprise agent deployment
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Medium-Term (2026+)}
+\begin{itemize}
+\item Agent ecosystems (specialized collaboration)
+\item Personal AI (fine-tuned to you)
+\item Scientific discovery acceleration
+\item Embodied AI (robotics integration)
+\item New paradigms beyond transformers?
+\end{itemize}
+\end{columns}
+
+\vspace{1em}
+\textbf{The Constant}
+
+The models will keep getting better. That's almost certain.\\
+The question is: Better at what? For whom? Decided by whom?
+
+\bottomnote{Those aren't just technical questions -- but they require technical people to answer them well}
+\end{frame}
+
+% ==================== RESOURCES ====================
+\begin{frame}[t]{Resources for Continued Learning}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Key Papers}
+\begin{itemize}
+\item Lewis et al. (2020): RAG
+\item Yao et al. (2023): ReAct
+\item Wei et al. (2022): Chain-of-Thought
+\item DeepSeek (2025): R1
+\item Ouyang et al. (2022): InstructGPT
+\item Rafailov et al. (2024): DPO
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Practical Resources}
+\begin{itemize}
+\item LangChain documentation
+\item HuggingFace TRL library
+\item DeepSeek-R1 on HuggingFace
+\item OpenAI Cookbook
+\item Anthropic's research blog
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Communities}
+\begin{itemize}
+\item HuggingFace forums
+\item r/LocalLLaMA
+\item AI research Twitter/X
+\end{itemize}
+\end{columns}
+
+\bottomnote{The best way to learn is to build -- pick a project and start experimenting!}
+\end{frame}
+
+% ==================== FINAL MESSAGE ====================
+\begin{frame}[plain]
+\vspace{1cm}
+\begin{center}
+{\large We started this course asking:}\\[0.3cm]
+{\Large How do we predict the next word?}\\[1cm]
+{\large We end asking:}\\[0.3cm]
+{\Large How do we build AI that helps humanity\\write a better future?}\\[1.2cm]
+{\normalsize The models predict tokens.}\\[0.3cm]
+{\Large \textbf{You decide what we build.}}\\[1cm]
+{\small Thank you for this semester.}
+\end{center}
+\end{frame}
+
+% ==================== QUESTIONS ====================
+\begin{frame}[plain]
+\vspace{3cm}
+\begin{center}
+{\Huge Questions?}\\[1.2cm]
+{\normalsize The next frontier is yours.}
+\end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,19 @@
+Name of Quantlet: '18_chunk_size_tradeoff'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Analysis of tradeoffs between chunk size and retrieval quality in RAG'
+
+Keywords: 'chunk size, RAG optimization, retrieval quality, context window'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'chunk_size_tradeoff.pdf'
+
+Example: 'View PDF chart'

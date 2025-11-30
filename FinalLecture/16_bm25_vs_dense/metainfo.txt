@@ -1,0 +1,19 @@
+Name of Quantlet: '16_bm25_vs_dense'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Comparison of sparse BM25 and dense vector retrieval methods'
+
+Keywords: 'BM25, dense retrieval, sparse retrieval, information retrieval, RAG'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'bm25_vs_dense.pdf'
+
+Example: 'View PDF chart'

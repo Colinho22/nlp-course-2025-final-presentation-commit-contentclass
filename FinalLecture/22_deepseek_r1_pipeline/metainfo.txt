@@ -1,0 +1,19 @@
+Name of Quantlet: '22_deepseek_r1_pipeline'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Architecture and training pipeline of DeepSeek-R1 reasoning model'
+
+Keywords: 'DeepSeek-R1, reasoning model, training pipeline, reinforcement learning'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'deepseek_r1_pipeline.pdf'
+
+Example: 'View PDF chart'

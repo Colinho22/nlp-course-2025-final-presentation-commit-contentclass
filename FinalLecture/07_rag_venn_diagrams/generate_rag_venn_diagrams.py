@@ -9,6 +9,13 @@ from matplotlib.patches import Circle, Ellipse, FancyBboxPatch, Wedge
 import numpy as np
 import os
 
+# Quantlet metadata for branding
+CHART_METADATA = {
+    'name': '07_rag_venn_diagrams',
+    'url': 'https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/07_rag_venn_diagrams'
+}
+
+
 # Output directory
 OUTPUT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

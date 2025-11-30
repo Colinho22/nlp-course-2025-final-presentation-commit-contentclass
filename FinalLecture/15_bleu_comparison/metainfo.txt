@@ -1,0 +1,19 @@
+Name of Quantlet: '15_bleu_comparison'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Comparison of BLEU scores across different translation models'
+
+Keywords: 'BLEU score, machine translation, evaluation metrics, NLP metrics'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'bleu_comparison.pdf'
+
+Example: 'View PDF chart'

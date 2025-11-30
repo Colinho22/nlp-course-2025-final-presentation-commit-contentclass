@@ -1,0 +1,19 @@
+Name of Quantlet: '14_attention_heatmap'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Heatmap visualization of transformer attention weights across tokens'
+
+Keywords: 'attention mechanism, transformer, heatmap, self-attention, visualization'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'attention_heatmap.pdf'
+
+Example: 'View PDF chart'

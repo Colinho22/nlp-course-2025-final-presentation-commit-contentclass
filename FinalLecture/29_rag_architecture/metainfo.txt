@@ -1,0 +1,19 @@
+Name of Quantlet: '29_rag_architecture'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Complete architecture diagram of Retrieval-Augmented Generation systems'
+
+Keywords: 'RAG, architecture, retrieval, generation, knowledge base'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'rag_architecture.pdf'
+
+Example: 'View PDF chart'

@@ -1,0 +1,19 @@
+Name of Quantlet: '26_inference_scaling_curve'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Scaling curves showing inference compute vs performance tradeoffs'
+
+Keywords: 'inference scaling, compute scaling, performance, efficiency'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'inference_scaling_curve.pdf'
+
+Example: 'View PDF chart'

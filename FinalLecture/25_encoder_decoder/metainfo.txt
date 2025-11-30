@@ -1,0 +1,19 @@
+Name of Quantlet: '25_encoder_decoder'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Visualization of encoder-decoder transformer architecture'
+
+Keywords: 'encoder-decoder, transformer, seq2seq, architecture, attention'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'encoder_decoder.pdf'
+
+Example: 'View PDF chart'

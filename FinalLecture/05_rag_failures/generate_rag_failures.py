@@ -6,6 +6,13 @@ Shows failure points in the RAG pipeline with categories.
 import subprocess
 import os
 
+# Quantlet metadata for branding
+CHART_METADATA = {
+    'name': '05_rag_failures',
+    'url': 'https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/05_rag_failures'
+}
+
+
 OUTPUT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 dot_code = """

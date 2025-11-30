@@ -6,6 +6,13 @@ Shows BM25 + Dense retrieval fusion pipeline.
 import subprocess
 import os
 
+# Quantlet metadata for branding
+CHART_METADATA = {
+    'name': '04_hybrid_search_flow',
+    'url': 'https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/04_hybrid_search_flow'
+}
+
+
 OUTPUT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 dot_code = """

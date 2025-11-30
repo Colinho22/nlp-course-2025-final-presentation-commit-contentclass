@@ -1,0 +1,19 @@
+Name of Quantlet: '35_test_time_scaling'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Analysis of test-time compute scaling for improved model performance'
+
+Keywords: 'test-time scaling, inference compute, o1, reasoning, scaling laws'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'test_time_scaling.pdf'
+
+Example: 'View PDF chart'

@@ -1,0 +1,19 @@
+Name of Quantlet: '20_cot_accuracy_gains'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Accuracy improvements from Chain-of-Thought prompting across tasks'
+
+Keywords: 'chain-of-thought, CoT, prompting, reasoning, accuracy'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'cot_accuracy_gains.pdf'
+
+Example: 'View PDF chart'

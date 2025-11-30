@@ -1,0 +1,19 @@
+Name of Quantlet: '28_model_comparison'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Comparison of different language model architectures and capabilities'
+
+Keywords: 'model comparison, LLM benchmark, architecture comparison, performance'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'model_comparison.pdf'
+
+Example: 'View PDF chart'

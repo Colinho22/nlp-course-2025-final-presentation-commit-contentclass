@@ -1,0 +1,19 @@
+Name of Quantlet: '23_dpo_vs_rlhf_comparison'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Comparison of Direct Preference Optimization and RLHF approaches'
+
+Keywords: 'DPO, RLHF, preference learning, alignment, fine-tuning'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'dpo_vs_rlhf_comparison.pdf'
+
+Example: 'View PDF chart'

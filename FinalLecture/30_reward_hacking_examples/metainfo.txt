@@ -1,0 +1,19 @@
+Name of Quantlet: '30_reward_hacking_examples'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Examples of reward hacking and specification gaming in RL systems'
+
+Keywords: 'reward hacking, specification gaming, RLHF, alignment, safety'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'reward_hacking_examples.pdf'
+
+Example: 'View PDF chart'

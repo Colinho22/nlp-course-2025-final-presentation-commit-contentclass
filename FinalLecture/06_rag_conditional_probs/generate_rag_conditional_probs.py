@@ -9,6 +9,13 @@ from matplotlib.patches import Circle, FancyBboxPatch, FancyArrowPatch
 import numpy as np
 import os
 
+# Quantlet metadata for branding
+CHART_METADATA = {
+    'name': '06_rag_conditional_probs',
+    'url': 'https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/06_rag_conditional_probs'
+}
+
+
 # Output directory
 OUTPUT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

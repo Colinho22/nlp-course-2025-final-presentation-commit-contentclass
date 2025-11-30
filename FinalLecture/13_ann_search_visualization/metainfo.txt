@@ -1,0 +1,19 @@
+Name of Quantlet: '13_ann_search_visualization'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Visualization of approximate nearest neighbor search in embedding space'
+
+Keywords: 'ANN search, nearest neighbor, embedding space, vector search'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'ann_search_visualization.pdf'
+
+Example: 'View PDF chart'

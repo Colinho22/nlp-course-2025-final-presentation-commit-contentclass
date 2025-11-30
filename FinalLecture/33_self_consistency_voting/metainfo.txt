@@ -1,0 +1,19 @@
+Name of Quantlet: '33_self_consistency_voting'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Visualization of self-consistency decoding with majority voting'
+
+Keywords: 'self-consistency, voting, decoding, reasoning, ensemble'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'self_consistency_voting.pdf'
+
+Example: 'View PDF chart'

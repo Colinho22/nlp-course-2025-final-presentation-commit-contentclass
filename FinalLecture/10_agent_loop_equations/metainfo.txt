@@ -1,0 +1,19 @@
+Name of Quantlet: '10_agent_loop_equations'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Mathematical formulation of the AI agent loop with state transitions and policy functions'
+
+Keywords: 'AI agent, equations, policy function, state transition, MDP'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'agent_loop_equations.pdf'
+
+Example: 'View PDF chart'
