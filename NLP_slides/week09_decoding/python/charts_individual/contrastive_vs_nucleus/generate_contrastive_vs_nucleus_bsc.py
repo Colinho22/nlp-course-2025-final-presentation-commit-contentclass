@@ -31,13 +31,14 @@ COLOR_ORANGE = '#FF7F0E'
 
 plt.style.use('seaborn-v0_8-whitegrid')
 
-FONTSIZE_TITLE = 36
-FONTSIZE_LABEL = 30
-FONTSIZE_TICK = 28
-FONTSIZE_ANNOTATION = 28
-FONTSIZE_LEGEND = 26
-FONTSIZE_TEXT = 30
-FONTSIZE_SMALL = 24
+FONTSIZE_TITLE = 24
+FONTSIZE_LABEL = 20
+FONTSIZE_TICK = 16
+FONTSIZE_ANNOTATION = 18
+FONTSIZE_LEGEND = 18
+FONTSIZE_TEXT = 20
+FONTSIZE_SMALL = 18
+
 
 def set_minimalist_style(ax):
     """Apply minimalist styling"""
@@ -57,42 +58,42 @@ def generate_contrastive_vs_nucleus():
     fig, ax = plt.subplots(figsize=(12, 6))
 
     ax.text(0.5, 0.95, 'Same Prompt, Different Methods', ha='center',
-           fontsize=42, weight='bold')
+           fontsize=24, weight='bold')
 
     # Prompt
     ax.text(0.5, 0.88, 'Prompt: "The future of artificial intelligence is"',
-           ha='center', fontsize=38, style='italic',
+           ha='center', fontsize=24, style='italic',
            bbox=dict(boxstyle='round', facecolor=COLOR_LIGHT, edgecolor=COLOR_ACCENT, linewidth=3))
 
     # Nucleus output
-    ax.text(0.25, 0.75, 'Nucleus (p=0.9)', ha='center', fontsize=38,
+    ax.text(0.25, 0.75, 'Nucleus (p=0.9)', ha='center', fontsize=24,
            weight='bold', color=COLOR_ACCENT)
     nucleus_text = ('"...is promising and will transform\n'
                    'many industries. We expect to see\n'
                    'significant advances in healthcare,\n'
                    'education, and research in the\n'
                    'coming years."')
-    ax.text(0.25, 0.52, nucleus_text, ha='center', va='center', fontsize=42,
+    ax.text(0.25, 0.52, nucleus_text, ha='center', va='center', fontsize=24,
            bbox=dict(boxstyle='round', facecolor='#E8F5E9', edgecolor=COLOR_GREEN, linewidth=3))
     ax.text(0.25, 0.28, '+ Diverse\n+ Creative\n- Some repetition',
-           ha='center', fontsize=42, color=COLOR_MAIN)
+           ha='center', fontsize=24, color=COLOR_MAIN)
 
     # Contrastive output
-    ax.text(0.75, 0.75, 'Contrastive (α=0.6)', ha='center', fontsize=38,
+    ax.text(0.75, 0.75, 'Contrastive (α=0.6)', ha='center', fontsize=24,
            weight='bold', color=COLOR_ACCENT)
     contrastive_text = ('"...is rapidly evolving, bringing\n'
                        'unprecedented opportunities across\n'
                        'sectors ranging from medicine to\n'
                        'climate science, while raising\n'
                        'important ethical questions."')
-    ax.text(0.75, 0.52, contrastive_text, ha='center', va='center', fontsize=42,
+    ax.text(0.75, 0.52, contrastive_text, ha='center', va='center', fontsize=24,
            bbox=dict(boxstyle='round', facecolor='#E8F5E9', edgecolor=COLOR_GREEN, linewidth=3))
     ax.text(0.75, 0.28, '+ Diverse\n+ Creative\n+ No repetition',
-           ha='center', fontsize=42, weight='bold', color=COLOR_GREEN)
+           ha='center', fontsize=24, weight='bold', color=COLOR_GREEN)
 
     # Comparison
     ax.text(0.5, 0.08, 'Contrastive Search explicitly penalizes copying recent context',
-           ha='center', fontsize=42, style='italic', color=COLOR_GREEN)
+           ha='center', fontsize=24, style='italic', color=COLOR_GREEN)
 
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)

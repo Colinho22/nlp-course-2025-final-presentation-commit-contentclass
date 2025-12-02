@@ -31,13 +31,14 @@ COLOR_ORANGE = '#FF7F0E'
 
 plt.style.use('seaborn-v0_8-whitegrid')
 
-FONTSIZE_TITLE = 36
-FONTSIZE_LABEL = 30
-FONTSIZE_TICK = 28
-FONTSIZE_ANNOTATION = 28
-FONTSIZE_LEGEND = 26
-FONTSIZE_TEXT = 30
-FONTSIZE_SMALL = 24
+FONTSIZE_TITLE = 24
+FONTSIZE_LABEL = 20
+FONTSIZE_TICK = 16
+FONTSIZE_ANNOTATION = 18
+FONTSIZE_LEGEND = 18
+FONTSIZE_TEXT = 20
+FONTSIZE_SMALL = 18
+
 
 def set_minimalist_style(ax):
     """Apply minimalist styling"""
@@ -101,7 +102,7 @@ def generate_extreme_case_2_full_beam():
         if actual_count >= 1000000000:
             label = f'Step {level}: {actual_count/1e9:.1f}B nodes'
 
-        ax.text(-9, y, label, fontsize=10, ha='right', va='center',
+        ax.text(-9, y, label, fontsize=16, ha='right', va='center',
                fontweight='bold', color=COLOR_MAIN,
                bbox=dict(boxstyle='round,pad=0.4',
                         facecolor='white', alpha=0.9))
@@ -111,11 +112,11 @@ def generate_extreme_case_2_full_beam():
            fontsize=16, fontweight='bold', ha='center', color=COLOR_MAIN)
 
     ax.text(0, 6.1, 'Vocabulary size = 100, explore ALL paths',
-           fontsize=11, ha='center', color=COLOR_GRAY, style='italic')
+           fontsize=18, ha='center', color=COLOR_GRAY, style='italic')
 
     # Computation box
     comp_text = 'Total paths: 100^5 = 10 billion\n\nIf 1 μs per path:\n10 billion × 1 μs = 2.8 hours\n\nIf 1 ms per path:\n10 billion × 1 ms = 115 days!'
-    ax.text(0, -0.5, comp_text, fontsize=9, ha='center',
+    ax.text(0, -0.5, comp_text, fontsize=16, ha='center',
            bbox=dict(boxstyle='round,pad=0.8',
                     facecolor=COLOR_LIGHT,
                     edgecolor=COLOR_RED, linewidth=2),

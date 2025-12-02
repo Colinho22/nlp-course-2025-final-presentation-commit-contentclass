@@ -18,7 +18,7 @@ def generate_problem4_search_tree_pruning_bsc():
     dot = graphviz.Digraph(format='pdf', engine='dot')
     dot.attr(dpi='300', rankdir='TB', bgcolor='transparent')
     dot.attr('node', shape='box', style='rounded,filled',
-            fontname='Arial', fontsize='11')
+            fontname='Arial', fontsize='18')
 
     # Root
     dot.node('start', 'START', fillcolor='#E8E8F0', color=COLOR_ACCENT, penwidth='2')

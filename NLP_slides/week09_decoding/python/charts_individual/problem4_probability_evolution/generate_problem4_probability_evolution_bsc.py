@@ -17,7 +17,7 @@ def generate_problem4_probability_evolution_bsc():
     """Show cumulative probability loss."""
     dot = graphviz.Digraph(format='pdf', engine='dot')
     dot.attr(dpi='300', rankdir='LR', bgcolor='transparent')
-    dot.attr('node', shape='record', style='filled', fontname='Arial', fontsize='10')
+    dot.attr('node', shape='record', style='filled', fontname='Arial', fontsize='18')
 
     dot.node('t0', '{<f0> START | <f1> P=1.0}',
              fillcolor='#E8E8F0', color=COLOR_ACCENT)

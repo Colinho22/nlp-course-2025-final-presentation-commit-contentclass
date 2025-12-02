@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Natural Language Processing | From N-grams to Transformers</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      background: #1e3a5f;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+    .top-nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      opacity: 0.9;
+    }
+    .top-nav a:hover { opacity: 1; text-decoration: underline; }
+    .top-nav .nav-pdf {
+      background: #3333B2;
+      padding: 4px 12px;
+      border-radius: 4px;
+    }
+
+    /* Main Layout */
+    .container {
+      display: flex;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: #ffffff;
+      border-right: 1px solid #e1e4e8;
+      height: calc(100vh - 42px);
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      flex-shrink: 0;
+    }
+    .sidebar-header {
+      padding: 15px;
+      border-bottom: 1px solid #e1e4e8;
+      background: linear-gradient(135deg, #1e3a5f 0%, #3333B2 100%);
+    }
+    .sidebar-header a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+    }
+    .sidebar-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      margin-right: 10px;
+      background: white;
+      padding: 3px;
+    }
+    .course-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .search-container {
+      padding: 10px 15px;
+      border-bottom: 1px solid #e1e4e8;
+    }
+    .search-container input {
+      width: 100%;
+      padding: 6px 10px;
+      border: 1px solid #e1e4e8;
+      border-radius: 4px;
+      font-size: 12px;
+      outline: none;
+    }
+    .search-container input:focus {
+      border-color: #3333B2;
+      box-shadow: 0 0 0 2px rgba(51, 51, 178, 0.1);
+    }
+
+    /* Sidebar Nav */
+    .sidebar-nav { padding: 8px 0; }
+    .part-section { border-bottom: 1px solid #f0f0f0; }
+    .part-section summary {
+      padding: 10px 15px;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #24292e;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .part-section summary::-webkit-details-marker { display: none; }
+    .part-section summary::after { content: "+"; font-size: 12px; color: #586069; }
+    .part-section[open] summary::after { content: "-"; }
+    .part-section summary:hover { background: #f6f8fa; }
+    .part-section ul { list-style: none; padding: 0 0 6px 0; margin: 0; }
+    .part-section li { margin: 0; }
+    .part-section a {
+      display: block;
+      padding: 6px 15px 6px 25px;
+      color: #586069;
+      text-decoration: none;
+      font-size: 12px;
+      border-left: 2px solid transparent;
+    }
+    .part-section a:hover { background: #f6f8fa; color: #3333B2; }
+    .topic-count { font-size: 10px; color: #959da5; font-weight: normal; }
+    .hidden { display: none !important; }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Hero - Ultra Compact */
+    .hero {
+      background: linear-gradient(135deg, #1e3a5f 0%, #3333B2 100%);
+      color: white;
+      padding: 25px 15px;
+      text-align: center;
+    }
+    .hero-content { max-width: 800px; margin: 0 auto; }
+    .hero-logo { width: 50px; height: 50px; border-radius: 8px; background: white; padding: 4px; margin-bottom: 10px; }
+    .hero h1 { font-size: 2rem; font-weight: 800; margin-bottom: 6px; }
+    .tagline { font-size: 1rem; opacity: 0.9; margin-bottom: 12px; }
+    .stats { display: flex; justify-content: center; gap: 25px; margin-bottom: 15px; }
+    .stat-item { text-align: center; }
+    .stat-number { font-size: 1.5rem; font-weight: 700; display: block; }
+    .stat-label { font-size: 0.75rem; opacity: 0.8; }
+    .cta-button {
+      display: inline-block;
+      background: white;
+      color: #1e3a5f;
+      padding: 10px 24px;
+      border-radius: 5px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .cta-button:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+    /* Features - Compact */
+    .features { padding: 18px 12px; background: white; }
+    .features-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .feature-card {
+      background: #f8fafc;
+      border-radius: 6px;
+      padding: 14px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+    }
+    .feature-icon { font-size: 1.6rem; margin-bottom: 6px; }
+    .feature-card h3 { font-size: 0.9rem; color: #1e3a5f; margin-bottom: 4px; }
+    .feature-card p { color: #64748b; font-size: 0.75rem; }
+
+    /* Journey - Compact */
+    .journey { padding: 18px 12px; background: #f1f5f9; }
+    .journey h2 { text-align: center; font-size: 1.2rem; color: #1e3a5f; margin-bottom: 15px; }
+    .journey-tracker {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+    .journey-tracker::before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: 50px;
+      right: 50px;
+      height: 2px;
+      background: #cbd5e1;
+      z-index: 0;
+    }
+    .journey-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 1;
+      text-decoration: none;
+      color: inherit;
+    }
+    .step-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid #3333B2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #3333B2;
+      margin-bottom: 5px;
+    }
+    .step-label { font-size: 0.7rem; color: #64748b; text-align: center; max-width: 80px; }
+
+    /* Topics - Ultra Compact */
+    .topics-section { padding: 18px 12px; }
+    .part-section-main { margin-bottom: 20px; }
+    .part-header { display: flex; align-items: center; margin-bottom: 10px; }
+    .part-number {
+      background: #3333B2;
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-right: 10px;
+    }
+    .part-title { font-size: 1.1rem; color: #1e3a5f; }
+    .topic-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .topic-card {
+      background: white;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      text-decoration: none;
+      color: inherit;
+      transition: box-shadow 0.2s;
+    }
+    .topic-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .topic-thumb { width: 100%; height: 80px; object-fit: cover; background: #f1f5f9; }
+    .topic-info { padding: 8px; }
+    .topic-num {
+      display: inline-block;
+      background: #e0e7ff;
+      color: #3333B2;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-bottom: 3px;
+    }
+    .topic-title { display: block; font-weight: 600; color: #1e293b; font-size: 0.8rem; }
+
+    /* Chart Gallery */
+    .chart-gallery { padding: 18px 12px; background: white; }
+    .chart-gallery h2 { text-align: center; font-size: 1.2rem; color: #1e3a5f; margin-bottom: 15px; }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+    }
+    .gallery-item {
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .gallery-item img { width: 100%; height: 70px; object-fit: cover; display: block; background: #f1f5f9; }
+    .gallery-item span {
+      display: block;
+      text-align: center;
+      font-size: 0.6rem;
+      padding: 4px;
+      background: #f8fafc;
+      color: #64748b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Special Modules */
+    .special-modules { padding: 18px 12px; background: #f1f5f9; }
+    .special-modules h2 { text-align: center; font-size: 1.2rem; color: #1e3a5f; margin-bottom: 15px; }
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .module-card {
+      background: white;
+      border-radius: 6px;
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+      text-decoration: none;
+      color: inherit;
+    }
+    .module-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .module-card h3 { font-size: 0.85rem; color: #1e3a5f; margin-bottom: 4px; }
+    .module-card p { font-size: 0.7rem; color: #64748b; }
+
+    /* Resources - Compact */
+    .resources { padding: 18px 12px; background: white; text-align: center; }
+    .resources h2 { font-size: 1.2rem; color: #1e3a5f; margin-bottom: 12px; }
+    .resource-buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .resource-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 14px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+    .resource-btn.primary { background: #3333B2; color: white; }
+    .resource-btn.secondary { background: white; color: #1e3a5f; border: 1px solid #e2e8f0; }
+
+    /* Footer - Compact */
+    .footer { padding: 18px 12px; background: #1e3a5f; color: white; text-align: center; }
+    .footer a { color: #93c5fd; }
+    .footer p { opacity: 0.8; font-size: 0.8rem; }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .topic-grid { grid-template-columns: repeat(3, 1fr); }
+      .gallery-grid { grid-template-columns: repeat(5, 1fr); }
+      .features-container { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .container { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid #e1e4e8;
+        max-height: 40vh;
+      }
+      .topic-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-grid { grid-template-columns: repeat(4, 1fr); }
+      .module-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .topic-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+      .module-grid { grid-template-columns: 1fr; }
+      .journey-tracker { flex-wrap: wrap; gap: 10px; justify-content: center; }
+      .journey-tracker::before { display: none; }
+      .features-container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <a href="/Natural-Language-Processing/">Home</a>
+    <a href="#topics">Weeks</a>
+    <a href="#gallery">Charts</a>
+    <a href="#modules">Modules</a>
+    <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing">GitHub</a>
+  </nav>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="/Natural-Language-Processing/">
+          <img src="https://quantlet.com/images/Q.png" alt="QuantLet" class="sidebar-logo">
+          <span class="course-title">NLP Course</span>
+        </a>
+      </div>
+
+      <div class="search-container">
+        <input type="text" id="topic-search" placeholder="Search weeks...">
+      </div>
+
+      <nav class="sidebar-nav">
+        <details class="part-section" open>
+          <summary>Part 1: Language Foundations <span class="topic-count">(3)</span></summary>
+          <ul>
+            <li><a href="weeks/week01.html">01. N-gram Foundations</a></li>
+            <li><a href="weeks/week02.html">02. Word Embeddings</a></li>
+            <li><a href="weeks/week03.html">03. RNN & LSTM</a></li>
+          </ul>
+        </details>
+
+        <details class="part-section">
+          <summary>Part 2: Core Architectures <span class="topic-count">(3)</span></summary>
+          <ul>
+            <li><a href="weeks/week04.html">04. Seq2Seq Models</a></li>
+            <li><a href="weeks/week05.html">05. Transformers</a></li>
+            <li><a href="weeks/week06.html">06. Pre-trained Models</a></li>
+          </ul>
+        </details>
+
+        <details class="part-section">
+          <summary>Part 3: Advanced Methods <span class="topic-count">(3)</span></summary>
+          <ul>
+            <li><a href="weeks/week07.html">07. Advanced Topics</a></li>
+            <li><a href="weeks/week08.html">08. Tokenization</a></li>
+            <li><a href="weeks/week09.html">09. Decoding Strategies</a></li>
+          </ul>
+        </details>
+
+        <details class="part-section">
+          <summary>Part 4: Applications <span class="topic-count">(3)</span></summary>
+          <ul>
+            <li><a href="weeks/week10.html">10. Fine-tuning</a></li>
+            <li><a href="weeks/week11.html">11. Efficiency</a></li>
+            <li><a href="weeks/week12.html">12. Ethics & Bias</a></li>
+          </ul>
+        </details>
+
+        <details class="part-section">
+          <summary>Special Modules <span class="topic-count">(4)</span></summary>
+          <ul>
+            <li><a href="modules/embeddings.html">Word Embeddings Deep Dive</a></li>
+            <li><a href="modules/summarization.html">LLM Summarization</a></li>
+            <li><a href="modules/sentiment.html">Sentiment Analysis</a></li>
+            <li><a href="modules/lstm-primer.html">LSTM Primer</a></li>
+          </ul>
+        </details>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-content">
+          <img src="https://quantlet.com/images/Q.png" alt="QuantLet" class="hero-logo">
+          <h1>Natural Language Processing</h1>
+          <p class="tagline">From N-grams to Transformers: A Complete Graduate Course</p>
+          <div class="stats">
+            <div class="stat-item"><span class="stat-number">12</span><span class="stat-label">Weeks</span></div>
+            <div class="stat-item"><span class="stat-number">500+</span><span class="stat-label">Slides</span></div>
+            <div class="stat-item"><span class="stat-number">250+</span><span class="stat-label">Charts</span></div>
+            <div class="stat-item"><span class="stat-number">26+</span><span class="stat-label">Notebooks</span></div>
+          </div>
+          <a href="weeks/week01.html" class="cta-button">Start Learning</a>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="features">
+        <div class="features-container">
+          <div class="feature-card">
+            <div class="feature-icon">&#128218;</div>
+            <h3>Discovery-Based</h3>
+            <p>Problem-first pedagogy with worked examples</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128202;</div>
+            <h3>Rich Visualizations</h3>
+            <p>250+ Python-generated charts</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128187;</div>
+            <h3>Hands-On Labs</h3>
+            <p>Jupyter notebooks with exercises</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128736;</div>
+            <h3>Production Ready</h3>
+            <p>From theory to deployment</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Journey Section -->
+      <section class="journey">
+        <h2>Learning Journey</h2>
+        <div class="journey-tracker">
+          <a href="#part1" class="journey-step"><div class="step-circle">1</div><span class="step-label">Language Foundations</span></a>
+          <a href="#part2" class="journey-step"><div class="step-circle">2</div><span class="step-label">Core Architectures</span></a>
+          <a href="#part3" class="journey-step"><div class="step-circle">3</div><span class="step-label">Advanced Methods</span></a>
+          <a href="#part4" class="journey-step"><div class="step-circle">4</div><span class="step-label">Applications</span></a>
+        </div>
+      </section>
+
+      <!-- Topics Section -->
+      <section class="topics-section" id="topics">
+        <!-- Part 1 -->
+        <div class="part-section-main" id="part1">
+          <div class="part-header"><div class="part-number">1</div><h3 class="part-title">Language Foundations</h3></div>
+          <div class="topic-grid">
+            <a href="weeks/week01.html" class="topic-card">
+              <img src="assets/thumbs/week01.png" alt="Week 01" class="topic-thumb">
+              <div class="topic-info"><span class="topic-num">WEEK 01</span><span class="topic-title">N-gram Foundations</span></div>
+            </a>
+            <a href="weeks/week02.html" class="topic-card">
+              <img src="assets/thumbs/week02.png" alt="Week 02" class="topic-thumb">
+              <div class="topic-info"><span class="topic-num">WEEK 02</span><span class="topic-title">Word Embeddings</span></div>
+            </a>
+            <a href="weeks/week03.html" class="topic-card">
+              <img src="assets/thumbs/week03.png" alt="Week 03" class="topic-thumb">
+              <div class="topic-info"><span class="topic-num">WEEK 03</span><span class="topic-title">RNN & LSTM</span></div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Part 2 -->
+        <div class="part-section-main" id="part2">
+          <div class="part-header"><div class="part-number">2</div><h3 class="part-title">Core Architectures</h3></div>
+          <div class="topic-grid">
+            <a href="weeks/week04.html" class="topic-card">
+              <img src="assets/thumbs/week04.png" alt="Week 04" class="topic-thumb">
+              <div class="topic-info"><span class="topic-num">WEEK 04</span><span class="topic-title">Seq2Seq Models</span></div>
+            </a>
+            <a href="weeks/week05.html" class="topic-card">
+              <img src="assets/thumbs/week05.png" alt="Week 05" class="topic-thumb">
+              <div class="topic-info"><span class="topic-num">WEEK 05</span><span class="topic-title">Transformers</span></div>
+            </a>
+            <a href="weeks/week06.html" class="topic-card">
+              <img src="assets/thumbs/week06.png" alt="Week 06" class="topic-thumb">
+              <div class="topic-info"><span class="topic-num">WEEK 06</span><span class="topic-title">Pre-trained Models</span></div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Part 3 -->
+        <div class="part-section-main" id="part3">
+          <div class="part-header"><div class="part-number">3</div><h3 class="part-title">Advanced Methods</h3></div>
+          <div class="topic-grid">
+            <a href="weeks/week07.html" class="topic-card">
+              <img src="assets/thumbs/week07.png" alt="Week 07" class="topic-thumb">
+              <div class="topic-info"><span class="topic-num">WEEK 07</span><span class="topic-title">Advanced Topics</span></div>
+            </a>
+            <a href="weeks/week08.html" class="topic-card">
+              <img src="assets/thumbs/week08.png" alt="Week 08" class="topic-thumb">
+              <div class="topic-info"><span class="topic-num">WEEK 08</span><span class="topic-title">Tokenization</span></div>
+            </a>
+            <a href="weeks/week09.html" class="topic-card">
+              <img src="assets/thumbs/week09.png" alt="Week 09" class="topic-thumb">
+              <div class="topic-info"><span class="topic-num">WEEK 09</span><span class="topic-title">Decoding Strategies</span></div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Part 4 -->
+        <div class="part-section-main" id="part4">
+          <div class="part-header"><div class="part-number">4</div><h3 class="part-title">Applications</h3></div>
+          <div class="topic-grid">
+            <a href="weeks/week10.html" class="topic-card">
+              <img src="assets/thumbs/week10.png" alt="Week 10" class="topic-thumb">
+              <div class="topic-info"><span class="topic-num">WEEK 10</span><span class="topic-title">Fine-tuning</span></div>
+            </a>
+            <a href="weeks/week11.html" class="topic-card">
+              <img src="assets/thumbs/week11.png" alt="Week 11" class="topic-thumb">
+              <div class="topic-info"><span class="topic-num">WEEK 11</span><span class="topic-title">Efficiency</span></div>
+            </a>
+            <a href="weeks/week12.html" class="topic-card">
+              <img src="assets/thumbs/week12.png" alt="Week 12" class="topic-thumb">
+              <div class="topic-info"><span class="topic-num">WEEK 12</span><span class="topic-title">Ethics & Bias</span></div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chart Gallery -->
+      <section class="chart-gallery" id="gallery">
+        <h2>Chart Gallery (250+ Visualizations)</h2>
+        <div class="gallery-grid">
+          <div class="gallery-item"><img src="assets/charts/skipgram_architecture.png" alt="Skip-gram"><span>Skip-gram</span></div>
+          <div class="gallery-item"><img src="assets/charts/cbow_architecture.png" alt="CBOW"><span>CBOW</span></div>
+          <div class="gallery-item"><img src="assets/charts/transformer_architecture.png" alt="Transformer"><span>Transformer</span></div>
+          <div class="gallery-item"><img src="assets/charts/attention_heatmap.png" alt="Attention"><span>Attention</span></div>
+          <div class="gallery-item"><img src="assets/charts/beam_search.png" alt="Beam Search"><span>Beam Search</span></div>
+          <div class="gallery-item"><img src="assets/charts/temperature_effects.png" alt="Temperature"><span>Temperature</span></div>
+          <div class="gallery-item"><img src="assets/charts/word_arithmetic.png" alt="Word Arithmetic"><span>Word Arithmetic</span></div>
+          <div class="gallery-item"><img src="assets/charts/embedding_space.png" alt="Embedding Space"><span>Embedding Space</span></div>
+          <div class="gallery-item"><img src="assets/charts/loss_landscape.png" alt="Loss Landscape"><span>Loss Landscape</span></div>
+          <div class="gallery-item"><img src="assets/charts/rnn_unrolled.png" alt="RNN Unrolled"><span>RNN Unrolled</span></div>
+          <div class="gallery-item"><img src="assets/charts/lstm_gates.png" alt="LSTM Gates"><span>LSTM Gates</span></div>
+          <div class="gallery-item"><img src="assets/charts/bert_architecture.png" alt="BERT"><span>BERT</span></div>
+        </div>
+      </section>
+
+      <!-- Special Modules -->
+      <section class="special-modules" id="modules">
+        <h2>Special Modules</h2>
+        <div class="module-grid">
+          <a href="modules/embeddings.html" class="module-card">
+            <h3>Word Embeddings</h3>
+            <p>48 slides on Word2Vec, GloVe, and contextual embeddings</p>
+          </a>
+          <a href="modules/summarization.html" class="module-card">
+            <h3>LLM Summarization</h3>
+            <p>40 slides on extractive and abstractive methods</p>
+          </a>
+          <a href="modules/sentiment.html" class="module-card">
+            <h3>Sentiment Analysis</h3>
+            <p>26 slides on BERT fine-tuning for classification</p>
+          </a>
+          <a href="modules/lstm-primer.html" class="module-card">
+            <h3>LSTM Primer</h3>
+            <p>32 slides with zero-prerequisite introduction</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Resources Section -->
+      <section class="resources">
+        <h2>Resources</h2>
+        <div class="resource-buttons">
+          <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" class="resource-btn primary">GitHub Repo</a>
+          <a href="embeddings/" class="resource-btn secondary">Embeddings Module</a>
+          <a href="embeddings/gallery.html" class="resource-btn secondary">Chart Gallery</a>
+          <a href="bibliography.html" class="resource-btn secondary">Bibliography</a>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <p><a href="https://github.com/Digital-AI-Finance">Digital-AI-Finance</a> | Graduate NLP Course | MIT License</p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Search functionality
+    document.getElementById('topic-search').addEventListener('input', function(e) {
+      const query = e.target.value.toLowerCase();
+      const links = document.querySelectorAll('.sidebar-nav .part-section li');
+      const sections = document.querySelectorAll('.sidebar-nav .part-section');
+
+      links.forEach(li => {
+        const text = li.textContent.toLowerCase();
+        if (query === '' || text.includes(query)) {
+          li.classList.remove('hidden');
+        } else {
+          li.classList.add('hidden');
+        }
+      });
+
+      sections.forEach(section => {
+        const visibleLinks = section.querySelectorAll('li:not(.hidden)');
+        if (visibleLinks.length === 0 && query !== '') {
+          section.classList.add('hidden');
+        } else {
+          section.classList.remove('hidden');
+          if (query !== '') {
+            section.setAttribute('open', '');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -6,7 +6,7 @@ on:
     paths:
       - 'docs/**'
       - 'embeddings/**'
-      - 'NLP_slides/week02_neural_lm/**'
+      - 'NLP_slides/**'
       - 'binder/**'
       - '.github/workflows/docs.yml'
   workflow_dispatch:
@@ -29,13 +29,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
-          bundler-cache: true
-          working-directory: docs
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -43,87 +36,124 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install jupyter nbconvert pdf2image pillow
+          pip install pdf2image pillow
 
       - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y poppler-utils
 
-      - name: Copy chart assets
+      - name: Create output directory
+        run: mkdir -p _site
+
+      - name: Copy main site files
         run: |
-          mkdir -p docs/assets/charts/embeddings
+          # Copy HTML files
+          cp docs/index.html _site/
 
-          # Copy charts from embeddings/figures
-          if [ -d "embeddings/figures" ]; then
-            cp embeddings/figures/*.pdf docs/assets/charts/embeddings/ 2>/dev/null || true
-          fi
+          # Copy weeks and modules
+          cp -r docs/weeks _site/
+          cp -r docs/modules _site/
 
-          # Copy charts from week02
+          # Copy embeddings module (Jekyll content)
+          mkdir -p _site/embeddings
+          cp docs/embeddings/*.md _site/embeddings/ 2>/dev/null || true
+          cp docs/embeddings/*.html _site/embeddings/ 2>/dev/null || true
+
+          # Copy bibliography
+          cp docs/bibliography.md _site/ 2>/dev/null || true
+
+      - name: Create placeholder thumbnails
+        run: |
+          mkdir -p _site/assets/thumbs
+          mkdir -p _site/assets/charts
+
+          # Create placeholder SVG thumbnails for weeks
+          for i in $(seq -w 1 12); do
+            cat > "_site/assets/thumbs/week${i}.png" << 'PLACEHOLDER'
+          PLACEHOLDER
+          done
+
+          # Actually generate placeholder PNGs with Python
+          python3 << 'EOF'
+          from PIL import Image, ImageDraw, ImageFont
+          import os
+
+          os.makedirs('_site/assets/thumbs', exist_ok=True)
+          os.makedirs('_site/assets/charts', exist_ok=True)
+
+          week_titles = {
+              '01': 'N-grams',
+              '02': 'Embeddings',
+              '03': 'RNN/LSTM',
+              '04': 'Seq2Seq',
+              '05': 'Transformers',
+              '06': 'Pre-trained',
+              '07': 'Advanced',
+              '08': 'Tokenization',
+              '09': 'Decoding',
+              '10': 'Fine-tuning',
+              '11': 'Efficiency',
+              '12': 'Ethics'
+          }
+
+          for num, title in week_titles.items():
+              img = Image.new('RGB', (400, 225), color=(51, 51, 178))
+              draw = ImageDraw.Draw(img)
+              draw.rectangle([10, 10, 390, 215], outline='white', width=2)
+              draw.text((200, 90), f'Week {num}', fill='white', anchor='mm')
+              draw.text((200, 130), title, fill='white', anchor='mm')
+              img.save(f'_site/assets/thumbs/week{num}.png')
+
+          # Create placeholder chart thumbnails
+          chart_names = [
+              'skipgram_architecture', 'cbow_architecture', 'transformer_architecture',
+              'attention_heatmap', 'beam_search', 'temperature_effects',
+              'word_arithmetic', 'embedding_space', 'loss_landscape',
+              'rnn_unrolled', 'lstm_gates', 'bert_architecture'
+          ]
+
+          for name in chart_names:
+              img = Image.new('RGB', (200, 140), color=(248, 250, 252))
+              draw = ImageDraw.Draw(img)
+              draw.rectangle([5, 5, 195, 135], outline=(226, 232, 240), width=1)
+              short_name = name.replace('_', ' ').title()[:15]
+              draw.text((100, 70), short_name, fill=(100, 116, 139), anchor='mm')
+              img.save(f'_site/assets/charts/{name}.png')
+
+          print("Generated placeholder images")
+          EOF
+
+      - name: Convert actual PDFs to thumbnails (if available)
+        run: |
+          # Try to convert actual week figures to thumbnails
+          for i in $(seq -w 1 12); do
+            week_dir="NLP_slides/week${i}_*/figures"
+            if ls $week_dir/*.pdf 1> /dev/null 2>&1; then
+              first_pdf=$(ls $week_dir/*.pdf | head -1)
+              if [ -f "$first_pdf" ]; then
+                pdftoppm -png -r 100 -singlefile -f 1 -l 1 "$first_pdf" "_site/assets/thumbs/week${i}" 2>/dev/null || true
+              fi
+            fi
+          done
+
+          # Convert embeddings charts
           if [ -d "NLP_slides/week02_neural_lm/figures" ]; then
-            cp NLP_slides/week02_neural_lm/figures/*.pdf docs/assets/charts/embeddings/ 2>/dev/null || true
-          fi
-
-      - name: Convert PDFs to PNG
-        run: |
-          cd docs/assets/charts/embeddings
-          for pdf in *.pdf; do
-            if [ -f "$pdf" ]; then
-              pdftoppm -png -r 150 -singlefile "$pdf" "${pdf%.pdf}"
-            fi
-          done
-
-      - name: Copy slide PDFs
-        run: |
-          mkdir -p docs/assets/slides/embeddings
-          if [ -f "embeddings/embeddings_enhanced.pdf" ]; then
-            cp embeddings/embeddings_enhanced.pdf docs/assets/slides/embeddings/
-          fi
-
-      - name: Generate slide thumbnails
-        run: |
-          cd docs/assets/slides/embeddings
-          for pdf in *.pdf; do
-            if [ -f "$pdf" ]; then
-              pdftoppm -png -r 72 -singlefile -f 1 -l 1 "$pdf" "thumbnail"
-            fi
-          done
-
-      - name: Convert notebooks to HTML
-        run: |
-          mkdir -p docs/assets/notebooks/embeddings
-
-          # Discovery notebook
-          if [ -f "embeddings/handouts/discovery_notebook.ipynb" ]; then
-            jupyter nbconvert --to html --no-input \
-              "embeddings/handouts/discovery_notebook.ipynb" \
-              --output-dir docs/assets/notebooks/embeddings/ \
-              --output discovery_notebook.html || true
-          fi
-
-          # Word embeddings lab
-          if [ -f "NLP_slides/week02_neural_lm/lab/week02_word_embeddings_lab.ipynb" ]; then
-            jupyter nbconvert --to html --no-input \
-              "NLP_slides/week02_neural_lm/lab/week02_word_embeddings_lab.ipynb" \
-              --output-dir docs/assets/notebooks/embeddings/ \
-              --output word_embeddings_lab.html || true
+            for pdf in NLP_slides/week02_neural_lm/figures/*_bsc.pdf; do
+              if [ -f "$pdf" ]; then
+                name=$(basename "$pdf" .pdf)
+                pdftoppm -png -r 100 -singlefile "$pdf" "_site/assets/charts/${name}" 2>/dev/null || true
+              fi
+            done
           fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Build Jekyll site
-        run: |
-          cd docs
-          bundle install
-          bundle exec jekyll build
-        env:
-          JEKYLL_ENV: production
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/_site
+          path: _site
 
   deploy:
     environment:

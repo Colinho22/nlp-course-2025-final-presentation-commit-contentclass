@@ -15,7 +15,7 @@ def generate_problem4_path_comparison_bsc():
     """Compare beam path vs optimal path."""
     dot = graphviz.Digraph(format='pdf', engine='dot')
     dot.attr(dpi='300', rankdir='LR', bgcolor='transparent')
-    dot.attr('node', shape='box', style='filled', fontname='Arial', fontsize='10')
+    dot.attr('node', shape='box', style='filled', fontname='Arial', fontsize='18')
 
     # Taken path
     dot.node('taken', 'Path Taken by Beam\\n(greedy-ish)',

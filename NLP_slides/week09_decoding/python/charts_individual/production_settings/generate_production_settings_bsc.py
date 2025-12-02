@@ -31,13 +31,14 @@ COLOR_ORANGE = '#FF7F0E'
 
 plt.style.use('seaborn-v0_8-whitegrid')
 
-FONTSIZE_TITLE = 36
-FONTSIZE_LABEL = 30
-FONTSIZE_TICK = 28
-FONTSIZE_ANNOTATION = 28
-FONTSIZE_LEGEND = 26
-FONTSIZE_TEXT = 30
-FONTSIZE_SMALL = 24
+FONTSIZE_TITLE = 24
+FONTSIZE_LABEL = 20
+FONTSIZE_TICK = 16
+FONTSIZE_ANNOTATION = 18
+FONTSIZE_LEGEND = 18
+FONTSIZE_TEXT = 20
+FONTSIZE_SMALL = 18
+
 
 def set_minimalist_style(ax):
     """Apply minimalist styling"""
@@ -80,7 +81,7 @@ def generate_production_settings():
     # Style header
     for i in range(len(headers)):
         table[(0, i)].set_facecolor(COLOR_ACCENT)
-        table[(0, i)].set_text_props(weight='bold', color='white', fontsize=42)
+        table[(0, i)].set_text_props(weight='bold', color='white', fontsize=24)
 
     # Highlight rows
     for i in range(1, len(systems) + 1):
@@ -90,7 +91,7 @@ def generate_production_settings():
 
     ax.axis('off')
     ax.set_title('Production Decoding Settings (Real Systems 2024-2025)',
-                fontsize=42, weight='bold', pad=20)
+                fontsize=24, weight='bold', pad=20)
 
     plt.tight_layout()
     plt.savefig('./production_settings_bsc.pdf', dpi=300, bbox_inches='tight')

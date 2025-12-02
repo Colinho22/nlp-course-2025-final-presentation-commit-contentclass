@@ -17,7 +17,7 @@ def create_beam_search_tree():
 
     # Graph attributes (30pt minimum fonts)
     dot.attr(rankdir='TB', size='14,10!', ratio='fill',
-             fontname='Arial', fontsize='30',
+             fontname='Arial', fontsize='20',
              bgcolor='white', pad='0.5', nodesep='0.6', ranksep='0.8')
 
     # Node styles (30pt+ fonts)
@@ -46,7 +46,7 @@ def create_beam_search_tree():
     # Step 1: Generate first word (5 candidates, keep top 3)
     with dot.subgraph(name='cluster_step1') as c:
         c.attr(rank='same', label='Step 1: First Word (keep top 3)',
-               fontsize='32', fontcolor='#3333B2', style='dashed',
+               fontsize='22', fontcolor='#3333B2', style='dashed',
                color='#3333B2', penwidth='3')
 
         # Top 3 (kept)
@@ -68,7 +68,7 @@ def create_beam_search_tree():
     # Step 2: Expand each of top 3 (9 candidates total, keep top 3)
     with dot.subgraph(name='cluster_step2') as c:
         c.attr(rank='same', label='Step 2: Second Word (9 candidates → keep top 3)',
-               fontsize='32', fontcolor='#3333B2', style='dashed',
+               fontsize='22', fontcolor='#3333B2', style='dashed',
                color='#3333B2', penwidth='3')
 
         # From "The" (kept)
@@ -105,7 +105,7 @@ def create_beam_search_tree():
     # Step 3: Final output (showing only top 3 complete sequences)
     with dot.subgraph(name='cluster_step3') as c:
         c.attr(rank='same', label='Step 3: Continue... → Final Selection',
-               fontsize='32', fontcolor='#FF7F0E', style='dashed',
+               fontsize='22', fontcolor='#FF7F0E', style='dashed',
                color='#FF7F0E', penwidth='3')
 
         c.node('final', 'Best: "The cat sat on the mat"\\nFinal Score: -3.20', **final_style)
@@ -127,7 +127,7 @@ def create_beam_search_tree():
 • Orange = Final winner
 • At each step: keep top 3''',
                shape='box', style='rounded',
-               fontsize='30', fontname='Arial',
+               fontsize='20', fontname='Arial',
                fillcolor='#FFFACD', color='black', penwidth='2')
 
     # Render to PDF

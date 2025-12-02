@@ -1,0 +1,54 @@
+// Beam Search Tree
+digraph {
+	bgcolor=white fontname=Arial fontsize=20 nodesep=0.6 pad=0.5 rankdir=TB ranksep=0.8 ratio=fill size="14,10!"
+	START [label=START fillcolor="#3333B2" fontcolor=white fontsize=36 penwidth=5 shape=circle style=filled width=1.5]
+	subgraph cluster_step1 {
+		color="#3333B2" fontcolor="#3333B2" fontsize=22 label="Step 1: First Word (keep top 3)" penwidth=3 rank=same style=dashed
+		The [label="The\nP=0.40\nlog=-0.92" fillcolor="#2CA02C" fontcolor=white fontsize=30 height=0.9 penwidth=4 shape=box style="rounded,filled" width=2.2]
+		A [label="A\nP=0.30\nlog=-1.20" fillcolor="#2CA02C" fontcolor=white fontsize=30 height=0.9 penwidth=4 shape=box style="rounded,filled" width=2.2]
+		I [label="I\nP=0.20\nlog=-1.61" fillcolor="#2CA02C" fontcolor=white fontsize=30 height=0.9 penwidth=4 shape=box style="rounded,filled" width=2.2]
+		It [label="It\nP=0.10" fillcolor="#E0E0E0" fontcolor="#808080" fontsize=28 height=0.8 penwidth=3 shape=box style="rounded,filled,dashed" width=2.0]
+		One [label="One\nP=0.05" fillcolor="#E0E0E0" fontcolor="#808080" fontsize=28 height=0.8 penwidth=3 shape=box style="rounded,filled,dashed" width=2.0]
+	}
+	START -> The [label="" arrowsize=1.0 color="#27AE60" penwidth=2.5]
+	START -> A [label="" arrowsize=1.0 color="#27AE60" penwidth=2.5]
+	START -> I [label="" arrowsize=1.0 color="#27AE60" penwidth=2.5]
+	START -> It [label="" arrowsize=0.7 color="#C0C0C0" penwidth=1 style=dashed]
+	START -> One [label="" arrowsize=0.7 color="#C0C0C0" penwidth=1 style=dashed]
+	subgraph cluster_step2 {
+		color="#3333B2" fontcolor="#3333B2" fontsize=22 label="Step 2: Second Word (9 candidates → keep top 3)" penwidth=3 rank=same style=dashed
+		The_cat [label="The cat\nsum=-1.61" fillcolor="#2CA02C" fontcolor=white fontsize=30 height=0.9 penwidth=4 shape=box style="rounded,filled" width=2.2]
+		The_dog [label="The dog\nsum=-2.12" fillcolor="#E0E0E0" fontcolor="#808080" fontsize=28 height=0.8 penwidth=3 shape=box style="rounded,filled,dashed" width=2.0]
+		The_sun [label="The sun\nsum=-2.53" fillcolor="#E0E0E0" fontcolor="#808080" fontsize=28 height=0.8 penwidth=3 shape=box style="rounded,filled,dashed" width=2.0]
+		A_nice [label="A nice\nsum=-2.12" fillcolor="#2CA02C" fontcolor=white fontsize=30 height=0.9 penwidth=4 shape=box style="rounded,filled" width=2.2]
+		A_big [label="A big\nsum=-2.25" fillcolor="#E0E0E0" fontcolor="#808080" fontsize=28 height=0.8 penwidth=3 shape=box style="rounded,filled,dashed" width=2.0]
+		A_small [label="A small\nsum=-2.59" fillcolor="#E0E0E0" fontcolor="#808080" fontsize=28 height=0.8 penwidth=3 shape=box style="rounded,filled,dashed" width=2.0]
+		I_think [label="I think\nsum=-2.12" fillcolor="#2CA02C" fontcolor=white fontsize=30 height=0.9 penwidth=4 shape=box style="rounded,filled" width=2.2]
+		I_know [label="I know\nsum=-3.00" fillcolor="#E0E0E0" fontcolor="#808080" fontsize=28 height=0.8 penwidth=3 shape=box style="rounded,filled,dashed" width=2.0]
+		I_see [label="I see\nsum=-3.51" fillcolor="#E0E0E0" fontcolor="#808080" fontsize=28 height=0.8 penwidth=3 shape=box style="rounded,filled,dashed" width=2.0]
+	}
+	The -> The_cat [arrowsize=1.0 color="#27AE60" penwidth=2.5]
+	The -> The_dog [arrowsize=0.7 color="#C0C0C0" penwidth=1 style=dashed]
+	The -> The_sun [arrowsize=0.7 color="#C0C0C0" penwidth=1 style=dashed]
+	A -> A_nice [arrowsize=1.0 color="#27AE60" penwidth=2.5]
+	A -> A_big [arrowsize=0.7 color="#C0C0C0" penwidth=1 style=dashed]
+	A -> A_small [arrowsize=0.7 color="#C0C0C0" penwidth=1 style=dashed]
+	I -> I_think [arrowsize=1.0 color="#27AE60" penwidth=2.5]
+	I -> I_know [arrowsize=0.7 color="#C0C0C0" penwidth=1 style=dashed]
+	I -> I_see [arrowsize=0.7 color="#C0C0C0" penwidth=1 style=dashed]
+	subgraph cluster_step3 {
+		color="#FF7F0E" fontcolor="#FF7F0E" fontsize=22 label="Step 3: Continue... → Final Selection" penwidth=3 rank=same style=dashed
+		final [label="Best: \"The cat sat on the mat\"\nFinal Score: -3.20" fillcolor="#FF7F0E" fontcolor=white fontsize=32 height=1.0 penwidth=5 shape=box style="rounded,filled" width=4.0]
+	}
+	The_cat -> final [label="continues..." arrowsize=1.2 color="#F39C12" penwidth=3 style=bold]
+	A_nice -> final [label="" arrowsize=0.8 color="#E0E0E0" penwidth=1.5 style=dashed]
+	I_think -> final [label="" arrowsize=0.8 color="#E0E0E0" penwidth=1.5 style=dashed]
+	subgraph cluster_legend {
+		label="" style=invisible
+		legend [label="Legend:
+• Green (solid) = Kept in beam
+• Gray (dashed) = Pruned
+• Orange = Final winner
+• At each step: keep top 3" color=black fillcolor="#FFFACD" fontname=Arial fontsize=20 penwidth=2 shape=box style=rounded]
+	}
+}

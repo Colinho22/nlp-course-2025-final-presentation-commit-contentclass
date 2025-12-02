@@ -31,13 +31,14 @@ COLOR_ORANGE = '#FF7F0E'
 
 plt.style.use('seaborn-v0_8-whitegrid')
 
-FONTSIZE_TITLE = 36
-FONTSIZE_LABEL = 30
-FONTSIZE_TICK = 28
-FONTSIZE_ANNOTATION = 28
-FONTSIZE_LEGEND = 26
-FONTSIZE_TEXT = 30
-FONTSIZE_SMALL = 24
+FONTSIZE_TITLE = 24
+FONTSIZE_LABEL = 20
+FONTSIZE_TICK = 16
+FONTSIZE_ANNOTATION = 18
+FONTSIZE_LEGEND = 18
+FONTSIZE_TEXT = 20
+FONTSIZE_SMALL = 18
+
 
 def set_minimalist_style(ax):
     """Apply minimalist styling"""
@@ -86,22 +87,22 @@ def generate_quality_diversity_pareto():
                                edgecolor=COLOR_GREEN, facecolor=COLOR_GREEN,
                                alpha=0.1, linestyle='--')
     ax.add_patch(optimal)
-    ax.text(77, 87, 'Optimal\nZone', ha='center', fontsize=42,
+    ax.text(77, 87, 'Optimal\nZone', ha='center', fontsize=24,
            weight='bold', color=COLOR_GREEN)
 
     # Problem zones
-    ax.text(20, 20, 'Boring\nRepetitive', ha='center', fontsize=42,
+    ax.text(20, 20, 'Boring\nRepetitive', ha='center', fontsize=24,
            style='italic', color=COLOR_RED, alpha=0.6)
-    ax.text(85, 30, 'Random\nNonsense', ha='center', fontsize=42,
+    ax.text(85, 30, 'Random\nNonsense', ha='center', fontsize=24,
            style='italic', color=COLOR_RED, alpha=0.6)
 
-    ax.set_xlabel('Diversity (Creativity, Novelty) →', fontsize=40, weight='bold')
-    ax.set_ylabel('Quality (Coherence, Correctness) →', fontsize=40, weight='bold')
-    ax.set_title('Quality-Diversity Tradeoff: All Methods', fontsize=42, weight='bold', pad=15)
+    ax.set_xlabel('Diversity (Creativity, Novelty) →', fontsize=24, weight='bold')
+    ax.set_ylabel('Quality (Coherence, Correctness) →', fontsize=24, weight='bold')
+    ax.set_title('Quality-Diversity Tradeoff: All Methods', fontsize=24, weight='bold', pad=15)
     ax.set_xlim(0, 100)
     ax.set_ylim(0, 100)
 
-    ax.legend(loc='lower left', fontsize=42)
+    ax.legend(loc='lower left', fontsize=24)
     set_minimalist_style(ax)
 
     plt.tight_layout()

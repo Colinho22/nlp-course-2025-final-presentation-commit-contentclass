@@ -31,13 +31,14 @@ COLOR_ORANGE = '#FF7F0E'
 
 plt.style.use('seaborn-v0_8-whitegrid')
 
-FONTSIZE_TITLE = 36
-FONTSIZE_LABEL = 30
-FONTSIZE_TICK = 28
-FONTSIZE_ANNOTATION = 28
-FONTSIZE_LEGEND = 26
-FONTSIZE_TEXT = 30
-FONTSIZE_SMALL = 24
+FONTSIZE_TITLE = 24
+FONTSIZE_LABEL = 20
+FONTSIZE_TICK = 16
+FONTSIZE_ANNOTATION = 18
+FONTSIZE_LEGEND = 18
+FONTSIZE_TEXT = 20
+FONTSIZE_SMALL = 18
+
 
 def set_minimalist_style(ax):
     """Apply minimalist styling"""
@@ -77,7 +78,7 @@ def generate_prediction_pipeline():
 
         bbox = dict(boxstyle='round,pad=0.8', facecolor=color,
                    edgecolor=COLOR_MAIN, linewidth=linewidth)
-        ax.text(x, 0.75, stage, ha='center', va='center', fontsize=38,
+        ax.text(x, 0.75, stage, ha='center', va='center', fontsize=24,
                weight='bold', color=text_color, bbox=bbox)
 
     # Draw arrows
@@ -96,14 +97,14 @@ def generate_prediction_pipeline():
     ]
 
     for x, example in zip(x_positions, examples):
-        ax.text(x, 0.35, example, ha='center', va='center', fontsize=42,
+        ax.text(x, 0.35, example, ha='center', va='center', fontsize=24,
                style='italic', color=COLOR_GRAY,
                bbox=dict(boxstyle='round', facecolor='white',
                         edgecolor=COLOR_GRAY, linewidth=1, alpha=0.7))
 
     # Key question
     ax.text(0.5, 0.10, 'Key Question: Model gives 50,000 probabilities - which word do we choose?',
-           ha='center', fontsize=38, weight='bold', color=COLOR_ACCENT,
+           ha='center', fontsize=24, weight='bold', color=COLOR_ACCENT,
            bbox=dict(boxstyle='round', facecolor=COLOR_ACCENT, alpha=0.15,
                     edgecolor=COLOR_ACCENT, linewidth=3))
 
@@ -111,7 +112,7 @@ def generate_prediction_pipeline():
     ax.set_ylim(0, 1)
     ax.axis('off')
     ax.set_title('From Prediction to Generation: The Decoding Challenge',
-                fontsize=42, weight='bold', pad=20)
+                fontsize=24, weight='bold', pad=20)
 
     plt.tight_layout()
     plt.savefig('./prediction_to_text_pipeline_bsc.pdf', dpi=300, bbox_inches='tight')

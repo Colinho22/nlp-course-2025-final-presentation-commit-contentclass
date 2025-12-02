@@ -31,13 +31,14 @@ COLOR_ORANGE = '#FF7F0E'
 
 plt.style.use('seaborn-v0_8-whitegrid')
 
-FONTSIZE_TITLE = 36
-FONTSIZE_LABEL = 30
-FONTSIZE_TICK = 28
-FONTSIZE_ANNOTATION = 28
-FONTSIZE_LEGEND = 26
-FONTSIZE_TEXT = 30
-FONTSIZE_SMALL = 24
+FONTSIZE_TITLE = 24
+FONTSIZE_LABEL = 20
+FONTSIZE_TICK = 16
+FONTSIZE_ANNOTATION = 18
+FONTSIZE_LEGEND = 18
+FONTSIZE_TEXT = 20
+FONTSIZE_SMALL = 18
+
 
 def set_minimalist_style(ax):
     """Apply minimalist styling"""
@@ -82,7 +83,7 @@ def generate_quality_diversity_scatter():
 
         ax.annotate(method, xy=(div, coh),
                    xytext=(div + offset_x, coh + offset_y),
-                   fontsize=11, fontweight='bold', color=COLOR_MAIN,
+                   fontsize=18, fontweight='bold', color=COLOR_MAIN,
                    ha=ha, va='center')
 
     # Draw Pareto frontier curve
@@ -109,23 +110,23 @@ def generate_quality_diversity_scatter():
                      edgecolor=COLOR_GREEN, linewidth=2,
                      linestyle='--', zorder=0)
     ax.add_patch(rect)
-    ax.text(0.65, 0.62, 'Sweet Spot', fontsize=10,
+    ax.text(0.65, 0.62, 'Sweet Spot', fontsize=16,
            color=COLOR_GREEN, fontweight='bold', ha='center')
 
     # Add region labels
     ax.text(0.15, 0.15, 'Too Deterministic\n(Repetitive)',
-           fontsize=9, color=COLOR_RED, ha='center', alpha=0.7,
+           fontsize=16, color=COLOR_RED, ha='center', alpha=0.7,
            bbox=dict(boxstyle='round,pad=0.5', facecolor=COLOR_LIGHT,
                     edgecolor=COLOR_RED, alpha=0.3))
 
     ax.text(0.85, 0.15, 'Too Random\n(Incoherent)',
-           fontsize=9, color=COLOR_RED, ha='center', alpha=0.7,
+           fontsize=16, color=COLOR_RED, ha='center', alpha=0.7,
            bbox=dict(boxstyle='round,pad=0.5', facecolor=COLOR_LIGHT,
                     edgecolor=COLOR_RED, alpha=0.3))
 
     # Formatting
-    ax.set_xlabel('Diversity (Entropy)', fontsize=13, fontweight='bold', color=COLOR_MAIN)
-    ax.set_ylabel('Coherence (Quality)', fontsize=13, fontweight='bold', color=COLOR_MAIN)
+    ax.set_xlabel('Diversity (Entropy)', fontsize=18, fontweight='bold', color=COLOR_MAIN)
+    ax.set_ylabel('Coherence (Quality)', fontsize=18, fontweight='bold', color=COLOR_MAIN)
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.grid(True, alpha=0.3, linestyle='--')
@@ -133,7 +134,7 @@ def generate_quality_diversity_scatter():
     ax.spines['right'].set_visible(False)
 
     # Legend
-    ax.legend(loc='lower left', fontsize=10, framealpha=0.9)
+    ax.legend(loc='lower left', fontsize=16, framealpha=0.9)
 
     plt.tight_layout()
     plt.savefig('./quality_diversity_scatter_bsc.pdf',

@@ -31,13 +31,14 @@ COLOR_ORANGE = '#FF7F0E'
 
 plt.style.use('seaborn-v0_8-whitegrid')
 
-FONTSIZE_TITLE = 36
-FONTSIZE_LABEL = 30
-FONTSIZE_TICK = 28
-FONTSIZE_ANNOTATION = 28
-FONTSIZE_LEGEND = 26
-FONTSIZE_TEXT = 30
-FONTSIZE_SMALL = 24
+FONTSIZE_TITLE = 24
+FONTSIZE_LABEL = 20
+FONTSIZE_TICK = 16
+FONTSIZE_ANNOTATION = 18
+FONTSIZE_LEGEND = 18
+FONTSIZE_TEXT = 20
+FONTSIZE_SMALL = 18
+
 
 def set_minimalist_style(ax):
     """Apply minimalist styling"""
@@ -58,7 +59,7 @@ def generate_degeneration_problem():
 
     # Example repetitive text
     ax.text(0.5, 0.85, 'Real Output from Greedy Decoding:', ha='center',
-           fontsize=40, weight='bold', color=COLOR_RED)
+           fontsize=24, weight='bold', color=COLOR_RED)
 
     repetitive_text = ('"The city of New York is a major city in the United States. '
                       'The city is known for its diverse culture and the city has '
@@ -66,28 +67,28 @@ def generate_degeneration_problem():
                       'financial district..."')
 
     # Highlight repetitions
-    ax.text(0.5, 0.65, repetitive_text, ha='center', va='center', fontsize=42,
+    ax.text(0.5, 0.65, repetitive_text, ha='center', va='center', fontsize=24,
            wrap=True, bbox=dict(boxstyle='round', facecolor=COLOR_RED, alpha=0.1,
                                edgecolor=COLOR_RED, linewidth=3),
            style='italic')
 
     # Count repetitions
     ax.text(0.5, 0.35, 'Problem: "the city" appears 6 times in 4 sentences!',
-           ha='center', fontsize=38, weight='bold', color=COLOR_RED)
+           ha='center', fontsize=24, weight='bold', color=COLOR_RED)
 
     ax.text(0.5, 0.25, 'Why? Always picking argmax → same patterns repeated',
-           ha='center', fontsize=42, style='italic', color=COLOR_MAIN)
+           ha='center', fontsize=24, style='italic', color=COLOR_MAIN)
 
     # Solution teaser
     ax.text(0.5, 0.10, 'Solution: Penalize tokens similar to recent context (Contrastive Search)',
-           ha='center', fontsize=38, weight='bold', color=COLOR_GREEN,
+           ha='center', fontsize=24, weight='bold', color=COLOR_GREEN,
            bbox=dict(boxstyle='round', facecolor=COLOR_GREEN, alpha=0.2,
                     edgecolor=COLOR_GREEN, linewidth=3))
 
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.axis('off')
-    ax.set_title('The Degeneration Problem: Model Repetition', fontsize=42, weight='bold')
+    ax.set_title('The Degeneration Problem: Model Repetition', fontsize=24, weight='bold')
 
     plt.tight_layout()
     plt.savefig('./degeneration_problem_bsc.pdf', dpi=300, bbox_inches='tight')

@@ -1,0 +1,703 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{amsmath}
+
+% Complete color palette (ALL 12 REQUIRED)
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255, 127, 14}
+\definecolor{mlgreen}{RGB}{44, 160, 44}
+\definecolor{mlred}{RGB}{214, 39, 40}
+\definecolor{mlgray}{RGB}{127, 127, 127}
+\definecolor{lightgray}{RGB}{240, 240, 240}
+\definecolor{midgray}{RGB}{180, 180, 180}
+
+% Beamer customization (ALL REQUIRED)
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in toc}{fg=mlblue}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{block title}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{block body}{bg=mllavender4,fg=black}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% Bottom note command (REQUIRED)
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+% Conditional probability (REQUIRED)
+\newcommand{\given}{\mid}
+
+\title{Sentiment Analysis with Transformers}
+\subtitle{From Words to Understanding}
+\author{BSc NLP Module}
+\date{November 2025}
+
+\begin{document}
+
+% =====================================================
+% SLIDE 1: TITLE SLIDE
+% =====================================================
+% PEDAGOGICAL PURPOSE: Set stage for investigation
+% EMOTIONAL HOOK: Title suggests there's more to this than meets the eye
+% PREVENTS: ``This is just keyword counting'' misconception
+% NARRATIVE ROLE: The Setup - We're about to investigate something interesting
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+% =====================================================
+% SLIDE 2: LEARNING GOALS + THE PUZZLE
+% =====================================================
+% PEDAGOGICAL PURPOSE: Create cognitive dissonance (85\% sounds good, but...)
+% EMOTIONAL HOOK: Students relate to ``angry users'' scenario
+% PREVENTS: Surface-level satisfaction with metrics
+% SCAFFOLDS: From classification metrics to real-world deployment problems
+% FORWARD REFERENCE: ``What makes this review hard? Let's investigate the clues...''
+
+\begin{frame}[t]{Learning Goals \& The Puzzle}
+\vspace{-0.2cm}
+
+\textbf{After this lecture, you will be able to:}
+\begin{enumerate}
+\item Explain why bidirectional context improves sentiment analysis
+\item Describe the BERT fine-tuning process for classification tasks
+\item Interpret performance metrics and attention patterns
+\item Evaluate tradeoffs between traditional ML and transformer approaches
+\item Identify when BERT-based sentiment analysis is appropriate
+\end{enumerate}
+
+\vspace{0.3cm}
+\begin{block}{The Puzzle: When 85\% Isn't Good Enough}
+Your startup gets 10,000 movie reviews per day. You build a BOW+SVM classifier with 85\% accuracy. Investors are thrilled!
+
+\vspace{0.2cm}
+\textbf{But then...} users start complaining:
+
+\vspace{0.1cm}
+\textit{``Great, another boring superhero movie''} $\rightarrow$ Model: \textcolor{mlgreen}{POSITIVE} $\rightarrow$ \textcolor{mlred}{User complaint!}
+\end{block}
+
+\bottomnote{Mystery Question: If 85\% is good, why are users complaining? Let's investigate...}
+\end{frame}
+
+% =====================================================
+% SLIDE 3: CLUE \#1 - THE CONTEXT PROBLEM
+% =====================================================
+% PEDAGOGICAL PURPOSE: Make abstract ``context'' concept concrete with examples
+% EMOTIONAL HOOK: Students recognize these patterns from real life
+% PREVENTS: ``Just add bigrams/trigrams'' premature solution
+% SCAFFOLDS: From BOW model to understanding positional/relational semantics
+% BACKWARD CALLBACK: ``Remember our puzzle? 'Great, another boring movie' - now we see WHY it failed''
+% FORWARD REFERENCE: ``If word order matters, how do traditional methods handle it? Let's see their limitations...''
+
+\begin{frame}[t]{Clue \#1: Why Traditional Methods Fail}
+\vspace{-0.2cm}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{0.30\textwidth}|c|c|p{0.25\textwidth}}
+\toprule
+\textbf{Review Text} & \textbf{BOW Predicts} & \textbf{Actual} & \textbf{Why BOW Fails} \\
+\midrule
+``Great, another boring movie'' & \textcolor{mlgreen}{POSITIVE} & \textcolor{mlred}{NEGATIVE} & Sees ``Great'', ignores context \\
+\midrule
+``This is not a bad film'' & \textcolor{mlred}{NEGATIVE} & \textcolor{mlgreen}{POSITIVE} & Sees ``bad'', ignores ``not'' \\
+\midrule
+``Absolutely incredible'' vs ``Somewhat good'' & Both POSITIVE & Strong vs Weak & Cannot measure intensity \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\vspace{0.3cm}
+\textbf{Pattern Emerges:}
+\begin{itemize}
+\item \textbf{Sarcasm}: Word polarity reversed by context
+\item \textbf{Negation}: Modifier words change meaning
+\item \textbf{Intensity}: Strength requires understanding relationships
+\end{itemize}
+
+\bottomnote{BOW treats words as independent. Context, word order, and relationships matter!}
+\end{frame}
+
+% =====================================================
+% SLIDE 4: DEAD END - TRADITIONAL APPROACHES
+% =====================================================
+% PEDAGOGICAL PURPOSE: Create need for new approach (not arbitrary choice)
+% EMOTIONAL HOOK: Frustration $\rightarrow$ readiness for breakthrough
+% PREVENTS: ``Why not just use TF-IDF?'' resistance to transformers
+% SCAFFOLDS: From independent word processing to need for contextual processing
+% BACKWARD CALLBACK: ``These methods can't handle our sarcasm/negation/intensity clues from Slide 3''
+% FORWARD REFERENCE: ``What if we could process words in BOTH directions simultaneously? That's our breakthrough...''
+
+\begin{frame}[t]{Dead End: Traditional Architectures}
+\vspace{-0.2cm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{\textcolor{mlred}{Traditional: BOW + SVM}}
+
+\vspace{0.2cm}
+\textbf{Pipeline:}
+\begin{enumerate}
+\item Input: ``Great, another boring movie''
+\item Word Counts: Great=1, another=1, boring=1, movie=1
+\item Feature Vector: [1, 1, 1, 1, ...]
+\item SVM Classifier
+\item Output: \textcolor{mlgreen}{POSITIVE} (WRONG!)
+\end{enumerate}
+
+\vspace{0.2cm}
+\textcolor{mlred}{\textbf{Problem: No word order, no context!}}
+
+\column{0.48\textwidth}
+\textbf{\textcolor{mlgreen}{Breakthrough: BERT}}
+
+\vspace{0.2cm}
+\textbf{Pipeline:}
+\begin{enumerate}
+\item Input: ``Great, another boring movie''
+\item Tokenization + [CLS] token
+\item Transformer Layers (Bidirectional)
+\item [CLS] = Sentence Representation
+\item Output: \textcolor{mlred}{NEGATIVE} (CORRECT!)
+\end{enumerate}
+
+\vspace{0.2cm}
+\textcolor{mlgreen}{\textbf{Solution: Understands context!}}
+\end{columns}
+
+\bottomnote{Structural limitation: BOW/TF-IDF can't capture word order or bidirectional context. BERT can.}
+\end{frame}
+
+% =====================================================
+% SLIDE 5: BREAKTHROUGH - BERT ARCHITECTURE
+% =====================================================
+% PEDAGOGICAL PURPOSE: Reveal solution to puzzle established in Slides 2-4
+% EMOTIONAL HOOK: ``Aha!'' moment - the architecture solves our specific problems
+% PREVENTS: Thinking BERT is just ``better word vectors''
+% SCAFFOLDS: From understanding problem (context) to understanding solution (bidirectionality)
+% BACKWARD CALLBACK: ``Now we can handle our Slide 3 examples: 'Great' is understood in context of 'boring'''
+% FORWARD REFERENCE: ``But how do we teach BERT about sentiment? That's fine-tuning...''
+
+\begin{frame}[t]{Breakthrough: BERT for Sentiment Analysis}
+\vspace{-0.2cm}
+
+\textbf{Key Insight:} Bidirectional context solves our puzzle!
+
+\vspace{0.2cm}
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{BERT Architecture (High-Level)}
+\begin{itemize}
+\item Input: Tokenize with [CLS] token
+\item Transformer layers (12-24)
+\item Bidirectional attention
+\item [CLS] = sentence representation
+\item Classification head on [CLS]
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{How It Solves Our Puzzle}
+\begin{itemize}
+\item Sarcasm: ``Great'' seen with ``boring''
+\item Negation: ``not'' modifies ``bad''
+\item Intensity: Measures strength context
+\item Word order: Fully preserved
+\item Relationships: Captured by attention
+\end{itemize}
+\end{columns}
+
+\vspace{0.3cm}
+\bottomnote{Breakthrough: BERT processes words in both directions, understanding context like humans do.}
+\end{frame}
+
+% =====================================================
+% SLIDE 6: THE PROCESS - FINE-TUNING PIPELINE
+% =====================================================
+% PEDAGOGICAL PURPOSE: Distinguish pre-training (general) from fine-tuning (task-specific)
+% EMOTIONAL HOOK: Efficiency - ``We don't start from zero!''
+% PREVENTS: Confusion about what BERT learns when
+% SCAFFOLDS: From architecture (how) to training process (when/why)
+% BACKWARD CALLBACK: ``Stage 1 gives us the contextual understanding we needed (Slide 5)''
+% FORWARD REFERENCE: ``But what happens during fine-tuning? Let's look at the training...''
+
+\begin{frame}[t]{The Solution: BERT Fine-Tuning Pipeline}
+\vspace{-0.2cm}
+
+\textbf{Four-Stage Process:}
+
+\vspace{0.3cm}
+\begin{enumerate}
+\item \textbf{Stage 1: Pre-trained BERT} (Already done for us!)
+    \begin{itemize}
+    \item Trained on Wikipedia + Books (general language)
+    \item Knows grammar, context, meaning relationships
+    \end{itemize}
+
+\item \textbf{Stage 2: Add Classifier Head}
+    \begin{itemize}
+    \item Linear layer with random initialization
+    \item 2 outputs: Positive vs Negative
+    \end{itemize}
+
+\item \textbf{Stage 3: Fine-Tune on Sentiment Data}
+    \begin{itemize}
+    \item Train on IMDb reviews (labeled data)
+    \item Needs only 1000s of examples (not millions!)
+    \end{itemize}
+
+\item \textbf{Stage 4: Deploy}
+    \begin{itemize}
+    \item Apply to new reviews in production
+    \item Real-time predictions
+    \end{itemize}
+\end{enumerate}
+
+\bottomnote{Key insight: Pre-training gives general understanding, fine-tuning adapts to sentiment task. We don't start from zero!}
+\end{frame}
+
+% =====================================================
+% CHECKPOINT QUIZ
+% =====================================================
+% PEDAGOGICAL PURPOSE: Reinforce fine-tuning process understanding
+% SCAFFOLDS: Active recall before continuing
+
+\begin{frame}[t]{Checkpoint Quiz}
+\vspace{-0.2cm}
+
+\textbf{Quick Check: Match the stages to what's learned}
+
+\vspace{0.3cm}
+\begin{enumerate}
+\item Pre-trained BERT learns: \_\_\_\_\_
+\item Adding classification head: \_\_\_\_\_
+\item Fine-tuning on IMDb: \_\_\_\_\_
+\item Deployment: \_\_\_\_\_
+\end{enumerate}
+
+\vspace{0.3cm}
+\textbf{Options:}
+\begin{itemize}
+\item[A.] General language understanding (context, grammar, meaning)
+\item[B.] Random initialization for sentiment classification
+\item[C.] Sentiment-specific patterns from labeled data
+\item[D.] Apply to new reviews in production
+\end{itemize}
+
+\vspace{0.3cm}
+\bottomnote{Answers: 1-A, 2-B, 3-C, 4-D. Understanding stages prevents ``train from scratch'' misconception.}
+\end{frame}
+
+% =====================================================
+% SLIDE 7: TRAINING DETAILS
+% =====================================================
+% PEDAGOGICAL PURPOSE: Make solution feel accessible, not intimidating
+% EMOTIONAL HOOK: Relief - manageable resource requirements
+% PREVENTS: ``This only works at Google scale'' defeatism
+% SCAFFOLDS: From conceptual process to practical feasibility
+% BACKWARD CALLBACK: ``This is why fine-tuning (Slide 6) is efficient compared to training from scratch''
+% FORWARD REFERENCE: ``Does this actually work? Let's see the results...''
+
+\begin{frame}[t]{Training Details: Making It Practical}
+\vspace{-0.2cm}
+
+\begin{columns}[t]
+\column{0.48\textwidth}
+\textbf{Loss Function (Intuition)}
+\begin{itemize}
+\item Cross-entropy loss
+\item Pushes probability toward correct label
+\item POSITIVE: maximize $P(\text{pos})$
+\item NEGATIVE: maximize $P(\text{neg})$
+\item Gradient descent updates BERT weights
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Resource Requirements}
+\begin{itemize}
+\item \textbf{Data}: 1000s of labeled examples (not millions!)
+\item \textbf{Compute}: Hours on GPU (not weeks)
+\item \textbf{Memory}: 8-16GB GPU RAM
+\item \textbf{Cost}: \$10-50 on cloud (accessible!)
+\end{itemize}
+\end{columns}
+
+\vspace{0.3cm}
+\begin{block}{Key Insight}
+Fine-tuning is efficient because:
+\begin{itemize}
+\item BERT already knows language (pre-training)
+\item We only teach sentiment patterns (fine-tuning)
+\item Much faster than training from scratch
+\end{itemize}
+\end{block}
+
+\bottomnote{Practical reality: BERT fine-tuning is accessible for real projects, not just research labs.}
+\end{frame}
+
+% =====================================================
+% SLIDE 8: VALIDATION - PERFORMANCE COMPARISON
+% =====================================================
+% PEDAGOGICAL PURPOSE: Provide empirical validation of conceptual claims
+% EMOTIONAL HOOK: Satisfaction - we solved the puzzle!
+% PREVENTS: Skepticism about whether transformers are worth complexity
+% SCAFFOLDS: From theoretical solution to quantitative evidence
+% BACKWARD CALLBACK: ``Remember 85\% accuracy caused problems (Slide 2)? BERT gets 93-95\%''
+% FORWARD REFERENCE: ``But HOW does BERT actually solve our hard examples? Let's peek inside...''
+
+\begin{frame}[t]{Proof: BERT Solves the Puzzle}
+\vspace{-0.2cm}
+
+\textbf{Performance Comparison on Sentiment Benchmarks (F1-Score):}
+
+\vspace{0.3cm}
+\begin{table}[h]
+\centering
+\begin{tabular}{l|c|c}
+\toprule
+\textbf{Method} & \textbf{F1-Score} & \textbf{Category} \\
+\midrule
+BOW + SVM & 78\% & \textcolor{mlgray}{Traditional} \\
+TF-IDF + Logistic & 81\% & \textcolor{mlgray}{Traditional} \\
+\midrule
+LSTM & 87\% & \textcolor{mlorange}{Neural} \\
+\midrule
+BERT-base & \textbf{93\%} & \textcolor{mlgreen}{Transformer} \\
+BERT-large & \textbf{95\%} & \textcolor{mlgreen}{Transformer} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\vspace{0.3cm}
+\textbf{Key Observations:}
+\begin{itemize}
+\item Traditional methods: 78-81\% (our puzzle's 85\% was optimistic!)
+\item BERT improves by +12-17 percentage points
+\item Bidirectional context (our breakthrough) accounts for gains
+\end{itemize}
+
+\bottomnote{Empirical validation: BERT achieves 93-95\% F1 vs 78-81\% for traditional methods. Mystery solved!}
+\end{frame}
+
+% =====================================================
+% SLIDE 9: UNDERSTANDING - ATTENTION HEATMAP
+% =====================================================
+% PEDAGOGICAL PURPOSE: Demystify transformers, build interpretability intuition
+% EMOTIONAL HOOK: Curiosity satisfied - see inside the ``black box''
+% PREVENTS: Fear of uninterpretable models
+% SCAFFOLDS: From performance numbers to mechanistic understanding
+% BACKWARD CALLBACK: ``See how it handles negation (Slide 3 clue)? 'not very good' is understood as unit''
+% FORWARD REFERENCE: ``So when should we use BERT vs simpler methods? Let's talk tradeoffs...''
+
+\begin{frame}[t]{Understanding the Magic: Attention Visualization}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.80\textwidth]{../figures/attention_heatmap_bsc.pdf}
+\end{center}
+
+\bottomnote{BERT's attention reveals how it solves our puzzle: focusing on critical context words like ``not'', ``good'', ``excellent''.}
+\end{frame}
+
+% =====================================================
+% SLIDE 10: WISDOM - WHEN TO USE BERT
+% =====================================================
+% PEDAGOGICAL PURPOSE: Develop judgment for method selection, not just memorization
+% EMOTIONAL HOOK: Empowerment - students can now make engineering decisions
+% PREVENTS: Cargo-cult adoption of ``best'' methods
+% SCAFFOLDS: From technical knowledge to engineering judgment
+% BACKWARD CALLBACK: ``Our puzzle (Slide 2) needed BERT because context was critical. But not all problems do.''
+% FORWARD REFERENCE: ``See appendix for mathematical details and advanced techniques''
+
+\begin{frame}[t]{Wisdom: When to Use BERT vs Traditional Methods}
+\vspace{-0.2cm}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{0.45\textwidth}|p{0.45\textwidth}}
+\toprule
+\textbf{Use BERT When...} & \textbf{Use Traditional (BOW/TF-IDF) When...} \\
+\midrule
+Context is critical (sarcasm, negation) & Simple patterns suffice (keyword matching) \\
+You have 1000+ labeled examples & Limited labeled data ($<$100 examples) \\
+Accuracy matters more than speed & Need real-time inference ($<$1ms) \\
+GPU resources available & CPU-only deployment \\
+Complex language understanding needed & Interpretability critical \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\vspace{0.3cm}
+\textbf{Key Tradeoffs:}
+\begin{itemize}
+\item \textbf{Speed}: BERT $\sim$50ms/review vs BOW $\sim$1ms/review
+\item \textbf{Data}: BERT needs 1000s, traditional works with 100s
+\item \textbf{Accuracy}: BERT +10-15\% F1-score improvement
+\item \textbf{Interpretability}: Traditional clearer, BERT needs attention analysis
+\end{itemize}
+
+\bottomnote{Engineering wisdom: Choose method based on constraints (data, compute, latency) not just ``best'' performance.}
+\end{frame}
+
+% =====================================================
+% APPENDIX SLIDES
+% =====================================================
+
+\appendix
+
+% =====================================================
+% APPENDIX 1: CROSS-ENTROPY LOSS
+% =====================================================
+
+\begin{frame}[t]{Appendix A1: Cross-Entropy Loss (Mathematical Details)}
+\vspace{-0.2cm}
+
+\textbf{Binary Cross-Entropy for Sentiment:}
+\[
+\mathcal{L} = -\frac{1}{N}\sum_{i=1}^{N} \left[ y_i \log(\hat{y}_i) + (1-y_i)\log(1-\hat{y}_i) \right]
+\]
+
+Where:
+\begin{itemize}
+\item $y_i \in \{0, 1\}$: True label (0=negative, 1=positive)
+\item $\hat{y}_i \in [0, 1]$: Predicted probability
+\item $N$: Number of training examples
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Intuition:}
+\begin{itemize}
+\item When $y_i = 1$ (positive): Loss $= -\log(\hat{y}_i)$
+  \begin{itemize}
+  \item If $\hat{y}_i = 0.9$ (confident): Loss $\approx 0.05$ (small)
+  \item If $\hat{y}_i = 0.1$ (wrong): Loss $\approx 2.3$ (large)
+  \end{itemize}
+\item Gradient descent minimizes loss by adjusting BERT weights
+\item Optimizer: AdamW with learning rate $\approx 2 \times 10^{-5}$
+\end{itemize}
+
+\bottomnote{Cross-entropy penalizes confident wrong predictions more than unconfident wrong ones.}
+\end{frame}
+
+% =====================================================
+% APPENDIX 2: OPTIMIZATION
+% =====================================================
+
+\begin{frame}[t]{Appendix A2: Optimization \& Hyperparameters}
+\vspace{-0.2cm}
+
+\textbf{AdamW Optimizer:}
+\begin{itemize}
+\item Adam with weight decay
+\item Adaptive learning rates per parameter
+\item Typical settings: $\beta_1=0.9, \beta_2=0.999, \epsilon=10^{-8}$
+\item Weight decay: $\lambda = 0.01$
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Learning Rate Schedule:}
+\begin{itemize}
+\item \textbf{Warmup}: Linear increase from 0 to peak over first 10\% of steps
+\item \textbf{Decay}: Linear decrease to 0 over remaining steps
+\item \textbf{Peak LR}: $2 \times 10^{-5}$ to $5 \times 10^{-5}$
+\item \textbf{Why}: Prevents catastrophic forgetting of pre-trained weights
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Batch Sizes \& Training:}
+\begin{itemize}
+\item Batch size: 16-32 (limited by GPU memory)
+\item Epochs: 3-5 (more can cause overfitting)
+\item Gradient accumulation if GPU memory limited
+\end{itemize}
+
+\bottomnote{Careful hyperparameter tuning prevents destroying pre-trained knowledge while learning sentiment.}
+\end{frame}
+
+% =====================================================
+% APPENDIX 3: ASPECT-BASED SENTIMENT
+% =====================================================
+
+\begin{frame}[t]{Appendix A3: Aspect-Based Sentiment Analysis}
+\vspace{-0.2cm}
+
+\textbf{Problem:} Extract sentiment per product aspect
+
+\textit{``The phone camera is excellent but battery life is terrible.''}
+
+\begin{itemize}
+\item Camera: \textcolor{mlgreen}{POSITIVE}
+\item Battery: \textcolor{mlred}{NEGATIVE}
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{BERT Approach:}
+\begin{enumerate}
+\item Identify aspects (camera, battery) via NER or keywords
+\item For each aspect:
+  \begin{itemize}
+  \item Create input: [CLS] aspect [SEP] sentence [SEP]
+  \item Fine-tune BERT to predict sentiment for that aspect
+  \item Use attention to find aspect-relevant words
+  \end{itemize}
+\item Aggregate aspect sentiments
+\end{enumerate}
+
+\vspace{0.3cm}
+\textbf{Applications:}
+\begin{itemize}
+\item Product reviews (Amazon, Yelp)
+\item Survey analysis
+\item Brand monitoring
+\end{itemize}
+
+\bottomnote{Aspect-based extends BERT from document-level to fine-grained sentiment extraction.}
+\end{frame}
+
+% =====================================================
+% APPENDIX 4: MULTI-LABEL SENTIMENT
+% =====================================================
+
+\begin{frame}[t]{Appendix A4: Multi-Label Sentiment Analysis}
+\vspace{-0.2cm}
+
+\textbf{Problem:} Detect multiple emotions per text
+
+\textit{``I'm excited about the trip but worried about the cost.''}
+
+\begin{itemize}
+\item Joy: \textcolor{mlgreen}{HIGH}
+\item Anxiety: \textcolor{mlorange}{MEDIUM}
+\item Anger: \textcolor{mlgray}{LOW}
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{BERT Modifications:}
+\begin{itemize}
+\item \textbf{Architecture}: Replace softmax with sigmoid activation
+\item \textbf{Output}: $K$ independent probabilities (one per emotion)
+\item \textbf{Loss}: Binary cross-entropy for each label
+\[
+\mathcal{L} = -\frac{1}{K}\sum_{k=1}^{K} \left[ y_k \log(\hat{y}_k) + (1-y_k)\log(1-\hat{y}_k) \right]
+\]
+\item \textbf{Threshold}: Predict label if $\hat{y}_k > 0.5$
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Applications:}
+\begin{itemize}
+\item Emotion detection (Plutchik's wheel)
+\item Mental health monitoring
+\item Customer service routing
+\end{itemize}
+
+\bottomnote{Multi-label captures emotional complexity beyond simple positive/negative classification.}
+\end{frame}
+
+% =====================================================
+% APPENDIX 5: ZERO-SHOT CLASSIFICATION
+% =====================================================
+
+\begin{frame}[t]{Appendix A5: Zero-Shot Sentiment with Prompting}
+\vspace{-0.2cm}
+
+\textbf{Problem:} Classify sentiment with NO labeled data
+
+\vspace{0.3cm}
+\textbf{Approach:} Use instruction-tuned LLMs (GPT-4, Claude, Llama)
+
+\begin{block}{Prompt Template}
+\texttt{Classify the sentiment of the following review as POSITIVE or NEGATIVE.}
+
+\texttt{Review: ``Great, another boring superhero movie''}
+
+\texttt{Sentiment:}
+\end{block}
+
+\vspace{0.3cm}
+\textbf{Why It Works:}
+\begin{itemize}
+\item Pre-trained on massive text (understands sentiment)
+\item Instruction-tuned to follow prompts
+\item Can reason about sarcasm, negation, intensity
+\item No fine-tuning required
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Tradeoffs vs BERT Fine-Tuning:}
+\begin{itemize}
+\item \textbf{Pros}: No labeled data, handles rare cases, flexible
+\item \textbf{Cons}: Slower (100-1000ms), expensive (\$0.001-0.01/review), less controllable
+\end{itemize}
+
+\bottomnote{Zero-shot useful for prototyping or low-resource scenarios, but fine-tuned BERT better for production.}
+\end{frame}
+
+% =====================================================
+% APPENDIX 6: RESOURCES
+% =====================================================
+
+\begin{frame}[t]{Appendix A6: Resources \& Further Reading}
+\vspace{-0.2cm}
+
+\textbf{Foundational Papers:}
+\begin{itemize}
+\item Devlin et al. (2019). BERT: Pre-training of Deep Bidirectional Transformers. NAACL.
+\item Liu et al. (2019). RoBERTa: A Robustly Optimized BERT Pretraining Approach. arXiv.
+\item Sanh et al. (2019). DistilBERT: A distilled version of BERT (smaller, faster).
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Practical Tools:}
+\begin{itemize}
+\item Hugging Face Transformers: \texttt{transformers.huggingface.co}
+\item Datasets: IMDb, SST-2, Yelp, Twitter Sentiment
+\item Pre-trained models: BERT, RoBERTa, DistilBERT, ELECTRA
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Tutorials:}
+\begin{itemize}
+\item Hugging Face Course: \texttt{huggingface.co/course}
+\item Google Colab notebooks (free GPU access)
+\item Fast.ai NLP course
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Advanced Topics:}
+\begin{itemize}
+\item Adversarial robustness in sentiment analysis
+\item Cross-lingual sentiment (multilingual BERT)
+\item Temporal aspects (sentiment over time)
+\end{itemize}
+
+\bottomnote{Start with Hugging Face tutorials for hands-on experience fine-tuning BERT for sentiment analysis.}
+\end{frame}
+
+\end{document}

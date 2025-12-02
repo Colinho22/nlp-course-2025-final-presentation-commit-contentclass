@@ -31,13 +31,14 @@ COLOR_ORANGE = '#FF7F0E'
 
 plt.style.use('seaborn-v0_8-whitegrid')
 
-FONTSIZE_TITLE = 36
-FONTSIZE_LABEL = 30
-FONTSIZE_TICK = 28
-FONTSIZE_ANNOTATION = 28
-FONTSIZE_LEGEND = 26
-FONTSIZE_TEXT = 30
-FONTSIZE_SMALL = 24
+FONTSIZE_TITLE = 24
+FONTSIZE_LABEL = 20
+FONTSIZE_TICK = 16
+FONTSIZE_ANNOTATION = 18
+FONTSIZE_LEGEND = 18
+FONTSIZE_TEXT = 20
+FONTSIZE_SMALL = 18
+
 
 def set_minimalist_style(ax):
     """Apply minimalist styling"""
@@ -128,16 +129,16 @@ def generate_task_recommendations_table():
     # Style header
     for i in range(len(headers)):
         table[(0, i)].set_facecolor(COLOR_ACCENT)
-        table[(0, i)].set_text_props(weight='bold', color='white', fontsize=42)
+        table[(0, i)].set_text_props(weight='bold', color='white', fontsize=24)
 
     # Add category labels
-    ax.text(0.12, 0.73, 'Deterministic Tasks', fontsize=42, weight='bold',
+    ax.text(0.12, 0.73, 'Deterministic Tasks', fontsize=24, weight='bold',
            color=COLOR_RED, rotation=90, va='center')
-    ax.text(0.12, 0.35, 'Creative Tasks', fontsize=42, weight='bold',
+    ax.text(0.12, 0.35, 'Creative Tasks', fontsize=24, weight='bold',
            color=COLOR_GREEN, rotation=90, va='center')
 
     ax.axis('off')
-    ax.set_title('Task-Specific Decoding Recommendations (2025)', fontsize=42, weight='bold', pad=20)
+    ax.set_title('Task-Specific Decoding Recommendations (2025)', fontsize=24, weight='bold', pad=20)
 
     plt.tight_layout()
     plt.savefig('./task_recommendations_table_bsc.pdf', dpi=300, bbox_inches='tight')

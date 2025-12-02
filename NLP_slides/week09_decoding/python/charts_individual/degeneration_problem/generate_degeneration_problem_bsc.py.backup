@@ -1,0 +1,99 @@
+"""
+Text degeneration problem
+
+Generated chart: degeneration_problem_bsc.pdf
+Part of Week 9: NLP Decoding Strategies
+"""
+
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+from matplotlib.patches import FancyBboxPatch, Rectangle, Circle
+import numpy as np
+import seaborn as sns
+try:
+    from scipy import interpolate
+except ImportError:
+    pass  # Not all scripts need scipy
+
+# BSc Discovery Color Scheme
+COLOR_MAIN = '#333333'
+COLOR_ACCENT = '#3333B2'
+COLOR_LAVENDER = '#ADADC0'
+COLOR_LAVENDER2 = '#C1C1E8'
+COLOR_BLUE = '#0066CC'
+COLOR_GRAY = '#7F7F7F'
+COLOR_LIGHT = '#F0F0F0'
+COLOR_RED = '#D62728'
+COLOR_GREEN = '#2CA02C'
+COLOR_ORANGE = '#FF7F0E'
+
+plt.style.use('seaborn-v0_8-whitegrid')
+
+FONTSIZE_TITLE = 36
+FONTSIZE_LABEL = 30
+FONTSIZE_TICK = 28
+FONTSIZE_ANNOTATION = 28
+FONTSIZE_LEGEND = 26
+FONTSIZE_TEXT = 30
+FONTSIZE_SMALL = 24
+
+def set_minimalist_style(ax):
+    """Apply minimalist styling"""
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_color(COLOR_ACCENT)
+    ax.spines['bottom'].set_color(COLOR_ACCENT)
+    ax.spines['left'].set_linewidth(2)
+    ax.spines['bottom'].set_linewidth(2)
+    ax.tick_params(colors=COLOR_MAIN, which='both', labelsize=FONTSIZE_TICK, width=2, length=6)
+    ax.grid(True, alpha=0.25, linestyle='--', linewidth=3, color=COLOR_LAVENDER)
+    ax.set_facecolor('white')
+
+
+def generate_degeneration_problem():
+    """Show repetitive text problem with greedy/beam"""
+    fig, ax = plt.subplots(figsize=(11, 6))
+
+    # Example repetitive text
+    ax.text(0.5, 0.85, 'Real Output from Greedy Decoding:', ha='center',
+           fontsize=40, weight='bold', color=COLOR_RED)
+
+    repetitive_text = ('"The city of New York is a major city in the United States. '
+                      'The city is known for its diverse culture and the city has '
+                      'many tourist attractions. The city is also home to the city\'s '
+                      'financial district..."')
+
+    # Highlight repetitions
+    ax.text(0.5, 0.65, repetitive_text, ha='center', va='center', fontsize=42,
+           wrap=True, bbox=dict(boxstyle='round', facecolor=COLOR_RED, alpha=0.1,
+                               edgecolor=COLOR_RED, linewidth=3),
+           style='italic')
+
+    # Count repetitions
+    ax.text(0.5, 0.35, 'Problem: "the city" appears 6 times in 4 sentences!',
+           ha='center', fontsize=38, weight='bold', color=COLOR_RED)
+
+    ax.text(0.5, 0.25, 'Why? Always picking argmax → same patterns repeated',
+           ha='center', fontsize=42, style='italic', color=COLOR_MAIN)
+
+    # Solution teaser
+    ax.text(0.5, 0.10, 'Solution: Penalize tokens similar to recent context (Contrastive Search)',
+           ha='center', fontsize=38, weight='bold', color=COLOR_GREEN,
+           bbox=dict(boxstyle='round', facecolor=COLOR_GREEN, alpha=0.2,
+                    edgecolor=COLOR_GREEN, linewidth=3))
+
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis('off')
+    ax.set_title('The Degeneration Problem: Model Repetition', fontsize=42, weight='bold')
+
+    plt.tight_layout()
+    plt.savefig('./degeneration_problem_bsc.pdf', dpi=300, bbox_inches='tight')
+    plt.close()
+    print("Generated: degeneration_problem_bsc.pdf")
+
+if __name__ == "__main__":
+    generate_degeneration_problem()
+    print(f"Generated degeneration_problem_bsc.pdf")

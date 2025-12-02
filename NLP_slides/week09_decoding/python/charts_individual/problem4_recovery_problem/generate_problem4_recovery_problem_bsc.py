@@ -17,7 +17,7 @@ def generate_problem4_recovery_problem_bsc():
     """Show irreversibility of beam search pruning."""
     dot = graphviz.Digraph(format='pdf', engine='dot')
     dot.attr(dpi='300', rankdir='TB', bgcolor='transparent')
-    dot.attr('node', shape='box', style='rounded,filled', fontname='Arial', fontsize='11')
+    dot.attr('node', shape='box', style='rounded,filled', fontname='Arial', fontsize='18')
 
     dot.node('step1', 'Step 1: Prune "A"\\n(P=0.3)',
              fillcolor='#FFD6D6', color=COLOR_RED, penwidth='2')
@@ -38,7 +38,7 @@ def generate_problem4_recovery_problem_bsc():
     dot.edge('step2', 'step3', color=COLOR_ORANGE, penwidth='2')
     dot.edge('step3', 'realize', color=COLOR_GRAY, style='dashed')
     dot.edge('realize', 'problem', color=COLOR_RED, penwidth='2',
-             label='No way back!', fontcolor=COLOR_RED, fontsize='10')
+             label='No way back!', fontcolor=COLOR_RED, fontsize='18')
 
     dot.node('note', 'Beam search is GREEDY:\\nOnce pruned, paths are lost forever',
              shape='note', fillcolor='#E8E8F0', color=COLOR_ACCENT)

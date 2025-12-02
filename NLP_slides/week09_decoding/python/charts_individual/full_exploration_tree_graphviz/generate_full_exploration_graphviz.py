@@ -18,7 +18,7 @@ def create_full_exploration_tree():
 
     # Graph attributes (30pt minimum fonts)
     dot.attr(rankdir='TB', size='14,10!', ratio='fill',
-             fontname='Arial', fontsize='30',
+             fontname='Arial', fontsize='20',
              bgcolor='white', pad='0.5', nodesep='0.5', ranksep='0.6')
 
     # Node styles (30pt+ fonts)
@@ -45,7 +45,7 @@ def create_full_exploration_tree():
     # Step 1: 100 branches (show subset)
     with dot.subgraph(name='cluster_step1') as c:
         c.attr(rank='same', label='Step 1: First Word (100 options)',
-               fontsize='32', fontcolor='#3333B2', style='dashed',
+               fontsize='22', fontcolor='#3333B2', style='dashed',
                color='#3333B2', penwidth='3')
 
         # Show first few explicitly
@@ -64,7 +64,7 @@ def create_full_exploration_tree():
     # Step 2: Each word branches to 100 more (10,000 total)
     with dot.subgraph(name='cluster_step2') as c:
         c.attr(rank='same', label='Step 2: Second Word (100 × 100 = 10,000 paths)',
-               fontsize='32', fontcolor='#D62728', style='dashed',
+               fontsize='22', fontcolor='#D62728', style='dashed',
                color='#D62728', penwidth='3')
 
         # From Word1 show expansion
@@ -102,17 +102,17 @@ def create_full_exploration_tree():
     # Step 3: Exponential explosion continues
     with dot.subgraph(name='cluster_step3') as c:
         c.attr(rank='same', label='Step 3: Third Word (100³ = 1,000,000 paths)',
-               fontsize='32', fontcolor='#D62728', style='bold',
+               fontsize='22', fontcolor='#D62728', style='bold',
                color='#D62728', penwidth='4')
 
         # Show massive expansion with ellipsis
-        c.node('massive1', '...', shape='plaintext', fontsize='36',
+        c.node('massive1', '...', shape='plaintext', fontsize='24',
                fontcolor='#D62728', fontweight='bold')
         c.node('massive2', '1 Million\nPaths', shape='box',
                style='rounded,filled', fillcolor='#D62728',
-               fontcolor='white', fontsize='28', penwidth='4',
+               fontcolor='white', fontsize='18', penwidth='4',
                height='1.2', width='2.0')
-        c.node('massive3', '...', shape='plaintext', fontsize='36',
+        c.node('massive3', '...', shape='plaintext', fontsize='24',
                fontcolor='#D62728', fontweight='bold')
 
         # Connect some paths
@@ -124,13 +124,13 @@ def create_full_exploration_tree():
     # Final explosion indicator
     with dot.subgraph(name='cluster_final') as c:
         c.attr(rank='same', label='Continue to Step 5...',
-               fontsize='28', fontcolor='#808080', style='dotted',
+               fontsize='18', fontcolor='#808080', style='dotted',
                color='#808080', penwidth='2')
 
         c.node('final', '100⁵ = 10 BILLION PATHS!\\nComputationally Infeasible',
                shape='box', style='rounded,filled,bold',
                fillcolor='#D62728', fontcolor='white',
-               fontsize='32', height='1.5', width='6.0',
+               fontsize='22', height='1.5', width='6.0',
                penwidth='6')
 
     dot.edge('massive2', 'final', label='continues...', color='#D62728',

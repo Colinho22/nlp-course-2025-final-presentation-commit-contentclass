@@ -31,13 +31,14 @@ COLOR_ORANGE = '#FF7F0E'
 
 plt.style.use('seaborn-v0_8-whitegrid')
 
-FONTSIZE_TITLE = 36
-FONTSIZE_LABEL = 30
-FONTSIZE_TICK = 28
-FONTSIZE_ANNOTATION = 28
-FONTSIZE_LEGEND = 26
-FONTSIZE_TEXT = 30
-FONTSIZE_SMALL = 24
+FONTSIZE_TITLE = 24
+FONTSIZE_LABEL = 20
+FONTSIZE_TICK = 16
+FONTSIZE_ANNOTATION = 18
+FONTSIZE_LEGEND = 18
+FONTSIZE_TEXT = 20
+FONTSIZE_SMALL = 18
+
 
 def set_minimalist_style(ax):
     """Apply minimalist styling"""
@@ -81,7 +82,7 @@ def generate_problem3_balance():
                 color=COLOR_MAIN, va='center')
 
     # Add large "100x" indicator
-    ax.text(10.5, 2, '100x', fontsize=36, weight='bold',
+    ax.text(10.5, 2, '100x', fontsize=24, weight='bold',
             color=COLOR_RED, rotation=15, alpha=0.7)
 
     # Title

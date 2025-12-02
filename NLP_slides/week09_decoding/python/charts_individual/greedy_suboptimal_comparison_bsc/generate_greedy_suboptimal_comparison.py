@@ -94,7 +94,7 @@ def generate_greedy_suboptimal_comparison():
                    fontweight='bold')
 
             # Text indicator instead of Unicode checkmark
-            ax.text(0.35, y_pos, 'CHOSEN', fontsize=14,
+            ax.text(0.35, y_pos, 'CHOSEN', fontsize=18,
                    ha='center', transform=ax.transAxes, color=COLOR_GREEN,
                    fontweight='bold')
 
@@ -179,7 +179,7 @@ def generate_greedy_suboptimal_comparison():
 
             # Text indicator instead of Unicode X mark
             if i == 1:
-                ax.text(0.88, y_pos, 'IGNORED', fontsize=14,
+                ax.text(0.88, y_pos, 'IGNORED', fontsize=18,
                        ha='center', transform=ax.transAxes, color=COLOR_RED,
                        fontweight='bold')
 

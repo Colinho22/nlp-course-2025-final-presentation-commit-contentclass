@@ -31,13 +31,14 @@ COLOR_ORANGE = '#FF7F0E'
 
 plt.style.use('seaborn-v0_8-whitegrid')
 
-FONTSIZE_TITLE = 36
-FONTSIZE_LABEL = 30
-FONTSIZE_TICK = 28
-FONTSIZE_ANNOTATION = 28
-FONTSIZE_LEGEND = 26
-FONTSIZE_TEXT = 30
-FONTSIZE_SMALL = 24
+FONTSIZE_TITLE = 24
+FONTSIZE_LABEL = 20
+FONTSIZE_TICK = 16
+FONTSIZE_ANNOTATION = 18
+FONTSIZE_LEGEND = 18
+FONTSIZE_TEXT = 20
+FONTSIZE_SMALL = 18
+
 
 def set_minimalist_style(ax):
     """Apply minimalist styling"""
@@ -56,10 +57,10 @@ def generate_topk_example():
     """Worked numerical example with k=3"""
     fig, ax = plt.subplots(figsize=(10, 6))
 
-    ax.text(0.5, 0.95, 'Top-k Example: k=3', ha='center', fontsize=42, weight='bold')
+    ax.text(0.5, 0.95, 'Top-k Example: k=3', ha='center', fontsize=24, weight='bold')
 
     # Original distribution
-    ax.text(0.05, 0.85, '1. Original Probabilities:', fontsize=38, weight='bold', color=COLOR_ACCENT)
+    ax.text(0.05, 0.85, '1. Original Probabilities:', fontsize=24, weight='bold', color=COLOR_ACCENT)
     data1 = [
         ('cat', 0.45),
         ('dog', 0.18),
@@ -70,22 +71,22 @@ def generate_topk_example():
     ]
     y = 0.78
     for token, prob in data1:
-        ax.text(0.08, y, f'{token}: {prob:.2f}', fontsize=42)
+        ax.text(0.08, y, f'{token}: {prob:.2f}', fontsize=24)
         y -= 0.05
 
     # After filtering
-    ax.text(0.40, 0.85, '2. Keep Top-3:', fontsize=38, weight='bold', color=COLOR_ACCENT)
-    ax.text(0.42, 0.78, 'cat: 0.45', fontsize=42, weight='bold', color=COLOR_GREEN)
-    ax.text(0.42, 0.73, 'dog: 0.18', fontsize=42, weight='bold', color=COLOR_GREEN)
-    ax.text(0.42, 0.68, 'bird: 0.15', fontsize=42, weight='bold', color=COLOR_GREEN)
-    ax.text(0.42, 0.63, '(discard rest)', fontsize=42, style='italic', color=COLOR_GRAY)
+    ax.text(0.40, 0.85, '2. Keep Top-3:', fontsize=24, weight='bold', color=COLOR_ACCENT)
+    ax.text(0.42, 0.78, 'cat: 0.45', fontsize=24, weight='bold', color=COLOR_GREEN)
+    ax.text(0.42, 0.73, 'dog: 0.18', fontsize=24, weight='bold', color=COLOR_GREEN)
+    ax.text(0.42, 0.68, 'bird: 0.15', fontsize=24, weight='bold', color=COLOR_GREEN)
+    ax.text(0.42, 0.63, '(discard rest)', fontsize=24, style='italic', color=COLOR_GRAY)
 
     # Renormalize
-    ax.text(0.70, 0.85, '3. Renormalize:', fontsize=38, weight='bold', color=COLOR_ACCENT)
-    ax.text(0.72, 0.78, 'Sum = 0.45 + 0.18 + 0.15 = 0.78', fontsize=42)
-    ax.text(0.72, 0.72, 'cat: 0.45/0.78 = 0.58', fontsize=42, color=COLOR_MAIN)
-    ax.text(0.72, 0.67, 'dog: 0.18/0.78 = 0.23', fontsize=42, color=COLOR_MAIN)
-    ax.text(0.72, 0.62, 'bird: 0.15/0.78 = 0.19', fontsize=42, color=COLOR_MAIN)
+    ax.text(0.70, 0.85, '3. Renormalize:', fontsize=24, weight='bold', color=COLOR_ACCENT)
+    ax.text(0.72, 0.78, 'Sum = 0.45 + 0.18 + 0.15 = 0.78', fontsize=24)
+    ax.text(0.72, 0.72, 'cat: 0.45/0.78 = 0.58', fontsize=24, color=COLOR_MAIN)
+    ax.text(0.72, 0.67, 'dog: 0.18/0.78 = 0.23', fontsize=24, color=COLOR_MAIN)
+    ax.text(0.72, 0.62, 'bird: 0.15/0.78 = 0.19', fontsize=24, color=COLOR_MAIN)
 
     # Arrow showing process
     ax.annotate('', xy=(0.38, 0.75), xytext=(0.35, 0.75),
@@ -95,12 +96,12 @@ def generate_topk_example():
 
     # Result
     ax.text(0.5, 0.25, 'Result: Sample from {cat: 58%, dog: 23%, bird: 19%}',
-           ha='center', fontsize=38, weight='bold',
+           ha='center', fontsize=24, weight='bold',
            bbox=dict(boxstyle='round', facecolor=COLOR_GREEN, alpha=0.2,
                     edgecolor=COLOR_GREEN, linewidth=3))
 
     ax.text(0.5, 0.10, 'Prevents sampling from long tail ("mouse" eliminated)',
-           ha='center', fontsize=42, style='italic', color=COLOR_GRAY)
+           ha='center', fontsize=24, style='italic', color=COLOR_GRAY)
 
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)

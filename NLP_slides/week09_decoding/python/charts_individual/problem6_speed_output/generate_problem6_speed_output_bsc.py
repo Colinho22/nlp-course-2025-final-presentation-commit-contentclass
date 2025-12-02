@@ -31,13 +31,14 @@ COLOR_ORANGE = '#FF7F0E'
 
 plt.style.use('seaborn-v0_8-whitegrid')
 
-FONTSIZE_TITLE = 36
-FONTSIZE_LABEL = 30
-FONTSIZE_TICK = 28
-FONTSIZE_ANNOTATION = 28
-FONTSIZE_LEGEND = 26
-FONTSIZE_TEXT = 30
-FONTSIZE_SMALL = 24
+FONTSIZE_TITLE = 24
+FONTSIZE_LABEL = 20
+FONTSIZE_TICK = 16
+FONTSIZE_ANNOTATION = 18
+FONTSIZE_LEGEND = 18
+FONTSIZE_TEXT = 20
+FONTSIZE_SMALL = 18
+
 
 def set_minimalist_style(ax):
     """Apply minimalist styling"""
@@ -71,7 +72,7 @@ def generate_problem6_speed():
         # Add latency indicator
         if speed > 100:
             ax.text(speed/2, i, 'TOO SLOW!', ha='center', va='center',
-                    fontsize=12, color='white', weight='bold')
+                    fontsize=18, color='white', weight='bold')
 
     # Add threshold line
     ax.axvline(x=100, color=COLOR_RED, linestyle='--', linewidth=2, alpha=0.7)

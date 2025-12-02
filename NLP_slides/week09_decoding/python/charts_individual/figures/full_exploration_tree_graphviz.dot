@@ -1,0 +1,65 @@
+// Full Exploration Explosion
+digraph {
+	bgcolor=white fontname=Arial fontsize=20 nodesep=0.5 pad=0.5 rankdir=TB ranksep=0.6 ratio=fill size="14,10!"
+	START [label=START fillcolor="#3333B2" fontcolor=white fontsize=36 penwidth=5 shape=circle style=filled width=1.5]
+	START -> w1_0 [arrowsize=0.8 color="#D62728" penwidth=2]
+	START -> w1_1 [arrowsize=0.8 color="#D62728" penwidth=2]
+	START -> w1_2 [arrowsize=0.8 color="#D62728" penwidth=2]
+	START -> w1_3 [arrowsize=0.8 color="#D62728" penwidth=2]
+	START -> w1_4 [arrowsize=0.8 color="#D62728" penwidth=2]
+	START -> w1_95 [arrowsize=0.8 color="#D62728" penwidth=2]
+	START -> w1_96 [arrowsize=0.8 color="#D62728" penwidth=2]
+	START -> w1_97 [arrowsize=0.8 color="#D62728" penwidth=2]
+	START -> w1_98 [arrowsize=0.8 color="#D62728" penwidth=2]
+	START -> w1_99 [arrowsize=0.8 color="#D62728" penwidth=2]
+	subgraph cluster_step1 {
+		color="#3333B2" fontcolor="#3333B2" fontsize=22 label="Step 1: First Word (100 options)" penwidth=3 rank=same style=dashed
+		w1_0 [label=Word1 fillcolor="#D62728" fontcolor=white fontsize=24 height=0.7 penwidth=3 shape=box style="rounded,filled" width=1.2]
+		w1_1 [label=Word2 fillcolor="#D62728" fontcolor=white fontsize=24 height=0.7 penwidth=3 shape=box style="rounded,filled" width=1.2]
+		w1_2 [label=Word3 fillcolor="#D62728" fontcolor=white fontsize=24 height=0.7 penwidth=3 shape=box style="rounded,filled" width=1.2]
+		w1_3 [label=Word4 fillcolor="#D62728" fontcolor=white fontsize=24 height=0.7 penwidth=3 shape=box style="rounded,filled" width=1.2]
+		w1_4 [label=Word5 fillcolor="#D62728" fontcolor=white fontsize=24 height=0.7 penwidth=3 shape=box style="rounded,filled" width=1.2]
+		dots1 [label="..." fontcolor="#808080" fontsize=26 shape=none]
+		w1_95 [label=Word96 fillcolor="#D62728" fontcolor=white fontsize=24 height=0.7 penwidth=3 shape=box style="rounded,filled" width=1.2]
+		w1_96 [label=Word97 fillcolor="#D62728" fontcolor=white fontsize=24 height=0.7 penwidth=3 shape=box style="rounded,filled" width=1.2]
+		w1_97 [label=Word98 fillcolor="#D62728" fontcolor=white fontsize=24 height=0.7 penwidth=3 shape=box style="rounded,filled" width=1.2]
+		w1_98 [label=Word99 fillcolor="#D62728" fontcolor=white fontsize=24 height=0.7 penwidth=3 shape=box style="rounded,filled" width=1.2]
+		w1_99 [label=Word100 fillcolor="#D62728" fontcolor=white fontsize=24 height=0.7 penwidth=3 shape=box style="rounded,filled" width=1.2]
+	}
+	w1_0 -> w2_0_0 [arrowsize=0.6 color="#FFB0B0" penwidth=1.5 style=dashed]
+	w1_0 -> w2_0_1 [arrowsize=0.6 color="#FFB0B0" penwidth=1.5 style=dashed]
+	w1_0 -> w2_0_2 [arrowsize=0.6 color="#FFB0B0" penwidth=1.5 style=dashed]
+	w1_1 -> w2_1_0 [arrowsize=0.6 color="#FFB0B0" penwidth=1.5 style=dashed]
+	w1_1 -> w2_1_1 [arrowsize=0.6 color="#FFB0B0" penwidth=1.5 style=dashed]
+	w1_99 -> w2_99_0 [arrowsize=0.6 color="#FFB0B0" penwidth=1.5 style=dashed]
+	w1_99 -> w2_99_1 [arrowsize=0.6 color="#FFB0B0" penwidth=1.5 style=dashed]
+	subgraph cluster_step2 {
+		color="#D62728" fontcolor="#D62728" fontsize=22 label="Step 2: Second Word (100 × 100 = 10,000 paths)" penwidth=3 rank=same style=dashed
+		w2_0_0 [label="1-1" fillcolor="#FFE0E0" fontcolor="#D62728" fontsize=20 height=0.6 penwidth=2 shape=box style="rounded,filled,dashed" width=1.0]
+		w2_0_1 [label="1-2" fillcolor="#FFE0E0" fontcolor="#D62728" fontsize=20 height=0.6 penwidth=2 shape=box style="rounded,filled,dashed" width=1.0]
+		w2_0_2 [label="1-3" fillcolor="#FFE0E0" fontcolor="#D62728" fontsize=20 height=0.6 penwidth=2 shape=box style="rounded,filled,dashed" width=1.0]
+		exp1 [label="...97 more" fontcolor="#D62728" fontsize=18 shape=plaintext]
+		w2_1_0 [label="2-1" fillcolor="#FFE0E0" fontcolor="#D62728" fontsize=20 height=0.6 penwidth=2 shape=box style="rounded,filled,dashed" width=1.0]
+		w2_1_1 [label="2-2" fillcolor="#FFE0E0" fontcolor="#D62728" fontsize=20 height=0.6 penwidth=2 shape=box style="rounded,filled,dashed" width=1.0]
+		exp2 [label="...98 more" fontcolor="#D62728" fontsize=18 shape=plaintext]
+		explosion [label="× 100 for
+each word!" fillcolor="#FFCCCC" fontcolor="#D62728" fontsize=24 penwidth=3 shape=ellipse style=filled]
+		w2_99_0 [label="100-1" fillcolor="#FFE0E0" fontcolor="#D62728" fontsize=20 height=0.6 penwidth=2 shape=box style="rounded,filled,dashed" width=1.0]
+		w2_99_1 [label="100-2" fillcolor="#FFE0E0" fontcolor="#D62728" fontsize=20 height=0.6 penwidth=2 shape=box style="rounded,filled,dashed" width=1.0]
+		exp100 [label="...98 more" fontcolor="#D62728" fontsize=18 shape=plaintext]
+	}
+	w2_0_0 -> massive1 [arrowsize=0.5 color="#FFB0B0" penwidth=1 style=dotted]
+	w2_1_0 -> massive2 [arrowsize=0.5 color="#FFB0B0" penwidth=1 style=dotted]
+	subgraph cluster_step3 {
+		color="#D62728" fontcolor="#D62728" fontsize=22 label="Step 3: Third Word (100³ = 1,000,000 paths)" penwidth=4 rank=same style=bold
+		massive1 [label="..." fontcolor="#D62728" fontsize=24 fontweight=bold shape=plaintext]
+		massive2 [label="1 Million
+Paths" fillcolor="#D62728" fontcolor=white fontsize=18 height=1.2 penwidth=4 shape=box style="rounded,filled" width=2.0]
+		massive3 [label="..." fontcolor="#D62728" fontsize=24 fontweight=bold shape=plaintext]
+	}
+	subgraph cluster_final {
+		color="#808080" fontcolor="#808080" fontsize=18 label="Continue to Step 5..." penwidth=2 rank=same style=dotted
+		final [label="100⁵ = 10 BILLION PATHS!\nComputationally Infeasible" fillcolor="#D62728" fontcolor=white fontsize=22 height=1.5 penwidth=6 shape=box style="rounded,filled,bold" width=6.0]
+	}
+	massive2 -> final [label="continues..." arrowsize=1.0 color="#D62728" fontcolor="#D62728" fontsize=24 penwidth=3 style=bold]
+}

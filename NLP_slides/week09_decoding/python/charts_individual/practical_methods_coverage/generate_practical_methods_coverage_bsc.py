@@ -31,13 +31,14 @@ COLOR_ORANGE = '#FF7F0E'
 
 plt.style.use('seaborn-v0_8-whitegrid')
 
-FONTSIZE_TITLE = 36
-FONTSIZE_LABEL = 30
-FONTSIZE_TICK = 28
-FONTSIZE_ANNOTATION = 28
-FONTSIZE_LEGEND = 26
-FONTSIZE_TEXT = 30
-FONTSIZE_SMALL = 24
+FONTSIZE_TITLE = 24
+FONTSIZE_LABEL = 20
+FONTSIZE_TICK = 16
+FONTSIZE_ANNOTATION = 18
+FONTSIZE_LEGEND = 18
+FONTSIZE_TEXT = 20
+FONTSIZE_SMALL = 18
+
 
 def set_minimalist_style(ax):
     """Apply minimalist styling"""
@@ -117,11 +118,11 @@ def generate_practical_methods_coverage():
 
         # Title
         ax.set_title(f'{method_name}\nCoverage: {coverage:.2f}%',
-                    fontsize=11, fontweight='bold', color=COLOR_MAIN, pad=10)
+                    fontsize=18, fontweight='bold', color=COLOR_MAIN, pad=10)
 
-        ax.set_xlabel('First Word', fontsize=9, color=COLOR_GRAY)
+        ax.set_xlabel('First Word', fontsize=16, color=COLOR_GRAY)
         if idx == 0:
-            ax.set_ylabel('Second Word', fontsize=9, color=COLOR_GRAY)
+            ax.set_ylabel('Second Word', fontsize=16, color=COLOR_GRAY)
 
         # Add grid
         ax.grid(True, alpha=0.2, color='white', linewidth=0.5)
@@ -131,16 +132,16 @@ def generate_practical_methods_coverage():
         # Colorbar
         cbar = plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
         if idx == 2:
-            cbar.set_label('Exploration\nIntensity', fontsize=8, color=COLOR_GRAY)
+            cbar.set_label('Exploration\nIntensity', fontsize=16, color=COLOR_GRAY)
 
     # Add Sweet Spot indicator
-    axes[2].text(85, 85, '← Sweet\n    Spot', fontsize=9,
+    axes[2].text(85, 85, '← Sweet\n    Spot', fontsize=16,
                color=COLOR_GREEN, fontweight='bold',
                bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
                         edgecolor=COLOR_GREEN, alpha=0.8))
 
     plt.suptitle('Practical Solutions: Balancing Coverage and Computation',
-                fontsize=14, fontweight='bold', color=COLOR_MAIN, y=1.02)
+                fontsize=18, fontweight='bold', color=COLOR_MAIN, y=1.02)
 
     plt.tight_layout()
     plt.savefig('./practical_methods_coverage_bsc.pdf',
