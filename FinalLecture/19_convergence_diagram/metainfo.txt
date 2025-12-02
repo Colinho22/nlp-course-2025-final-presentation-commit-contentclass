@@ -1,0 +1,19 @@
+Name of Quantlet: '19_convergence_diagram'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Diagram showing model training convergence patterns and loss curves'
+
+Keywords: 'convergence, training, loss curve, optimization, deep learning'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'convergence_diagram.pdf'
+
+Example: 'View PDF chart'

@@ -1,0 +1,110 @@
+"""
+Generate RAG Failures flowchart using Graphviz.
+Shows failure points in the RAG pipeline with categories.
+"""
+
+import subprocess
+import os
+
+# Quantlet metadata for branding
+CHART_METADATA = {
+    'name': '05_rag_failures',
+    'url': 'https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/FinalLecture/05_rag_failures'
+}
+
+
+OUTPUT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+dot_code = """
+digraph RAGFailures {
+    // Graph settings
+    rankdir=TB;
+    bgcolor="white";
+    fontname="Helvetica";
+    node [fontname="Helvetica", fontsize=11];
+    edge [fontname="Helvetica", fontsize=9];
+
+    // Define styles
+    node [shape=box, style="rounded,filled"];
+
+    // Main pipeline nodes (blue/lavender)
+    query [label="User Query", fillcolor="#C1C1E8", color="#3333B2", penwidth=2];
+    embedding [label="Embedding\\nModel", fillcolor="#C1C1E8", color="#3333B2", penwidth=2];
+    vectordb [label="Vector\\nDatabase", fillcolor="#C1C1E8", color="#3333B2", penwidth=2];
+    retrieval [label="Retrieved\\nDocuments", fillcolor="#C1C1E8", color="#3333B2", penwidth=2];
+    context [label="Context\\nAssembly", fillcolor="#C1C1E8", color="#3333B2", penwidth=2];
+    llm [label="LLM\\nGeneration", fillcolor="#C1C1E8", color="#3333B2", penwidth=2];
+    answer [label="Final\\nAnswer", fillcolor="#E8F5E9", color="#2CA02C", penwidth=2];
+
+    // Failure categories (red boxes)
+    node [shape=box, style="filled,dashed", fillcolor="#FFEBEE", color="#D62728", penwidth=2];
+
+    fail1 [label="RETRIEVAL FAILURES\\n- Query mismatch\\n- Wrong chunks\\n- Missing info"];
+    fail2 [label="CONTEXT FAILURES\\n- Too much noise\\n- Lost in middle\\n- Contradictions"];
+    fail3 [label="GENERATION FAILURES\\n- Ignores context\\n- Hallucinates anyway\\n- Wrong synthesis"];
+
+    // Main flow
+    query -> embedding [penwidth=2, color="#3333B2"];
+    embedding -> vectordb [penwidth=2, color="#3333B2", label="  query vector"];
+    vectordb -> retrieval [penwidth=2, color="#3333B2", label="  top-k"];
+    retrieval -> context [penwidth=2, color="#3333B2"];
+    query -> context [penwidth=2, color="#FF7F0E", style=dashed, label="original query  "];
+    context -> llm [penwidth=2, color="#3333B2"];
+    llm -> answer [penwidth=2, color="#2CA02C"];
+
+    // Failure connections (red arrows)
+    edge [color="#D62728", style=dashed, penwidth=1.5];
+
+    vectordb -> fail1 [label="X", fontcolor="#D62728", fontsize=14];
+    context -> fail2 [label="X", fontcolor="#D62728", fontsize=14];
+    llm -> fail3 [label="X", fontcolor="#D62728", fontsize=14];
+
+    // Layout hints
+    {rank=same; query}
+    {rank=same; embedding}
+    {rank=same; vectordb; fail1}
+    {rank=same; retrieval}
+    {rank=same; context; fail2}
+    {rank=same; llm; fail3}
+    {rank=same; answer}
+
+    // Title
+    labelloc="t";
+    label="\\nWhen RAG Fails: Failure Points in the Pipeline\\n";
+    fontsize=16;
+    fontcolor="#3333B2";
+}
+"""
+
+# Write DOT file
+dot_path = os.path.join(OUTPUT_DIR, "rag_failures.dot")
+pdf_path = os.path.join(OUTPUT_DIR, "rag_failures_flowchart.pdf")
+
+with open(dot_path, 'w') as f:
+    f.write(dot_code)
+
+print(f"DOT file written to: {dot_path}")
+
+# Try to compile with Graphviz
+try:
+    result = subprocess.run(
+        ['dot', '-Tpdf', dot_path, '-o', pdf_path],
+        capture_output=True,
+        text=True
+    )
+    if result.returncode == 0:
+        print(f"PDF generated: {pdf_path}")
+    else:
+        print(f"Graphviz error: {result.stderr}")
+        print("Trying alternative method...")
+        # Try with different output
+        subprocess.run(['dot', '-Tpdf', '-o', pdf_path, dot_path], check=True)
+        print(f"PDF generated (alt): {pdf_path}")
+except FileNotFoundError:
+    print("Graphviz 'dot' command not found. Please install Graphviz.")
+    print("The DOT file has been created and can be compiled manually.")
+except Exception as e:
+    print(f"Error: {e}")
+
+# Clean up DOT file
+# os.remove(dot_path)

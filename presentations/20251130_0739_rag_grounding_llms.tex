@@ -1,0 +1,864 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+
+% Color definitions
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255, 127, 14}
+\definecolor{mlgreen}{RGB}{44, 160, 44}
+\definecolor{mlred}{RGB}{214, 39, 40}
+\definecolor{mlgray}{RGB}{127, 127, 127}
+\definecolor{lightgray}{RGB}{240, 240, 240}
+\definecolor{midgray}{RGB}{180, 180, 180}
+
+% Apply custom colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in toc}{fg=mlblue}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{block title}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{block body}{bg=mllavender4,fg=black}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% Command for bottom annotation
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+\title{Retrieval-Augmented Generation}
+\subtitle{Grounding LLMs in External Knowledge}
+\author{NLP Course}
+\institute{MSc Program}
+\date{\today}
+
+\begin{document}
+
+% ==================== TITLE SLIDE ====================
+\begin{frame}[plain]
+\vspace{1cm}
+\begin{center}
+{\Huge Retrieval-Augmented Generation}\\[0.3cm]
+{\Large Grounding LLMs in External Knowledge}\\[1cm]
+{\normalsize NLP Course -- Lecture 1}\\[0.3cm]
+{\small Advanced Topics in Natural Language Processing}
+\end{center}
+\end{frame}
+
+% ==================== LECTURE INTRO ====================
+\begin{frame}[t]{Why Do LLMs Hallucinate?}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Problem}
+\begin{itemize}
+\item LLMs predict the most likely next token
+\item They have no access to real-time information
+\item Knowledge is frozen at training time
+\item No mechanism to verify facts
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Solution: RAG}
+\begin{itemize}
+\item Retrieve relevant documents first
+\item Augment the prompt with facts
+\item Generate grounded responses
+\item Cite sources for verification
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{center}
+\textcolor{mlpurple}{\textbf{This lecture: How to ground LLMs in external knowledge}}
+\end{center}
+\bottomnote{RAG is the most widely deployed technique for making LLMs factually accurate.}
+\end{frame}
+
+% ==================== MAIN CONTENT ====================
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Act I: RAG \& AI Agents\par
+\vspace{0.3cm}
+\normalsize Making LLMs Useful in the Real World
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% ==================== RAG SECTION ====================
+\subsection{RAG: Giving LLMs Memory}
+
+% ==================== HALLUCINATION PROBLEM ====================
+\begin{frame}[t]{The Hallucination Problem}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Problem}
+
+LLMs confidently state wrong facts:
+\begin{itemize}
+\item ``The current CEO of OpenAI is...'' (outdated)
+\item ``The 2024 Olympic gold medalist was...'' (unknown)
+\item ``Your company's Q3 revenue was...'' (not in training data)
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Root Causes}
+\begin{itemize}
+\item Knowledge frozen at training time
+\item No access to private/recent information
+\item Model ``fills in gaps'' with plausible text
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Why This Matters}
+
+For real applications, we need:
+\begin{itemize}
+\item Access to current information
+\item Grounding in verifiable sources
+\item Ability to say ``I don't know''
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Connection to Ethics Week}
+
+Remember: LLMs don't ``know'' anything -- they predict tokens. Without grounding, this is dangerous.
+\end{columns}
+
+\bottomnote{Solution: Don't try to store everything in parameters. Retrieve at inference time.}
+\end{frame}
+
+% ==================== RAG ARCHITECTURE ====================
+\begin{frame}[t]{RAG: The Elegant Solution}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/rag_architecture.pdf}
+\end{center}
+
+\bottomnote{Key insight: Separation of concerns -- parametric knowledge (the model) vs. retrieved knowledge (the database)}
+\end{frame}
+
+% ==================== RAG EQUATION ====================
+\begin{frame}[t]{RAG: The Mathematics}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Core Idea}
+
+Instead of: $p(y|x)$ (generate from query alone)
+
+RAG marginalizes over retrieved documents:
+\[
+p(y|x) = \sum_{z \in \text{top-}k} p(z|x) \cdot p(y|x,z)
+\]
+
+\vspace{0.3em}
+\textbf{Why no $z$ on left?} We sum over all $z$ (marginalization) -- the result depends only on $x$.
+
+\vspace{0.3em}
+Where: $x$ = query, $z$ = retrieved doc, $y$ = response
+
+\column{0.48\textwidth}
+\textbf{Key Equation: Dense Retrieval}
+
+$$\text{sim}(q, d) = \frac{E_q(q)^T \cdot E_d(d)}{||E_q(q)|| \cdot ||E_d(d)||}$$
+
+Retrieval probability (softmax):
+$$p(z_i|x) = \frac{\exp(\text{sim}(x, z_i) / \tau)}{\sum_{j=1}^{k} \exp(\text{sim}(x, z_j) / \tau)}$$
+
+\vspace{0.5em}
+\textbf{You Already Know This!}
+
+This is just attention over an external memory.
+\end{columns}
+
+\bottomnote{Lewis et al. (2020): ``Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks''}
+\end{frame}
+
+% ==================== RAG EXAMPLE ====================
+\begin{frame}[t]{RAG Formula: A Concrete Example}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\textbf{Query $x$:} ``What is the capital of France?''
+
+\vspace{0.4em}
+\textbf{Retrieved Documents} (with similarity scores):
+
+\vspace{0.2em}
+\begin{tabular}{p{5.2cm}r}
+$z_1$: ``Paris is the capital and largest city of France...'' & \textcolor{mlgreen}{0.92} \\[0.3em]
+$z_2$: ``France is a country in Western Europe...'' & \textcolor{mlorange}{0.71} \\[0.3em]
+$z_3$: ``The Eiffel Tower is located in Paris...'' & \textcolor{mlblue}{0.65}
+\end{tabular}
+
+\vspace{0.4em}
+\textbf{Generation Probabilities} $p(y|x,z_i)$:
+
+For answer $y$ = ``Paris'':
+\begin{itemize}
+\item $p(y|x,z_1) = \mathbf{0.95}$ -- directly states ``Paris is capital''
+\item $p(y|x,z_2) = \mathbf{0.40}$ -- mentions France, not Paris
+\item $p(y|x,z_3) = \mathbf{0.70}$ -- mentions Paris, not as capital
+\end{itemize}
+
+\column{0.45\textwidth}
+\textbf{Step 1: Retrieval Probabilities}
+
+\vspace{0.2em}
+Softmax: $p(z_i|x) = \frac{e^{\text{sim}_i}}{\sum_j e^{\text{sim}_j}}$
+
+\vspace{0.3em}
+\begin{tabular}{lll}
+$p(z_1|x)$ & $= 0.52$ & (most relevant) \\
+$p(z_2|x)$ & $= 0.27$ & \\
+$p(z_3|x)$ & $= 0.21$ &
+\end{tabular}
+
+\vspace{0.5em}
+\textbf{Step 2: Marginalization}
+
+\vspace{0.2em}
+\[
+p(y|x) = \sum_{i=1}^{3} p(z_i|x) \cdot p(y|x,z_i)
+\]
+
+\vspace{0.2em}
+\begin{tabular}{rcl}
+$=$ & $0.52 \times 0.95$ & (from $z_1$) \\
+$+$ & $0.27 \times 0.40$ & (from $z_2$) \\
+$+$ & $0.21 \times 0.70$ & (from $z_3$) \\[0.3em]
+$=$ & \multicolumn{2}{l}{$0.494 + 0.108 + 0.147$} \\[0.2em]
+$=$ & \multicolumn{2}{l}{$\mathbf{0.75}$}
+\end{tabular}
+\end{columns}
+
+\bottomnote{Key: $p(z|x)$ = how relevant is doc? $p(y|x,z)$ = given this doc, how likely is answer?}
+\end{frame}
+
+% ==================== RAG CONDITIONAL PROBS VISUAL ====================
+\begin{frame}[t]{RAG Conditional Probabilities: Visual Intuition}
+\vspace{-0.5em}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/rag_conditional_probs.pdf}
+\end{center}
+\vspace{-1em}
+\bottomnote{Marginalization: Sum over all docs, each weighted by retrieval probability times generation probability}
+\end{frame}
+
+% ==================== RAG VENN DIAGRAMS ====================
+\begin{frame}[t]{RAG Probabilities: Venn Diagram Interpretation}
+\vspace{-0.5em}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/rag_venn_diagrams.pdf}
+\end{center}
+\vspace{-1em}
+\bottomnote{Conditional probability: We restrict the sample space to the given event, then measure probability within it}
+\end{frame}
+
+% ==================== RAG NOTATION ====================
+\begin{frame}[t]{RAG Notation Reference}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Query and Response}
+\begin{itemize}
+\item $x$ -- User query (input question)
+\item $y$ -- Generated response (output)
+\item $q$ -- Query after embedding
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Documents and Retrieval}
+\begin{itemize}
+\item $z$ -- Retrieved document(s)
+\item $z_i$ -- The $i$-th retrieved document
+\item $\mathcal{Z}$ -- Full document corpus
+\item $d$ -- Single document in corpus
+\item $k$ -- Number of documents retrieved (top-$k$)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Embedding Functions}
+\begin{itemize}
+\item $E_q(\cdot)$ -- Query encoder (embeds queries)
+\item $E_d(\cdot)$ -- Document encoder (embeds documents)
+\item Often $E_q = E_d$ (same encoder for both)
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Similarity and Probability}
+\begin{itemize}
+\item $\text{sim}(q, d)$ -- Cosine similarity between query and document vectors
+\item $\tau$ -- Temperature parameter (controls softmax sharpness)
+\item $p(z|x)$ -- Probability of retrieving document $z$ given query $x$
+\item $p(y|x,z)$ -- Generation probability given query and retrieved docs
+\end{itemize}
+\end{columns}
+
+\bottomnote{Understanding notation: Embedding similarity drives retrieval, retrieval augments generation}
+\end{frame}
+
+% ==================== EMBEDDING SPACE ====================
+\begin{frame}[t]{Visualizing the Embedding Space}
+\vspace{-0.5em}
+\begin{center}
+\includegraphics[width=0.48\textwidth]{../figures/embedding_space_2d.pdf}
+\end{center}
+\vspace{-1em}
+\bottomnote{Dense retrieval works by finding documents whose embeddings are closest to the query embedding}
+\end{frame}
+
+% ==================== CHUNK SIZE TRADEOFF ====================
+\begin{frame}[t]{Chunking Trade-offs: Precision vs Recall}
+\begin{center}
+\includegraphics[width=0.62\textwidth]{../figures/chunk_size_tradeoff.pdf}
+\end{center}
+
+\bottomnote{Rule of thumb: Start with 512 tokens, adjust based on your retrieval quality metrics}
+\end{frame}
+
+% ==================== RAG COMPONENTS ====================
+\begin{frame}[t]{RAG Components in Practice}
+\begin{columns}[T]
+\column{0.31\textwidth}
+\textbf{Embedding Models}
+\begin{itemize}
+\item Sentence transformers
+\item OpenAI embeddings
+\item Cohere, Voyage, etc.
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Output}
+
+Dense vectors (e.g., 1536-dim)
+
+\column{0.31\textwidth}
+\textbf{Vector Databases}
+\begin{itemize}
+\item FAISS (Facebook)
+\item Pinecone (managed)
+\item ChromaDB (local)
+\item Weaviate, Milvus
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Key Operation}
+
+Approximate nearest neighbor search
+
+\column{0.31\textwidth}
+\textbf{Chunking Strategies}
+\begin{itemize}
+\item Fixed-size (512 tokens)
+\item Semantic (by paragraph)
+\item Hierarchical (nested)
+\item Sliding window
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Trade-off}
+
+Small chunks = precise retrieval\\
+Large chunks = more context
+\end{columns}
+
+\bottomnote{The choice of chunking strategy significantly impacts retrieval quality}
+\end{frame}
+
+% ==================== VECTOR DATABASES ====================
+\begin{frame}[t]{Vector Databases Explained}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{What Is a Vector Database?}
+
+Specialized database for storing and querying high-dimensional vectors (embeddings).
+
+\vspace{0.5em}
+\textbf{Key Operation: ANN Search}
+
+Approximate Nearest Neighbor (ANN):
+\begin{itemize}
+\item Exact search is $O(n)$ -- too slow
+\item ANN trades accuracy for speed
+\item Typical: 95\%+ recall at 10-100x speedup
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Index Structures}
+\begin{itemize}
+\item HNSW (Hierarchical Navigable Small World)
+\item IVF (Inverted File Index)
+\item LSH (Locality Sensitive Hashing)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Popular Vector Databases}
+
+\textit{Open Source:}
+\begin{itemize}
+\item FAISS (Meta) -- In-memory, very fast
+\item ChromaDB -- Simple, Python-native
+\item Milvus -- Distributed, scalable
+\item Weaviate -- GraphQL interface
+\end{itemize}
+
+\textit{Managed Services:}
+\begin{itemize}
+\item Pinecone -- Fully managed
+\item Qdrant -- Self-hosted or cloud
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Typical Workflow}
+\begin{enumerate}
+\item Embed documents $\rightarrow$ vectors
+\item Store vectors with metadata
+\item Query: embed query $\rightarrow$ find top-$k$ similar
+\end{enumerate}
+\end{columns}
+
+\bottomnote{Vector databases are the ``memory'' that makes RAG possible at scale}
+\end{frame}
+
+% ==================== VECTOR DB ARCHITECTURE ====================
+\begin{frame}[t]{Vector Database: Architecture and Role in RAG}
+\vspace{-0.5em}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../figures/vector_db_architecture.pdf}
+\end{center}
+\vspace{-1em}
+\bottomnote{Vector DBs enable fast retrieval: embed documents once, search in milliseconds at query time}
+\end{frame}
+
+% ==================== ANN MATH AND CONCEPT ====================
+\begin{frame}[t]{Approximate Nearest Neighbor: Why and How}
+\vspace{-0.5em}
+\begin{center}
+\includegraphics[width=0.68\textwidth]{../figures/ann_math_concept.pdf}
+\end{center}
+\vspace{-1em}
+\bottomnote{ANN is the key enabler for billion-scale vector search: trade small accuracy for massive speedup}
+\end{frame}
+
+% ==================== C-APPROXIMATE K-NN DEFINITION ====================
+\begin{frame}[t]{The $c$-Approximate $k$-NN Guarantee}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\textbf{Exact $k$-NN Problem}
+
+Given query $q$ and database $D = \{d_1, \ldots, d_n\}$, find:
+\[
+N_k(q) = \underset{S \subseteq D, |S|=k}{\arg\min} \max_{d \in S} \|q - d\|
+\]
+
+\vspace{0.8em}
+\textbf{$c$-Approximate $k$-NN}
+
+An algorithm returns $\text{ANN}_k(q)$ such that:
+\[
+\boxed{\forall d \in \text{ANN}_k(q): \quad \|q - d\| \leq c \cdot \|q - d^*\|}
+\]
+
+where $d^*$ is the \textbf{true $k$-th nearest neighbor} and $c \geq 1$ is the \textbf{approximation factor}.
+
+\column{0.42\textwidth}
+\textbf{What This Means}
+
+\vspace{0.5em}
+\begin{itemize}
+\item $c = 1.0$: Exact (no approximation)
+\item $c = 1.05$: At most 5\% farther
+\item $c = 1.10$: At most 10\% farther
+\end{itemize}
+
+\vspace{0.8em}
+\textbf{The Trade-off}
+
+\vspace{0.3em}
+\begin{tabular}{ll}
+$c \to 1$ & Slower, exact \\
+$c > 1$ & Faster, approximate
+\end{tabular}
+
+\vspace{0.8em}
+\textbf{In Practice}
+
+Most systems achieve $c \approx 1.01$ to $1.05$ with 100--1000$\times$ speedup.
+\end{columns}
+
+\vspace{0.5em}
+\bottomnote{The $c$-approximation guarantee means returned neighbors are at most $c$ times farther than the true nearest}
+\end{frame}
+
+% ==================== HNSW EXPLAINED ====================
+\begin{frame}[t]{HNSW: The Most Popular ANN Algorithm}
+\vspace{-0.5em}
+\begin{center}
+\includegraphics[width=0.62\textwidth]{../figures/hnsw_explanation.pdf}
+\end{center}
+\vspace{-1em}
+\bottomnote{HNSW builds a navigable graph: start at sparse top layers, greedily descend to find nearest neighbors}
+\end{frame}
+
+% ==================== HNSW STRUCTURE ====================
+\begin{frame}[t]{HNSW: Hierarchical Graph Structure}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\textbf{The Key Idea}
+
+Combine two concepts:
+\begin{enumerate}
+\item \textbf{Skip Lists}: Hierarchical layers for $O(\log n)$ traversal
+\item \textbf{Navigable Small World}: Each node connected to ``nearby'' nodes
+\end{enumerate}
+
+\vspace{0.6em}
+\textbf{Layer Structure}
+
+\begin{itemize}
+\item Layer 0: All $n$ nodes (dense)
+\item Layer 1: $\sim n/m_L$ nodes
+\item Layer 2: $\sim n/m_L^2$ nodes
+\item Top: Few entry points
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{How are nodes assigned?}
+
+Each node's max layer is \textbf{random}:
+\[
+\ell = \lfloor -\ln(\text{uniform}(0,1)) \cdot m_L \rfloor
+\]
+Most nodes: layer 0 only. Few ``lucky'' nodes reach higher layers (like express stops).
+
+\column{0.45\textwidth}
+\textbf{Construction Algorithm}
+
+For each new vector $v$:
+\begin{enumerate}
+\item Sample max layer $\ell$ (formula on left)
+\item Insert $v$ into layers $0, 1, \ldots, \ell$
+\item At each layer, connect to $M$ nearest neighbors
+\end{enumerate}
+
+\vspace{0.5em}
+\textbf{Key Parameters}
+
+\vspace{0.3em}
+\begin{tabular}{ll}
+$M$ & Max connections/node \\
+$ef$ & Search beam width \\
+$m_L$ & Level multiplier
+\end{tabular}
+
+\vspace{0.4em}
+Typical: $M=16$, $ef=100$, $m_L=1/\ln(M)$
+
+\vspace{0.5em}
+\textbf{Intuition}: Like a subway system -- express lines (top layers) connect major hubs, local lines (layer 0) reach everywhere.
+\end{columns}
+
+\bottomnote{The hierarchical structure enables logarithmic search: coarse navigation at top, fine-grained at bottom}
+\end{frame}
+
+% ==================== HNSW SEARCH ====================
+\begin{frame}[t]{HNSW: The Search Algorithm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Greedy Search Procedure}
+
+\begin{enumerate}
+\item Start at entry point (top layer)
+\item At each layer:
+\begin{itemize}
+\item Greedily move to nearest neighbor
+\item Repeat until no closer neighbor exists
+\end{itemize}
+\item Descend to next layer
+\item At layer 0: expand search with beam width $ef$
+\item Return top-$k$ from candidates
+\end{enumerate}
+
+\vspace{0.5em}
+\textbf{Complexity}
+
+\vspace{0.3em}
+\begin{tabular}{ll}
+Search: & $O(\log n)$ \\
+Insert: & $O(\log n)$ \\
+Space: & $O(n \cdot M)$
+\end{tabular}
+
+\column{0.48\textwidth}
+\textbf{Why It Works}
+
+\vspace{0.3em}
+\textit{Small World Property}: Any two nodes connected by short path ($\sim \log n$ hops).
+
+\vspace{0.5em}
+\textit{Hierarchical Speedup}: Top layers skip large distances; bottom layers refine.
+
+\vspace{0.6em}
+\textbf{Pseudocode}
+
+{\footnotesize
+\texttt{search(q, k, ef):}\\
+\texttt{~~ep = entry\_point}\\
+\texttt{~~for layer in top...1:}\\
+\texttt{~~~~ep = greedy(q, ep, layer)}\\
+\texttt{~~cands = beam(q, ep, L0, ef)}\\
+\texttt{~~return top\_k(cands, k)}
+}
+
+\vspace{0.3em}
+\textit{ef} controls accuracy/speed trade-off.
+\end{columns}
+
+\bottomnote{HNSW achieves $>$99\% recall with 10--100$\times$ speedup; used in FAISS, Pinecone, Weaviate, Qdrant}
+\end{frame}
+
+% ==================== HNSW SIMPLE EXAMPLE ====================
+\begin{frame}[t]{HNSW: A Simple Example}
+\textbf{Setup}: 8 cities, find nearest to query ``Berlin''
+
+\vspace{0.5em}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Layer 2 (Top)} -- 2 nodes
+
+\vspace{0.2em}
+{\small Entry points: Paris, Tokyo}
+
+\vspace{0.3em}
+Query: Berlin $\to$ Check Paris, Tokyo\\
+$\to$ Paris closer $\to$ \textbf{go to Paris}
+
+\vspace{0.6em}
+\textbf{Layer 1} -- 4 nodes
+
+\vspace{0.2em}
+{\small Paris, Tokyo, London, Sydney}
+
+\vspace{0.3em}
+From Paris $\to$ Check neighbors\\
+$\to$ London closer $\to$ \textbf{go to London}
+
+\vspace{0.6em}
+\textbf{Layer 0 (Bottom)} -- all 8 nodes
+
+\vspace{0.2em}
+From London $\to$ Check all neighbors\\
+$\to$ \textbf{Found: Amsterdam} (nearest!)
+
+\column{0.48\textwidth}
+\textbf{What Happened}
+
+\vspace{0.3em}
+\begin{tabular}{cl}
+Layer 2: & 2 comparisons \\
+Layer 1: & 3 comparisons \\
+Layer 0: & 4 comparisons \\
+\hline
+Total: & \textbf{9 comparisons}
+\end{tabular}
+
+\vspace{0.6em}
+\textbf{Brute Force}
+
+8 comparisons (check all)
+
+\vspace{0.6em}
+\textbf{With 1 Billion Nodes}
+
+\vspace{0.2em}
+\begin{tabular}{ll}
+Brute: & 1,000,000,000 \\
+HNSW: & $\sim$30 (log scale!)
+\end{tabular}
+
+\vspace{0.6em}
+\textbf{Key Insight}
+
+Top layers = ``highways''\\
+Bottom layer = ``local streets''
+\end{columns}
+
+\bottomnote{HNSW is like using a map: zoom out to find the region, then zoom in to find the exact location}
+\end{frame}
+
+% ==================== HNSW CITIES VISUAL ====================
+\begin{frame}[t]{HNSW: Visual Walkthrough}
+\vspace{-0.5em}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/hnsw_cities_example.pdf}
+\end{center}
+\vspace{-1em}
+\bottomnote{Each layer narrows the search: start broad at the top, refine at the bottom}
+\end{frame}
+
+% ==================== CHUNKING STRATEGIES ====================
+\begin{frame}[t]{Chunking Strategies Deep Dive}
+\begin{center}
+\includegraphics[width=0.68\textwidth]{../figures/chunking_strategies_visual.pdf}
+\end{center}
+
+\bottomnote{Chunking is often the difference between RAG that works and RAG that fails -- start with 512 tokens, 10\% overlap}
+\end{frame}
+
+% ==================== RAG EVOLUTION ====================
+\begin{frame}[t]{RAG Evolution: From Naive to Agentic}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Naive RAG}
+\begin{itemize}
+\item Simple retrieve-then-generate
+\item Fixed number of chunks
+\item No query preprocessing
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Advanced RAG}
+\begin{itemize}
+\item Query rewriting
+\item Re-ranking retrieved documents
+\item Iterative retrieval
+\item Multi-stage retrieval
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Modular RAG}
+\begin{itemize}
+\item Self-RAG: decide \textit{when} to retrieve
+\item CRAG: correct retrieval errors
+\item Adaptive: retrieve more if needed
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Agentic RAG (2024+)}
+\begin{itemize}
+\item Agent decides retrieval strategy
+\item Multiple retrieval sources
+\item Tool use for specialized queries
+\end{itemize}
+\end{columns}
+
+\bottomnote{Trend: More intelligence in the retrieval process, not just generation}
+\end{frame}
+
+% ==================== RAG LIMITATIONS ====================
+\begin{frame}[t]{When RAG Fails: Failure Points in the Pipeline}
+\vspace{-1em}
+\begin{center}
+\includegraphics[width=0.36\textwidth]{../figures/rag_failures_flowchart.pdf}
+\end{center}
+\vspace{-1.5em}
+\bottomnote{RAG requires careful engineering at every pipeline stage}
+\end{frame}
+
+% ==================== RAG FAILURE SOLUTIONS ====================
+\begin{frame}[t]{RAG Failure Mitigations}
+\begin{columns}[T]
+\column{0.31\textwidth}
+\textbf{Retrieval Fixes}
+\begin{itemize}
+\item Query expansion/rewriting
+\item Multi-stage retrieval
+\item Better chunking strategies
+\item Cross-encoder re-ranking
+\item Multiple retrieval passes
+\end{itemize}
+
+\column{0.31\textwidth}
+\textbf{Context Fixes}
+\begin{itemize}
+\item Smart chunk ordering
+\item Compression/summarization
+\item Relevance filtering
+\item Hierarchical retrieval
+\item Attention to chunk boundaries
+\end{itemize}
+
+\column{0.31\textwidth}
+\textbf{Generation Fixes}
+\begin{itemize}
+\item Instruction tuning for RAG
+\item Citation requirements
+\item Self-consistency checks
+\item Confidence calibration
+\item Fallback to ``I don't know''
+\end{itemize}
+\end{columns}
+
+\vspace{0.5em}
+\begin{center}
+\textit{``Lost in the middle'' problem:} LLMs often ignore content in the middle of long contexts.\\
+Solution: Place most relevant chunks at beginning and end.
+\end{center}
+
+\bottomnote{Each failure mode has specific mitigations -- production RAG requires all of them}
+\end{frame}
+% ==================== CLOSING ====================
+
+% ==================== KEY TAKEAWAYS ====================
+\begin{frame}[t]{Key Takeaways: RAG}
+\begin{enumerate}
+\item \textbf{RAG solves hallucination} by grounding LLMs in external documents
+\item \textbf{Vector search} enables millisecond retrieval from billions of documents
+\item \textbf{HNSW} provides O(log n) approximate nearest neighbor search
+\item \textbf{Chunking strategy} critically affects retrieval quality
+\item \textbf{RAG can fail} at retrieval, ranking, or generation stages
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Key Equations:}
+\begin{itemize}
+\item Dense retrieval: $\text{sim}(q, d) = \cos(E_q(q), E_d(d))$
+\item RAG probability: $p(y|x) = \sum_z p(z|x) \cdot p(y|x,z)$
+\end{itemize}
+\bottomnote{RAG is the foundation of most production LLM applications today.}
+\end{frame}
+
+% ==================== RESOURCES ====================
+\begin{frame}[t]{Further Reading: RAG}
+\textbf{Foundational Papers:}
+\begin{itemize}
+\item Lewis et al. (2020) - ``Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks''
+\item Karpukhin et al. (2020) - ``Dense Passage Retrieval''
+\item Malkov \& Yashunin (2018) - ``HNSW: Hierarchical Navigable Small World Graphs''
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Tools \& Frameworks:}
+\begin{itemize}
+\item Vector DBs: Pinecone, Weaviate, ChromaDB, FAISS
+\item Frameworks: LangChain, LlamaIndex
+\end{itemize}
+\bottomnote{Repository: github.com/Digital-AI-Finance/Natural-Language-Processing}
+\end{frame}
+
+\end{document}

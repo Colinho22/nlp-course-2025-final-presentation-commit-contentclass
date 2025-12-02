@@ -1,0 +1,19 @@
+Name of Quantlet: '11_ai_timeline'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Historical timeline of AI and NLP developments from early models to modern transformers'
+
+Keywords: 'AI history, timeline, NLP milestones, transformers, GPT'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'ai_timeline.pdf'
+
+Example: 'View PDF chart'

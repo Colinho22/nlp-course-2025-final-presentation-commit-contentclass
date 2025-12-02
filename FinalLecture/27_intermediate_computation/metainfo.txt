@@ -1,0 +1,19 @@
+Name of Quantlet: '27_intermediate_computation'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Visualization of intermediate computation steps in neural networks'
+
+Keywords: 'intermediate computation, hidden states, neural network, forward pass'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'intermediate_computation.pdf'
+
+Example: 'View PDF chart'

@@ -1,0 +1,19 @@
+Name of Quantlet: '08_vector_db_architecture'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Architecture diagram showing components of a vector database for RAG systems'
+
+Keywords: 'vector database, architecture, embeddings, indexing, RAG'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'generate_vector_db_architecture.py'
+
+Output: 'vector_db_architecture.pdf'
+
+Example: 'python generate_vector_db_architecture.py'

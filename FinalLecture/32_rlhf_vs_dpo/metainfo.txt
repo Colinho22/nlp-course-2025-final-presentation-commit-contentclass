@@ -1,0 +1,19 @@
+Name of Quantlet: '32_rlhf_vs_dpo'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Overview comparison of RLHF and DPO training approaches'
+
+Keywords: 'RLHF, DPO, comparison, alignment methods, preference learning'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'rlhf_vs_dpo.pdf'
+
+Example: 'View PDF chart'

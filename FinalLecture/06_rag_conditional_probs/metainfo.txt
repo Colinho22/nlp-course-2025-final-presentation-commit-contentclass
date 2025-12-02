@@ -1,0 +1,19 @@
+Name of Quantlet: '06_rag_conditional_probs'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Visualization of conditional probability decomposition in RAG: p(y|x) via marginalization over documents'
+
+Keywords: 'RAG, conditional probability, marginalization, Bayesian, retrieval'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'generate_rag_conditional_probs.py'
+
+Output: 'rag_conditional_probs.pdf'
+
+Example: 'python generate_rag_conditional_probs.py'

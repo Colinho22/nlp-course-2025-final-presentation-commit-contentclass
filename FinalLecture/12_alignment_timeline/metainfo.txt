@@ -1,0 +1,19 @@
+Name of Quantlet: '12_alignment_timeline'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Timeline of AI alignment research and safety developments'
+
+Keywords: 'AI alignment, safety, RLHF timeline, AI ethics, responsible AI'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'alignment_timeline.pdf'
+
+Example: 'View PDF chart'

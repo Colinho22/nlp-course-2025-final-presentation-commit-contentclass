@@ -1,0 +1,19 @@
+Name of Quantlet: '31_rlhf_detailed_pipeline'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Detailed pipeline of Reinforcement Learning from Human Feedback training'
+
+Keywords: 'RLHF, pipeline, reward model, PPO, human feedback'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'rlhf_detailed_pipeline.pdf'
+
+Example: 'View PDF chart'

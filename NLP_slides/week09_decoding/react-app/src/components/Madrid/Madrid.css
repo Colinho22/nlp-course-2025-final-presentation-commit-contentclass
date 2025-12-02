@@ -1,0 +1,19 @@
+/* Madrid Theme Components - Matching Beamer Madrid theme */
+
+.madrid-header {
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.madrid-footer {
+  height: 32px;
+  display: flex;
+  align-items: center;
+}
+
+/* Navigation dots */
+.madrid-header nav button:focus {
+  outline: 2px solid #3333B2;
+  outline-offset: 2px;
+}

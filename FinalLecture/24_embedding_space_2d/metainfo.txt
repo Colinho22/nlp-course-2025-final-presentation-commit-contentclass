@@ -1,0 +1,19 @@
+Name of Quantlet: '24_embedding_space_2d'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: '2D visualization of word or document embeddings in semantic space'
+
+Keywords: 'embeddings, vector space, dimensionality reduction, semantic similarity'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'embedding_space_2d.pdf'
+
+Example: 'View PDF chart'

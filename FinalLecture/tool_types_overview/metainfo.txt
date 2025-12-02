@@ -1,0 +1,13 @@
+Name of Quantlet: tool_types_overview
+
+Published in: NLP Final Lecture - AI Agents
+
+Description: Visualization showing the four main categories of tools available to AI agents - Information Retrieval (web search, vector DB), Code Execution (Python REPL, shell), External APIs (weather, email), and System Operations (file I/O, browser control)
+
+Keywords: AI agents, tools, function calling, LLM capabilities, information retrieval, code execution
+
+Author: Joerg Osterrieder
+
+Submitted: 2025-11-30
+
+Output: tool_types_overview.pdf

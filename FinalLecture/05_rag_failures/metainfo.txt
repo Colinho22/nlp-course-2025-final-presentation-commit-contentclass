@@ -1,0 +1,19 @@
+Name of Quantlet: '05_rag_failures'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Flowchart illustrating common failure modes in Retrieval-Augmented Generation systems'
+
+Keywords: 'RAG, failure modes, retrieval errors, generation errors, debugging'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'generate_rag_failures.py'
+
+Output: 'rag_failures_flowchart.pdf'
+
+Example: 'python generate_rag_failures.py'

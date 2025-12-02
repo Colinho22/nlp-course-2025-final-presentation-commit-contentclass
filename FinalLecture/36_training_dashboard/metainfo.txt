@@ -1,0 +1,19 @@
+Name of Quantlet: '36_training_dashboard'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Dashboard visualization of model training metrics and progress'
+
+Keywords: 'training dashboard, metrics, monitoring, deep learning, visualization'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'training_dashboard.pdf'
+
+Example: 'View PDF chart'

@@ -1,0 +1,703 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+
+% Color definitions
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255, 127, 14}
+\definecolor{mlgreen}{RGB}{44, 160, 44}
+\definecolor{mlred}{RGB}{214, 39, 40}
+\definecolor{mlgray}{RGB}{127, 127, 127}
+\definecolor{lightgray}{RGB}{240, 240, 240}
+\definecolor{midgray}{RGB}{180, 180, 180}
+
+% Apply custom colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in toc}{fg=mlblue}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{block title}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{block body}{bg=mllavender4,fg=black}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% Command for bottom annotation
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+\title{AI Agents}
+\subtitle{Building LLMs That Take Action and Use Tools}
+\author{NLP Course}
+\institute{MSc Program}
+\date{\today}
+
+\begin{document}
+
+% ==================== TITLE SLIDE ====================
+\begin{frame}[plain]
+\vspace{1cm}
+\begin{center}
+{\Huge AI Agents}\\[0.3cm]
+{\Large Building LLMs That Take Action and Use Tools}\\[1cm]
+{\normalsize NLP Course -- Lecture 2}\\[0.3cm]
+{\small Advanced Topics in Natural Language Processing}
+\end{center}
+\end{frame}
+
+% ==================== LECTURE INTRO ====================
+\begin{frame}[t]{What If LLMs Could DO Things?}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{LLMs Today}
+\begin{itemize}
+\item Excellent at generating text
+\item Answer questions from training data
+\item No ability to take actions
+\item Cannot interact with the world
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{LLM Agents}
+\begin{itemize}
+\item Use tools (search, code, APIs)
+\item Execute multi-step plans
+\item Observe results and adapt
+\item Accomplish real-world tasks
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{center}
+\textcolor{mlpurple}{\textbf{This lecture: Building AI systems that take action}}
+\end{center}
+\bottomnote{Agents transform LLMs from passive responders to active problem solvers.}
+\end{frame}
+
+% ==================== MAIN CONTENT ====================
+
+% ==================== AGENTS SECTION ====================
+\subsection{AI Agents: Giving LLMs Agency}
+
+% ==================== BEYOND QA ====================
+\begin{frame}[t]{Beyond Question-Answering}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{LLMs Are Great At...}
+\begin{itemize}
+\item Generating text
+\item Summarizing documents
+\item Translating languages
+\item Answering questions
+\end{itemize}
+
+\vspace{0.5em}
+But what if we want them to \textbf{DO} things?
+
+\column{0.48\textwidth}
+\textbf{Real-World Tasks Require Action}
+\begin{itemize}
+\item Book a flight (API calls)
+\item Write and run code (execution)
+\item Search the web (retrieval)
+\item Manage files (system access)
+\item Send emails (communication)
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{The Gap:} LLMs generate text, but can't act.
+\end{columns}
+
+\vspace{1em}
+\begin{center}
+\fbox{\parbox{0.7\textwidth}{\centering
+\textbf{Solution:} Give LLMs the ability to use \textit{tools} and reason about \textit{when} to use them.
+}}
+\end{center}
+
+\bottomnote{This is the leap from ``AI assistant'' to ``AI agent''}
+\end{frame}
+
+% ==================== AGENT LOOP ====================
+\begin{frame}[t]{The Agent Loop: Perceive, Plan, Act, Observe}
+\begin{center}
+\includegraphics[width=0.75\textwidth,height=0.65\textheight,keepaspectratio]{../figures/agent_loop.pdf}
+\end{center}
+
+\vspace{-0.5em}
+\footnotesize
+\textbf{Core cycle:} User task $\rightarrow$ LLM decides action $\rightarrow$ Tool executes $\rightarrow$ Result feeds back $\rightarrow$ Repeat until done
+
+\bottomnote{Agents are LLMs in a loop -- the magic is in the orchestration, not a new architecture}
+\end{frame}
+
+% ==================== REACT PATTERN ====================
+\begin{frame}[t]{The ReAct Pattern: Reasoning + Acting}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\textbf{ReAct Example}
+
+\texttt{User: What's 15\% of Apple's current market cap?}
+
+\vspace{0.3em}
+\textcolor{mlblue}{\textbf{Thought:}} I need to find Apple's current market cap first.
+
+\textcolor{mlorange}{\textbf{Action:}} search\_web(``Apple market cap 2025'')
+
+\textcolor{mlgreen}{\textbf{Observation:}} Apple market cap: \$3.2 trillion
+
+\vspace{0.3em}
+\textcolor{mlblue}{\textbf{Thought:}} Now I can calculate 15\% of 3.2 trillion.
+
+\textcolor{mlorange}{\textbf{Action:}} calculate(``3200000000000 * 0.15'')
+
+\textcolor{mlgreen}{\textbf{Observation:}} 480000000000
+
+\vspace{0.3em}
+\textcolor{mlblue}{\textbf{Thought:}} I have the answer.
+
+\textbf{Final Answer:} 15\% of Apple's market cap is \$480 billion.
+
+\column{0.42\textwidth}
+\textbf{Key Innovation}
+
+Interleave:
+\begin{itemize}
+\item \textcolor{mlblue}{Reasoning} (Thought)
+\item \textcolor{mlorange}{Acting} (Tool use)
+\item \textcolor{mlgreen}{Observing} (Feedback)
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Why It Works}
+
+LLMs are good at reasoning about \textit{what to do next} given context.
+
+\vspace{0.5em}
+\textbf{Formal Loop}
+
+$\tau_t = \text{LLM}(c_t, h_{<t})$ (thought)\\
+$a_t = \text{LLM}(\tau_t, h_{<t})$ (action)\\
+$o_t = \text{Env}(a_t)$ (observation)
+\end{columns}
+
+\bottomnote{Yao et al. (2023): ``ReAct: Synergizing Reasoning and Acting in Language Models''}
+\end{frame}
+
+% ==================== FORMAL AGENT LOOP ====================
+\begin{frame}[t]{Formal Agent Loop: The Mathematics}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/agent_loop_equations.pdf}
+\end{center}
+
+\bottomnote{This formalism underlies all modern agent frameworks -- the LLM is both brain and narrator}
+\end{frame}
+
+% ==================== TOOL USE ====================
+\begin{frame}[t]{Tool Use: The Key Innovation}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Function Calling Format}
+
+LLMs learn to output structured tool calls:
+
+\vspace{0.3em}
+\texttt{\{\\
+~~``tool'': ``search\_web'',\\
+~~``parameters'': \{\\
+~~~~``query'': ``AAPL stock price''\\
+~~\}\\
+\}}
+
+\vspace{0.5em}
+\textbf{Available Tool Types}
+\begin{itemize}
+\item Web search
+\item Calculator / code interpreter
+\item File system access
+\item API calls (weather, stocks, etc.)
+\item Database queries
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{How It Works}
+
+1. Define tools with JSON schema\\
+2. Include tool definitions in prompt\\
+3. LLM outputs tool call (structured)\\
+4. System executes tool\\
+5. Return result to LLM\\
+6. Repeat until done
+
+\vspace{0.5em}
+\textbf{OpenAI Function Calling}
+
+Built into GPT-4, Claude, etc.:\\
+Models trained to output valid JSON for tool calls.
+
+\vspace{0.5em}
+\textbf{Connection to RAG}
+
+RAG is just a ``retrieval tool'' that agents can use!
+\end{columns}
+
+\bottomnote{Tool use transforms LLMs from text generators to action-capable systems}
+\end{frame}
+
+% ==================== AGENT FRAMEWORKS ====================
+\begin{frame}[t]{Agent Frameworks: Evolution}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Timeline}
+\begin{itemize}
+\item \textbf{2022:} ReAct (Google) -- Reasoning + Acting
+\item \textbf{2023:} Toolformer (Meta) -- Self-supervised tool learning
+\item \textbf{2023:} AutoGPT / BabyAGI -- Autonomous task completion
+\item \textbf{2024:} LangChain Agents -- Production frameworks
+\item \textbf{2024:} Microsoft AutoGen -- Multi-agent systems
+\item \textbf{2025:} Agentic AI -- Enterprise deployment
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Current Landscape}
+
+\textit{Frameworks:}
+\begin{itemize}
+\item LangChain / LangGraph
+\item LlamaIndex
+\item CrewAI
+\item AutoGen
+\end{itemize}
+
+\textit{Trends:}
+\begin{itemize}
+\item Multi-agent collaboration
+\item Specialized agents for tasks
+\item Human-in-the-loop workflows
+\item Enterprise security/compliance
+\end{itemize}
+\end{columns}
+
+\bottomnote{We're at the ``early internet'' stage of agents -- rapid evolution, no clear winner}
+\end{frame}
+
+% ==================== LANGCHAIN LANGGRAPH ====================
+\begin{frame}[t]{LangChain and LangGraph: Key Concepts}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{LangChain Core Concepts}
+
+\textit{LCEL (LangChain Expression Language):}
+\begin{itemize}
+\item \texttt{prompt | llm | parser} -- Pipe syntax
+\item Composable, streamable, async-ready
+\item Built-in retry/fallback logic
+\end{itemize}
+
+\vspace{0.3em}
+\textit{Key Abstractions:}
+\begin{itemize}
+\item \texttt{ChatModel} -- LLM interface
+\item \texttt{Tool} -- Function with schema
+\item \texttt{Retriever} -- Document search
+\item \texttt{Memory} -- Conversation history
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{LangGraph for Complex Agents}
+
+\textit{Graph-Based Workflows:}
+\begin{itemize}
+\item \texttt{StateGraph} -- Define typed state
+\item \texttt{add\_node()} -- Add processing steps
+\item \texttt{add\_edge()} -- Connect nodes
+\item \texttt{add\_conditional\_edges()} -- Branching
+\end{itemize}
+
+\vspace{0.3em}
+\textit{Key Features:}
+\begin{itemize}
+\item Cycles for iterative agents
+\item Checkpointing for recovery
+\item Human-in-the-loop breakpoints
+\item Multi-agent coordination
+\end{itemize}
+\end{columns}
+
+\vspace{0.3em}
+\textbf{When to Use:} LangChain for simple RAG/chains | LangGraph for stateful agents with cycles
+
+\bottomnote{LangChain ecosystem dominates (2024), but alternatives exist: LlamaIndex, CrewAI, AutoGen}
+\end{frame}
+
+% ==================== AGENT LIMITATIONS ====================
+\begin{frame}[t]{Current Agent Limitations}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Reliability Issues}
+\begin{itemize}
+\item Agents get stuck in loops
+\item Wrong tool selection
+\item Hallucinated tool parameters
+\item Failure to know when to stop
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Cost Accumulation}
+\begin{itemize}
+\item Each step = API call
+\item Complex tasks = many calls
+\item Costs can spiral quickly
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Security Concerns}
+\begin{itemize}
+\item Tool access = system access
+\item Prompt injection attacks
+\item Unintended actions
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{What Works Today}
+\begin{itemize}
+\item Well-defined, bounded tasks
+\item Human oversight/approval
+\item Retrieval-heavy workflows
+\item Single-domain expertise
+\end{itemize}
+\end{columns}
+
+\vspace{0.5em}
+\begin{center}
+\textit{``Agents are promising but not production-ready for autonomous operation.'' -- 2024 consensus}
+\end{center}
+
+\bottomnote{Current agents work best with human oversight and well-defined tasks.}
+\end{frame}
+
+% ==================== TOOL TYPES DEEP DIVE ====================
+\begin{frame}[t]{Tool Types: A Comprehensive View}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth,height=0.65\textheight,keepaspectratio]{../FinalLecture/tool_types_overview/tool_types_overview.pdf}
+\end{center}
+
+\column{0.45\textwidth}
+\footnotesize
+\textbf{Information Retrieval}: Web search, RAG, SQL, SPARQL
+
+\textbf{Code Execution}: Python REPL, shell, Jupyter, sandboxed
+
+\textbf{External APIs}: Weather, email, CRM, custom business
+
+\textbf{System Operations}: File I/O, browser automation, GUI
+\end{columns}
+
+\vspace{0.3em}
+\textbf{Key Principle:} Tools should be \textit{atomic}, \textit{well-documented}, and \textit{safely sandboxed}.
+
+\bottomnote{The power of agents comes from combining multiple tool types in a single workflow.}
+\end{frame}
+
+% ==================== FUNCTION CALLING ====================
+\begin{frame}[t]{Function Calling and Structured Outputs}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{JSON Schema Definition}
+
+\footnotesize
+\texttt{\{\\
+~~"name": "search\_web",\\
+~~"description": "Search the web",\\
+~~"parameters": \{\\
+~~~~"type": "object",\\
+~~~~"properties": \{\\
+~~~~~~"query": \{"type": "string"\}\\
+~~~~\},\\
+~~~~"required": ["query"]\\
+~~\}\\
+\}}
+\normalsize
+
+\vspace{0.3em}
+\textbf{LLM Output}
+
+\footnotesize
+\texttt{\{\\
+~~"tool": "search\_web",\\
+~~"arguments": \{"query": "AAPL"\}\\
+\}}
+
+\column{0.48\textwidth}
+\textbf{Why Structured Outputs Matter}
+\begin{itemize}
+\item Guaranteed valid JSON
+\item Type checking at generation
+\item Reliable tool invocation
+\item No regex parsing needed
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Constrained Decoding}
+\begin{itemize}
+\item Grammar-constrained generation
+\item Only valid tokens sampled
+\item 100\% schema compliance
+\item Supported by GPT-4, Claude, etc.
+\end{itemize}
+\end{columns}
+
+\bottomnote{Structured outputs eliminate parsing errors -- critical for production agent systems.}
+\end{frame}
+
+% ==================== MCP ====================
+\begin{frame}[t]{Model Context Protocol (MCP)}
+\begin{center}
+\includegraphics[width=0.85\textwidth,height=0.5\textheight,keepaspectratio]{../FinalLecture/mcp_architecture/mcp_architecture.pdf}
+\end{center}
+
+\vspace{-0.3em}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\footnotesize
+\textbf{The Problem}: Every tool has different API, no standard for discovery
+
+\textbf{MCP Solution (Anthropic, 2024)}:
+Standard protocol, self-describing tools, dynamic discovery
+
+\column{0.48\textwidth}
+\footnotesize
+\textbf{Key Components:}
+\texttt{Resources} (data), \texttt{Tools} (actions), \texttt{Prompts} (templates)
+
+\textbf{Adoption}: Claude Desktop native, open source spec
+\end{columns}
+
+\bottomnote{MCP aims to be the ``USB for AI'' -- standardizing how models connect to tools.}
+\end{frame}
+
+% ==================== AGENT MEMORY ====================
+\begin{frame}[t]{Agent Memory Architectures}
+\begin{center}
+\includegraphics[width=0.75\textwidth,height=0.55\textheight,keepaspectratio]{../FinalLecture/agent_memory_types/agent_memory_types.pdf}
+\end{center}
+
+\vspace{-0.3em}
+\footnotesize
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Short-Term}: Context window, task state, recent outputs
+
+\column{0.32\textwidth}
+\textbf{Long-Term}: Vector store, summarized history, user preferences
+
+\column{0.32\textwidth}
+\textbf{Episodic}: Past experiences, learning from success/failure
+\end{columns}
+
+\vspace{0.3em}
+\normalsize
+\textbf{Challenge:} Deciding what to remember vs. forget -- information overload degrades performance.
+
+\bottomnote{Memory is what transforms a stateless LLM into a persistent assistant.}
+\end{frame}
+
+% ==================== MULTI-AGENT ====================
+\begin{frame}[t]{Multi-Agent Systems}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Why Multiple Agents?}
+\begin{itemize}
+\item Specialization (expert agents)
+\item Division of labor
+\item Cross-checking results
+\item Complex workflow orchestration
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Communication Patterns}
+\begin{itemize}
+\item \textit{Sequential}: Agent A $\to$ Agent B $\to$ Agent C
+\item \textit{Hierarchical}: Manager delegates to workers
+\item \textit{Debate}: Agents argue, human decides
+\item \textit{Voting}: Consensus among agents
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Example: Code Review System}
+
+1. \texttt{Coder Agent}: Writes code\\
+2. \texttt{Reviewer Agent}: Finds issues\\
+3. \texttt{Security Agent}: Checks vulnerabilities\\
+4. \texttt{Manager Agent}: Coordinates, decides
+
+\vspace{0.5em}
+\textbf{Frameworks}
+\begin{itemize}
+\item AutoGen (Microsoft)
+\item CrewAI
+\item LangGraph (multi-actor)
+\item CAMEL (role-playing)
+\end{itemize}
+\end{columns}
+
+\bottomnote{Multi-agent systems can outperform single agents but add coordination complexity.}
+\end{frame}
+
+% ==================== AGENT EVALUATION ====================
+\begin{frame}[t]{Agent Evaluation: Metrics and Benchmarks}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Task Completion Metrics}
+\begin{itemize}
+\item Success rate (task completed?)
+\item Steps to completion
+\item Cost per task (API calls)
+\item Time to completion
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Quality Metrics}
+\begin{itemize}
+\item Correctness of results
+\item Tool selection accuracy
+\item Reasoning trace quality
+\item Recovery from errors
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Popular Benchmarks}
+\begin{itemize}
+\item \textbf{WebArena}: Web navigation tasks
+\item \textbf{MINT}: Multi-turn interaction
+\item \textbf{AgentBench}: General agent tasks
+\item \textbf{SWE-bench}: Software engineering
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Challenges}
+\begin{itemize}
+\item Non-deterministic outputs
+\item Environment variability
+\item Expensive to run at scale
+\item Real vs. simulated environments
+\end{itemize}
+\end{columns}
+
+\bottomnote{Evaluation is hard: same agent can succeed or fail on identical tasks due to stochasticity.}
+\end{frame}
+
+% ==================== DEBUGGING AGENTS ====================
+\begin{frame}[t]{Debugging Agent Failures}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Common Failure Modes}
+\begin{itemize}
+\item \textcolor{mlred}{Infinite loops}: Agent repeats same action
+\item \textcolor{mlred}{Tool confusion}: Wrong tool for task
+\item \textcolor{mlred}{Hallucinated params}: Invalid arguments
+\item \textcolor{mlred}{Premature stop}: Quits before done
+\item \textcolor{mlred}{Context overflow}: Loses track of goal
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Debugging Techniques}
+\begin{itemize}
+\item Trace logging (every step)
+\item Breakpoints at tool calls
+\item Replay from checkpoints
+\item Manual intervention hooks
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Mitigation Strategies}
+
+\textit{Loop Prevention:}
+\begin{itemize}
+\item Max iterations limit
+\item Action history deduplication
+\item Escalation to human
+\end{itemize}
+
+\vspace{0.3em}
+\textit{Reliability:}
+\begin{itemize}
+\item Retry with backoff
+\item Fallback tools
+\item Confidence thresholds
+\item Structured validation
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Tools}: LangSmith, Weights \& Biases, Phoenix
+\end{columns}
+
+\bottomnote{Production agents need observability -- you cannot improve what you cannot see.}
+\end{frame}
+
+% ==================== CLOSING ====================
+
+% ==================== KEY TAKEAWAYS ====================
+\begin{frame}[t]{Key Takeaways: AI Agents}
+\begin{enumerate}
+\item \textbf{Agents extend LLMs} from text generators to action takers
+\item \textbf{ReAct pattern}: Think $\to$ Act $\to$ Observe $\to$ Repeat
+\item \textbf{Tool use} enables interaction with external systems
+\item \textbf{MCP} standardizes how agents connect to tools
+\item \textbf{Memory} is critical for maintaining context across actions
+\item \textbf{Evaluation} of agents is challenging but essential
+\end{enumerate}
+
+\vspace{0.3cm}
+\textbf{Key Insight:} Agents are still unreliable for complex tasks -- human oversight remains essential.
+\bottomnote{Agent capabilities are rapidly improving but require careful deployment.}
+\end{frame}
+
+% ==================== RESOURCES ====================
+\begin{frame}[t]{Further Reading: AI Agents}
+\textbf{Foundational Papers:}
+\begin{itemize}
+\item Yao et al. (2023) - ``ReAct: Synergizing Reasoning and Acting''
+\item Schick et al. (2023) - ``Toolformer''
+\item Significant-Gravitas - AutoGPT
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Frameworks \& Tools:}
+\begin{itemize}
+\item LangChain, LangGraph, CrewAI
+\item Claude Code, Cursor, Devin
+\item Model Context Protocol (MCP)
+\end{itemize}
+\bottomnote{Repository: github.com/Digital-AI-Finance/Natural-Language-Processing}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,19 @@
+Name of Quantlet: '21_course_journey'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Visual overview of the NLP course structure and learning path'
+
+Keywords: 'course structure, NLP curriculum, learning path, education'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'course_journey.pdf'
+
+Example: 'View PDF chart'

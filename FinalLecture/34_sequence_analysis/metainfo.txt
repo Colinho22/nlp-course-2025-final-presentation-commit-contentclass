@@ -1,0 +1,19 @@
+Name of Quantlet: '34_sequence_analysis'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Analysis and visualization of sequence patterns in NLP'
+
+Keywords: 'sequence analysis, pattern recognition, NLP, text analysis'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'sequence_analysis.pdf'
+
+Example: 'View PDF chart'

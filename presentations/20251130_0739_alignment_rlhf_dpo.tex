@@ -1,0 +1,742 @@
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+
+% Color definitions
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255, 127, 14}
+\definecolor{mlgreen}{RGB}{44, 160, 44}
+\definecolor{mlred}{RGB}{214, 39, 40}
+\definecolor{mlgray}{RGB}{127, 127, 127}
+\definecolor{lightgray}{RGB}{240, 240, 240}
+\definecolor{midgray}{RGB}{180, 180, 180}
+
+% Apply custom colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in toc}{fg=mlblue}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{block title}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{block body}{bg=mllavender4,fg=black}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% Command for bottom annotation
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+\title{AI Alignment}
+\subtitle{RLHF, DPO, and Making LLMs Safe}
+\author{NLP Course}
+\institute{MSc Program}
+\date{\today}
+
+\begin{document}
+
+% ==================== TITLE SLIDE ====================
+\begin{frame}[plain]
+\vspace{1cm}
+\begin{center}
+{\Huge AI Alignment}\\[0.3cm]
+{\Large RLHF, DPO, and Making LLMs Safe}\\[1cm]
+{\normalsize NLP Course -- Lecture 4}\\[0.3cm]
+{\small Advanced Topics in Natural Language Processing}
+\end{center}
+\end{frame}
+
+% ==================== LECTURE INTRO ====================
+\begin{frame}[t]{The Alignment Problem}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Raw Pre-trained LLMs}
+\begin{itemize}
+\item Not helpful (ignore instructions)
+\item Not honest (confidently wrong)
+\item Not harmless (generate toxic content)
+\item Just predict likely tokens
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Aligned LLMs}
+\begin{itemize}
+\item Follow user instructions
+\item Refuse harmful requests
+\item Admit uncertainty
+\item Helpful, Honest, Harmless
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{center}
+\textcolor{mlpurple}{\textbf{This lecture: How to align AI with human values}}
+\end{center}
+\bottomnote{Alignment is what transforms GPT-3 into ChatGPT.}
+\end{frame}
+
+% ==================== MAIN CONTENT ====================
+\begin{frame}[t]{o1 vs DeepSeek-R1: What We Know}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{OpenAI o1}
+\begin{itemize}
+\item Closed source, proprietary
+\item Hidden ``thinking'' tokens (not shown to user)
+\item Likely uses process supervision
+\item Rumored to use search/planning
+\item Available via API only
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Strengths}
+
+Polish, reliability, integration with OpenAI ecosystem.
+
+\column{0.48\textwidth}
+\textbf{DeepSeek-R1}
+\begin{itemize}
+\item Open source (weights + paper)
+\item Visible reasoning traces
+\item Pure RL approach documented
+\item Distilled to many sizes
+\item Run locally or via API
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Strengths}
+
+Transparency, customizability, research value.
+
+\vspace{0.5em}
+\textbf{Performance}
+
+Comparable on most benchmarks.
+\end{columns}
+
+\bottomnote{The gap between closed and open reasoning models is narrowing rapidly}
+\end{frame}
+
+% ==================== SECTION: ALIGNMENT ====================
+\section{Act III: RLHF \& Alignment -- Making LLMs Safe}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Act III: RLHF \& Alignment\par
+\vspace{0.3cm}
+\normalsize From GPT to ChatGPT: Making LLMs Safe and Helpful
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% ==================== RLHF SECTION ====================
+\subsection{From GPT to ChatGPT: The RLHF Story}
+
+% ==================== MISSING INGREDIENT ====================
+\begin{frame}[t]{The Missing Ingredient}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{GPT-3 (2020)}
+
+175 billion parameters.\\
+Impressive but... weird.
+
+\vspace{0.5em}
+\textbf{Problems}
+\begin{itemize}
+\item Would generate toxic content
+\item Refused simple helpful requests
+\item Rambling, off-topic responses
+\item No sense of ``what's appropriate''
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Root Cause}
+
+Trained to predict text, not to be helpful.\\
+Internet text includes everything -- good and bad.
+
+\column{0.48\textwidth}
+\textbf{InstructGPT / ChatGPT}
+
+Same architecture.\\
+Different training objective.
+
+\vspace{0.5em}
+\textbf{The Solution}
+
+Align with human preferences.
+
+\vspace{0.5em}
+\textbf{Shocking Result}
+
+\begin{center}
+\fbox{\parbox{0.9\columnwidth}{\centering
+1.3B model + RLHF\\
+$>$\\
+175B base model
+}}
+\end{center}
+
+Alignment > Scale (for usefulness)
+\end{columns}
+
+\bottomnote{Ouyang et al. (2022): ``Training language models to follow instructions with human feedback''}
+\end{frame}
+
+% ==================== RLHF PIPELINE ====================
+\begin{frame}[t]{The Three-Stage RLHF Pipeline}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/rlhf_vs_dpo.pdf}
+\end{center}
+
+\bottomnote{RLHF: Complex (3 stages, 3 models) but effective. DPO: Simpler (2 stages, 1 model).}
+\end{frame}
+
+% ==================== RLHF DETAILED PIPELINE ====================
+\begin{frame}[t]{RLHF: The Complete Training Loop}
+\begin{center}
+\includegraphics[width=0.55\textwidth]{../figures/rlhf_detailed_pipeline.pdf}
+\end{center}
+
+\bottomnote{RLHF requires orchestrating 3 models: policy, reference, and reward model in an iterative loop}
+\end{frame}
+
+% ==================== REWARD MODEL ====================
+\begin{frame}[t]{Stage 2: Reward Model Training}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Task}
+
+Learn to predict human preferences.
+
+\vspace{0.5em}
+\textbf{Data Collection}
+
+For each prompt, generate multiple responses.\\
+Humans rank: $y_w \succ y_l$ (winner vs loser)
+
+\vspace{0.5em}
+\textbf{Bradley-Terry Model}
+
+$$p(y_w \succ y_l) = \sigma(r(y_w) - r(y_l))$$
+
+Where $\sigma$ is sigmoid, $r$ is learned reward.
+
+\column{0.48\textwidth}
+\textbf{Loss Function}
+
+$$\mathcal{L}_{\text{RM}} = -\mathbb{E} \left[ \log \sigma(r(y_w) - r(y_l)) \right]$$
+
+Train to assign higher reward to preferred responses.
+
+\vspace{0.5em}
+\textbf{The Reward Model}
+
+Usually same architecture as LLM.\\
+Outputs scalar reward per response.\\
+Captures ``what humans prefer.''
+
+\vspace{0.5em}
+\textbf{Challenge}
+
+Requires many human comparisons.\\
+Expensive and slow to collect.
+\end{columns}
+
+\bottomnote{The reward model is the ``teacher'' that guides the policy optimization}
+\end{frame}
+
+% ==================== PPO ====================
+\begin{frame}[t]{Stage 3: PPO Optimization}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Goal}
+
+Maximize reward while staying close to original model.
+
+\vspace{0.5em}
+\textbf{Why KL Penalty?}
+
+Without it, model ``hacks'' the reward:\\
+Finds weird outputs that score high but aren't actually good.
+
+$$\mathcal{L} = \mathbb{E}[r(y)] - \beta \cdot \text{KL}(\pi_\theta || \pi_{\text{ref}})$$
+
+\column{0.48\textwidth}
+\textbf{PPO (Proximal Policy Optimization)}
+
+Clips policy updates to prevent instability:
+
+$$\mathcal{L}_{\text{PPO}} = \min \left( \frac{\pi_\theta}{\pi_{\text{old}}} A_t, \text{clip}(\cdot) A_t \right)$$
+
+\vspace{0.5em}
+\textbf{In Practice}
+
+Run 3 models simultaneously:
+\begin{itemize}
+\item Policy (being trained)
+\item Reference (original SFT model)
+\item Reward model
+\end{itemize}
+
+Expensive! Memory and compute intensive.
+\end{columns}
+
+\bottomnote{PPO is notoriously finicky -- hyperparameters matter a lot}
+\end{frame}
+
+% ==================== MODERN APPROACHES ====================
+\subsection{Modern Approaches: DPO and Constitutional AI}
+
+% ==================== RLHF PROBLEMS ====================
+\begin{frame}[t]{Problems with RLHF}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Complexity}
+
+3 stages, 3 models, many hyperparameters.
+
+\vspace{0.5em}
+\textbf{Instability}
+
+PPO training can diverge.\\
+Reward hacking is common.\\
+Results vary between runs.
+
+\vspace{0.5em}
+\textbf{Cost}
+
+Training RM requires many human labels.\\
+PPO needs 3 models in memory.\\
+Iteration is slow.
+
+\column{0.48\textwidth}
+\textbf{Reward Hacking}
+
+Model finds ``loopholes'':
+\begin{itemize}
+\item Verbosity (longer = higher reward?)
+\item Sycophancy (always agree with user)
+\item Gaming format preferences
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{The Question}
+
+Can we get alignment benefits without the complexity?
+
+\vspace{0.5em}
+\textbf{Answer: DPO}
+\end{columns}
+
+\bottomnote{2023 saw a wave of research on simpler alternatives to RLHF}
+\end{frame}
+
+% ==================== REWARD HACKING EXAMPLES ====================
+\begin{frame}[t]{Reward Hacking: When Models Game the System}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/reward_hacking_examples.pdf}
+\end{center}
+
+\bottomnote{Reward hacking is why RLHF uses KL penalty: prevent policy from drifting too far from reference}
+\end{frame}
+
+% ==================== DPO ====================
+\begin{frame}[t]{DPO: Direct Preference Optimization}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Key Insight}
+
+The optimal RLHF policy has a closed form!
+
+$$\pi^*(y|x) \propto \pi_{\text{ref}}(y|x) \exp\left(\frac{r(y)}{\beta}\right)$$
+
+We can reparameterize to get reward:
+$$r(y) = \beta \log \frac{\pi^*(y|x)}{\pi_{\text{ref}}(y|x)} + \text{const}$$
+
+\vspace{0.5em}
+\textbf{Implication}
+
+No need to learn a separate reward model!\\
+The policy \textit{is} the reward model.
+
+\column{0.48\textwidth}
+\textbf{DPO Loss}
+
+$$\mathcal{L}_{\text{DPO}} = -\mathbb{E} \left[ \log \sigma \left( \beta \log \frac{\pi_\theta(y_w)}{\pi_{\text{ref}}(y_w)} - \beta \log \frac{\pi_\theta(y_l)}{\pi_{\text{ref}}(y_l)} \right) \right]$$
+
+\vspace{0.5em}
+\textbf{What This Means}
+
+Train directly on preference pairs!\\
+No reward model, no PPO.\\
+Just supervised learning on preferences.
+
+\vspace{0.5em}
+\textbf{Advantages}
+\begin{itemize}
+\item Much simpler
+\item More stable
+\item Cheaper to train
+\end{itemize}
+\end{columns}
+
+\bottomnote{Rafailov et al. (2024): ``Direct Preference Optimization: Your Language Model is Secretly a Reward Model''}
+\end{frame}
+
+% ==================== DPO VS RLHF COMPARISON ====================
+\begin{frame}[t]{DPO vs RLHF: Complexity Comparison}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/dpo_vs_rlhf_comparison.pdf}
+\end{center}
+
+\bottomnote{DPO achieves comparable results to RLHF with dramatically simpler training infrastructure}
+\end{frame}
+
+% ==================== CONSTITUTIONAL AI ====================
+\begin{frame}[t]{Constitutional AI: Self-Critique}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{The Idea}
+
+Instead of thousands of human annotators...
+
+Define a ``constitution'' (principles).\\
+Have the model critique itself.\\
+Train on self-improved outputs.
+
+\vspace{0.5em}
+\textbf{Example Principles}
+\begin{itemize}
+\item ``Choose the most helpful response''
+\item ``Choose the least harmful response''
+\item ``Choose the most honest response''
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Process}
+
+1. Generate initial response\\
+2. Critique against principles\\
+3. Revise based on critique\\
+4. Repeat until satisfactory\\
+5. Train on revised outputs
+
+\vspace{0.5em}
+\textbf{RLAIF (RL from AI Feedback)}
+
+Use AI model as the judge.\\
+Dramatically reduces human labeling cost.\\
+Enables scaling to diverse preferences.
+
+\vspace{0.5em}
+\textbf{Used By}
+
+Anthropic (Claude)
+\end{columns}
+
+\bottomnote{Constitutional AI: Alignment through principles rather than exhaustive human feedback}
+\end{frame}
+
+% ==================== COMPARISON TABLE ====================
+\begin{frame}[t]{Alignment Methods Comparison}
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Method} & \textbf{Human Labels} & \textbf{Models} & \textbf{Stability} & \textbf{Complexity} \\
+\midrule
+RLHF (PPO) & High & 3 & Low & High \\
+DPO & Medium & 1 & High & Low \\
+RLAIF & Low & 2 & Medium & Medium \\
+Constitutional AI & Very Low & 1 & High & Medium \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\textbf{Current Trend}
+
+Move away from PPO toward simpler methods.\\
+DPO becoming standard for fine-tuning.\\
+Constitutional AI for safety-critical applications.
+
+\vspace{0.5em}
+\textbf{Open Question}
+
+Do simpler methods achieve the same alignment quality as RLHF?\\
+(Evidence so far: mostly yes, sometimes no)
+
+\bottomnote{The field is converging on simpler, more stable alignment approaches}
+\end{frame}
+
+% ==================== ALIGNMENT TIMELINE ====================
+\begin{frame}[t]{The Evolution of Alignment Methods}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/alignment_timeline.pdf}
+\end{center}
+
+\bottomnote{Clear trend: From complex RL pipelines toward simpler, more direct preference optimization}
+\end{frame}
+
+% ==================== OPEN QUESTIONS ====================
+\begin{frame}[t]{Open Questions in Alignment}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Philosophical Questions}
+\begin{itemize}
+\item Whose values should AI embody?
+\item How do we handle value conflicts?
+\item Is ``alignment'' even well-defined?
+\item What about minority preferences?
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Technical Questions}
+\begin{itemize}
+\item How to align superhuman AI?
+\item Can we verify alignment actually works?
+\item How to prevent deceptive alignment?
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{The Alignment Tax}
+
+RLHF can degrade performance on some benchmarks.
+
+Trade-off: Safety vs. Capability
+
+Current research: Minimize this tax.
+
+\vspace{0.5em}
+\textbf{Connection to Reasoning}
+
+DeepSeek-R1: RL for reasoning capability.\\
+RLHF: RL for alignment.
+
+\vspace{0.5em}
+\textbf{Future Direction?}
+
+Unified frameworks that optimize for both reasoning AND alignment simultaneously.
+\end{columns}
+
+\bottomnote{We're not just building smart systems -- we're building systems that share our values}
+\end{frame}
+
+% ==================== SECTION: CLOSING ====================
+\section{Closing: The Next Frontier Is Yours}
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Large Closing: The Next Frontier Is Yours\par
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% ==================== CONVERGENCE ====================
+\begin{frame}[t]{The Convergence}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/convergence_diagram.pdf}
+\end{center}
+
+\bottomnote{Modern AI systems combine all three: RAG for grounding, reasoning for capability, alignment for safety}
+\end{frame}
+
+% ==================== WHAT YOU NOW KNOW ====================
+\begin{frame}[t]{What You Now Know}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{From This Semester}
+\begin{itemize}
+\item How language models work (transformers, attention)
+\item How to adapt them (fine-tuning, LoRA)
+\item How to prompt them effectively
+\item How to deploy them efficiently
+\item How to use them responsibly
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{From Today}
+\begin{itemize}
+\item How to make them useful (RAG, agents)
+\item How to make them reason (CoT, test-time compute)
+\item How to make them safe (RLHF, DPO, CAI)
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{You Can Now...}
+\begin{itemize}
+\item Read papers published yesterday
+\item Evaluate new techniques critically
+\item Build on the frontier
+\end{itemize}
+\end{columns}
+
+\bottomnote{You have the foundation to navigate -- and contribute to -- the rapidly evolving field of NLP}
+\end{frame}
+
+% ==================== WHAT'S COMING ====================
+\begin{frame}[t]{What's Coming Next}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Near-Term (2025)}
+\begin{itemize}
+\item Multimodal reasoning (vision + text + code)
+\item Longer context windows (1M+ tokens)
+\item More efficient inference
+\item Better open-source models
+\item Enterprise agent deployment
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Medium-Term (2026+)}
+\begin{itemize}
+\item Agent ecosystems (specialized collaboration)
+\item Personal AI (fine-tuned to you)
+\item Scientific discovery acceleration
+\item Embodied AI (robotics integration)
+\item New paradigms beyond transformers?
+\end{itemize}
+\end{columns}
+
+\vspace{1em}
+\textbf{The Constant}
+
+The models will keep getting better. That's almost certain.\\
+The question is: Better at what? For whom? Decided by whom?
+
+\bottomnote{Those aren't just technical questions -- but they require technical people to answer them well}
+\end{frame}
+
+% ==================== RESOURCES ====================
+\begin{frame}[t]{Resources for Continued Learning}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Key Papers}
+\begin{itemize}
+\item Lewis et al. (2020): RAG
+\item Yao et al. (2023): ReAct
+\item Wei et al. (2022): Chain-of-Thought
+\item DeepSeek (2025): R1
+\item Ouyang et al. (2022): InstructGPT
+\item Rafailov et al. (2024): DPO
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Practical Resources}
+\begin{itemize}
+\item LangChain documentation
+\item HuggingFace TRL library
+\item DeepSeek-R1 on HuggingFace
+\item OpenAI Cookbook
+\item Anthropic's research blog
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Communities}
+\begin{itemize}
+\item HuggingFace forums
+\item r/LocalLLaMA
+\item AI research Twitter/X
+\end{itemize}
+\end{columns}
+
+\bottomnote{The best way to learn is to build -- pick a project and start experimenting!}
+\end{frame}
+
+% ==================== FINAL MESSAGE ====================
+\begin{frame}[plain]
+\vspace{1cm}
+\begin{center}
+{\large We started this course asking:}\\[0.3cm]
+{\Large How do we predict the next word?}\\[1cm]
+{\large We end asking:}\\[0.3cm]
+{\Large How do we build AI that helps humanity\\write a better future?}\\[1.2cm]
+{\normalsize The models predict tokens.}\\[0.3cm]
+{\Large \textbf{You decide what we build.}}\\[1cm]
+{\small Thank you for this semester.}
+\end{center}
+\end{frame}
+
+% ==================== QUESTIONS ====================
+\begin{frame}[plain]
+\vspace{3cm}
+\begin{center}
+{\Huge Questions?}\\[1.2cm]
+{\normalsize The next frontier is yours.}
+\end{center}
+\end{frame}
+% ==================== CLOSING ====================
+
+% ==================== KEY TAKEAWAYS ====================
+\begin{frame}[t]{Key Takeaways: AI Alignment}
+\begin{enumerate}
+\item \textbf{RLHF} transforms base LLMs into helpful assistants
+\item \textbf{Reward models} learn human preferences from comparisons
+\item \textbf{PPO + KL penalty} prevents reward hacking
+\item \textbf{DPO} simplifies alignment (no separate reward model)
+\item \textbf{Constitutional AI} enables self-improvement with principles
+\end{enumerate}
+
+\vspace{0.3cm}
+\textbf{Open Questions:}
+\begin{itemize}
+\item Whose values should AI systems align with?
+\item How do we align AI smarter than humans?
+\end{itemize}
+\bottomnote{Alignment is what makes AI systems safe and beneficial.}
+\end{frame}
+
+% ==================== FINAL MESSAGE ====================
+\begin{frame}[plain]
+\begin{center}
+\vspace{2cm}
+{\Huge The Convergence}\\[1cm]
+{\Large \textcolor{mlblue}{USEFUL} + \textcolor{mlorange}{SMART} + \textcolor{mlgreen}{SAFE}}\\[0.5cm]
+{\large RAG \& Agents + Reasoning + Alignment}\\[1.5cm]
+{\normalsize ``The models predict tokens.\\[0.2cm]
+\textbf{You} decide what we build with them.''}
+\end{center}
+\end{frame}
+
+% ==================== QUESTIONS ====================
+\begin{frame}[plain]
+\begin{center}
+\vspace{3cm}
+{\Huge Questions?}\\[1cm]
+{\large Thank you for your attention}\\[0.5cm]
+{\small github.com/Digital-AI-Finance/Natural-Language-Processing}
+\end{center}
+\end{frame}
+
+\end{document}

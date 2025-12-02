@@ -1,0 +1,19 @@
+Name of Quantlet: '03_hnsw_cities_example'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Concrete example of HNSW algorithm using city locations as embedding space'
+
+Keywords: 'HNSW, vector search, cities example, nearest neighbor, visualization'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'generate_hnsw_cities_example.py'
+
+Output: 'hnsw_cities_example.pdf'
+
+Example: 'python generate_hnsw_cities_example.py'

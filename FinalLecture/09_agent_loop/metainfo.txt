@@ -1,0 +1,19 @@
+Name of Quantlet: '09_agent_loop'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Visualization of the AI agent execution loop with perception, reasoning, and action phases'
+
+Keywords: 'AI agent, agent loop, perception, reasoning, action, LLM agents'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'None'
+
+Output: 'agent_loop.pdf'
+
+Example: 'View PDF chart'

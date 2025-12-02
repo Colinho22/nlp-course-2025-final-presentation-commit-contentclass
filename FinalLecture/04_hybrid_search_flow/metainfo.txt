@@ -1,0 +1,19 @@
+Name of Quantlet: '04_hybrid_search_flow'
+
+Published in: 'Natural Language Processing - Final Lecture'
+
+Description: 'Flowchart showing hybrid search combining sparse (BM25) and dense vector retrieval'
+
+Keywords: 'hybrid search, BM25, dense retrieval, RAG, information retrieval'
+
+Author: 'Digital-AI-Finance'
+
+Submitted: '2025-11-29'
+
+Datafile: 'None'
+
+Input: 'generate_hybrid_search_flow.py'
+
+Output: 'hybrid_search_flow.pdf'
+
+Example: 'python generate_hybrid_search_flow.py'

@@ -1,0 +1,1548 @@
+% Week 9: Decoding Strategies - Fixed Key Slides
+% 65 main slides + 25 appendix slides
+% Fixed: November 18, 2025 | Removed duplicates, simplified extremes, made abstract
+% Template: template_beamer_final.tex
+
+\documentclass[8pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{tikz}
+
+% Math commands
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator{\softmax}{softmax}
+
+% Color definitions (complete palette from template)
+\definecolor{mlblue}{RGB}{0,102,204}
+\definecolor{mlpurple}{RGB}{51,51,178}
+\definecolor{mllavender}{RGB}{173,173,224}
+\definecolor{mllavender2}{RGB}{193,193,232}
+\definecolor{mllavender3}{RGB}{204,204,235}
+\definecolor{mllavender4}{RGB}{214,214,239}
+\definecolor{mlorange}{RGB}{255,127,14}
+\definecolor{mlgreen}{RGB}{44,160,44}
+\definecolor{mlred}{RGB}{214,39,40}
+\definecolor{mlgray}{RGB}{127,127,127}
+
+% Additional colors for template compatibility
+\definecolor{lightgray}{RGB}{240,240,240}
+\definecolor{midgray}{RGB}{180,180,180}
+
+% Apply custom colors to Madrid theme
+\setbeamercolor{palette primary}{bg=mllavender3,fg=mlpurple}
+\setbeamercolor{palette secondary}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{palette tertiary}{bg=mllavender,fg=white}
+\setbeamercolor{palette quaternary}{bg=mlpurple,fg=white}
+
+\setbeamercolor{structure}{fg=mlpurple}
+\setbeamercolor{section in toc}{fg=mlpurple}
+\setbeamercolor{subsection in toc}{fg=mlblue}
+\setbeamercolor{title}{fg=mlpurple}
+\setbeamercolor{frametitle}{fg=mlpurple,bg=mllavender3}
+\setbeamercolor{block title}{bg=mllavender2,fg=mlpurple}
+\setbeamercolor{block body}{bg=mllavender4,fg=black}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% Clean itemize/enumerate
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+
+% Reduce margins for more content space
+\setbeamersize{text margin left=5mm,text margin right=5mm}
+
+% Command for bottom annotation (Madrid-style)
+\newcommand{\bottomnote}[1]{%
+\vfill
+\vspace{-2mm}
+\textcolor{mllavender2}{\rule{\textwidth}{0.4pt}}
+\vspace{1mm}
+\footnotesize
+\textbf{#1}
+}
+
+\title{Decoding Strategies}
+\subtitle{Week 9 - From Probabilities to Text}
+\date{November 18, 2025}
+
+\begin{document}
+
+% ============================================
+% MAIN PRESENTATION (~65 SLIDES)
+% ============================================
+
+% === SLIDE 1: TITLE (PURPLE GRADIENT BEAMERCOLORBOX) ===
+\begin{frame}[plain]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=16pt,center,rounded=true,shadow=true]{title}
+\usebeamerfont{title}\Huge Decoding Strategies\par
+\vspace{0.3cm}
+{\Large Week 9: From Probabilities to Text}\par
+\vspace{0.5cm}
+{\normalsize November 2025}
+\end{beamercolorbox}
+\vfill
+\end{frame}
+
+% === SLIDE 2: LEARNING GOALS & PLAN FOR TODAY ===
+\begin{frame}[t]{Learning Goals \& Plan for Today}
+\vspace{0.2cm}
+
+\begin{columns}[T]
+
+% LEFT COLUMN: Learning Goals
+\column{0.48\textwidth}
+\textbf{\textcolor{mlpurple}{Learning Goals}}
+\vspace{0.3cm}
+
+\begin{enumerate}
+\item Discover why predicting one word at a time creates text quality problems
+
+\item Learn how different decoding strategies solve these problems
+
+\item Practice selecting and tuning methods for different use cases
+\end{enumerate}
+
+% RIGHT COLUMN: Plan for Today
+\column{0.48\textwidth}
+\textbf{\textcolor{mlpurple}{Plan for Today}}
+\vspace{0.3cm}
+
+\begin{enumerate}
+\item The challenge: Word predictions $\rightarrow$ Complete text
+
+\item The toolbox: 6 strategies for text generation
+
+\item Hands-on: Compare methods in practice
+\end{enumerate}
+
+\end{columns}
+
+\vspace{0.5cm}
+\bottomnote{Notebook available: \texttt{week09\_decoding\_lab.ipynb}}
+\end{frame}
+
+% === SLIDE 3: THE DECODING CHALLENGE ===
+\begin{frame}[t]{The Decoding Challenge: Choosing From 50,000 Words}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.80\textwidth]{../figures/vocabulary_probability_bsc.pdf}
+\end{center}
+
+\vspace{3mm}
+\textbf{The Question}: Given these probabilities for ``The cat \_\_'', which word should we pick?
+
+\bottomnote{At each step, model outputs probability distribution over entire vocabulary - how do we choose?}
+\end{frame}
+
+% === SLIDE 3: CONTEXT - HOW WE GOT HERE ===
+\begin{frame}[t]{Context: How We Got Here}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/prediction_to_text_pipeline_bsc.pdf}
+\end{center}
+
+\vspace{3mm}
+\small
+\textbf{Our Journey}:
+\begin{enumerate}
+\item We trained models (Weeks 3-7: RNN $\rightarrow$ Transformers $\rightarrow$ BERT/GPT)
+\item They learned to predict: $P(\text{word} | \text{context})$
+\item They output probability distributions over 50,000+ words
+\item \textbf{Today}: How do we convert these probabilities into actual text?
+\end{enumerate}
+
+\bottomnote{Models predict probabilities. Decoding converts probabilities to text.}
+\end{frame}
+
+% ============================================
+% NEW SECTION: EXTREME CASES (Slides 4-8)
+% ============================================
+
+% === SLIDE 4: EXTREME CASE 1 - GREEDY (TOO NARROW) ===
+\begin{frame}[t]{Extreme Case 1: Greedy Decoding (Too Narrow)}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.90\textwidth]{../figures/extreme_greedy_single_path_bsc.pdf}
+\end{center}
+
+\bottomnote{Extreme 1: Too narrow - misses 99.9999999\% of search space}
+\end{frame}
+
+% === SLIDE 5: TRANSITION - WHAT IF WE EXPLORED MORE? ===
+\begin{frame}[t]{What If We Explored More Paths?}
+\vspace{-0.2cm}
+
+% Top: Show greedy's single choice
+\textbf{Greedy chose}: ``The cat \textcolor{mlgreen}{sat}'' (P=0.68)
+
+\vspace{3mm}
+% Middle: Show what greedy missed
+\textbf{But it ignored these alternatives}:
+\begin{center}
+\begin{tabular}{llr}
+``The cat \textcolor{mlorange}{walked}'' & P=0.12 & (might lead to better text)\\
+``The cat \textcolor{mlorange}{jumped}'' & P=0.08 & (more interesting)\\
+``The cat \textcolor{mlorange}{slept}'' & P=0.06 & (different story)\\
+``The cat \textcolor{mlorange}{ran}'' & P=0.04 & (action-oriented)\\
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+% Bottom: The key question
+\begin{center}
+\colorbox{mllavender4}{\parbox{0.85\textwidth}{
+\centering
+\Large\textbf{Question}: What if we kept ALL 100 words at each step?\\[3mm]
+\normalsize Think: 100 × 100 × 100 × 100 × 100 = ?
+}}
+\end{center}
+
+\vspace{3mm}
+\pause
+\textcolor{mlred}{\textbf{Answer}: 10 billion paths! Let's see what happens...}
+
+\bottomnote{From 1 path to ALL paths - what could go wrong?}
+\end{frame}
+
+% === NEW SLIDE: GREEDY'S FATAL FLAW ===
+\begin{frame}[t]{Greedy's Fatal Flaw: Missing Better Paths}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/greedy_suboptimal_comparison_bsc.pdf}
+\end{center}
+\vspace{2mm}
+\textbf{The Problem}: High first-step probability $\neq$ Best complete sentence
+\bottomnote{Greedy commits early, missing narratively richer paths despite lower initial probability}
+\end{frame}
+
+% === SLIDE 6: EXTREME CASE 2 - FULL SEARCH (TOO BROAD) ===
+\begin{frame}[t]{Extreme Case 2: Full Search Space (Too Broad)}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{../figures/extreme_full_beam_explosion_bsc.pdf}
+\end{center}
+
+\bottomnote{Extreme 2: Too broad - exponential explosion makes this impossible}
+\end{frame}
+
+% === SLIDE 7: FULL EXPLORATION - ONLY TREE ===
+\begin{frame}[t]{Full Exploration: From One Path to Billions}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/full_exploration_tree_graphviz.pdf}
+\end{center}
+\vspace{1mm}
+\textbf{The Problem}: How do we explore more than 1 but less than 10 billion paths?
+
+\bottomnote{Exponential explosion: 100 → 10,000 → 1,000,000 → 10 billion paths}
+\end{frame}
+
+% === SLIDE 8: THE EXTREMES - SIMPLIFIED ===
+\begin{frame}[t]{The Extremes: Why Neither Works}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/extreme_coverage_comparison_bsc.pdf}
+\end{center}
+
+\vspace{2mm}
+
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Greedy (0.01\% coverage)}:
+\begin{itemize}
+\item Too narrow - misses better paths
+\item Fast but low quality
+\item Prone to repetition loops
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Full Search (100\% coverage)}:
+\begin{itemize}
+\item Too broad - computationally infeasible
+\item Perfect in theory, impossible in practice
+\item Would take days/years to complete
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\textbf{Key Insight}: We need methods that explore 1-5\% of space intelligently
+
+\bottomnote{Neither extreme is practical - the solution lies in between}
+\end{frame}
+
+% === SLIDE 9: PRACTICAL SOLUTIONS - ABSTRACT ===
+\begin{frame}[t]{The Sweet Spot: Balanced Exploration}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/practical_methods_coverage_bsc.pdf}
+\end{center}
+\vspace{3mm}
+
+\textbf{The Solution: 1-5\% Coverage}
+\begin{itemize}
+\item \textbf{Not too narrow}: Explores enough paths to find good sequences
+\item \textbf{Not too broad}: Computationally feasible (seconds, not days)
+\item \textbf{Strategic exploration}: Focus on promising regions of search space
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Coming Next}: Learn 6 specific methods that achieve this balance
+
+\bottomnote{The sweet spot: Methods that intelligently explore 1-5\% of the search space}
+\end{frame}
+
+% ============================================
+% THE TOOLBOX WITH EXAMPLES: Methods + Immediate Examples
+% ============================================
+
+% === METHOD 1: GREEDY ===
+\begin{frame}[t]{Method 1: Greedy Decoding}
+\vspace{-0.2cm}
+\textbf{Core Mechanism}:
+$$w_t = \argmax_{w \in V} P(w \mid w_1, \ldots, w_{t-1})$$
+
+At each step, pick the single word with highest probability
+
+\vspace{5mm}
+\textbf{Characteristics}:
+\begin{itemize}
+\item Deterministic (same input → same output)
+\item Fast: O(1) per step
+\item No exploration
+\end{itemize}
+
+\bottomnote{Method 1 of 6: Greedy = always pick argmax}
+\end{frame}
+
+% === METHOD 2: BEAM SEARCH + EXAMPLES ===
+\begin{frame}[t]{Method 2: Beam Search}
+\vspace{-0.2cm}
+\textbf{Core Mechanism}:
+
+Maintain k hypotheses (``beams'') at each step
+
+Expand each hypothesis, keep top-k by cumulative probability
+
+\vspace{5mm}
+\textbf{Characteristics}:
+\begin{itemize}
+\item Explores k paths simultaneously (typically k=3-5)
+\item Trade exploration vs computation
+\item Still deterministic for fixed k
+\end{itemize}
+
+\bottomnote{Method 2 of 6: Beam = keep top-k paths}
+\end{frame}
+
+% === BEAM SEARCH EXAMPLE (MOVED FROM SLIDE 31) ===
+\begin{frame}[t]{Beam Search: Step-by-Step Example}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/beam_search_tree_graphviz.pdf}
+\end{center}
+\bottomnote{Worked example shows why beam search finds better sequences than greedy}
+\end{frame}
+
+% === BEAM SEARCH ALGORITHM (MOVED FROM SLIDE 32) ===
+\begin{frame}[t]{Beam Search: Algorithm \& Settings}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Algorithm}:
+
+\begin{enumerate}
+\item Start: Keep top-k tokens
+\item Expand: Generate continuations for each
+\item Score: Multiply probabilities
+\item Prune: Keep top-k sequences
+\item Repeat until END token
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Scoring}:
+
+$$\text{score}(y_1...y_t) = \prod_{i=1}^t P(y_i | y_{<i})$$
+
+With length normalization:
+
+$$\text{score} = \frac{1}{t} \sum_{i=1}^t \log P(y_i | y_{<i})$$
+
+\column{0.48\textwidth}
+\textbf{Best For}:
+\begin{itemize}
+\item Machine translation
+\item Summarization
+\item Question answering
+\item Tasks with ``correct'' answer
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Parameters}:
+
+Width = 3-5 (translation)
+
+Width = 10 (diverse outputs)
+
+\vspace{3mm}
+\textbf{Tradeoffs}:
+
++ Better quality than greedy
+
++ Diverse hypotheses
+
+- Still deterministic
+
+- 4-5$\times$ slower than greedy
+
+\end{columns}
+\bottomnote{Beam search is the workhorse for deterministic tasks}
+\end{frame}
+
+% === METHOD 3: TEMPERATURE + EXAMPLES ===
+\begin{frame}[t]{Method 3: Temperature Sampling}
+\vspace{-0.2cm}
+\textbf{Core Mechanism}:
+$$P_T(w_i) = \frac{\exp(z_i / T)}{\sum_j \exp(z_j / T)}$$
+
+Reshape probability distribution with temperature T, then sample
+
+\vspace{5mm}
+\textbf{Characteristics}:
+\begin{itemize}
+\item $T < 1$: More focused (sharper distribution)
+\item $T > 1$: More random (flatter distribution)
+\item Stochastic: different output each time
+\end{itemize}
+
+\bottomnote{Method 3 of 6: Temperature = control randomness}
+\end{frame}
+
+% === TEMPERATURE EXAMPLE 1 (MOVED FROM SLIDE 33) ===
+\begin{frame}[t]{Temperature Sampling: Control Randomness}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/temperature_effects_bsc.pdf}
+\end{center}
+\begin{center}
+\textbf{Key Insight}: Temperature reshapes probability distribution
+\end{center}
+\bottomnote{T $<$ 1: more focused. T = 1: unchanged. T $>$ 1: more random}
+\end{frame}
+
+% === TEMPERATURE EXAMPLE 2 (MOVED FROM SLIDE 34) ===
+\begin{frame}[t]{Temperature: Worked Example}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{../figures/temperature_calculation_bsc.pdf}
+\end{center}
+\bottomnote{Concrete numbers show how temperature scaling works}
+\end{frame}
+
+% === METHOD 4: TOP-K + EXAMPLES ===
+\begin{frame}[t]{Method 4: Top-k Sampling}
+\vspace{-0.2cm}
+\textbf{Core Mechanism}:
+
+1. Sort words by probability
+
+2. Keep only top k words (e.g., k=50)
+
+3. Renormalize and sample from these k
+
+\vspace{5mm}
+\textbf{Characteristics}:
+\begin{itemize}
+\item Filters out low-probability ``junk'' words
+\item Fixed cutoff (always k words)
+\item Can combine with temperature
+\end{itemize}
+
+\bottomnote{Method 4 of 6: Top-k = filter then sample}
+\end{frame}
+
+% === TOP-K EXAMPLE 1 (MOVED FROM SLIDE 35) ===
+\begin{frame}[t]{Top-k Sampling: Filter the Tail}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{../figures/topk_filtering_bsc.pdf}
+\end{center}
+\begin{center}
+\textbf{Key Insight}: Only sample from top-k most likely tokens
+\end{center}
+\bottomnote{Prevents sampling from long tail of unlikely words}
+\end{frame}
+
+% === TOP-K EXAMPLE 2 (MOVED FROM SLIDE 36) ===
+\begin{frame}[t]{Top-k: Worked Example}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{../figures/topk_example_bsc.pdf}
+\end{center}
+\bottomnote{Concrete numbers show k=50 filtering process}
+\end{frame}
+
+% === METHOD 5: NUCLEUS + EXAMPLES ===
+\begin{frame}[t]{Method 5: Nucleus (Top-p) Sampling}
+\vspace{-0.2cm}
+\textbf{Core Mechanism}:
+
+1. Sort words by probability
+
+2. Keep minimum set where cumulative probability $\geq$ p
+
+3. Sample from this set
+
+\vspace{5mm}
+\textbf{Characteristics}:
+\begin{itemize}
+\item Adaptive: number of words varies
+\item Focuses on ``nucleus'' of probability mass (typically p=0.9)
+\item Adjusts to distribution shape
+\end{itemize}
+
+\bottomnote{Method 5 of 6: Nucleus = adaptive probability mass}
+\end{frame}
+
+% === NUCLEUS EXAMPLE 1 (MOVED FROM SLIDE 37) ===
+\begin{frame}[t]{Nucleus (Top-p) Sampling: Dynamic Cutoff}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{../figures/nucleus_process_bsc.pdf}
+\end{center}
+\begin{center}
+\textbf{Key Insight}: Adapt vocabulary size to distribution shape
+\end{center}
+\bottomnote{Nucleus size grows/shrinks based on probability spread}
+\end{frame}
+
+% === NUCLEUS EXAMPLE 2 (MOVED FROM SLIDE 38) ===
+\begin{frame}[t]{Nucleus: How Distribution Shape Matters}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{../figures/nucleus_cumulative_bsc.pdf}
+\end{center}
+\bottomnote{Same p value gives different vocabulary sizes for peaked vs flat distributions}
+\end{frame}
+
+% === METHOD 6: CONTRASTIVE + EXAMPLES ===
+\begin{frame}[t]{Method 6: Contrastive Search}
+\vspace{-0.2cm}
+\textbf{Core Mechanism}:
+
+Choose word that maximizes:
+$$\text{score} = (1-\alpha) \cdot \text{model probability} - \alpha \cdot \text{similarity to previous}$$
+
+Penalize words similar to already-generated text
+
+\vspace{5mm}
+\textbf{Characteristics}:
+\begin{itemize}
+\item Explicitly avoids repetition
+\item Balances coherence and diversity
+\item Deterministic with hyperparameter $\alpha$
+\end{itemize}
+
+\bottomnote{Method 6 of 6: Contrastive = penalize repetition}
+\end{frame}
+
+% === CONTRASTIVE EXAMPLE 1 (MOVED FROM SLIDE 39) ===
+\begin{frame}[t]{The Degeneration Problem}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{../figures/degeneration_problem_bsc.pdf}
+\end{center}
+\begin{center}
+\textbf{Discovery Question}: Why do models repeat themselves?
+\end{center}
+\bottomnote{Greedy and beam search maximize probability - but high probability = repeating recent context}
+\end{frame}
+
+% === CONTRASTIVE EXAMPLE 2 (MOVED FROM SLIDE 40) ===
+\begin{frame}[t]{Contrastive Search: Penalize Repetition}
+\vspace{-0.3cm}
+\begin{center}
+\vspace{-3mm}
+\includegraphics[width=0.60\textwidth]{../figures/contrastive_mechanism_bsc.pdf}
+\end{center}
+\begin{center}
+\textbf{Key Insight}: Balance probability with diversity penalty
+\end{center}
+\bottomnote{Explicitly avoid copying recent context - prevents degeneration in long texts}
+\end{frame}
+
+% === CONTRASTIVE EXAMPLE 3 (MOVED FROM SLIDE 41) ===
+\begin{frame}[t]{Contrastive vs Nucleus: Direct Comparison}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.62\textwidth]{../figures/contrastive_vs_nucleus_bsc.pdf}
+\end{center}
+\bottomnote{Contrastive adds explicit similarity penalty that Nucleus lacks}
+\end{frame}
+
+% ============================================
+% CHECKPOINT QUIZ 1 (MOVED FROM SLIDE 15)
+% ============================================
+
+\begin{frame}[t]{Checkpoint Quiz 1: Match the Method}
+\begin{columns}[T]
+\column{0.45\textwidth}
+\textbf{Methods:}
+\begin{enumerate}
+\item Greedy
+\item Beam Search
+\item Temperature
+\item Top-k
+\item Nucleus
+\item Contrastive
+\end{enumerate}
+
+\column{0.55\textwidth}
+\textbf{Match to Mechanisms:}
+
+\begin{itemize}
+\item[\textbf{A.}] Sample from reshaped distribution
+\item[\textbf{B.}] Keep top-k paths at each step
+\item[\textbf{C.}] Always pick argmax
+\item[\textbf{D.}] Filter to k words, then sample
+\item[\textbf{E.}] Penalize similarity to previous
+\item[\textbf{F.}] Adaptive probability mass cutoff
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\pause
+\begin{center}
+\colorbox{mlgreen!30}{\parbox{0.85\textwidth}{
+\centering
+\textbf{Answers:} 1→C, 2→B, 3→A, 4→D, 5→F, 6→E\\[2mm]
+\textit{Now you know the toolbox - let's see WHY each tool exists!}
+}}
+\end{center}
+
+\bottomnote{Quiz 1: Can you match each method to its mechanism?}
+\end{frame}
+
+% ============================================
+% THE 6 PROBLEMS (MOVED FROM SLIDES 16-21)
+% ============================================
+
+\begin{frame}[t]{Why Beam Search? Problem: Repetition Loops}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/problem1_repetition_output_bsc.pdf}
+\end{center}
+\vspace{2mm}
+\textbf{Greedy's Problem}: Trapped in loops, can't escape
+
+\textbf{Why Beam Helps}: Explores k=3-5 paths, avoids greedy trap
+
+\bottomnote{Problem 1 of 6: Greedy decoding creates loops → Beam search explores alternatives}
+\end{frame}
+
+\begin{frame}[t]{Why Temperature? Problem: No Diversity}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/problem2_diversity_output_bsc.pdf}
+\end{center}
+\vspace{2mm}
+\textbf{Greedy \& Beam's Problem}: Same input → same output always
+
+\textbf{Why Temperature Helps}: Sampling introduces randomness, enables creativity
+
+\bottomnote{Problem 2 of 6: Deterministic methods lack variation → Temperature adds controlled randomness}
+\end{frame}
+
+\begin{frame}[t]{Why Top-k? Problem: Too Boring or Too Crazy}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/problem3_balance_output_bsc.pdf}
+\end{center}
+\vspace{2mm}
+\textbf{Temperature's Problem}: Pure sampling includes low-quality words
+
+\textbf{Why Top-k Helps}: Filter to k=50 best words, then sample
+
+\bottomnote{Problem 3 of 6: Can't balance quality \& creativity → Top-k filters unlikely words}
+\end{frame}
+
+\begin{frame}[t]{Beam Search Limitation: Missing Better Paths}
+\vspace{-2mm}
+\vspace{-0.5cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\vspace{-0.3cm}
+\includegraphics[width=\textwidth]{../figures/problem4_search_tree_pruning_bsc.pdf}
+
+\vspace{2mm}
+\includegraphics[width=\textwidth]{../figures/problem4_path_comparison_bsc.pdf}
+
+\column{0.48\textwidth}
+\vspace{-0.3cm}
+\includegraphics[width=\textwidth]{../figures/problem4_probability_evolution_bsc.pdf}
+
+\vspace{2mm}
+\includegraphics[width=\textwidth]{../figures/problem4_recovery_problem_bsc.pdf}
+\end{columns}
+\bottomnote{Problem 4 of 6: Even beam search prunes early, cannot recover optimal path - 4 perspectives}
+\end{frame}
+
+\begin{frame}[t]{Why Nucleus? Problem: Distribution Tail Contains Junk}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/problem5_distribution_output_bsc.pdf}
+\end{center}
+\vspace{2mm}
+\textbf{Top-k's Problem}: Fixed k doesn't adapt to distribution shape
+
+\textbf{Why Nucleus Helps}: Adaptive cutoff at p=0.9 probability mass
+
+\bottomnote{Problem 5 of 6: Tail contains junk → Nucleus adapts to distribution}
+\end{frame}
+
+\begin{frame}[t]{Why Contrastive? Problem: Generic Repetitive Text}
+\vspace{-0.5cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/problem6_speed_output_bsc.pdf}
+\end{center}
+\vspace{2mm}
+\textbf{All Methods' Problem}: Can still produce generic, repetitive text
+
+\textbf{Why Contrastive Helps}: Explicitly penalizes similarity to previous tokens
+
+\bottomnote{Problem 6 of 6: Generic text persists → Contrastive reduces repetition}
+\end{frame}
+
+% === QUALITY-DIVERSITY TRADEOFF (MOVED FROM SLIDE 22) ===
+\begin{frame}[t]{The Quality-Diversity Tradeoff}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.63\textwidth]{../figures/quality_diversity_scatter_bsc.pdf}
+\end{center}
+\vspace{1mm}
+\textbf{Key Insight}: We saw problems and their solutions. Each method balances quality vs diversity.
+
+\bottomnote{All 6 problems relate to balancing coherence with creativity}
+\end{frame}
+
+% ============================================
+% CHECKPOINT QUIZ 2 (SIMPLIFIED - NO SOLUTION SLIDES)
+% ============================================
+
+\begin{frame}[t]{Checkpoint Quiz 2: Which Method for Which Problem?}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Match Solution to Problem:}
+
+\begin{enumerate}
+\item Beam Search → ?
+\item Temperature → ?
+\item Top-k → ?
+\item Nucleus → ?
+\item Contrastive → ?
+\end{enumerate}
+
+\column{0.5\textwidth}
+\textbf{Problems to Solve:}
+
+\begin{itemize}
+\item[\textbf{A.}] Too boring OR too crazy
+\item[\textbf{B.}] Repetition loops
+\item[\textbf{C.}] No diversity
+\item[\textbf{D.}] Fixed k doesn't adapt
+\item[\textbf{E.}] Generic repetitive text
+\end{itemize}
+\end{columns}
+
+\vspace{5mm}
+\pause
+\begin{center}
+\colorbox{mllavender3}{\parbox{0.85\textwidth}{
+\centering
+\textbf{Answers:} 1→B, 2→C, 3→A, 4→D, 5→E\\[2mm]
+\textit{Each method targets a specific failure mode!}
+}}
+\end{center}
+
+\bottomnote{Quiz 2: Understanding the method-problem mapping}
+\end{frame}
+
+% === INTEGRATION (3 slides) ===
+\begin{frame}[t]{All Methods on Quality-Diversity Space}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.63\textwidth]{../figures/quality_diversity_pareto_bsc.pdf}
+\end{center}
+\begin{center}
+\textbf{Pareto Frontier}: No method dominates all others
+\end{center}
+\bottomnote{Choose based on task: deterministic tasks (left), creative tasks (right)}
+\end{frame}
+
+\begin{frame}[t]{Choosing the Right Method: Decision Tree}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{../figures/task_method_decision_tree_bsc.pdf}
+\end{center}
+\bottomnote{Start with task requirements, follow tree to recommended method}
+\end{frame}
+
+\begin{frame}[t]{Task-Specific Recommendations (2025)}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/task_recommendations_table_bsc.pdf}
+\end{center}
+\bottomnote{Comprehensive mapping from 8 common tasks to optimal decoding strategies}
+\end{frame}
+
+% ============================================
+% CHECKPOINT QUIZ 3
+% ============================================
+
+\begin{frame}[t]{Checkpoint Quiz 3: Choose the Right Method}
+\textbf{Given these tasks, which method would you use?}
+
+\begin{columns}[T]
+\column{0.5\textwidth}
+\begin{enumerate}
+\item \textbf{Medical report summary}
+   \begin{itemize}
+   \item Needs: Accuracy, no hallucination
+   \end{itemize}
+
+\item \textbf{Creative story writing}
+   \begin{itemize}
+   \item Needs: Diversity, creativity
+   \end{itemize}
+
+\item \textbf{Code generation}
+   \begin{itemize}
+   \item Needs: Correctness, explore options
+   \end{itemize}
+\end{enumerate}
+
+\column{0.5\textwidth}
+\begin{enumerate}
+\setcounter{enumi}{3}
+\item \textbf{Customer service chat}
+   \begin{itemize}
+   \item Needs: Natural, varied responses
+   \end{itemize}
+
+\item \textbf{Legal document}
+   \begin{itemize}
+   \item Needs: Precise, formal
+   \end{itemize}
+
+\item \textbf{Long blog post}
+   \begin{itemize}
+   \item Needs: Coherent, no repetition
+   \end{itemize}
+\end{enumerate}
+\end{columns}
+
+\vspace{5mm}
+\pause
+\begin{center}
+\colorbox{mlblue!20}{\parbox{0.95\textwidth}{
+\centering
+\textbf{Answers:}\\
+1. Greedy/Low temp (T=0.1-0.3) \quad 2. Nucleus (p=0.95, T=1.0) \quad 3. Beam Search (k=3-5)\\
+4. Nucleus (p=0.9, T=0.7) \quad 5. Greedy (T=0) \quad 6. Contrastive ($\alpha$=0.6)
+}}
+\end{center}
+
+\bottomnote{Quiz 3: Real-world task selection is crucial for quality}
+\end{frame}
+
+\begin{frame}[t]{Key Takeaways}
+\begin{enumerate}
+\item \textbf{6 Problems $\rightarrow$ 6 Solutions}: Each method solves specific failure mode
+\item \textbf{Deterministic} (Greedy, Beam): High quality, no diversity - factual tasks
+\item \textbf{Stochastic} (Temperature, Top-k, Nucleus): Diverse but variable quality
+\item \textbf{Balanced} (Contrastive): Explicit degeneration prevention
+\item \textbf{Task matters}: Translation $\rightarrow$ Beam | Dialogue $\rightarrow$ Nucleus | Stories $\rightarrow$ Contrastive
+\item \textbf{Tradeoffs}: Speed vs Quality, Diversity vs Coherence
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Modern Standard}: Nucleus (top-p=0.9) + Temperature (T=0.7) for most applications
+
+\vspace{3mm}
+\textbf{Next}: Lab - Implement all 6 methods, measure quality-diversity tradeoffs
+
+\bottomnote{Decoding strategy matters as much as model architecture}
+\end{frame}
+
+\begin{frame}[t]{From Probabilities to Text: The Complete Journey}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+% Arrow timeline
+\draw[->, line width=3pt, color=mlpurple] (0,0) -- (10,0);
+
+% Milestones
+\node[circle, fill=mllavender, minimum size=0.8cm] at (0,0) {};
+\node[above=0.2cm] at (0,0) {\small\textbf{Probabilities}};
+
+\node[circle, fill=mllavender, minimum size=0.8cm] at (3.3,0) {};
+\node[above=0.2cm] at (3.3,0) {\small\textbf{6 Problems}};
+
+\node[circle, fill=mllavender, minimum size=0.8cm] at (6.6,0) {};
+\node[above=0.2cm] at (6.6,0) {\small\textbf{6 Solutions}};
+
+\node[circle, fill=mlgreen, minimum size=0.8cm] at (10,0) {};
+\node[above=0.2cm] at (10,0) {\small\textbf{Quality Text}};
+\end{tikzpicture}
+\end{center}
+
+\vspace{1cm}
+\textbf{What We Learned}:
+\begin{itemize}
+\item Models give us probability distributions (Week 3-7)
+\item Converting to text has 6 fundamental challenges
+\item Each decoding method addresses specific problems
+\item No universal best - choose based on task requirements
+\item Production systems use hybrid methods (Nucleus + Temperature)
+\end{itemize}
+
+\bottomnote{Complete pipeline from model training to text generation}
+\end{frame}
+
+% ============================================
+% TECHNICAL APPENDIX (25 SLIDES: A1-A25)
+% ============================================
+
+\begin{frame}[t]
+\vfill
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{title}
+\usebeamerfont{title}\Huge Technical Appendix
+\end{beamercolorbox}
+\vspace{0.5cm}
+\large 25 slides: Complete mathematical treatment
+
+\vspace{0.5cm}
+\textcolor{mlpurple}{\textbf{A1-A5: Beam Search Mathematics}}
+
+\textcolor{mlpurple}{\textbf{A6-A10: Sampling Mathematics}}
+
+\textcolor{mlpurple}{\textbf{A11-A14: Contrastive Search \& Degeneration}}
+
+\textcolor{mlpurple}{\textbf{A15-A19: Advanced Topics \& Production}}
+
+\textcolor{mlpurple}{\textbf{A20-A25: The 6 Problems - Technical Analysis (NEW)}}
+\vfill
+\end{frame}
+
+% === A1-A5: BEAM SEARCH MATHEMATICS ===
+
+\begin{frame}[t]{A1: Beam Search Formulation}
+\small
+\textbf{Objective}: Find sequence $y^* = \argmax P(y | x)$
+
+\vspace{3mm}
+\textbf{Decomposition}:
+
+$$P(y | x) = \prod_{t=1}^T P(y_t | y_{<t}, x)$$
+
+\vspace{3mm}
+\textbf{Log-probability} (more stable):
+
+$$\log P(y | x) = \sum_{t=1}^T \log P(y_t | y_{<t}, x)$$
+
+\vspace{3mm}
+\textbf{Beam Search Approximation}:
+
+Instead of exploring all $V^T$ sequences, maintain top-k hypotheses at each step
+
+\vspace{3mm}
+\textbf{Complexity}:
+
+Time: $O(k \cdot V \cdot T)$ where $k$ = beam width, $V$ = vocabulary, $T$ = length
+
+Space: $O(k \cdot T)$ to store hypotheses
+
+\bottomnote{Beam search is tractable approximation to exact search}
+\end{frame}
+
+\begin{frame}[t]{A2: Length Normalization}
+\small
+\textbf{Problem}: Longer sequences have lower probabilities (more terms multiplied)
+
+$$P(y_1, y_2, y_3, y_4) = \underbrace{0.5}_{y_1} \times \underbrace{0.5}_{y_2} \times \underbrace{0.5}_{y_3} \times \underbrace{0.5}_{y_4} = 0.0625$$
+
+$$P(y_1, y_2) = 0.5 \times 0.5 = 0.25 > 0.0625$$
+
+Bias toward shorter sequences!
+
+\vspace{3mm}
+\textbf{Solution}: Length normalization
+
+$$\text{score}(y) = \frac{1}{|y|^\alpha} \log P(y)$$
+
+where $\alpha \in [0.5, 1.0]$ (typically 0.6-0.7)
+
+\vspace{3mm}
+\textbf{Effect}:
+
+Without: Beam search heavily biases toward short outputs
+
+With: Fair comparison across different lengths
+
+\bottomnote{Length normalization is essential for beam search quality}
+\end{frame}
+
+\begin{frame}[t]{A3: Beam Search Variants}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Diverse Beam Search}:
+
+Partition beams into groups
+
+Penalize within-group similarity
+
+Result: More diverse hypotheses
+
+\vspace{3mm}
+\textbf{Constrained Beam Search}:
+
+Force certain tokens to appear
+
+Useful for: Keywords, entities
+
+Applications: Controllable generation
+
+\column{0.48\textwidth}
+\textbf{Stochastic Beam Search}:
+
+Sample beams instead of argmax
+
+Combines beam + sampling
+
+More diverse than standard beam
+
+\vspace{3mm}
+\textbf{Block n-gram Beam}:
+
+Penalize n-gram repetition
+
+Prevents ``the city is a city'' loops
+
+Common in summarization
+
+\end{columns}
+\bottomnote{Many beam search variants exist for specific requirements}
+\end{frame}
+
+\begin{frame}[t]{A4: Beam Search Stopping Criteria}
+\small
+\textbf{When to stop expanding beams}?
+
+\vspace{5mm}
+\textbf{Method 1}: Fixed length
+
+Stop at $T_{\max}$ tokens (simple but rigid)
+
+\vspace{5mm}
+\textbf{Method 2}: END token
+
+Stop when beam generates special token (most common)
+
+\vspace{5mm}
+\textbf{Method 3}: Score threshold
+
+Stop when best score cannot improve enough
+
+$$\frac{\text{best\_incomplete}}{\text{best\_complete}} < \text{threshold}$$
+
+\vspace{5mm}
+\textbf{Method 4}: Timeout
+
+Computational budget exceeded (production systems)
+
+\bottomnote{Choice of stopping criterion affects output length distribution}
+\end{frame}
+
+\begin{frame}[t]{A5: Beam Search Limitations}
+\small
+\textbf{Fundamental Issues}:
+
+\begin{enumerate}
+\item \textbf{Exposure bias}: Trained with teacher forcing, tested with own outputs
+\item \textbf{Label bias}: Cannot compare sequences of different prefixes fairly
+\item \textbf{Repetition}: Still can loop (``the city is a major city'')
+\item \textbf{Bland outputs}: Maximizes probability, not interestingness
+\item \textbf{Search errors}: May miss better sequences outside beam
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{When Beam Search Fails}:
+
+Open-ended generation (dialogue, stories)
+
+Long-form text (repetition accumulates)
+
+Creative tasks (probability $\neq$ quality)
+
+\vspace{5mm}
+$\rightarrow$ Need sampling-based methods
+
+\bottomnote{Beam search optimizes wrong objective for creative tasks}
+\end{frame}
+
+% === A6-A10: SAMPLING MATHEMATICS ===
+
+\begin{frame}[t]{A6: Sampling as Inference}
+\small
+\textbf{Goal}: Sample $y \sim P(y | x)$ instead of $\argmax P(y | x)$
+
+\vspace{3mm}
+\textbf{Ancestral Sampling}:
+
+For $t = 1$ to $T$:
+
+\hspace{1cm} Compute $P(y_t | y_{<t}, x)$
+
+\hspace{1cm} Sample $y_t \sim P(\cdot | y_{<t}, x)$
+
+\vspace{3mm}
+\textbf{Properties}:
+
+Stochastic: Different output each time
+
+Explores full distribution (in expectation)
+
+Can generate low-probability sequences
+
+\vspace{3mm}
+\textbf{Variants}:
+
+Temperature: Reshape distribution before sampling
+
+Top-k: Truncate distribution before sampling
+
+Nucleus: Dynamic truncation before sampling
+
+\bottomnote{Sampling enables diversity but loses quality guarantees}
+\end{frame}
+
+\begin{frame}[t]{A7: Temperature Mathematics}
+\small
+\textbf{Softmax with Temperature}:
+
+$$p_i(T) = \frac{\exp(z_i / T)}{\sum_{j=1}^V \exp(z_j / T)}$$
+
+\vspace{3mm}
+\textbf{Limiting Cases}:
+
+$T \rightarrow 0$: $p_i \rightarrow \begin{cases} 1 & \text{if } i = \argmax z \\ 0 & \text{otherwise} \end{cases}$ (greedy)
+
+$T \rightarrow \infty$: $p_i \rightarrow 1/V$ (uniform)
+
+\vspace{3mm}
+\textbf{Entropy Analysis}:
+
+Entropy $H(p) = -\sum p_i \log p_i$ measures randomness
+
+$H$ increases monotonically with $T$
+
+Low $T$ ($<$0.5): $H \approx 0$ (deterministic)
+
+High $T$ ($>$2.0): $H \approx \log V$ (maximum entropy)
+
+\bottomnote{Temperature provides continuous control over distribution entropy}
+\end{frame}
+
+\begin{frame}[t]{A8: Top-k Mathematics}
+\small
+\textbf{Formal Definition}:
+
+Let $\sigma$ = permutation sorting probabilities descending
+
+$$V_k = \{w_{\sigma(1)}, w_{\sigma(2)}, ..., w_{\sigma(k)}\}$$
+
+Truncated distribution:
+
+$$p'(w) = \begin{cases} \frac{p(w)}{\sum_{w' \in V_k} p(w')} & \text{if } w \in V_k \\ 0 & \text{otherwise} \end{cases}$$
+
+\vspace{3mm}
+\textbf{Information Loss}:
+
+Original entropy: $H(p) = -\sum_{i=1}^V p_i \log p_i$
+
+After top-k: $H(p') = -\sum_{i=1}^k p'_i \log p'_i < H(p)$
+
+Loss $\approx \sum_{i=k+1}^V p_i \log(1/p_i)$ (tail information)
+
+\bottomnote{Top-k sacrifices tail probability mass for sampling quality}
+\end{frame}
+
+\begin{frame}[t]{A9: Nucleus (Top-p) Mathematics}
+\small
+\textbf{Formal Definition}:
+
+$$V_p = \min \left\{ V' \subseteq V : \sum_{w \in V'} p(w) \geq p \right\}$$
+
+Smallest set with cumulative mass $\geq p$
+
+\vspace{3mm}
+\textbf{Dynamic Vocabulary Size}:
+
+$$|V_p| = \min \{k : \sum_{i=1}^k p_{\sigma(i)} \geq p\}$$
+
+Adapts to distribution shape:
+
+Peaked: Small $|V_p|$ (2-5 tokens)
+
+Flat: Large $|V_p|$ (50+ tokens)
+
+\vspace{3mm}
+\textbf{Why Nucleus $>$ Top-k}:
+
+Top-k: Fixed $k$ regardless of $p(w)$ distribution
+
+Nucleus: Adapts $k$ to achieve consistent probability mass
+
+\bottomnote{Nucleus automatically adjusts vocabulary to distribution characteristics}
+\end{frame}
+
+\begin{frame}[t]{A10: Sampling Quality Metrics}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Quality Metrics}:
+
+\textbf{Perplexity}: $\exp(-\frac{1}{T} \sum \log p(y_t))$
+
+Lower = better
+
+\vspace{3mm}
+\textbf{BLEU} (translation):
+
+N-gram overlap with reference
+
+0-100 scale
+
+\vspace{3mm}
+\textbf{Human evaluation}:
+
+Fluency (1-5)
+
+Relevance (1-5)
+
+\column{0.48\textwidth}
+\textbf{Diversity Metrics}:
+
+\textbf{Distinct-n}: $\frac{\text{unique n-grams}}{\text{total n-grams}}$
+
+Higher = more diverse
+
+\vspace{3mm}
+\textbf{Self-BLEU}:
+
+BLEU of output vs other outputs
+
+Lower = more diverse
+
+\vspace{3mm}
+\textbf{Repetition Rate}:
+
+$\frac{\text{repeated n-grams}}{\text{total n-grams}}$
+
+Lower = less repetitive
+
+\end{columns}
+\bottomnote{Need both quality AND diversity metrics to evaluate decoding}
+\end{frame}
+
+% === A11-A14: CONTRASTIVE SEARCH & DEGENERATION ===
+
+\begin{frame}[t]{A11: The Degeneration Problem (Formal)}
+\small
+\textbf{Definition}: Model-generated text with unnatural repetitions
+
+\vspace{3mm}
+\textbf{Why It Happens}:
+
+\begin{enumerate}
+\item Model trained on natural text (low repetition)
+\item But generation maximizes $P(y_t | y_{<t})$
+\item Recent context $y_{<t}$ influences $P$
+\item Creates positive feedback: high prob word $\rightarrow$ context $\rightarrow$ same high prob word
+\end{enumerate}
+
+\vspace{3mm}
+\textbf{Quantifying Degeneration}:
+
+Repetition rate in greedy: 15-30\% (depending on domain)
+
+Repetition rate in human text: 2-5\%
+
+Gap = degeneration problem
+
+\vspace{3mm}
+\textbf{Examples}:
+
+``\textit{The city is a major city in the United States. The city...}''
+
+``\textit{I think that I think that I think...}''
+
+\bottomnote{Maximizing probability does not equal natural text}
+\end{frame}
+
+\begin{frame}[t]{A12: Contrastive Search Objective}
+\small
+\textbf{Scoring Function}:
+
+$$\text{score}(w_t) = (1 - \alpha) \times \underbrace{P(w_t | y_{<t})}_{\text{model confidence}} - \alpha \times \underbrace{\max_{w_i \in y_{<t}} \text{sim}(w_t, w_i)}_{\text{context similarity}}$$
+
+where $\alpha \in [0, 1]$ controls tradeoff
+
+\vspace{3mm}
+\textbf{Similarity Function}:
+
+$$\text{sim}(w_i, w_j) = \frac{h_i \cdot h_j}{||h_i|| \cdot ||h_j||}$$ (cosine similarity)
+
+using token embeddings $h$
+
+\vspace{3mm}
+\textbf{Algorithm}:
+
+\begin{enumerate}
+\item Get top-k candidates by probability
+\item For each candidate, compute similarity to all tokens in $y_{<t}$
+\item Apply penalty: score = prob - $\alpha \times$ max\_similarity
+\item Select candidate with highest score
+\end{enumerate}
+
+\bottomnote{Contrastive search explicitly penalizes copying recent context}
+\end{frame}
+
+\begin{frame}[t]{A13: Contrastive Search Parameters}
+\small
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Alpha} ($\alpha$):
+
+$\alpha = 0$: Pure greedy (no penalty)
+
+$\alpha = 0.6$: Balanced (recommended)
+
+$\alpha = 1.0$: Maximum diversity (risky)
+
+\vspace{3mm}
+\textbf{Typical Settings}:
+
+Short text ($<$100 tokens): $\alpha = 0.4-0.5$
+
+Medium ($<$500): $\alpha = 0.5-0.6$
+
+Long (500+): $\alpha = 0.6-0.7$
+
+\column{0.48\textwidth}
+\textbf{Top-k for Candidates}:
+
+$k = 4$: Fast, focused
+
+$k = 6$: Balanced (default)
+
+$k = 10$: Diverse
+
+\vspace{3mm}
+\textbf{Computational Cost}:
+
+For each step:
+\begin{itemize}
+\item Compute similarities: $O(k \times t)$
+\item $t$ grows with generation
+\end{itemize}
+
+Total: $O(k \times T^2)$
+
+12$\times$ slower than greedy
+
+\end{columns}
+\bottomnote{Hugging Face default: $\alpha$=0.6, k=4}
+\end{frame}
+
+\begin{frame}[t]{A14: Degeneration Analysis}
+\small
+\textbf{Research Findings} (2024-2025):
+
+\begin{itemize}
+\item Greedy decoding repetition: 18-25\% (GPT-2), 12-18\% (GPT-3)
+\item Nucleus sampling repetition: 8-12\% (still above human 3-5\%)
+\item Contrastive search repetition: 4-7\% (closest to human)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Why Probability Maximization Fails}:
+
+Training objective: Next token prediction
+
+But generation requires: Global coherence
+
+Mismatch: Local optimum $\neq$ global quality
+
+\vspace{3mm}
+\textbf{Solutions Hierarchy}:
+
+\begin{enumerate}
+\item Temperature/Top-k/Nucleus: Reduce greedy's determinism
+\item Contrastive: Explicit degeneration penalty
+\item RLHF/DPO: Align model with human preferences (different lecture)
+\end{enumerate}
+
+\bottomnote{Contrastive search addresses fundamental limitation of likelihood-based decoding}
+\end{frame}
+
+% === A15-A19: ADVANCED TOPICS ===
+
+\begin{frame}[t]{A15: Hybrid Decoding Methods}
+\small
+\textbf{Combining Strategies}:
+
+\vspace{3mm}
+\textbf{Nucleus + Temperature}:
+
+Apply temperature THEN nucleus
+
+$$p_i(T) = \softmax(z / T), \quad \text{then} \quad V_p \gets \text{nucleus}(p_i(T))$$
+
+Used by GPT-3 API, ChatGPT
+
+\vspace{3mm}
+\textbf{Beam + Sampling}:
+
+Beam search with stochastic selection
+
+Keep top-k, sample from them (not argmax)
+
+\vspace{3mm}
+\textbf{Contrastive + Nucleus}:
+
+Nucleus for candidate generation
+
+Contrastive scoring for selection
+
+Best of both worlds
+
+\bottomnote{Hybrid methods leverage complementary strengths}
+\end{frame}
+
+\begin{frame}[t]{A16: Constrained Decoding (2025)}
+\small
+\textbf{Goal}: Force certain tokens/patterns to appear
+
+\vspace{3mm}
+\textbf{Lexically Constrained}:
+
+Must include keywords: \{``AI'', ``ethics'', ``safety''\}
+
+Beam search variant: Track constraint satisfaction
+
+\vspace{3mm}
+\textbf{Format Constraints}:
+
+JSON output: Force structure \{``key'': ``value''\}
+
+Code: Force syntactic validity
+
+\vspace{3mm}
+\textbf{NeuroLogic Decoding} (2021):
+
+Beam search + constraint satisfaction
+
+Optimal for: Keyword-based generation
+
+\vspace{3mm}
+\textbf{Production Use Cases}:
+
+Structured data extraction (force JSON)
+
+Controllable summarization (force keywords)
+
+Code generation (force syntax)
+
+\bottomnote{Constrained decoding enables controllable generation}
+\end{frame}
+
+\begin{frame}[t]{A17: Computational Complexity Comparison}
+\small
+\begin{center}
+\begin{tabular}{lccc}
+\hline
+\textbf{Method} & \textbf{Time per token} & \textbf{Total complexity} & \textbf{Relative speed} \\
+\hline
+Greedy & $O(V)$ & $O(V \times T)$ & 1.0$\times$ (baseline) \\
+Temperature & $O(V)$ & $O(V \times T)$ & 1.1$\times$ (softmax overhead) \\
+Top-k & $O(V)$ & $O(V \times T)$ & 1.2$\times$ (sorting) \\
+Nucleus & $O(V \log V)$ & $O(V \log V \times T)$ & 1.3$\times$ (sort + cumsum) \\
+Beam (k=5) & $O(k \times V)$ & $O(k \times V \times T)$ & 4.5$\times$ (k=5) \\
+Contrastive & $O(k \times T)$ & $O(k \times T^2)$ & 12$\times$ (similarity) \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{3mm}
+\textbf{Key Insight}: Contrastive's $T^2$ term makes it expensive for long sequences
+
+\vspace{3mm}
+\textbf{Practical Impact} (1000-token generation):
+
+Greedy: 2.5 seconds
+
+Nucleus: 3.2 seconds (best choice)
+
+Beam: 11 seconds
+
+Contrastive: 30 seconds (only if quality critical)
+
+\bottomnote{Computational cost matters for production deployment}
+\end{frame}
+
+\begin{frame}[t]{A18: Production Settings (Real-World APIs)}
+\vspace{-0.3cm}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{../figures/production_settings_bsc.pdf}
+\end{center}
+\bottomnote{What ChatGPT, Claude, and other production systems actually use}
+\end{frame}
+
+\begin{frame}[t]{A19: Future Directions \& Open Problems}
+\small
+\textbf{Active Research Areas} (2025):
+
+\begin{enumerate}
+\item \textbf{Quality-diversity optimization}: Multi-objective search methods
+\item \textbf{Learned decoding}: Train models to decode better (RLHF, DPO)
+\item \textbf{Speculative decoding}: Parallel generation for speed (4-8$\times$ faster)
+\item \textbf{Adaptive methods}: Choose strategy dynamically during generation
+\item \textbf{Energy-based decoding}: Score sequences globally (not token-by-token)
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{Open Problems}:
+
+How to automatically select best $T$, $p$, $k$, $\alpha$ for new task?
+
+How to balance fluency + factuality + creativity simultaneously?
+
+How to decode efficiently for 100K+ token outputs?
+
+\vspace{5mm}
+\textbf{Trend}: Moving from hand-tuned parameters to learned decoding strategies
+
+\bottomnote{Decoding is an active research area with many open questions}
+\end{frame}
+
+
+\end{document}
