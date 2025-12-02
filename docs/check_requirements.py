@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Requirements Verification Script for NLP Course Site
-Checks all 5 requirements and reports pass/fail status
+Checks all requirements including sidebar and working downloads
 """
 
 import os
@@ -103,58 +103,94 @@ def check_requirement_2_link_verification(docs_dir):
         print("  [FAIL] Link verification script is incomplete")
         return False
 
-def check_requirement_3_consistent_layout(docs_dir):
+def check_requirement_3_sidebar_on_subpages(docs_dir):
     """
-    Requirement 3: Same layout everywhere on sub pages
+    Requirement 3: Sidebar navigation on ALL subpages
     """
     print("\n" + "="*60)
-    print("REQUIREMENT 3: Consistent Layout")
+    print("REQUIREMENT 3: Sidebar on Subpages")
     print("="*60)
-
-    # Key CSS patterns that should appear in all subpages
-    required_css_patterns = [
-        '.top-nav',
-        '.hero',
-        '.container',
-        '.section',
-        '.footer'
-    ]
 
     weeks_dir = docs_dir / 'weeks'
     modules_dir = docs_dir / 'modules'
 
     all_subpages = list(weeks_dir.glob('*.html')) + list(modules_dir.glob('*.html'))
 
-    consistent = True
+    pages_with_sidebar = 0
+    pages_missing_sidebar = []
+
     for page in all_subpages:
         content = page.read_text(encoding='utf-8')
-        missing = []
-        for pattern in required_css_patterns:
-            if pattern not in content:
-                missing.append(pattern)
 
-        if missing:
-            print(f"  [ISSUE] {page.name}: Missing {missing}")
-            consistent = False
+        # Check for sidebar elements
+        has_sidebar = '<aside class="sidebar">' in content
+        has_sidebar_nav = 'class="sidebar-nav"' in content
+        has_search = 'id="topic-search"' in content
 
-    print(f"  Subpages checked: {len(all_subpages)}")
+        if has_sidebar and has_sidebar_nav:
+            pages_with_sidebar += 1
+        else:
+            pages_missing_sidebar.append(page.name)
 
-    if consistent:
-        print("  [PASS] All subpages have consistent layout")
-        return True
-    else:
-        print("  [FAIL] Some pages have inconsistent layout")
+    print(f"  Total subpages: {len(all_subpages)}")
+    print(f"  Pages with sidebar: {pages_with_sidebar}")
+
+    if pages_missing_sidebar:
+        print(f"  [FAIL] Pages missing sidebar: {pages_missing_sidebar}")
         return False
+    else:
+        print("  [PASS] All subpages have sidebar navigation")
+        return True
 
-def check_requirement_4_top_navigation(docs_dir):
+def check_requirement_4_working_downloads(docs_dir):
     """
-    Requirement 4: Top navigation on all pages
+    Requirement 4: Working download links (no href="#" placeholders)
     """
     print("\n" + "="*60)
-    print("REQUIREMENT 4: Top Navigation")
+    print("REQUIREMENT 4: Working Download Links")
     print("="*60)
 
-    nav_links = ['Home', 'Topics', 'Charts', 'Modules', 'GitHub']
+    weeks_dir = docs_dir / 'weeks'
+    modules_dir = docs_dir / 'modules'
+
+    all_subpages = list(weeks_dir.glob('*.html')) + list(modules_dir.glob('*.html'))
+
+    pages_with_broken_links = []
+    pages_with_working_links = 0
+
+    for page in all_subpages:
+        content = page.read_text(encoding='utf-8')
+
+        # Check for href="#" in resource buttons (broken links)
+        broken_pattern = re.findall(r'class="resource-btn[^"]*"[^>]*href="#"', content)
+
+        if broken_pattern:
+            pages_with_broken_links.append(page.name)
+        else:
+            # Verify links point to GitHub
+            github_links = re.findall(r'href="https://github\.com/Digital-AI-Finance/[^"]+', content)
+            if github_links:
+                pages_with_working_links += 1
+            else:
+                pages_with_broken_links.append(f"{page.name} (no GitHub links)")
+
+    print(f"  Total subpages: {len(all_subpages)}")
+    print(f"  Pages with working links: {pages_with_working_links}")
+
+    if pages_with_broken_links:
+        print(f"  [FAIL] Pages with broken/missing links: {pages_with_broken_links[:5]}...")
+        return False
+    else:
+        print("  [PASS] All download links are working")
+        return True
+
+def check_requirement_5_top_navigation(docs_dir):
+    """
+    Requirement 5: Top navigation on all pages
+    """
+    print("\n" + "="*60)
+    print("REQUIREMENT 5: Top Navigation")
+    print("="*60)
 
     all_html = list(docs_dir.glob('*.html')) + \
                list((docs_dir / 'weeks').glob('*.html')) + \
@@ -183,12 +219,12 @@ def check_requirement_4_top_navigation(docs_dir):
         print("  [PASS] All pages have top navigation")
         return True
 
-def check_requirement_5_complete_execution(docs_dir):
+def check_requirement_6_complete_execution(docs_dir):
     """
-    Requirement 5: Complete autonomous execution
+    Requirement 6: Complete autonomous execution
     """
     print("\n" + "="*60)
-    print("REQUIREMENT 5: Complete Execution")
+    print("REQUIREMENT 6: Complete Execution")
     print("="*60)
 
     # Check all expected files exist
@@ -245,9 +281,10 @@ def main():
 
     results['1_content_naming'] = check_requirement_1_content_based_naming(docs_dir)
     results['2_link_verification'] = check_requirement_2_link_verification(docs_dir)
-    results['3_consistent_layout'] = check_requirement_3_consistent_layout(docs_dir)
-    results['4_top_navigation'] = check_requirement_4_top_navigation(docs_dir)
-    results['5_complete_execution'] = check_requirement_5_complete_execution(docs_dir)
+    results['3_sidebar_subpages'] = check_requirement_3_sidebar_on_subpages(docs_dir)
+    results['4_working_downloads'] = check_requirement_4_working_downloads(docs_dir)
+    results['5_top_navigation'] = check_requirement_5_top_navigation(docs_dir)
+    results['6_complete_execution'] = check_requirement_6_complete_execution(docs_dir)
 
     # Summary
     print("\n" + "="*60)

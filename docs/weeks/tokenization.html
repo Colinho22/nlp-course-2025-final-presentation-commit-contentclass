@@ -11,104 +11,153 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       background: #f8fafc;
       color: #1e293b;
-      line-height: 1.6;
+      line-height: 1.5;
     }
     .top-nav {
       background: #1e3a5f;
-      padding: 12px 20px;
+      padding: 10px 20px;
       display: flex;
       justify-content: center;
       gap: 25px;
       flex-wrap: wrap;
     }
-    .top-nav a {
-      color: white;
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      opacity: 0.9;
-    }
+    .top-nav a { color: white; text-decoration: none; font-size: 0.9rem; font-weight: 500; opacity: 0.9; }
     .top-nav a:hover { opacity: 1; text-decoration: underline; }
+    .container { display: flex; max-width: 1600px; margin: 0 auto; }
+    .sidebar {
+      width: 280px;
+      background: #ffffff;
+      border-right: 1px solid #e1e4e8;
+      height: calc(100vh - 42px);
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      flex-shrink: 0;
+    }
+    .sidebar-header {
+      padding: 15px;
+      border-bottom: 1px solid #e1e4e8;
+      background: linear-gradient(135deg, #1e3a5f 0%, #3333B2 100%);
+    }
+    .sidebar-header a { display: flex; align-items: center; text-decoration: none; color: white; }
+    .sidebar-logo { width: 36px; height: 36px; border-radius: 6px; margin-right: 10px; background: white; padding: 3px; }
+    .course-title { font-size: 15px; font-weight: 700; }
+    .search-container { padding: 10px 15px; border-bottom: 1px solid #e1e4e8; }
+    .search-container input {
+      width: 100%; padding: 6px 10px; border: 1px solid #e1e4e8;
+      border-radius: 4px; font-size: 12px; outline: none;
+    }
+    .search-container input:focus { border-color: #3333B2; box-shadow: 0 0 0 2px rgba(51, 51, 178, 0.1); }
+    .sidebar-nav { padding: 8px 0; }
+    .part-section { border-bottom: 1px solid #f0f0f0; }
+    .part-section summary {
+      padding: 10px 15px; font-weight: 600; font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.5px; color: #24292e;
+      cursor: pointer; list-style: none;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .part-section summary::-webkit-details-marker { display: none; }
+    .part-section summary::after { content: "+"; font-size: 12px; color: #586069; }
+    .part-section[open] summary::after { content: "-"; }
+    .part-section summary:hover { background: #f6f8fa; }
+    .part-section ul { list-style: none; padding: 0 0 6px 0; margin: 0; }
+    .part-section li { margin: 0; }
+    .part-section a {
+      display: block; padding: 6px 15px 6px 25px; color: #586069;
+      text-decoration: none; font-size: 12px; border-left: 2px solid transparent;
+    }
+    .part-section a:hover { background: #f6f8fa; color: #3333B2; }
+    .part-section a.active { border-left-color: #3333B2; color: #3333B2; background: #f6f8fa; }
+    .topic-count { font-size: 10px; color: #959da5; font-weight: normal; }
+    .hidden { display: none !important; }
+    .main-content { flex: 1; min-width: 0; }
     .hero {
       background: linear-gradient(135deg, #1e3a5f 0%, #3333B2 100%);
       color: white;
-      padding: 40px 20px;
+      padding: 30px 20px;
       text-align: center;
     }
-    .hero h1 { font-size: 2.2rem; margin-bottom: 8px; }
-    .hero .subtitle { font-size: 1.1rem; opacity: 0.9; margin-bottom: 15px; }
+    .hero h1 { font-size: 2rem; margin-bottom: 8px; }
+    .hero .subtitle { font-size: 1rem; opacity: 0.9; margin-bottom: 12px; }
     .hero .badge {
       display: inline-block;
       background: rgba(255,255,255,0.2);
       padding: 5px 15px;
       border-radius: 20px;
       font-size: 0.85rem;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
-    .container { max-width: 1000px; margin: 0 auto; padding: 30px 20px; }
+    .content-area { padding: 25px; }
     .section {
       background: white;
       border-radius: 8px;
-      padding: 25px;
-      margin-bottom: 20px;
+      padding: 20px;
+      margin-bottom: 18px;
       border: 1px solid #e2e8f0;
     }
     .section h2 {
       color: #1e3a5f;
-      font-size: 1.3rem;
-      margin-bottom: 15px;
+      font-size: 1.2rem;
+      margin-bottom: 12px;
       border-bottom: 2px solid #3333B2;
-      padding-bottom: 8px;
+      padding-bottom: 6px;
     }
     .topics-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      gap: 10px;
     }
     .topic-item {
       background: #f8fafc;
-      padding: 12px 15px;
+      padding: 10px 12px;
       border-radius: 6px;
       border-left: 3px solid #3333B2;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
     .nav-cards {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin-top: 20px;
+      gap: 12px;
+      margin-top: 15px;
     }
     .nav-card {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
-      padding: 15px;
+      padding: 12px;
       text-decoration: none;
       color: inherit;
       transition: box-shadow 0.2s;
     }
     .nav-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .nav-card .label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; }
-    .nav-card .title { font-weight: 600; color: #1e3a5f; }
+    .nav-card .label { font-size: 0.7rem; color: #64748b; text-transform: uppercase; }
+    .nav-card .title { font-weight: 600; color: #1e3a5f; font-size: 0.9rem; }
     .resource-btn {
       display: inline-block;
-      padding: 10px 20px;
+      padding: 10px 18px;
       border-radius: 5px;
       text-decoration: none;
       font-weight: 500;
-      margin: 5px;
+      margin: 4px;
+      font-size: 0.9rem;
     }
     .resource-btn.primary { background: #3333B2; color: white; }
+    .resource-btn.primary:hover { background: #2929a0; }
     .resource-btn.secondary { background: white; color: #1e3a5f; border: 1px solid #e2e8f0; }
+    .resource-btn.secondary:hover { background: #f8fafc; }
     .footer {
       text-align: center;
-      padding: 20px;
+      padding: 15px;
       color: #64748b;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       border-top: 1px solid #e2e8f0;
-      margin-top: 30px;
+      margin-top: 20px;
     }
     .footer a { color: #3333B2; }
+    @media (max-width: 900px) {
+      .container { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid #e1e4e8; max-height: 40vh; }
+    }
     @media (max-width: 600px) {
       .topics-grid { grid-template-columns: 1fr; }
       .nav-cards { grid-template-columns: 1fr; }
@@ -125,49 +174,129 @@
     <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing">GitHub</a>
   </nav>
 
-  <section class="hero">
-    <div class="badge">35 SLIDES</div>
-    <h1>Tokenization</h1>
-    <p class="subtitle">BPE, WordPiece & SentencePiece</p>
-  </section>
-
   <div class="container">
-    <section class="section">
-      <h2>Overview</h2>
-      <p>Break text into tokens. Subword algorithms that power modern language models.</p>
-    </section>
-
-    <section class="section">
-      <h2>Key Topics</h2>
-      <div class="topics-grid">
-        <div class="topic-item">BPE algorithm</div>
-        <div class="topic-item">WordPiece</div>
-        <div class="topic-item">SentencePiece</div>
-        <div class="topic-item">Vocabulary optimization</div>
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="../index.html">
+          <img src="https://quantlet.com/images/Q.png" alt="QuantLet" class="sidebar-logo">
+          <span class="course-title">NLP Course</span>
+        </a>
       </div>
-    </section>
+      <div class="search-container">
+        <input type="text" id="topic-search" placeholder="Search topics...">
+      </div>
+      <nav class="sidebar-nav">
+        <details class="part-section" open>
+          <summary>Part 1: Language Foundations <span class="topic-count">(3)</span></summary>
+          <ul>
+            <li><a href="../weeks/ngrams.html">N-gram Language Models</a></li>
+            <li><a href="../weeks/embeddings.html">Word Embeddings</a></li>
+            <li><a href="../weeks/rnn-lstm.html">RNN & LSTM Networks</a></li>
+          </ul>
+        </details>
+        <details class="part-section">
+          <summary>Part 2: Core Architectures <span class="topic-count">(3)</span></summary>
+          <ul>
+            <li><a href="../weeks/seq2seq.html">Sequence-to-Sequence</a></li>
+            <li><a href="../weeks/transformers.html">Transformer Architecture</a></li>
+            <li><a href="../weeks/pretrained.html">Pre-trained Models</a></li>
+          </ul>
+        </details>
+        <details class="part-section" open>
+          <summary>Part 3: Advanced Methods <span class="topic-count">(3)</span></summary>
+          <ul>
+            <li><a href="../weeks/scaling.html">Scaling & Advanced Topics</a></li>
+            <li><a href="../weeks/tokenization.html" class="active">Tokenization</a></li>
+            <li><a href="../weeks/decoding.html">Decoding Strategies</a></li>
+          </ul>
+        </details>
+        <details class="part-section">
+          <summary>Part 4: Applications <span class="topic-count">(3)</span></summary>
+          <ul>
+            <li><a href="../weeks/finetuning.html">Fine-tuning Methods</a></li>
+            <li><a href="../weeks/efficiency.html">Efficiency & Optimization</a></li>
+            <li><a href="../weeks/ethics.html">Ethics & Bias</a></li>
+          </ul>
+        </details>
+        <details class="part-section">
+          <summary>Special Modules <span class="topic-count">(4)</span></summary>
+          <ul>
+            <li><a href="../modules/embeddings.html">Word Embeddings Deep Dive</a></li>
+            <li><a href="../modules/summarization.html">LLM Summarization</a></li>
+            <li><a href="../modules/sentiment.html">Sentiment Analysis</a></li>
+            <li><a href="../modules/lstm-primer.html">LSTM Primer</a></li>
+          </ul>
+        </details>
+      </nav>
+    </aside>
 
-    <section class="section">
-      <h2>Resources</h2>
-      <a href="#" class="resource-btn primary">Download Slides (PDF)</a>
-      <a href="#" class="resource-btn secondary">View Lab Notebook</a>
-      <a href="../index.html#gallery" class="resource-btn secondary">Chart Gallery</a>
-    </section>
+    <main class="main-content">
+      <section class="hero">
+        <div class="badge">35 SLIDES</div>
+        <h1>Tokenization</h1>
+        <p class="subtitle">BPE, WordPiece & SentencePiece</p>
+      </section>
 
-    <div class="nav-cards">
-      <a href="scaling.html" class="nav-card">
-        <div class="label">Previous</div>
-        <div class="title">Scaling & Advanced Topics</div>
-      </a>
-      <a href="decoding.html" class="nav-card">
-        <div class="label">Next</div>
-        <div class="title">Decoding Strategies</div>
-      </a>
-    </div>
+      <div class="content-area">
+        <section class="section">
+          <h2>Overview</h2>
+          <p>Break text into tokens. Subword algorithms that power modern language models.</p>
+        </section>
+
+        <section class="section">
+          <h2>Key Topics</h2>
+          <div class="topics-grid">
+          <div class="topic-item">BPE algorithm</div>
+          <div class="topic-item">WordPiece</div>
+          <div class="topic-item">SentencePiece</div>
+          <div class="topic-item">Vocabulary optimization</div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Resources</h2>
+          <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/NLP_slides/week08_tokenization/presentations" class="resource-btn primary" target="_blank">View Slides</a>
+          <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/NLP_slides/week08_tokenization/lab" class="resource-btn secondary" target="_blank">View Lab Notebook</a>
+          <a href="../index.html#gallery" class="resource-btn secondary">Chart Gallery</a>
+        </section>
+
+        <div class="nav-cards">
+        <a href="scaling.html" class="nav-card">
+          <div class="label">Previous</div>
+          <div class="title">Scaling & Advanced Topics</div>
+        </a>
+        <a href="decoding.html" class="nav-card">
+          <div class="label">Next</div>
+          <div class="title">Decoding Strategies</div>
+        </a>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <p>Part 3: Advanced Methods | <a href="https://github.com/Digital-AI-Finance">Digital-AI-Finance</a></p>
+      </footer>
+    </main>
   </div>
 
-  <footer class="footer">
-    <p>Part 3: Advanced Methods | <a href="https://github.com/Digital-AI-Finance">Digital-AI-Finance</a></p>
-  </footer>
+  <script>
+    document.getElementById('topic-search').addEventListener('input', function(e) {
+      const query = e.target.value.toLowerCase();
+      const links = document.querySelectorAll('.sidebar-nav .part-section li');
+      const sections = document.querySelectorAll('.sidebar-nav .part-section');
+      links.forEach(li => {
+        const text = li.textContent.toLowerCase();
+        li.classList.toggle('hidden', query !== '' && !text.includes(query));
+      });
+      sections.forEach(section => {
+        const visibleLinks = section.querySelectorAll('li:not(.hidden)');
+        if (visibleLinks.length === 0 && query !== '') {
+          section.classList.add('hidden');
+        } else {
+          section.classList.remove('hidden');
+          if (query !== '') section.setAttribute('open', '');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
