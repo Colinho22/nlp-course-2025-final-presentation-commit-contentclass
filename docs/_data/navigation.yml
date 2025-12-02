@@ -1,0 +1,36 @@
+# Site Navigation
+
+main:
+  - title: "Home"
+    url: "/"
+  - title: "Embeddings"
+    url: "/embeddings/"
+    children:
+      - title: "Overview"
+        url: "/embeddings/"
+      - title: "Chart Gallery"
+        url: "/embeddings/gallery/"
+      - title: "Math Appendix"
+        url: "/embeddings/math-appendix/"
+  - title: "Course Weeks"
+    url: "/weeks/"
+    children:
+      - title: "Week 1: Foundations"
+        url: "/weeks/01-foundations/"
+      - title: "Week 2: Neural LM"
+        url: "/weeks/02-neural-lm/"
+      - title: "More coming..."
+        url: "/weeks/"
+  - title: "Resources"
+    url: "/resources/"
+    children:
+      - title: "Bibliography"
+        url: "/bibliography/"
+      - title: "Notebooks"
+        url: "/notebooks/"
+
+footer:
+  - title: "GitHub"
+    url: "https://github.com/Digital-AI-Finance/Natural-Language-Processing"
+  - title: "Digital AI Finance"
+    url: "https://github.com/Digital-AI-Finance"

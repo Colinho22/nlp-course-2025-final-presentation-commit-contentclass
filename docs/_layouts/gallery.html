@@ -1,0 +1,52 @@
+---
+layout: default
+---
+
+<header class="page-header">
+  <h1>{{ page.title }}</h1>
+  {% if page.description %}
+  <p class="page-subtitle">{{ page.description }}</p>
+  {% endif %}
+</header>
+
+<!-- Gallery Stats -->
+{% if page.stats %}
+<div class="gallery-stats">
+  <div class="stat">
+    <div class="stat-value">{{ page.stats.total }}</div>
+    <div class="stat-label">Total Charts</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">{{ page.stats.categories }}</div>
+    <div class="stat-label">Categories</div>
+  </div>
+</div>
+{% endif %}
+
+<div class="gallery-container">
+  <!-- Filter Buttons -->
+  <div class="gallery-filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    {% for category in page.categories %}
+    <button class="filter-btn" data-filter="{{ category.id }}">{{ category.name }}</button>
+    {% endfor %}
+  </div>
+
+  <!-- Gallery Grid -->
+  <div class="gallery-grid" id="gallery-grid">
+    {{ content }}
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" aria-label="Close">&times;</button>
+  <button class="lightbox-nav prev" aria-label="Previous">&larr;</button>
+  <button class="lightbox-nav next" aria-label="Next">&rarr;</button>
+  <div class="lightbox-content">
+    <img src="" alt="" id="lightbox-img">
+    <p class="lightbox-caption" id="lightbox-caption"></p>
+  </div>
+</div>
+
+<script src="{{ '/assets/js/gallery-filter.js' | relative_url }}"></script>

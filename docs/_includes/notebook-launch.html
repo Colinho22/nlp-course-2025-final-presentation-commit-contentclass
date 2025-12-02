@@ -1,0 +1,45 @@
+<div class="notebook-launcher">
+  <h4>{{ include.title }}</h4>
+  {% if include.description %}
+  <p>{{ include.description }}</p>
+  {% endif %}
+
+  <div class="launch-buttons">
+    <!-- Binder -->
+    {% if include.notebook_path %}
+    <a href="https://mybinder.org/v2/gh/{{ site.repository }}/main?labpath={{ include.notebook_path }}"
+       target="_blank"
+       rel="noopener"
+       title="Launch in Binder">
+      <img src="https://mybinder.org/badge_logo.svg" alt="Launch Binder">
+    </a>
+
+    <!-- Google Colab -->
+    <a href="https://colab.research.google.com/github/{{ site.repository }}/blob/main/{{ include.notebook_path }}"
+       target="_blank"
+       rel="noopener"
+       title="Open in Google Colab">
+      <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab">
+    </a>
+    {% endif %}
+
+    <!-- View HTML -->
+    {% if include.html_path %}
+    <a href="{{ include.html_path | relative_url }}"
+       class="btn btn-sm btn-secondary"
+       title="View notebook">
+      View Notebook
+    </a>
+    {% endif %}
+
+    <!-- Download ipynb -->
+    {% if include.notebook_path %}
+    <a href="https://raw.githubusercontent.com/{{ site.repository }}/main/{{ include.notebook_path }}"
+       class="btn btn-sm btn-secondary"
+       download
+       title="Download notebook">
+      Download .ipynb
+    </a>
+    {% endif %}
+  </div>
+</div>

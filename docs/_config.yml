@@ -1,0 +1,79 @@
+# NLP Course Documentation Site
+# Jekyll Configuration
+
+title: "NLP Course"
+description: "Graduate-level Natural Language Processing: From N-grams to Transformers"
+author: "Digital AI Finance"
+email: ""
+
+# GitHub Pages settings
+url: "https://digital-ai-finance.github.io"
+baseurl: "/Natural-Language-Processing"
+repository: "Digital-AI-Finance/Natural-Language-Processing"
+
+# Build settings
+markdown: kramdown
+kramdown:
+  math_engine: mathjax
+  syntax_highlighter: rouge
+  input: GFM
+  hard_wrap: false
+
+highlighter: rouge
+
+# Sass/SCSS
+sass:
+  sass_dir: _sass
+  style: compressed
+
+# Plugins
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-feed
+
+# Collections
+collections:
+  weeks:
+    output: true
+    permalink: /:collection/:name/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+  - scope:
+      path: "embeddings"
+    values:
+      layout: "module"
+      module: "embeddings"
+  - scope:
+      type: "weeks"
+    values:
+      layout: "module"
+
+# Exclude from build
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/
+  - scripts/
+  - "*.py"
+  - README.md
+
+# Include dotfiles if needed
+include:
+  - _pages
+
+# Pagination (if needed later)
+# paginate: 10
+# paginate_path: "/page:num/"
+
+# Search
+search_enabled: true
+
+# Analytics (optional)
+# google_analytics: UA-XXXXXXXX-X
