@@ -22,8 +22,8 @@ WEEKS = [
         'description': 'Learn how to predict the next word using probability and counting. Foundation for all language models.',
         'topics': ['Probability basics', 'Bigram models', 'Smoothing techniques', 'Perplexity evaluation'],
         'slides': 42,
-        'pdf_path': 'NLP_slides/week01_foundations/presentations',
-        'lab_path': 'NLP_slides/week01_foundations/lab'
+        'pdf_path': 'NLP_slides/week01_foundations',
+        'lab_path': 'NLP_slides/week01_foundations'
     },
     {
         'num': '02',
@@ -34,8 +34,8 @@ WEEKS = [
         'description': 'Transform words into dense vectors that capture meaning. Word2Vec, GloVe, and semantic relationships.',
         'topics': ['One-hot encoding', 'Skip-gram architecture', 'Negative sampling', 'Word analogies'],
         'slides': 35,
-        'pdf_path': 'NLP_slides/week02_embeddings/presentations',
-        'lab_path': 'NLP_slides/week02_embeddings/lab'
+        'pdf_path': 'NLP_slides/week02_neural_lm',
+        'lab_path': 'NLP_slides/week02_neural_lm'
     },
     {
         'num': '03',
@@ -46,8 +46,8 @@ WEEKS = [
         'description': 'Process sequences with memory. Understand vanishing gradients and how LSTMs solve them.',
         'topics': ['Recurrent connections', 'Vanishing gradients', 'LSTM gates', 'Sequence modeling'],
         'slides': 21,
-        'pdf_path': 'NLP_slides/week03_rnn_lstm/presentations',
-        'lab_path': 'NLP_slides/week03_rnn_lstm/lab'
+        'pdf_path': 'NLP_slides/week03_rnn',
+        'lab_path': 'NLP_slides/week03_rnn'
     },
     {
         'num': '04',
@@ -58,8 +58,8 @@ WEEKS = [
         'description': 'Map sequences to sequences. The foundation of machine translation and summarization.',
         'topics': ['Encoder-decoder', 'Attention mechanism', 'Teacher forcing', 'Beam search'],
         'slides': 38,
-        'pdf_path': 'NLP_slides/week04_seq2seq/presentations',
-        'lab_path': 'NLP_slides/week04_seq2seq/lab'
+        'pdf_path': 'NLP_slides/week04_seq2seq',
+        'lab_path': 'NLP_slides/week04_seq2seq'
     },
     {
         'num': '05',
@@ -70,8 +70,8 @@ WEEKS = [
         'description': 'The architecture that revolutionized NLP. Self-attention, multi-head attention, and positional encoding.',
         'topics': ['Self-attention', 'Multi-head attention', 'Positional encoding', 'Feed-forward layers'],
         'slides': 45,
-        'pdf_path': 'NLP_slides/week05_transformers/presentations',
-        'lab_path': 'NLP_slides/week05_transformers/lab'
+        'pdf_path': 'NLP_slides/week05_transformers',
+        'lab_path': 'NLP_slides/week05_transformers'
     },
     {
         'num': '06',
@@ -82,8 +82,8 @@ WEEKS = [
         'description': 'Leverage massive pre-training. BERT, GPT, and the transfer learning revolution.',
         'topics': ['BERT architecture', 'GPT models', 'Fine-tuning', 'Transfer learning'],
         'slides': 52,
-        'pdf_path': 'NLP_slides/week06_pretrained/presentations',
-        'lab_path': 'NLP_slides/week06_pretrained/lab'
+        'pdf_path': 'NLP_slides/week06_pretrained',
+        'lab_path': 'NLP_slides/week06_pretrained'
     },
     {
         'num': '07',
@@ -94,8 +94,8 @@ WEEKS = [
         'description': 'Scale to billions of parameters. Scaling laws, emergent abilities, and modern LLMs.',
         'topics': ['Scaling laws', 'Emergent abilities', 'In-context learning', 'Chain-of-thought'],
         'slides': 35,
-        'pdf_path': 'NLP_slides/week07_advanced/presentations',
-        'lab_path': 'NLP_slides/week07_advanced/lab'
+        'pdf_path': 'NLP_slides/week07_advanced',
+        'lab_path': 'NLP_slides/week07_advanced'
     },
     {
         'num': '08',
@@ -106,8 +106,8 @@ WEEKS = [
         'description': 'Break text into tokens. Subword algorithms that power modern language models.',
         'topics': ['BPE algorithm', 'WordPiece', 'SentencePiece', 'Vocabulary optimization'],
         'slides': 35,
-        'pdf_path': 'NLP_slides/week08_tokenization/presentations',
-        'lab_path': 'NLP_slides/week08_tokenization/lab'
+        'pdf_path': 'NLP_slides/week08_tokenization',
+        'lab_path': 'NLP_slides/week08_tokenization'
     },
     {
         'num': '09',
@@ -118,8 +118,8 @@ WEEKS = [
         'description': 'Generate text from models. Greedy, beam search, temperature, top-k, and nucleus sampling.',
         'topics': ['Greedy decoding', 'Beam search', 'Temperature scaling', 'Top-k and nucleus'],
         'slides': 66,
-        'pdf_path': 'NLP_slides/week09_decoding/presentations',
-        'lab_path': 'NLP_slides/week09_decoding/lab'
+        'pdf_path': 'NLP_slides/week09_decoding',
+        'lab_path': 'NLP_slides/week09_decoding'
     },
     {
         'num': '10',
@@ -130,8 +130,8 @@ WEEKS = [
         'description': 'Adapt pre-trained models efficiently. LoRA, adapters, and parameter-efficient methods.',
         'topics': ['Full fine-tuning', 'LoRA', 'Adapters', 'Prompt tuning'],
         'slides': 38,
-        'pdf_path': 'NLP_slides/week10_finetuning/presentations',
-        'lab_path': 'NLP_slides/week10_finetuning/lab'
+        'pdf_path': 'NLP_slides/week10_finetuning',
+        'lab_path': 'NLP_slides/week10_finetuning'
     },
     {
         'num': '11',
@@ -142,8 +142,8 @@ WEEKS = [
         'description': 'Make models faster and smaller. Quantization, pruning, and knowledge distillation.',
         'topics': ['Quantization', 'Pruning', 'Knowledge distillation', 'Inference optimization'],
         'slides': 41,
-        'pdf_path': 'NLP_slides/week11_efficiency/presentations',
-        'lab_path': 'NLP_slides/week11_efficiency/lab'
+        'pdf_path': 'NLP_slides/week11_efficiency',
+        'lab_path': 'NLP_slides/week11_efficiency'
     },
     {
         'num': '12',
@@ -154,8 +154,8 @@ WEEKS = [
         'description': 'Build responsible AI systems. Bias detection, fairness, and ethical considerations.',
         'topics': ['Bias in models', 'Fairness metrics', 'Mitigation strategies', 'Responsible deployment'],
         'slides': 26,
-        'pdf_path': 'NLP_slides/week12_ethics/presentations',
-        'lab_path': 'NLP_slides/week12_ethics/lab'
+        'pdf_path': 'NLP_slides/week12_ethics',
+        'lab_path': 'NLP_slides/week12_ethics'
     }
 ]
 
@@ -175,8 +175,8 @@ MODULES = [
         'description': 'Text summarization using extractive and abstractive methods with modern LLMs.',
         'topics': ['Extractive methods', 'Abstractive generation', 'RAG enhancement', 'Evaluation metrics'],
         'slides': 40,
-        'pdf_path': 'NLP_slides/summarization_module/presentations',
-        'lab_path': 'NLP_slides/summarization_module/lab'
+        'pdf_path': 'NLP_slides/summarization_module',
+        'lab_path': 'NLP_slides/summarization_module'
     },
     {
         'id': 'sentiment',
@@ -184,8 +184,8 @@ MODULES = [
         'description': 'BERT fine-tuning for sentiment classification with technical deep dives.',
         'topics': ['BERT classifier head', 'Pre-training objectives', 'Fine-tuning process', 'Deployment pipeline'],
         'slides': 26,
-        'pdf_path': 'NLP_slides/sentiment_analysis_module/presentations',
-        'lab_path': 'NLP_slides/sentiment_analysis_module/lab'
+        'pdf_path': 'NLP_slides/sentiment_analysis_module',
+        'lab_path': 'NLP_slides/sentiment_analysis_module'
     },
     {
         'id': 'lstm-primer',
@@ -193,8 +193,8 @@ MODULES = [
         'description': 'Zero-prerequisite introduction to LSTM networks with clear visualizations.',
         'topics': ['Why RNNs fail', 'Gate mechanisms', 'Cell state flow', 'Practical applications'],
         'slides': 32,
-        'pdf_path': 'NLP_slides/lstm_primer/presentations',
-        'lab_path': 'NLP_slides/lstm_primer/lab'
+        'pdf_path': 'NLP_slides/lstm_primer',
+        'lab_path': 'NLP_slides/lstm_primer'
     }
 ]
 
