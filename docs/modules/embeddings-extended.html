@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Embeddings: Complete Guide | NLP Course</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.7;
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      background: #1e3a5f;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .top-nav a { color: white; text-decoration: none; font-size: 0.95rem; font-weight: 500; opacity: 0.9; }
+    .top-nav a:hover { opacity: 1; text-decoration: underline; }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #1e3a5f 0%, #3333B2 100%);
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .hero h1 { font-size: 2.5rem; margin-bottom: 15px; }
+    .hero .subtitle { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto 20px; }
+    .hero .badges { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+    .hero .badge {
+      background: rgba(255,255,255,0.2);
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-size: 0.9rem;
+    }
+
+    /* Sidebar */
+    .page-container { display: flex; max-width: 1600px; margin: 0 auto; }
+    .sidebar {
+      width: 260px;
+      background: #ffffff;
+      border-right: 1px solid #e1e4e8;
+      height: calc(100vh - 48px);
+      overflow-y: auto;
+      position: sticky;
+      top: 48px;
+      flex-shrink: 0;
+    }
+    .sidebar-header {
+      padding: 15px;
+      border-bottom: 1px solid #e1e4e8;
+      background: linear-gradient(135deg, #1e3a5f 0%, #3333B2 100%);
+    }
+    .sidebar-header a { display: flex; align-items: center; text-decoration: none; color: white; }
+    .sidebar-logo { width: 32px; height: 32px; border-radius: 6px; margin-right: 10px; background: white; padding: 2px; }
+    .course-title { font-size: 14px; font-weight: 700; }
+    .search-container { padding: 10px 15px; border-bottom: 1px solid #e1e4e8; }
+    .search-container input {
+      width: 100%; padding: 6px 10px; border: 1px solid #e1e4e8;
+      border-radius: 4px; font-size: 12px; outline: none;
+    }
+    .sidebar-nav { padding: 8px 0; }
+    .part-section { border-bottom: 1px solid #f0f0f0; }
+    .part-section summary {
+      padding: 10px 15px; font-weight: 600; font-size: 10px;
+      text-transform: uppercase; letter-spacing: 0.5px; color: #24292e;
+      cursor: pointer; list-style: none;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .part-section summary::-webkit-details-marker { display: none; }
+    .part-section summary::after { content: "+"; font-size: 12px; color: #586069; }
+    .part-section[open] summary::after { content: "-"; }
+    .part-section ul { list-style: none; padding: 0 0 6px 0; margin: 0; }
+    .part-section a {
+      display: block; padding: 5px 15px 5px 25px; color: #586069;
+      text-decoration: none; font-size: 11px; border-left: 2px solid transparent;
+    }
+    .part-section a:hover { background: #f6f8fa; color: #3333B2; }
+    .part-section a.active { border-left-color: #3333B2; color: #3333B2; background: #f6f8fa; }
+    .main-area { flex: 1; min-width: 0; }
+    .hidden { display: none !important; }
+
+    /* Main Container */
+    .container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+
+    /* Tab Navigation */
+    .tab-nav {
+      display: flex;
+      background: white;
+      border-radius: 10px 10px 0 0;
+      border: 1px solid #e2e8f0;
+      border-bottom: none;
+      overflow-x: auto;
+      position: sticky;
+      top: 48px;
+      z-index: 50;
+    }
+    .tab-btn {
+      padding: 15px 25px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #64748b;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { color: #3333B2; background: #f8fafc; }
+    .tab-btn.active { color: #3333B2; border-bottom-color: #3333B2; background: white; }
+
+    /* Tab Content */
+    .tab-content {
+      display: none;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 0 0 10px 10px;
+      padding: 30px;
+    }
+    .tab-content.active { display: block; }
+
+    /* Section Styling */
+    .section { margin-bottom: 40px; }
+    .section h2 {
+      color: #1e3a5f;
+      font-size: 1.6rem;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #3333B2;
+    }
+    .section h3 {
+      color: #3333B2;
+      font-size: 1.2rem;
+      margin: 25px 0 12px;
+    }
+    .section p { margin-bottom: 15px; color: #475569; }
+
+    /* Chart Container */
+    .chart-container {
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+    }
+    .chart-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .chart-caption {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: #64748b;
+      font-style: italic;
+    }
+
+    /* Code Block */
+    .code-block {
+      background: #1e293b;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      overflow-x: auto;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .code-block .comment { color: #6b7280; }
+    .code-block .keyword { color: #f472b6; }
+    .code-block .string { color: #34d399; }
+    .code-block .function { color: #60a5fa; }
+
+    /* Formula Box */
+    .formula-box {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-left: 4px solid #3333B2;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .formula-box .formula {
+      font-family: 'Times New Roman', serif;
+      font-size: 1.2rem;
+      text-align: center;
+      margin: 10px 0;
+      color: #1e3a5f;
+    }
+    .formula-box .explanation {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-top: 10px;
+    }
+
+    /* Quiz Box */
+    .quiz-box {
+      background: #eff6ff;
+      border: 2px solid #3b82f6;
+      border-radius: 10px;
+      padding: 25px;
+      margin: 30px 0;
+    }
+    .quiz-box h4 {
+      color: #1e40af;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .quiz-box h4::before { content: "?"; background: #3b82f6; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    .quiz-option {
+      display: block;
+      padding: 12px 15px;
+      margin: 8px 0;
+      background: white;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quiz-option:hover { background: #dbeafe; border-color: #3b82f6; }
+    .quiz-option.correct { background: #dcfce7; border-color: #22c55e; }
+    .quiz-option.incorrect { background: #fee2e2; border-color: #ef4444; }
+    .quiz-answer {
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      background: white;
+      border-radius: 6px;
+      border-left: 3px solid #22c55e;
+    }
+
+    /* Resource Links */
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .resource-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 20px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+    }
+    .resource-card:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.1); transform: translateY(-2px); }
+    .resource-card .type { font-size: 0.75rem; color: #3333B2; text-transform: uppercase; font-weight: 600; }
+    .resource-card .title { font-weight: 600; color: #1e3a5f; margin: 5px 0; }
+    .resource-card .desc { font-size: 0.85rem; color: #64748b; }
+
+    /* Key Points Box */
+    .key-points {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .key-points h4 { color: #b45309; margin-bottom: 10px; }
+    .key-points ul { margin-left: 20px; color: #78350f; }
+    .key-points li { margin: 8px 0; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+      font-size: 0.85rem;
+      border-top: 1px solid #e2e8f0;
+      margin-top: 40px;
+    }
+    .footer a { color: #3333B2; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 1.8rem; }
+      .tab-btn { padding: 12px 15px; font-size: 0.85rem; }
+      .tab-content { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="../index.html">Home</a>
+    <a href="../index.html#topics">Topics</a>
+    <a href="../index.html#gallery">Charts</a>
+    <a href="../index.html#modules">Modules</a>
+    <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing">GitHub</a>
+  </nav>
+
+  <div class="page-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="../index.html">
+          <img src="https://quantlet.com/images/Q.png" alt="QuantLet" class="sidebar-logo">
+          <span class="course-title">NLP Course</span>
+        </a>
+      </div>
+      <div class="search-container">
+        <input type="text" id="topic-search" placeholder="Search topics...">
+      </div>
+      <nav class="sidebar-nav">
+        <details class="part-section">
+          <summary>Part 1: Foundations</summary>
+          <ul>
+            <li><a href="../topics/ngrams.html">N-gram Models</a></li>
+            <li><a href="../topics/embeddings.html">Word Embeddings</a></li>
+            <li><a href="../topics/rnn-lstm.html">RNN & LSTM</a></li>
+          </ul>
+        </details>
+        <details class="part-section">
+          <summary>Part 2: Architectures</summary>
+          <ul>
+            <li><a href="../topics/seq2seq.html">Seq2Seq</a></li>
+            <li><a href="../topics/transformers.html">Transformers</a></li>
+            <li><a href="../topics/pretrained.html">Pre-trained</a></li>
+          </ul>
+        </details>
+        <details class="part-section">
+          <summary>Part 3: Advanced</summary>
+          <ul>
+            <li><a href="../topics/scaling.html">Scaling</a></li>
+            <li><a href="../topics/tokenization.html">Tokenization</a></li>
+            <li><a href="../topics/decoding.html">Decoding</a></li>
+          </ul>
+        </details>
+        <details class="part-section">
+          <summary>Part 4: Applications</summary>
+          <ul>
+            <li><a href="../topics/finetuning.html">Fine-tuning</a></li>
+            <li><a href="../topics/efficiency.html">Efficiency</a></li>
+            <li><a href="../topics/ethics.html">Ethics</a></li>
+          </ul>
+        </details>
+        <details class="part-section" open>
+          <summary>Modules</summary>
+          <ul>
+            <li><a href="embeddings.html">Embeddings Overview</a></li>
+            <li><a href="embeddings-extended.html" class="active">Extended Guide</a></li>
+            <li><a href="summarization.html">Summarization</a></li>
+            <li><a href="sentiment.html">Sentiment</a></li>
+            <li><a href="lstm-primer.html">LSTM Primer</a></li>
+          </ul>
+        </details>
+      </nav>
+    </aside>
+
+    <main class="main-area">
+      <section class="hero">
+        <h1>Word Embeddings: Complete Guide</h1>
+        <p class="subtitle">From one-hot encoding to modern sentence embeddings. Learn how machines understand the meaning of words.</p>
+        <div class="badges">
+          <span class="badge">BSc Level</span>
+          <span class="badge">7 Sections</span>
+          <span class="badge">Interactive Charts</span>
+          <span class="badge">Hugging Face Code</span>
+        </div>
+      </section>
+
+      <div class="container">
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+      <button class="tab-btn active" data-tab="overview">Overview</button>
+      <button class="tab-btn" data-tab="onehot">One-Hot</button>
+      <button class="tab-btn" data-tab="word2vec">Word2Vec</button>
+      <button class="tab-btn" data-tab="glove">GloVe</button>
+      <button class="tab-btn" data-tab="contextual">Contextual</button>
+      <button class="tab-btn" data-tab="modern">Modern</button>
+      <button class="tab-btn" data-tab="resources">Resources</button>
+    </div>
+
+    <!-- Overview Tab -->
+    <div id="overview" class="tab-content active">
+      <div class="section">
+        <h2>What Are Word Embeddings?</h2>
+        <p>Word embeddings are dense vector representations of words that capture semantic meaning. Unlike traditional representations where words are just symbols, embeddings place similar words close together in a continuous vector space.</p>
+
+        <div class="chart-container">
+          <img src="../assets/charts/embeddings/evolution_timeline.png" alt="Evolution of Word Embeddings">
+          <p class="chart-caption">Figure 1: The evolution of word embedding techniques from 2003 to present day</p>
+        </div>
+
+        <h3>Why Do We Need Them?</h3>
+        <p>Computers only understand numbers, not words. Word embeddings solve the fundamental problem of representing text in a way that captures meaning:</p>
+
+        <div class="key-points">
+          <h4>Key Benefits</h4>
+          <ul>
+            <li><strong>Semantic similarity:</strong> Similar words have similar vectors (king ~ queen)</li>
+            <li><strong>Dimensionality reduction:</strong> From vocabulary size (50,000+) to fixed dimensions (300)</li>
+            <li><strong>Transfer learning:</strong> Pre-trained embeddings work across many tasks</li>
+            <li><strong>Analogical reasoning:</strong> king - man + woman = queen</li>
+          </ul>
+        </div>
+
+        <div class="chart-container">
+          <img src="../assets/charts/embeddings/applications_overview.png" alt="Applications of Word Embeddings">
+          <p class="chart-caption">Figure 2: Real-world applications powered by word embeddings</p>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="quiz-box">
+        <h4>Concept Check</h4>
+        <p>What is the main advantage of dense embeddings over one-hot encoding?</p>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">They use more memory</label>
+        <label class="quiz-option" onclick="checkAnswer(this, true)">They capture semantic similarity between words</label>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">They are faster to compute</label>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">They don't require training</label>
+        <div class="quiz-answer">
+          <strong>Correct!</strong> Dense embeddings place semantically similar words close together in vector space, allowing algorithms to understand that "cat" and "kitten" are related, unlike one-hot vectors which treat all words as equally different.
+        </div>
+      </div>
+    </div>
+
+    <!-- One-Hot Tab -->
+    <div id="onehot" class="tab-content">
+      <div class="section">
+        <h2>One-Hot Encoding: The Starting Point</h2>
+        <p>One-hot encoding represents each word as a sparse vector where only one element is 1 and all others are 0. It's simple but has significant limitations.</p>
+
+        <div class="chart-container">
+          <img src="../assets/charts/embeddings/onehot_vs_dense.png" alt="One-Hot vs Dense Embeddings">
+          <p class="chart-caption">Figure 3: Comparison of sparse one-hot encoding (left) vs dense embeddings (right)</p>
+        </div>
+
+        <h3>How It Works</h3>
+        <p>For a vocabulary of V words, each word gets a V-dimensional vector with exactly one "1":</p>
+
+        <div class="formula-box">
+          <div class="formula">cat = [1, 0, 0, 0, 0], dog = [0, 1, 0, 0, 0], bird = [0, 0, 1, 0, 0]</div>
+          <p class="explanation">Each word is orthogonal to every other word - they're all equally "different"</p>
+        </div>
+
+        <h3>The Problems</h3>
+        <div class="key-points">
+          <h4>Limitations of One-Hot</h4>
+          <ul>
+            <li><strong>No semantic similarity:</strong> cos(cat, dog) = 0, same as cos(cat, refrigerator)</li>
+            <li><strong>Curse of dimensionality:</strong> 50,000 words = 50,000 dimensions</li>
+            <li><strong>Sparse:</strong> 99.99% zeros waste memory and computation</li>
+            <li><strong>No generalization:</strong> Learning about "cat" tells nothing about "kitten"</li>
+          </ul>
+        </div>
+
+        <h3>Hugging Face Example</h3>
+        <div class="code-block">
+<span class="comment"># One-hot encoding with PyTorch</span>
+<span class="keyword">import</span> torch
+<span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F
+
+<span class="comment"># Vocabulary</span>
+vocab = {<span class="string">'cat'</span>: 0, <span class="string">'dog'</span>: 1, <span class="string">'bird'</span>: 2, <span class="string">'fish'</span>: 3}
+
+<span class="comment"># One-hot encode 'cat'</span>
+word_idx = torch.tensor([vocab[<span class="string">'cat'</span>]])
+one_hot = F.<span class="function">one_hot</span>(word_idx, num_classes=<span class="function">len</span>(vocab))
+<span class="keyword">print</span>(one_hot)  <span class="comment"># tensor([[1, 0, 0, 0]])</span>
+
+<span class="comment"># Cosine similarity between any two one-hot vectors = 0</span>
+cat_vec = F.<span class="function">one_hot</span>(torch.tensor([0]), 4).float()
+dog_vec = F.<span class="function">one_hot</span>(torch.tensor([1]), 4).float()
+sim = F.<span class="function">cosine_similarity</span>(cat_vec, dog_vec)
+<span class="keyword">print</span>(f<span class="string">"Similarity: {sim.item()}"</span>)  <span class="comment"># 0.0</span>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="quiz-box">
+        <h4>Concept Check</h4>
+        <p>If your vocabulary has 100,000 words, how many dimensions does each one-hot vector have?</p>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">100</label>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">1,000</label>
+        <label class="quiz-option" onclick="checkAnswer(this, true)">100,000</label>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">It depends on the embedding size</label>
+        <div class="quiz-answer">
+          <strong>Correct!</strong> One-hot encoding requires exactly V dimensions, where V is the vocabulary size. This is why it doesn't scale well - large vocabularies create very high-dimensional, sparse vectors.
+        </div>
+      </div>
+    </div>
+
+    <!-- Word2Vec Tab -->
+    <div id="word2vec" class="tab-content">
+      <div class="section">
+        <h2>Word2Vec: The Breakthrough</h2>
+        <p>Word2Vec (Mikolov et al., 2013) revolutionized NLP by learning dense, low-dimensional word representations from large text corpora. The key insight: <em>"You shall know a word by the company it keeps."</em></p>
+
+        <h3>Two Architectures</h3>
+        <p><strong>Skip-gram:</strong> Predict context words from center word<br>
+        <strong>CBOW (Continuous Bag of Words):</strong> Predict center word from context</p>
+
+        <div class="chart-container">
+          <img src="../assets/charts/embeddings/word2vec_training.png" alt="Word2Vec Training">
+          <p class="chart-caption">Figure 4: Word2Vec training loss converging as embeddings become meaningful</p>
+        </div>
+
+        <h3>The Skip-gram Objective</h3>
+        <div class="formula-box">
+          <div class="formula">J = -1/T * sum(log P(w_context | w_center))</div>
+          <p class="explanation">Maximize probability of observing context words given the center word</p>
+        </div>
+
+        <h3>Negative Sampling</h3>
+        <p>Computing softmax over entire vocabulary is expensive. Negative sampling approximates by distinguishing real context from random "negative" samples:</p>
+
+        <div class="formula-box">
+          <div class="formula">log sigma(v_c . v_w) + sum(log sigma(-v_n . v_w))</div>
+          <p class="explanation">Push real context pairs together, push random pairs apart</p>
+        </div>
+
+        <div class="chart-container">
+          <img src="../assets/charts/embeddings/analogy_demo.png" alt="Word Analogies">
+          <p class="chart-caption">Figure 5: Famous word analogy: king - man + woman = queen</p>
+        </div>
+
+        <h3>Hugging Face Example</h3>
+        <div class="code-block">
+<span class="comment"># Using pre-trained Word2Vec with Gensim</span>
+<span class="keyword">import</span> gensim.downloader <span class="keyword">as</span> api
+
+<span class="comment"># Load pre-trained Word2Vec (Google News, 300d)</span>
+model = api.<span class="function">load</span>(<span class="string">'word2vec-google-news-300'</span>)
+
+<span class="comment"># Word similarity</span>
+sim = model.<span class="function">similarity</span>(<span class="string">'cat'</span>, <span class="string">'dog'</span>)
+<span class="keyword">print</span>(f<span class="string">"cat ~ dog: {sim:.3f}"</span>)  <span class="comment"># ~0.76</span>
+
+<span class="comment"># Word analogies</span>
+result = model.<span class="function">most_similar</span>(
+    positive=[<span class="string">'king'</span>, <span class="string">'woman'</span>],
+    negative=[<span class="string">'man'</span>],
+    topn=1
+)
+<span class="keyword">print</span>(result)  <span class="comment"># [('queen', 0.71)]</span>
+
+<span class="comment"># Find similar words</span>
+similar = model.<span class="function">most_similar</span>(<span class="string">'python'</span>, topn=5)
+<span class="keyword">for</span> word, score <span class="keyword">in</span> similar:
+    <span class="keyword">print</span>(f<span class="string">"  {word}: {score:.3f}"</span>)
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="quiz-box">
+        <h4>Concept Check</h4>
+        <p>In Skip-gram, what does the model try to predict?</p>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">The center word from context words</label>
+        <label class="quiz-option" onclick="checkAnswer(this, true)">Context words from the center word</label>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">The next word in the sequence</label>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">Word frequency</label>
+        <div class="quiz-answer">
+          <strong>Correct!</strong> Skip-gram takes a center word and tries to predict the surrounding context words. This forces the model to learn that similar words appear in similar contexts, capturing semantic relationships.
+        </div>
+      </div>
+    </div>
+
+    <!-- GloVe Tab -->
+    <div id="glove" class="tab-content">
+      <div class="section">
+        <h2>GloVe: Global Vectors</h2>
+        <p>GloVe (Pennington et al., 2014) combines the best of two worlds: the efficiency of matrix factorization methods and the semantic quality of Word2Vec.</p>
+
+        <h3>The Key Insight</h3>
+        <p>Word co-occurrence statistics contain rich semantic information. If "ice" frequently co-occurs with "cold" and "steam" with "hot", their ratio reveals meaning:</p>
+
+        <div class="formula-box">
+          <div class="formula">P(cold|ice) / P(cold|steam) >> 1<br>P(hot|ice) / P(hot|steam) << 1</div>
+          <p class="explanation">The ratio of co-occurrence probabilities captures semantic relationships better than raw counts</p>
+        </div>
+
+        <div class="chart-container">
+          <img src="../assets/charts/embeddings/similarity_heatmap.png" alt="Word Similarity Heatmap">
+          <p class="chart-caption">Figure 6: Cosine similarity matrix showing semantic clusters (animals, vehicles, royalty)</p>
+        </div>
+
+        <h3>GloVe Objective</h3>
+        <div class="formula-box">
+          <div class="formula">J = sum f(X_ij)(w_i . w_j + b_i + b_j - log X_ij)^2</div>
+          <p class="explanation">Learn embeddings such that their dot product equals log co-occurrence count</p>
+        </div>
+
+        <h3>Word2Vec vs GloVe</h3>
+        <div class="key-points">
+          <h4>Key Differences</h4>
+          <ul>
+            <li><strong>Word2Vec:</strong> Local context windows, online training, predictive</li>
+            <li><strong>GloVe:</strong> Global statistics, batch training, count-based</li>
+            <li><strong>Performance:</strong> Similar quality, GloVe often faster to train</li>
+            <li><strong>Interpretability:</strong> GloVe dimensions more interpretable</li>
+          </ul>
+        </div>
+
+        <h3>Hugging Face Example</h3>
+        <div class="code-block">
+<span class="comment"># Using pre-trained GloVe with Gensim</span>
+<span class="keyword">import</span> gensim.downloader <span class="keyword">as</span> api
+
+<span class="comment"># Load GloVe (trained on Twitter, 200d)</span>
+glove = api.<span class="function">load</span>(<span class="string">'glove-twitter-200'</span>)
+
+<span class="comment"># Word similarity</span>
+<span class="keyword">print</span>(glove.<span class="function">similarity</span>(<span class="string">'good'</span>, <span class="string">'great'</span>))  <span class="comment"># ~0.72</span>
+<span class="keyword">print</span>(glove.<span class="function">similarity</span>(<span class="string">'good'</span>, <span class="string">'bad'</span>))    <span class="comment"># ~0.51 (antonyms still similar!)</span>
+
+<span class="comment"># Available GloVe models</span>
+<span class="comment"># glove-wiki-gigaword-50/100/200/300</span>
+<span class="comment"># glove-twitter-25/50/100/200</span>
+
+<span class="comment"># Get raw vector</span>
+vec = glove[<span class="string">'machine'</span>]
+<span class="keyword">print</span>(f<span class="string">"Dimensions: {vec.shape}"</span>)  <span class="comment"># (200,)</span>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="quiz-box">
+        <h4>Concept Check</h4>
+        <p>What does GloVe use that Word2Vec doesn't?</p>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">Context windows</label>
+        <label class="quiz-option" onclick="checkAnswer(this, true)">Global word co-occurrence statistics</label>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">Neural networks</label>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">Subword information</label>
+        <div class="quiz-answer">
+          <strong>Correct!</strong> GloVe builds a global co-occurrence matrix from the entire corpus before training, while Word2Vec learns from local context windows during training. This global view can capture long-range relationships.
+        </div>
+      </div>
+    </div>
+
+    <!-- Contextual Tab -->
+    <div id="contextual" class="tab-content">
+      <div class="section">
+        <h2>Contextual Embeddings: ELMo & BERT</h2>
+        <p>Static embeddings assign the same vector to a word regardless of context. Contextual embeddings solve the polysemy problem by computing different vectors based on surrounding words.</p>
+
+        <div class="chart-container">
+          <img src="../assets/charts/embeddings/contextual_comparison.png" alt="Static vs Contextual Embeddings">
+          <p class="chart-caption">Figure 7: The word "bank" gets different vectors depending on context</p>
+        </div>
+
+        <h3>ELMo (2018)</h3>
+        <p><strong>E</strong>mbeddings from <strong>L</strong>anguage <strong>Mo</strong>dels uses deep bidirectional LSTMs trained on language modeling:</p>
+        <ul>
+          <li>Forward LSTM: predicts next word</li>
+          <li>Backward LSTM: predicts previous word</li>
+          <li>Combines layers with learned weights per task</li>
+        </ul>
+
+        <h3>BERT (2018)</h3>
+        <p><strong>B</strong>idirectional <strong>E</strong>ncoder <strong>R</strong>epresentations from <strong>T</strong>ransformers uses self-attention to look at entire context simultaneously:</p>
+
+        <div class="key-points">
+          <h4>BERT's Innovations</h4>
+          <ul>
+            <li><strong>Masked Language Modeling:</strong> Predict [MASK]ed words using full context</li>
+            <li><strong>Next Sentence Prediction:</strong> Understand document structure</li>
+            <li><strong>Pre-train then fine-tune:</strong> Transfer learning paradigm</li>
+            <li><strong>[CLS] token:</strong> Aggregate sentence representation</li>
+          </ul>
+        </div>
+
+        <h3>Hugging Face Example</h3>
+        <div class="code-block">
+<span class="comment"># Get contextual embeddings with BERT</span>
+<span class="keyword">from</span> transformers <span class="keyword">import</span> AutoTokenizer, AutoModel
+<span class="keyword">import</span> torch
+
+<span class="comment"># Load BERT</span>
+tokenizer = AutoTokenizer.<span class="function">from_pretrained</span>(<span class="string">'bert-base-uncased'</span>)
+model = AutoModel.<span class="function">from_pretrained</span>(<span class="string">'bert-base-uncased'</span>)
+
+<span class="comment"># Two sentences with "bank" in different contexts</span>
+sentences = [
+    <span class="string">"I walked along the river bank."</span>,
+    <span class="string">"I deposited money at the bank."</span>
+]
+
+<span class="keyword">for</span> sent <span class="keyword">in</span> sentences:
+    inputs = tokenizer(sent, return_tensors=<span class="string">'pt'</span>)
+
+    <span class="keyword">with</span> torch.<span class="function">no_grad</span>():
+        outputs = model(**inputs)
+
+    <span class="comment"># Get [CLS] token embedding (sentence representation)</span>
+    cls_embedding = outputs.last_hidden_state[:, 0, :]
+    <span class="keyword">print</span>(f<span class="string">"{sent[:30]}... -> shape: {cls_embedding.shape}"</span>)
+
+<span class="comment"># The 'bank' token will have different embeddings!</span>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="quiz-box">
+        <h4>Concept Check</h4>
+        <p>Why do contextual embeddings solve the polysemy problem?</p>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">They use larger vocabularies</label>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">They train on more data</label>
+        <label class="quiz-option" onclick="checkAnswer(this, true)">They compute different vectors based on surrounding words</label>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">They use subword tokenization</label>
+        <div class="quiz-answer">
+          <strong>Correct!</strong> Unlike Word2Vec/GloVe where "bank" always has the same vector, contextual models like BERT produce different embeddings for "river bank" vs "money bank" because they consider the entire sentence.
+        </div>
+      </div>
+    </div>
+
+    <!-- Modern Tab -->
+    <div id="modern" class="tab-content">
+      <div class="section">
+        <h2>Modern Embeddings: Sentence & Beyond</h2>
+        <p>Recent advances have moved beyond word-level to sentence, paragraph, and document embeddings, enabling semantic search at scale.</p>
+
+        <h3>Sentence Transformers</h3>
+        <p>Fine-tuned BERT models that produce high-quality sentence embeddings for similarity search:</p>
+
+        <div class="key-points">
+          <h4>Popular Models</h4>
+          <ul>
+            <li><strong>all-MiniLM-L6-v2:</strong> Fast, 384 dimensions, great for search</li>
+            <li><strong>all-mpnet-base-v2:</strong> Best quality, 768 dimensions</li>
+            <li><strong>multi-qa-MiniLM:</strong> Optimized for question answering</li>
+            <li><strong>paraphrase-multilingual:</strong> 50+ languages</li>
+          </ul>
+        </div>
+
+        <h3>Hugging Face Example: Semantic Search</h3>
+        <div class="code-block">
+<span class="comment"># Semantic search with Sentence Transformers</span>
+<span class="keyword">from</span> sentence_transformers <span class="keyword">import</span> SentenceTransformer
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+<span class="comment"># Load model</span>
+model = SentenceTransformer(<span class="string">'all-MiniLM-L6-v2'</span>)
+
+<span class="comment"># Documents to search</span>
+documents = [
+    <span class="string">"The cat sat on the mat."</span>,
+    <span class="string">"Machine learning is a subset of AI."</span>,
+    <span class="string">"Python is a programming language."</span>,
+    <span class="string">"Deep learning uses neural networks."</span>,
+]
+
+<span class="comment"># Query</span>
+query = <span class="string">"What is artificial intelligence?"</span>
+
+<span class="comment"># Encode all</span>
+doc_embeddings = model.<span class="function">encode</span>(documents)
+query_embedding = model.<span class="function">encode</span>([query])
+
+<span class="comment"># Compute similarities</span>
+similarities = np.<span class="function">dot</span>(doc_embeddings, query_embedding.T).squeeze()
+
+<span class="comment"># Rank results</span>
+<span class="keyword">for</span> idx <span class="keyword">in</span> np.<span class="function">argsort</span>(similarities)[::-1]:
+    <span class="keyword">print</span>(f<span class="string">"[{similarities[idx]:.3f}] {documents[idx]}"</span>)
+        </div>
+
+        <h3>Applications</h3>
+        <div class="resource-grid">
+          <div class="resource-card">
+            <div class="type">Application</div>
+            <div class="title">Semantic Search</div>
+            <div class="desc">Find documents by meaning, not keywords</div>
+          </div>
+          <div class="resource-card">
+            <div class="type">Application</div>
+            <div class="title">Duplicate Detection</div>
+            <div class="desc">Find paraphrased or similar content</div>
+          </div>
+          <div class="resource-card">
+            <div class="type">Application</div>
+            <div class="title">Clustering</div>
+            <div class="desc">Group similar documents automatically</div>
+          </div>
+          <div class="resource-card">
+            <div class="type">Application</div>
+            <div class="title">RAG Systems</div>
+            <div class="desc">Retrieval-augmented generation for LLMs</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="quiz-box">
+        <h4>Concept Check</h4>
+        <p>What makes Sentence Transformers different from using BERT directly?</p>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">They use different architectures</label>
+        <label class="quiz-option" onclick="checkAnswer(this, true)">They're fine-tuned to produce meaningful sentence-level embeddings</label>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">They don't use transformers</label>
+        <label class="quiz-option" onclick="checkAnswer(this, false)">They only work with English</label>
+        <div class="quiz-answer">
+          <strong>Correct!</strong> While BERT's [CLS] token wasn't designed for sentence similarity, Sentence Transformers are fine-tuned on paraphrase and similarity datasets to produce embeddings where cosine similarity reflects semantic similarity.
+        </div>
+      </div>
+    </div>
+
+    <!-- Resources Tab -->
+    <div id="resources" class="tab-content">
+      <div class="section">
+        <h2>Papers</h2>
+        <div class="resource-grid">
+          <a href="https://arxiv.org/abs/1301.3781" class="resource-card" target="_blank">
+            <div class="type">Paper (2013)</div>
+            <div class="title">Word2Vec</div>
+            <div class="desc">Efficient Estimation of Word Representations in Vector Space - Mikolov et al.</div>
+          </a>
+          <a href="https://nlp.stanford.edu/pubs/glove.pdf" class="resource-card" target="_blank">
+            <div class="type">Paper (2014)</div>
+            <div class="title">GloVe</div>
+            <div class="desc">Global Vectors for Word Representation - Pennington et al.</div>
+          </a>
+          <a href="https://arxiv.org/abs/1802.05365" class="resource-card" target="_blank">
+            <div class="type">Paper (2018)</div>
+            <div class="title">ELMo</div>
+            <div class="desc">Deep contextualized word representations - Peters et al.</div>
+          </a>
+          <a href="https://arxiv.org/abs/1810.04805" class="resource-card" target="_blank">
+            <div class="type">Paper (2018)</div>
+            <div class="title">BERT</div>
+            <div class="desc">Pre-training of Deep Bidirectional Transformers - Devlin et al.</div>
+          </a>
+        </div>
+
+        <h2>Tutorials & Guides</h2>
+        <div class="resource-grid">
+          <a href="https://jalammar.github.io/illustrated-word2vec/" class="resource-card" target="_blank">
+            <div class="type">Tutorial</div>
+            <div class="title">Illustrated Word2Vec</div>
+            <div class="desc">Visual guide to understanding Word2Vec - Jay Alammar</div>
+          </a>
+          <a href="https://www.sbert.net/" class="resource-card" target="_blank">
+            <div class="type">Documentation</div>
+            <div class="title">Sentence Transformers</div>
+            <div class="desc">Official docs with examples and model hub</div>
+          </a>
+          <a href="https://huggingface.co/learn/nlp-course" class="resource-card" target="_blank">
+            <div class="type">Course</div>
+            <div class="title">HuggingFace NLP Course</div>
+            <div class="desc">Free comprehensive NLP course</div>
+          </a>
+        </div>
+
+        <h2>Pre-trained Models</h2>
+        <div class="resource-grid">
+          <a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2" class="resource-card" target="_blank">
+            <div class="type">Model</div>
+            <div class="title">all-MiniLM-L6-v2</div>
+            <div class="desc">Fast, efficient sentence embeddings (384d)</div>
+          </a>
+          <a href="https://huggingface.co/sentence-transformers/all-mpnet-base-v2" class="resource-card" target="_blank">
+            <div class="type">Model</div>
+            <div class="title">all-mpnet-base-v2</div>
+            <div class="desc">Best quality sentence embeddings (768d)</div>
+          </a>
+          <a href="https://radimrehurek.com/gensim/models/word2vec.html" class="resource-card" target="_blank">
+            <div class="type">Library</div>
+            <div class="title">Gensim Word2Vec</div>
+            <div class="desc">Train your own Word2Vec models</div>
+          </a>
+        </div>
+
+        <h2>Course Materials</h2>
+        <div class="resource-grid">
+          <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/embeddings" class="resource-card" target="_blank">
+            <div class="type">Slides</div>
+            <div class="title">Embeddings Module</div>
+            <div class="desc">48-slide deep dive with 3D visualizations</div>
+          </a>
+          <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/embeddings" class="resource-card" target="_blank">
+            <div class="type">Lab</div>
+            <div class="title">Word Embeddings Lab</div>
+            <div class="desc">Jupyter notebook with hands-on exercises</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+      <footer class="footer">
+        <p>Word Embeddings Extended Guide | <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing">NLP Course</a> | <a href="https://github.com/Digital-AI-Finance">Digital-AI-Finance</a></p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Deactivate all
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+        // Activate selected
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Quiz functionality
+    function checkAnswer(option, isCorrect) {
+      const quizBox = option.closest('.quiz-box');
+      const options = quizBox.querySelectorAll('.quiz-option');
+      const answer = quizBox.querySelector('.quiz-answer');
+
+      options.forEach(opt => {
+        opt.classList.remove('correct', 'incorrect');
+        opt.style.pointerEvents = 'none';
+      });
+
+      if (isCorrect) {
+        option.classList.add('correct');
+      } else {
+        option.classList.add('incorrect');
+        // Find and highlight correct answer
+        options.forEach(opt => {
+          if (opt.getAttribute('onclick').includes('true')) {
+            opt.classList.add('correct');
+          }
+        });
+      }
+
+      answer.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

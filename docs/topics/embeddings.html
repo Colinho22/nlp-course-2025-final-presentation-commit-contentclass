@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Word Embeddings Deep Dive | NLP Course</title>
+  <title>Word Embeddings | NLP Course</title>
   <style>
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -190,7 +190,7 @@
           <summary>Part 1: Language Foundations <span class="topic-count">(3)</span></summary>
           <ul>
             <li><a href="../topics/ngrams.html">N-gram Language Models</a></li>
-            <li><a href="../topics/embeddings.html">Word Embeddings</a></li>
+            <li><a href="../topics/embeddings.html" class="active">Word Embeddings</a></li>
             <li><a href="../topics/rnn-lstm.html">RNN & LSTM Networks</a></li>
           </ul>
         </details>
@@ -218,10 +218,10 @@
             <li><a href="../topics/ethics.html">Ethics & Bias</a></li>
           </ul>
         </details>
-        <details class="part-section" open>
+        <details class="part-section">
           <summary>Special Modules <span class="topic-count">(4)</span></summary>
           <ul>
-            <li><a href="../modules/embeddings.html" class="active">Word Embeddings Deep Dive</a></li>
+            <li><a href="../modules/embeddings.html">Word Embeddings Deep Dive</a></li>
             <li><a href="../modules/summarization.html">LLM Summarization</a></li>
             <li><a href="../modules/sentiment.html">Sentiment Analysis</a></li>
             <li><a href="../modules/lstm-primer.html">LSTM Primer</a></li>
@@ -232,37 +232,48 @@
 
     <main class="main-content">
       <section class="hero">
-        <div class="badge">48 SLIDES</div>
-        <h1>Word Embeddings Deep Dive</h1>
+        <div class="badge">35 SLIDES</div>
+        <h1>Word Embeddings</h1>
+        <p class="subtitle">From Words to Vectors</p>
       </section>
 
       <div class="content-area">
         <section class="section">
           <h2>Overview</h2>
-          <p>Comprehensive coverage of word embedding algorithms with interactive 3D visualizations.</p>
+          <p>Transform words into dense vectors that capture meaning. Word2Vec, GloVe, and semantic relationships.</p>
         </section>
 
         <section class="section">
           <h2>Key Topics</h2>
           <div class="topics-grid">
-          <div class="topic-item">Skip-gram mathematics</div>
-          <div class="topic-item">GloVe co-occurrence</div>
-          <div class="topic-item">FastText subwords</div>
-          <div class="topic-item">Contextual embeddings</div>
+          <div class="topic-item">One-hot encoding</div>
+          <div class="topic-item">Skip-gram architecture</div>
+          <div class="topic-item">Negative sampling</div>
+          <div class="topic-item">Word analogies</div>
           </div>
         </section>
 
         <section class="section">
           <h2>Resources</h2>
-          <a href="embeddings-extended.html" class="resource-btn primary">Extended Guide (Recommended)</a>
-          <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/embeddings" class="resource-btn secondary" target="_blank">View Slides</a>
-          <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/embeddings" class="resource-btn secondary" target="_blank">View Lab Notebook</a>
+          <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/NLP_slides/week02_neural_lm" class="resource-btn primary" target="_blank">View Slides</a>
+          <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/tree/main/NLP_slides/week02_neural_lm" class="resource-btn secondary" target="_blank">View Lab Notebook</a>
           <a href="../index.html#gallery" class="resource-btn secondary">Chart Gallery</a>
         </section>
+
+        <div class="nav-cards">
+        <a href="ngrams.html" class="nav-card">
+          <div class="label">Previous</div>
+          <div class="title">N-gram Language Models</div>
+        </a>
+        <a href="rnn-lstm.html" class="nav-card">
+          <div class="label">Next</div>
+          <div class="title">RNN & LSTM Networks</div>
+        </a>
+        </div>
       </div>
 
       <footer class="footer">
-        <p>Special Module | <a href="https://github.com/Digital-AI-Finance">Digital-AI-Finance</a></p>
+        <p>Part 1: Language Foundations | <a href="https://github.com/Digital-AI-Finance">Digital-AI-Finance</a></p>
       </footer>
     </main>
   </div>
