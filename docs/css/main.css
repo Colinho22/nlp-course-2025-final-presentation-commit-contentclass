@@ -1,0 +1,154 @@
+/* NLP Course - Compact Hugo Theme */
+:root {
+  --accent: #3333B2;
+  --accent-light: #e8e8f5;
+  --bg: #fafafa;
+  --text: #333;
+  --border: #e2e8f0;
+  --sidebar-width: 240px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: white;
+  border-right: 1px solid var(--border);
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.sidebar-header {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent);
+}
+
+.sidebar-header a { text-decoration: none; color: inherit; }
+
+.sidebar-nav { list-style: none; }
+.sidebar-nav li { margin: 4px 0; }
+.sidebar-nav a {
+  display: block;
+  padding: 6px 10px;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 13px;
+}
+.sidebar-nav a:hover { background: var(--accent-light); color: var(--accent); }
+
+/* Main Content */
+.content {
+  margin-left: var(--sidebar-width);
+  padding: 20px 30px;
+  max-width: 900px;
+}
+
+h1 { font-size: 1.8rem; color: var(--accent); margin-bottom: 16px; }
+h2 { font-size: 1.3rem; color: #1e3a5f; margin: 20px 0 10px; border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
+h3 { font-size: 1.1rem; margin: 14px 0 8px; color: #2d3748; }
+
+p { margin: 8px 0; }
+
+/* Tables */
+table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 13px; }
+th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
+th { background: var(--accent-light); font-weight: 600; }
+
+/* Links */
+a { color: var(--accent); }
+a:hover { text-decoration: underline; }
+
+/* Lists */
+ul, ol { margin: 8px 0 8px 20px; }
+li { margin: 4px 0; }
+
+/* Page list */
+.page-list { list-style: none; margin-left: 0; }
+.page-list li {
+  padding: 8px 12px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin: 6px 0;
+}
+.page-list a { text-decoration: none; font-weight: 500; }
+
+/* Chart grid */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 12px 0;
+}
+.chart-item {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: white;
+}
+.chart-item img { width: 100%; height: 70px; object-fit: cover; }
+.chart-item span { display: block; font-size: 10px; padding: 4px; text-align: center; background: #f8fafc; }
+
+/* Topics grid */
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.topic-item {
+  background: #f8fafc;
+  padding: 8px;
+  border-radius: 4px;
+  border-left: 3px solid var(--accent);
+  font-size: 12px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 13px;
+  margin: 4px 4px 4px 0;
+}
+.btn:hover { background: #2929a0; color: white; text-decoration: none; }
+.btn.secondary { background: #64748b; }
+
+/* Badge */
+.badge {
+  display: inline-block;
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar { width: 100%; height: auto; position: relative; }
+  .content { margin-left: 0; padding: 16px; }
+  .chart-grid, .topics-grid { grid-template-columns: repeat(2, 1fr); }
+}
