@@ -66,7 +66,7 @@
       text-decoration: none; font-size: 12px; border-left: 2px solid transparent;
     }
     .part-section a:hover { background: #f6f8fa; color: #3333B2; }
-    .topic-count { font-size: 10px; color: #959da5; font-weight: normal; }
+    .topic-count { font-size: 10px; color: #606060; font-weight: normal; }
     .hidden { display: none !important; }
     .main-content { flex: 1; min-width: 0; }
     .hero {
@@ -98,7 +98,7 @@
     }
     .feature-icon { font-size: 1.6rem; margin-bottom: 6px; }
     .feature-card h3 { font-size: 0.9rem; color: #1e3a5f; margin-bottom: 4px; }
-    .feature-card p { color: #64748b; font-size: 0.75rem; }
+    .feature-card p { color: #505050; font-size: 0.75rem; }
     .journey { padding: 18px 12px; background: #f1f5f9; }
     .journey h2 { text-align: center; font-size: 1.2rem; color: #1e3a5f; margin-bottom: 15px; }
     .journey-tracker {
@@ -120,7 +120,7 @@
       display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: 0.9rem; color: #3333B2; margin-bottom: 5px;
     }
-    .step-label { font-size: 0.7rem; color: #64748b; text-align: center; max-width: 80px; }
+    .step-label { font-size: 0.7rem; color: #505050; text-align: center; max-width: 80px; }
     .topics-section { padding: 18px 12px; }
     .part-section-main { margin-bottom: 20px; }
     .part-header { display: flex; align-items: center; margin-bottom: 10px; }
@@ -152,7 +152,7 @@
     .gallery-item img { width: 100%; height: 70px; object-fit: cover; display: block; background: #f1f5f9; }
     .gallery-item span {
       display: block; text-align: center; font-size: 0.6rem; padding: 4px;
-      background: #f8fafc; color: #64748b; white-space: nowrap;
+      background: #f8fafc; color: #505050; white-space: nowrap;
       overflow: hidden; text-overflow: ellipsis;
     }
     .special-modules { padding: 18px 12px; background: #f1f5f9; }
@@ -167,7 +167,7 @@
     }
     .module-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     .module-card h3 { font-size: 0.85rem; color: #1e3a5f; margin-bottom: 4px; }
-    .module-card p { font-size: 0.7rem; color: #64748b; }
+    .module-card p { font-size: 0.7rem; color: #505050; }
     .resources { padding: 18px 12px; background: white; text-align: center; }
     .resources h2 { font-size: 1.2rem; color: #1e3a5f; margin-bottom: 12px; }
     .resource-buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
@@ -201,9 +201,39 @@
       .journey-tracker::before { display: none; }
       .features-container { grid-template-columns: 1fr; }
     }
+  
+    /* Keyboard focus indicators for accessibility */
+    a:focus, button:focus, input:focus, select:focus, textarea:focus {
+      outline: 2px solid #3333B2;
+      outline-offset: 2px;
+    }
+    a:focus:not(:focus-visible), button:focus:not(:focus-visible) {
+      outline: none;
+    }
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 2px solid #3333B2;
+      outline-offset: 2px;
+    }
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: #3333B2;
+      color: white;
+      padding: 8px 16px;
+      z-index: 1000;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .skip-link:focus {
+      top: 0;
+    }
+
   </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
   <nav class="top-nav">
     <a href="index.html">Home</a>
     <a href="#topics">Topics</a>
@@ -268,7 +298,7 @@
       </nav>
     </aside>
 
-    <main class="main-content">
+    <main class="main-content" id="main-content">
       <section class="hero">
         <div class="hero-content">
           <img src="https://quantlet.com/images/Q.png" alt="QuantLet" class="hero-logo">
@@ -325,21 +355,21 @@
           <div class="part-header"><div class="part-number">1</div><h3 class="part-title">Language Foundations</h3></div>
           <div class="topic-grid">
             <a href="topics/ngrams.html" class="topic-card">
-              <img src="assets/images/ngrams.png" alt="N-gram Language Models" class="topic-thumb">
+              <img loading="lazy" src="assets/images/ngrams.png" alt="N-gram Language Models" class="topic-thumb">
               <div class="topic-info">
                 <span class="topic-num">PART 1</span>
                 <span class="topic-title">N-gram Language Models</span>
               </div>
             </a>
             <a href="topics/embeddings.html" class="topic-card">
-              <img src="assets/images/embeddings.png" alt="Word Embeddings" class="topic-thumb">
+              <img loading="lazy" src="assets/images/embeddings.png" alt="Word Embeddings" class="topic-thumb">
               <div class="topic-info">
                 <span class="topic-num">PART 1</span>
                 <span class="topic-title">Word Embeddings</span>
               </div>
             </a>
             <a href="topics/rnn-lstm.html" class="topic-card">
-              <img src="assets/images/rnn-lstm.png" alt="RNN & LSTM Networks" class="topic-thumb">
+              <img loading="lazy" src="assets/images/rnn-lstm.png" alt="RNN & LSTM Networks" class="topic-thumb">
               <div class="topic-info">
                 <span class="topic-num">PART 1</span>
                 <span class="topic-title">RNN & LSTM Networks</span>
@@ -353,21 +383,21 @@
           <div class="part-header"><div class="part-number">2</div><h3 class="part-title">Core Architectures</h3></div>
           <div class="topic-grid">
             <a href="topics/seq2seq.html" class="topic-card">
-              <img src="assets/images/seq2seq.png" alt="Sequence-to-Sequence" class="topic-thumb">
+              <img loading="lazy" src="assets/images/seq2seq.png" alt="Sequence-to-Sequence" class="topic-thumb">
               <div class="topic-info">
                 <span class="topic-num">PART 2</span>
                 <span class="topic-title">Sequence-to-Sequence</span>
               </div>
             </a>
             <a href="topics/transformers.html" class="topic-card">
-              <img src="assets/images/transformers.png" alt="Transformer Architecture" class="topic-thumb">
+              <img loading="lazy" src="assets/images/transformers.png" alt="Transformer Architecture" class="topic-thumb">
               <div class="topic-info">
                 <span class="topic-num">PART 2</span>
                 <span class="topic-title">Transformer Architecture</span>
               </div>
             </a>
             <a href="topics/pretrained.html" class="topic-card">
-              <img src="assets/images/pretrained.png" alt="Pre-trained Models" class="topic-thumb">
+              <img loading="lazy" src="assets/images/pretrained.png" alt="Pre-trained Models" class="topic-thumb">
               <div class="topic-info">
                 <span class="topic-num">PART 2</span>
                 <span class="topic-title">Pre-trained Models</span>
@@ -381,21 +411,21 @@
           <div class="part-header"><div class="part-number">3</div><h3 class="part-title">Advanced Methods</h3></div>
           <div class="topic-grid">
             <a href="topics/scaling.html" class="topic-card">
-              <img src="assets/images/scaling.png" alt="Scaling & Advanced Topics" class="topic-thumb">
+              <img loading="lazy" src="assets/images/scaling.png" alt="Scaling & Advanced Topics" class="topic-thumb">
               <div class="topic-info">
                 <span class="topic-num">PART 3</span>
                 <span class="topic-title">Scaling & Advanced Topics</span>
               </div>
             </a>
             <a href="topics/tokenization.html" class="topic-card">
-              <img src="assets/images/tokenization.png" alt="Tokenization" class="topic-thumb">
+              <img loading="lazy" src="assets/images/tokenization.png" alt="Tokenization" class="topic-thumb">
               <div class="topic-info">
                 <span class="topic-num">PART 3</span>
                 <span class="topic-title">Tokenization</span>
               </div>
             </a>
             <a href="topics/decoding.html" class="topic-card">
-              <img src="assets/images/decoding.png" alt="Decoding Strategies" class="topic-thumb">
+              <img loading="lazy" src="assets/images/decoding.png" alt="Decoding Strategies" class="topic-thumb">
               <div class="topic-info">
                 <span class="topic-num">PART 3</span>
                 <span class="topic-title">Decoding Strategies</span>
@@ -409,21 +439,21 @@
           <div class="part-header"><div class="part-number">4</div><h3 class="part-title">Applications</h3></div>
           <div class="topic-grid">
             <a href="topics/finetuning.html" class="topic-card">
-              <img src="assets/images/finetuning.png" alt="Fine-tuning Methods" class="topic-thumb">
+              <img loading="lazy" src="assets/images/finetuning.png" alt="Fine-tuning Methods" class="topic-thumb">
               <div class="topic-info">
                 <span class="topic-num">PART 4</span>
                 <span class="topic-title">Fine-tuning Methods</span>
               </div>
             </a>
             <a href="topics/efficiency.html" class="topic-card">
-              <img src="assets/images/efficiency.png" alt="Efficiency & Optimization" class="topic-thumb">
+              <img loading="lazy" src="assets/images/efficiency.png" alt="Efficiency & Optimization" class="topic-thumb">
               <div class="topic-info">
                 <span class="topic-num">PART 4</span>
                 <span class="topic-title">Efficiency & Optimization</span>
               </div>
             </a>
             <a href="topics/ethics.html" class="topic-card">
-              <img src="assets/images/ethics.png" alt="Ethics & Bias" class="topic-thumb">
+              <img loading="lazy" src="assets/images/ethics.png" alt="Ethics & Bias" class="topic-thumb">
               <div class="topic-info">
                 <span class="topic-num">PART 4</span>
                 <span class="topic-title">Ethics & Bias</span>
@@ -437,18 +467,18 @@
       <section class="chart-gallery" id="gallery">
         <h2>Chart Gallery (250+ Visualizations)</h2>
         <div class="gallery-grid">
-          <div class="gallery-item"><img src="assets/images/skipgram_architecture_bsc.png" alt="Skip-gram"><span>Skip-gram</span></div>
-          <div class="gallery-item"><img src="assets/images/cbow_architecture_bsc.png" alt="CBOW"><span>CBOW</span></div>
-          <div class="gallery-item"><img src="assets/images/3d_transformer_architecture.png" alt="Transformer"><span>Transformer</span></div>
-          <div class="gallery-item"><img src="assets/images/beam_search_tree_graphviz.png" alt="Beam Search"><span>Beam Search</span></div>
-          <div class="gallery-item"><img src="assets/images/temperature_effects_bsc.png" alt="Temperature"><span>Temperature</span></div>
-          <div class="gallery-item"><img src="assets/images/word_arithmetic_3d_bsc.png" alt="Word Arithmetic"><span>Word Arithmetic</span></div>
-          <div class="gallery-item"><img src="assets/images/training_evolution_bsc.png" alt="Training"><span>Training</span></div>
-          <div class="gallery-item"><img src="assets/images/negative_sampling_process_bsc.png" alt="Neg. Sampling"><span>Neg. Sampling</span></div>
-          <div class="gallery-item"><img src="assets/images/contrastive_vs_nucleus_bsc.png" alt="Contrastive"><span>Contrastive</span></div>
-          <div class="gallery-item"><img src="assets/images/degeneration_problem_bsc.png" alt="Degeneration"><span>Degeneration</span></div>
-          <div class="gallery-item"><img src="assets/images/topk_example_bsc.png" alt="Top-K"><span>Top-K</span></div>
-          <div class="gallery-item"><img src="assets/images/vocabulary_probability_bsc.png" alt="Vocab Dist"><span>Vocab Dist</span></div>
+          <div class="gallery-item"><img loading="lazy" src="assets/images/skipgram_architecture_bsc.png" alt="Skip-gram"><span>Skip-gram</span></div>
+          <div class="gallery-item"><img loading="lazy" src="assets/images/cbow_architecture_bsc.png" alt="CBOW"><span>CBOW</span></div>
+          <div class="gallery-item"><img loading="lazy" src="assets/images/3d_transformer_architecture.png" alt="Transformer"><span>Transformer</span></div>
+          <div class="gallery-item"><img loading="lazy" src="assets/images/beam_search_tree_graphviz.png" alt="Beam Search"><span>Beam Search</span></div>
+          <div class="gallery-item"><img loading="lazy" src="assets/images/temperature_effects_bsc.png" alt="Temperature"><span>Temperature</span></div>
+          <div class="gallery-item"><img loading="lazy" src="assets/images/word_arithmetic_3d_bsc.png" alt="Word Arithmetic"><span>Word Arithmetic</span></div>
+          <div class="gallery-item"><img loading="lazy" src="assets/images/training_evolution_bsc.png" alt="Training"><span>Training</span></div>
+          <div class="gallery-item"><img loading="lazy" src="assets/images/negative_sampling_process_bsc.png" alt="Neg. Sampling"><span>Neg. Sampling</span></div>
+          <div class="gallery-item"><img loading="lazy" src="assets/images/contrastive_vs_nucleus_bsc.png" alt="Contrastive"><span>Contrastive</span></div>
+          <div class="gallery-item"><img loading="lazy" src="assets/images/degeneration_problem_bsc.png" alt="Degeneration"><span>Degeneration</span></div>
+          <div class="gallery-item"><img loading="lazy" src="assets/images/topk_example_bsc.png" alt="Top-K"><span>Top-K</span></div>
+          <div class="gallery-item"><img loading="lazy" src="assets/images/vocabulary_probability_bsc.png" alt="Vocab Dist"><span>Vocab Dist</span></div>
         </div>
       </section>
 
@@ -509,5 +539,10 @@
       });
     });
   </script>
+
+  <!-- Search and interactivity -->
+  <script src="assets/js/search.js"></script>
+  <script src="assets/js/gallery-filter.js"></script>
+  <script src="assets/js/toc.js"></script>
 </body>
 </html>

@@ -113,7 +113,7 @@
       cursor: pointer;
       font-size: 0.95rem;
       font-weight: 600;
-      color: #64748b;
+      color: #505050;
       white-space: nowrap;
       border-bottom: 3px solid transparent;
       transition: all 0.2s;
@@ -164,7 +164,7 @@
     .chart-caption {
       margin-top: 12px;
       font-size: 0.9rem;
-      color: #64748b;
+      color: #505050;
       font-style: italic;
     }
 
@@ -202,7 +202,7 @@
     }
     .formula-box .explanation {
       font-size: 0.9rem;
-      color: #64748b;
+      color: #505050;
       margin-top: 10px;
     }
 
@@ -263,7 +263,7 @@
     .resource-card:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.1); transform: translateY(-2px); }
     .resource-card .type { font-size: 0.75rem; color: #3333B2; text-transform: uppercase; font-weight: 600; }
     .resource-card .title { font-weight: 600; color: #1e3a5f; margin: 5px 0; }
-    .resource-card .desc { font-size: 0.85rem; color: #64748b; }
+    .resource-card .desc { font-size: 0.85rem; color: #505050; }
 
     /* Key Points Box */
     .key-points {
@@ -281,7 +281,7 @@
     .footer {
       text-align: center;
       padding: 30px;
-      color: #64748b;
+      color: #505050;
       font-size: 0.85rem;
       border-top: 1px solid #e2e8f0;
       margin-top: 40px;
@@ -294,9 +294,39 @@
       .tab-btn { padding: 12px 15px; font-size: 0.85rem; }
       .tab-content { padding: 20px; }
     }
+  
+    /* Keyboard focus indicators for accessibility */
+    a:focus, button:focus, input:focus, select:focus, textarea:focus {
+      outline: 2px solid #3333B2;
+      outline-offset: 2px;
+    }
+    a:focus:not(:focus-visible), button:focus:not(:focus-visible) {
+      outline: none;
+    }
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 2px solid #3333B2;
+      outline-offset: 2px;
+    }
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: #3333B2;
+      color: white;
+      padding: 8px 16px;
+      z-index: 1000;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .skip-link:focus {
+      top: 0;
+    }
+
   </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
   <nav class="top-nav">
     <a href="../index.html">Home</a>
     <a href="../index.html#topics">Topics</a>
@@ -937,5 +967,53 @@ similarities = np.<span class="function">dot</span>(doc_embeddings, query_embedd
       answer.style.display = 'block';
     }
   </script>
+
+  <!-- Search and interactivity -->
+  <script src="../assets/js/search.js"></script>
+  <script src="../assets/js/gallery-filter.js"></script>
+  <script src="../assets/js/toc.js"></script>
+
+  <script>
+    // Tab switching functionality
+    function switchTab(tabId) {
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+        tab.style.display = 'none';
+      });
+
+      // Deactivate all tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Show selected tab content
+      const selectedTab = document.getElementById(tabId);
+      if (selectedTab) {
+        selectedTab.classList.add('active');
+        selectedTab.style.display = 'block';
+      }
+
+      // Activate clicked button
+      const clickedBtn = document.querySelector(`[onclick="switchTab('${tabId}')"]`);
+      if (clickedBtn) {
+        clickedBtn.classList.add('active');
+      }
+    }
+
+    // Initialize first tab on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      const firstTab = document.querySelector('.tab-content');
+      const firstBtn = document.querySelector('.tab-btn');
+      if (firstTab) {
+        firstTab.style.display = 'block';
+        firstTab.classList.add('active');
+      }
+      if (firstBtn) {
+        firstBtn.classList.add('active');
+      }
+    });
+  </script>
+
 </body>
 </html>

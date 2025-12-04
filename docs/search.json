@@ -1,0 +1,146 @@
+[
+  {
+    "title": "Natural Language Processing | From N-grams to Transformers",
+    "url": "./",
+    "content": "Natural Language Processing From N-grams to Transformers: A Complete Graduate Course 12 Topics 500+ Slides 250+ Charts 26+ Notebooks Start Learning 📚 Discovery-Based Problem-first pedagogy with worked examples 📊 Rich Visualizations 250+ Python-generated charts 💻 Hands-On Labs Jupyter notebooks with exercises 🛠 Production Ready From theory to deployment Learning Journey 1 Language Foundations 2 Core Architectures 3 Advanced Methods 4 Applications 1 Language Foundations PART 1 N-gram Language Mode",
+    "categories": [
+      "main"
+    ]
+  },
+  {
+    "title": "Word Embeddings: Complete Guide",
+    "url": "modules/embeddings-extended.html",
+    "content": "Word Embeddings: Complete Guide From one-hot encoding to modern sentence embeddings. Learn how machines understand the meaning of words. BSc Level 7 Sections Interactive Charts Hugging Face Code Overview One-Hot Word2Vec GloVe Contextual Modern Resources What Are Word Embeddings? Word embeddings are dense vector representations of words that capture semantic meaning. Unlike traditional representations where words are just symbols, embeddings place similar words close together in a continuous vec",
+    "categories": [
+      "modules"
+    ]
+  },
+  {
+    "title": "Word Embeddings Deep Dive",
+    "url": "modules/embeddings.html",
+    "content": "48 SLIDES Word Embeddings Deep Dive Overview Comprehensive coverage of word embedding algorithms with interactive 3D visualizations. Key Topics Skip-gram mathematics GloVe co-occurrence FastText subwords Contextual embeddings Resources Extended Guide (Recommended) View Slides View Lab Notebook Chart Gallery Special Module | Digital-AI-Finance",
+    "categories": [
+      "modules"
+    ]
+  },
+  {
+    "title": "LSTM Primer",
+    "url": "modules/lstm-primer.html",
+    "content": "47 SLIDES LSTM Primer Overview Zero-prerequisite introduction to LSTM networks with clear visualizations. Key Topics Why RNNs fail Gate mechanisms Cell state flow Practical applications Resources View Slides Chart Gallery Special Module | Digital-AI-Finance",
+    "categories": [
+      "modules"
+    ]
+  },
+  {
+    "title": "Sentiment Analysis",
+    "url": "modules/sentiment.html",
+    "content": "26 SLIDES Sentiment Analysis Overview BERT fine-tuning for sentiment classification with technical deep dives. Key Topics BERT classifier head Pre-training objectives Fine-tuning process Deployment pipeline Resources View Slides Chart Gallery Special Module | Digital-AI-Finance",
+    "categories": [
+      "modules"
+    ]
+  },
+  {
+    "title": "LLM Summarization",
+    "url": "modules/summarization.html",
+    "content": "40 SLIDES LLM Summarization Overview Text summarization using extractive and abstractive methods with modern LLMs. Key Topics Extractive methods Abstractive generation RAG enhancement Evaluation metrics Resources View Slides View Lab Notebook Chart Gallery Special Module | Digital-AI-Finance",
+    "categories": [
+      "modules"
+    ]
+  },
+  {
+    "title": "Decoding Strategies",
+    "url": "topics/decoding.html",
+    "content": "66 SLIDES Decoding Strategies From Greedy to Nucleus Sampling Overview Generate text from models. Greedy, beam search, temperature, top-k, and nucleus sampling. Key Topics Greedy decoding Beam search Temperature scaling Top-k and nucleus Resources View Slides View Lab Notebook Chart Gallery Previous Tokenization Next Fine-tuning Methods Part 3: Advanced Methods | Digital-AI-Finance",
+    "categories": [
+      "topics"
+    ]
+  },
+  {
+    "title": "Efficiency & Optimization",
+    "url": "topics/efficiency.html",
+    "content": "41 SLIDES Efficiency & Optimization Quantization & Distillation Overview Make models faster and smaller. Quantization, pruning, and knowledge distillation. Key Topics Quantization Pruning Knowledge distillation Inference optimization Resources View Slides View Lab Notebook Chart Gallery Previous Fine-tuning Methods Next Ethics & Bias Part 4: Applications | Digital-AI-Finance",
+    "categories": [
+      "topics"
+    ]
+  },
+  {
+    "title": "Word Embeddings",
+    "url": "topics/embeddings.html",
+    "content": "35 SLIDES Word Embeddings From Words to Vectors Overview Transform words into dense vectors that capture meaning. Word2Vec, GloVe, and semantic relationships. Key Topics One-hot encoding Skip-gram architecture Negative sampling Word analogies Resources View Slides View Lab Notebook Chart Gallery Previous N-gram Language Models Next RNN & LSTM Networks Part 1: Language Foundations | Digital-AI-Finance",
+    "categories": [
+      "topics"
+    ]
+  },
+  {
+    "title": "Ethics & Bias",
+    "url": "topics/ethics.html",
+    "content": "26 SLIDES Ethics & Bias Responsible AI Development Overview Build responsible AI systems. Bias detection, fairness, and ethical considerations. Key Topics Bias in models Fairness metrics Mitigation strategies Responsible deployment Resources View Slides View Lab Notebook Chart Gallery Previous Efficiency & Optimization Part 4: Applications | Digital-AI-Finance",
+    "categories": [
+      "topics"
+    ]
+  },
+  {
+    "title": "Fine-tuning Methods",
+    "url": "topics/finetuning.html",
+    "content": "38 SLIDES Fine-tuning Methods LoRA, Adapters & PEFT Overview Adapt pre-trained models efficiently. LoRA, adapters, and parameter-efficient methods. Key Topics Full fine-tuning LoRA Adapters Prompt tuning Resources View Slides View Lab Notebook Chart Gallery Previous Decoding Strategies Next Efficiency & Optimization Part 4: Applications | Digital-AI-Finance",
+    "categories": [
+      "topics"
+    ]
+  },
+  {
+    "title": "N-gram Language Models",
+    "url": "topics/ngrams.html",
+    "content": "42 SLIDES N-gram Language Models Statistical Foundations of NLP Overview Learn how to predict the next word using probability and counting. Foundation for all language models. Key Topics Probability basics Bigram models Smoothing techniques Perplexity evaluation Resources View Slides View Lab Notebook Chart Gallery Next Word Embeddings Part 1: Language Foundations | Digital-AI-Finance",
+    "categories": [
+      "topics"
+    ]
+  },
+  {
+    "title": "Pre-trained Models",
+    "url": "topics/pretrained.html",
+    "content": "52 SLIDES Pre-trained Models BERT, GPT & Transfer Learning Overview Leverage massive pre-training. BERT, GPT, and the transfer learning revolution. Key Topics BERT architecture GPT models Fine-tuning Transfer learning Resources View Slides View Lab Notebook Chart Gallery Previous Transformer Architecture Next Scaling & Advanced Topics Part 2: Core Architectures | Digital-AI-Finance",
+    "categories": [
+      "topics"
+    ]
+  },
+  {
+    "title": "RNN & LSTM Networks",
+    "url": "topics/rnn-lstm.html",
+    "content": "21 SLIDES RNN & LSTM Networks Sequential Memory Overview Process sequences with memory. Understand vanishing gradients and how LSTMs solve them. Key Topics Recurrent connections Vanishing gradients LSTM gates Sequence modeling Resources View Slides View Lab Notebook Chart Gallery Previous Word Embeddings Next Sequence-to-Sequence Part 1: Language Foundations | Digital-AI-Finance",
+    "categories": [
+      "topics"
+    ]
+  },
+  {
+    "title": "Scaling & Advanced Topics",
+    "url": "topics/scaling.html",
+    "content": "35 SLIDES Scaling & Advanced Topics Large Language Models Overview Scale to billions of parameters. Scaling laws, emergent abilities, and modern LLMs. Key Topics Scaling laws Emergent abilities In-context learning Chain-of-thought Resources View Slides View Lab Notebook Chart Gallery Previous Pre-trained Models Next Tokenization Part 3: Advanced Methods | Digital-AI-Finance",
+    "categories": [
+      "topics"
+    ]
+  },
+  {
+    "title": "Sequence-to-Sequence",
+    "url": "topics/seq2seq.html",
+    "content": "38 SLIDES Sequence-to-Sequence Encoder-Decoder Architecture Overview Map sequences to sequences. The foundation of machine translation and summarization. Key Topics Encoder-decoder Attention mechanism Teacher forcing Beam search Resources View Slides View Lab Notebook Chart Gallery Previous RNN & LSTM Networks Next Transformer Architecture Part 2: Core Architectures | Digital-AI-Finance",
+    "categories": [
+      "topics"
+    ]
+  },
+  {
+    "title": "Tokenization",
+    "url": "topics/tokenization.html",
+    "content": "35 SLIDES Tokenization BPE, WordPiece & SentencePiece Overview Break text into tokens. Subword algorithms that power modern language models. Key Topics BPE algorithm WordPiece SentencePiece Vocabulary optimization Resources View Slides View Lab Notebook Chart Gallery Previous Scaling & Advanced Topics Next Decoding Strategies Part 3: Advanced Methods | Digital-AI-Finance",
+    "categories": [
+      "topics"
+    ]
+  },
+  {
+    "title": "Transformer Architecture",
+    "url": "topics/transformers.html",
+    "content": "45 SLIDES Transformer Architecture Attention Is All You Need Overview The architecture that revolutionized NLP. Self-attention, multi-head attention, and positional encoding. Key Topics Self-attention Multi-head attention Positional encoding Feed-forward layers Resources View Slides View Lab Notebook Chart Gallery Previous Sequence-to-Sequence Next Pre-trained Models Part 2: Core Architectures | Digital-AI-Finance",
+    "categories": [
+      "topics"
+    ]
+  }
+]
