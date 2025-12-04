@@ -1,130 +1,150 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Word Embeddings | NLP Course</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Word Embeddings | NLP Course</title>
+<style>
     /* Page-specific styles - common styles in assets/css/main.css */
   </style>
-  <link rel="stylesheet" href="../assets/css/main.css">
+<link href="../assets/css/main.css" rel="stylesheet"/>
 </head>
 <body>
-  <a href="#main-content" class="skip-link">Skip to main content</a>
-  
-  <nav class="top-nav">
-    <a href="../index.html">Home</a>
-    <a href="../index.html#topics">Topics</a>
-    <a href="../index.html#gallery">Charts</a>
-    <a href="../index.html#modules">Modules</a>
-    <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing">GitHub</a>
-  </nav>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<nav class="top-nav">
+<a href="../index.html">Home</a>
+<a href="../index.html#topics">Topics</a>
+<a href="../index.html#gallery">Charts</a>
+<a href="../index.html#modules">Modules</a>
+<a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing">GitHub</a>
+</nav>
+<div class="container">
+<aside class="sidebar">
+<div class="sidebar-header">
+<a href="../index.html">
+<img alt="QuantLet" class="sidebar-logo" src="https://quantlet.com/images/Q.png"/>
+<span class="course-title">NLP Course</span>
+</a>
+</div>
+<div class="search-container">
+<input id="topic-search" placeholder="Search topics..." type="text"/>
+</div>
+<nav class="sidebar-nav">
+<details class="part-section" open="">
+<summary>Part 1: Language Foundations <span class="topic-count">(3)</span></summary>
+<ul>
+<li><a href="../topics/ngrams.html">N-gram Language Models</a></li>
+<li><a class="active" href="../topics/embeddings.html">Word Embeddings</a></li>
+<li><a href="../topics/rnn-lstm.html">RNN &amp; LSTM Networks</a></li>
+</ul>
+</details>
+<details class="part-section">
+<summary>Part 2: Core Architectures <span class="topic-count">(3)</span></summary>
+<ul>
+<li><a href="../topics/seq2seq.html">Sequence-to-Sequence</a></li>
+<li><a href="../topics/transformers.html">Transformer Architecture</a></li>
+<li><a href="../topics/pretrained.html">Pre-trained Models</a></li>
+</ul>
+</details>
+<details class="part-section">
+<summary>Part 3: Advanced Methods <span class="topic-count">(3)</span></summary>
+<ul>
+<li><a href="../topics/scaling.html">Scaling &amp; Advanced Topics</a></li>
+<li><a href="../topics/tokenization.html">Tokenization</a></li>
+<li><a href="../topics/decoding.html">Decoding Strategies</a></li>
+</ul>
+</details>
+<details class="part-section">
+<summary>Part 4: Applications <span class="topic-count">(3)</span></summary>
+<ul>
+<li><a href="../topics/finetuning.html">Fine-tuning Methods</a></li>
+<li><a href="../topics/efficiency.html">Efficiency &amp; Optimization</a></li>
+<li><a href="../topics/ethics.html">Ethics &amp; Bias</a></li>
+</ul>
+</details>
+<details class="part-section">
+<summary>Special Modules <span class="topic-count">(4)</span></summary>
+<ul>
+<li><a href="../modules/embeddings.html">Word Embeddings Deep Dive</a></li>
+<li><a href="../modules/summarization.html">LLM Summarization</a></li>
+<li><a href="../modules/sentiment.html">Sentiment Analysis</a></li>
+<li><a href="../modules/lstm-primer.html">LSTM Primer</a></li>
+</ul>
+</details>
+</nav>
+</aside>
+<main class="main-content" id="main-content">
+<section class="hero">
+<div class="badge">35 SLIDES</div>
+<h1>Word Embeddings</h1>
+<p class="subtitle">From Words to Vectors</p>
+</section>
+<div class="content-area">
+<section class="section">
+<h2>Overview</h2>
+<p>Transform discrete words into continuous vector spaces where semantic relationships emerge as geometric properties. Word2Vec, GloVe, and FastText revolutionized NLP by capturing meaning in dense representations.</p>
+</section><section class="section">
+<h2>Learning Objectives</h2>
+<ul class="objectives-list">
+<li>Understand Skip-gram and CBOW architectures for learning embeddings</li>
+<li>Implement negative sampling for efficient training</li>
+<li>Perform vector arithmetic (king - man + woman = queen)</li>
+<li>Evaluate embedding quality using analogy tasks</li>
+</ul></section>
 
-  <div class="container">
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <a href="../index.html">
-          <img src="https://quantlet.com/images/Q.png" alt="QuantLet" class="sidebar-logo">
-          <span class="course-title">NLP Course</span>
-        </a>
-      </div>
-      <div class="search-container">
-        <input type="text" id="topic-search" placeholder="Search topics...">
-      </div>
-      <nav class="sidebar-nav">
-        <details class="part-section" open>
-          <summary>Part 1: Language Foundations <span class="topic-count">(3)</span></summary>
-          <ul>
-            <li><a href="../topics/ngrams.html">N-gram Language Models</a></li>
-            <li><a href="../topics/embeddings.html" class="active">Word Embeddings</a></li>
-            <li><a href="../topics/rnn-lstm.html">RNN & LSTM Networks</a></li>
-          </ul>
-        </details>
-        <details class="part-section">
-          <summary>Part 2: Core Architectures <span class="topic-count">(3)</span></summary>
-          <ul>
-            <li><a href="../topics/seq2seq.html">Sequence-to-Sequence</a></li>
-            <li><a href="../topics/transformers.html">Transformer Architecture</a></li>
-            <li><a href="../topics/pretrained.html">Pre-trained Models</a></li>
-          </ul>
-        </details>
-        <details class="part-section">
-          <summary>Part 3: Advanced Methods <span class="topic-count">(3)</span></summary>
-          <ul>
-            <li><a href="../topics/scaling.html">Scaling & Advanced Topics</a></li>
-            <li><a href="../topics/tokenization.html">Tokenization</a></li>
-            <li><a href="../topics/decoding.html">Decoding Strategies</a></li>
-          </ul>
-        </details>
-        <details class="part-section">
-          <summary>Part 4: Applications <span class="topic-count">(3)</span></summary>
-          <ul>
-            <li><a href="../topics/finetuning.html">Fine-tuning Methods</a></li>
-            <li><a href="../topics/efficiency.html">Efficiency & Optimization</a></li>
-            <li><a href="../topics/ethics.html">Ethics & Bias</a></li>
-          </ul>
-        </details>
-        <details class="part-section">
-          <summary>Special Modules <span class="topic-count">(4)</span></summary>
-          <ul>
-            <li><a href="../modules/embeddings.html">Word Embeddings Deep Dive</a></li>
-            <li><a href="../modules/summarization.html">LLM Summarization</a></li>
-            <li><a href="../modules/sentiment.html">Sentiment Analysis</a></li>
-            <li><a href="../modules/lstm-primer.html">LSTM Primer</a></li>
-          </ul>
-        </details>
-      </nav>
-    </aside>
-
-    <main class="main-content" id="main-content">
-      <section class="hero">
-        <div class="badge">35 SLIDES</div>
-        <h1>Word Embeddings</h1>
-        <p class="subtitle">From Words to Vectors</p>
-      </section>
-
-      <div class="content-area">
-        <section class="section">
-          <h2>Overview</h2>
-          <p>Transform words into dense vectors that capture meaning. Word2Vec, GloVe, and semantic relationships.</p>
-        </section>
-
-        <section class="section">
-          <h2>Key Topics</h2>
-          <div class="topics-grid">
-          <div class="topic-item">One-hot encoding</div>
-          <div class="topic-item">Skip-gram architecture</div>
-          <div class="topic-item">Negative sampling</div>
-          <div class="topic-item">Word analogies</div>
-          </div>
-        </section>
-
-        <section class="section">
-          <h2>Resources</h2>
-          <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/raw/main/NLP_slides/week02_neural_lm/presentations/20251027_0648_week02_embeddings_bsc_discovery.pdf" class="resource-btn primary" target="_blank">View Slides</a>
-          <a href="https://nbviewer.org/github/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week02_neural_lm/lab/week02_word_embeddings_lab.ipynb" class="resource-btn secondary" target="_blank">View Lab Notebook</a>
-          <a href="../index.html#gallery" class="resource-btn secondary">Chart Gallery</a>
-        </section>
-
-        <div class="nav-cards">
-        <a href="ngrams.html" class="nav-card">
-          <div class="label">Previous</div>
-          <div class="title">N-gram Language Models</div>
-        </a>
-        <a href="rnn-lstm.html" class="nav-card">
-          <div class="label">Next</div>
-          <div class="title">RNN & LSTM Networks</div>
-        </a>
-        </div>
-      </div>
-
-      <footer class="footer">
-        <p>Part 1: Language Foundations | <a href="https://github.com/Digital-AI-Finance">Digital-AI-Finance</a></p>
-      </footer>
-    </main>
-  </div>
-
-  <script>
+<section class="section topic-charts">
+<h3>Key Visualizations</h3>
+<div class="chart-grid">
+<div class="chart-item">
+<img alt="Word Arithmetic 3D" loading="lazy" src="../assets/images/word_arithmetic_3d_bsc.png"/>
+<span>Word Arithmetic 3D</span>
+</div>
+<div class="chart-item">
+<img alt="Skipgram Architecture" loading="lazy" src="../assets/images/skipgram_architecture_bsc.png"/>
+<span>Skipgram Architectur</span>
+</div>
+<div class="chart-item">
+<img alt="Negative Sampling Process" loading="lazy" src="../assets/images/negative_sampling_process_bsc.png"/>
+<span>Negative Sampling Pr</span>
+</div>
+<div class="chart-item">
+<img alt="Training Evolution" loading="lazy" src="../assets/images/training_evolution_bsc.png"/>
+<span>Training Evolution</span>
+</div>
+</div>
+</section><section class="section">
+<h2>Key Topics</h2>
+<div class="topics-grid">
+<div class="topic-item">One-hot encoding</div>
+<div class="topic-item">Skip-gram architecture</div>
+<div class="topic-item">Negative sampling</div>
+<div class="topic-item">Word analogies</div>
+</div>
+</section>
+<section class="section">
+<h2>Resources</h2>
+<a class="resource-btn primary" href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/raw/main/NLP_slides/week02_neural_lm/presentations/20251027_0648_week02_embeddings_bsc_discovery.pdf" target="_blank">View Slides</a>
+<a class="resource-btn secondary" href="https://nbviewer.org/github/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week02_neural_lm/lab/week02_word_embeddings_lab.ipynb" target="_blank">View Lab Notebook</a>
+<a class="resource-btn secondary" href="../index.html#gallery">Chart Gallery</a>
+</section>
+<div class="nav-cards">
+<a class="nav-card" href="ngrams.html">
+<div class="label">Previous</div>
+<div class="title">N-gram Language Models</div>
+</a>
+<a class="nav-card" href="rnn-lstm.html">
+<div class="label">Next</div>
+<div class="title">RNN &amp; LSTM Networks</div>
+</a>
+</div>
+</div>
+<footer class="footer">
+<p>Part 1: Language Foundations | <a href="https://github.com/Digital-AI-Finance">Digital-AI-Finance</a></p>
+</footer>
+</main>
+</div>
+<script>
     document.getElementById('topic-search').addEventListener('input', function(e) {
       const query = e.target.value.toLowerCase();
       const links = document.querySelectorAll('.sidebar-nav .part-section li');
@@ -144,10 +164,9 @@
       });
     });
   </script>
-
-  <!-- Search and interactivity -->
-  <script src="../assets/js/search.js"></script>
-  <script src="../assets/js/gallery-filter.js"></script>
-  <script src="../assets/js/toc.js"></script>
+<!-- Search and interactivity -->
+<script src="../assets/js/search.js"></script>
+<script src="../assets/js/gallery-filter.js"></script>
+<script src="../assets/js/toc.js"></script>
 </body>
 </html>
