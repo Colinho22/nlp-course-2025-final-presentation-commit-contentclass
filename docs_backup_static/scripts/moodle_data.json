@@ -1,0 +1,944 @@
+{
+  "course_name": "Text Analytics (dv-) HS25",
+  "moodle_url": "https://moodle.fhgr.ch/course/view.php?id=18956",
+  "sections": [
+    {
+      "id": "allgemeines",
+      "title": "Allgemeines",
+      "items": [
+        {
+          "type": "forum",
+          "moodle_id": "1182618",
+          "folder_name": "Forum_Nachrichten_amp_Ankndig..._.1182618",
+          "title": "Nachrichten & Ankündigungen",
+          "description": "TA (dv-) HS25",
+          "files": []
+        },
+        {
+          "type": "page",
+          "moodle_id": "1182619",
+          "folder_name": "Page_Semesterbeschreibung_.1182619",
+          "title": "Semesterbeschreibung",
+          "description": "TA (dv-) HS25",
+          "files": []
+        },
+        {
+          "type": "file",
+          "moodle_id": "1182620",
+          "folder_name": "File_Modulbeschreibung_.1182620",
+          "title": "Modulbeschreibung",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "Modulbeschreibung Text Analytics_MScDV.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Modulbeschreibung_.1182620\\content\\Modulbeschreibung Text Analytics_MScDV.pdf"
+            }
+          ]
+        },
+        {
+          "type": "external_tool",
+          "moodle_id": "1182621",
+          "folder_name": "External_tool_Webex_Videobert..._.1182621",
+          "title": "Webex Videoübertragung-Streaming & Aufzeichnung",
+          "description": "TA (dv-) HS25",
+          "files": []
+        },
+        {
+          "type": "unknown",
+          "moodle_id": "1182622",
+          "folder_name": "Text_and_media_area__.1182622",
+          "title": "",
+          "description": "TA (dv-) HS25",
+          "files": []
+        },
+        {
+          "type": "page",
+          "moodle_id": "1267330",
+          "folder_name": "Page_Kurzprsentationen_-_Uebe..._.1267330",
+          "title": "Kurzpräsentationen - Uebersicht",
+          "description": "TA (dv-) HS25",
+          "files": []
+        }
+      ]
+    },
+    {
+      "id": "hinweise_f_r_lehrpersonen_f_r_studierende_unsichtbar",
+      "title": "Hinweise für Lehrpersonen (für Studierende unsichtbar)",
+      "items": [
+        {
+          "type": "file",
+          "moodle_id": "1182623",
+          "folder_name": "File_Beschreibung_der_Kursele..._.1182623",
+          "title": "Beschreibung der Kurselemente",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "Moodle-Template_upload.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Beschreibung_der_Kursele..._.1182623\\content\\Moodle-Template_upload.pdf"
+            }
+          ]
+        },
+        {
+          "type": "unknown",
+          "moodle_id": "1182624",
+          "folder_name": "Text_and_media_area_Inhaltber..._.1182624",
+          "title": "Inhalt:Über Moodle sind alle Lehr- und Lernmateria...",
+          "description": "TA (dv-) HS25",
+          "files": []
+        },
+        {
+          "type": "unknown",
+          "moodle_id": "1182625",
+          "folder_name": "Text_and_media_area_Organisat..._.1182625",
+          "title": "Organisation: Details rund ums User Experience Des...",
+          "description": "TA (dv-) HS25",
+          "files": []
+        }
+      ]
+    },
+    {
+      "id": "online_app_gesamt_berblick",
+      "title": "Online App - Gesamtüberblick",
+      "items": []
+    },
+    {
+      "id": "zusammenfassung",
+      "title": "Zusammenfassung",
+      "items": []
+    },
+    {
+      "id": "ausf_hrliche_beschreibung",
+      "title": "Ausführliche Beschreibung",
+      "items": []
+    },
+    {
+      "id": "inhaltsbeschreibung_der_app_nlp_evolution",
+      "title": "Inhaltsbeschreibung der App „NLP Evolution“",
+      "items": []
+    },
+    {
+      "id": "1_fr_he_ans_tze",
+      "title": "1. Frühe Ansätze",
+      "items": []
+    },
+    {
+      "id": "2_statistische_modelle",
+      "title": "2. Statistische Modelle",
+      "items": []
+    },
+    {
+      "id": "3_klassische_maschinelle_lernverfahren",
+      "title": "3. Klassische maschinelle Lernverfahren",
+      "items": []
+    },
+    {
+      "id": "4_neuronale_netze_und_verteilte_repr_sentationen",
+      "title": "4. Neuronale Netze und Verteilte Repräsentationen",
+      "items": []
+    },
+    {
+      "id": "5_kontextualisierte_sprachrepr_sentationen",
+      "title": "5. Kontextualisierte Sprachrepräsentationen",
+      "items": []
+    },
+    {
+      "id": "6_transformer_architektur",
+      "title": "6. Transformer-Architektur",
+      "items": []
+    },
+    {
+      "id": "7_large_language_models_llms",
+      "title": "7. Large Language Models (LLMs)",
+      "items": []
+    },
+    {
+      "id": "8_ber_den_kurs_hinausgehende_themen",
+      "title": "8. Über den Kurs hinausgehende Themen",
+      "items": []
+    },
+    {
+      "id": "folien_gesamt_berblick",
+      "title": "Folien: Gesamtüberblick",
+      "items": [
+        {
+          "type": "file",
+          "moodle_id": "1239713",
+          "folder_name": "File_Gesamte_Vorlesungsfolien_.1239713",
+          "title": "Gesamte Vorlesungsfolien",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "2025_NLP.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Gesamte_Vorlesungsfolien_.1239713\\content\\2025_NLP.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "leistungsnachweise_details",
+      "title": "Leistungsnachweise - Details",
+      "items": [
+        {
+          "type": "assignment",
+          "moodle_id": "1253213",
+          "folder_name": "Assignment_Leistungsnachweise_.1253213",
+          "title": "Leistungsnachweise",
+          "description": "TA (dv-) HS25",
+          "files": []
+        },
+        {
+          "type": "assignment",
+          "moodle_id": "1260212",
+          "folder_name": "Assignment_Zwischenprsentation_.1260212",
+          "title": "Zwischenpräsentation",
+          "description": "TA (dv-) HS25",
+          "files": []
+        },
+        {
+          "type": "assignment",
+          "moodle_id": "1269832",
+          "folder_name": "Assignment_Einzelprsentation_.1269832",
+          "title": "Einzelpräsentation",
+          "description": "TA (dv-) HS25",
+          "files": []
+        }
+      ]
+    },
+    {
+      "id": "data_for_nlp",
+      "title": "Data for NLP",
+      "items": [
+        {
+          "type": "page",
+          "moodle_id": "1255462",
+          "folder_name": "Page_Data_.1255462",
+          "title": "Data",
+          "description": "TA (dv-) HS25",
+          "files": []
+        }
+      ]
+    },
+    {
+      "id": "foundations_and_statistical_language_models",
+      "title": "Foundations_and_Statistical_Language_Models",
+      "items": [
+        {
+          "type": "file",
+          "moodle_id": "1238443",
+          "folder_name": "File_Exercise_Ngrams_Intro_.1238443",
+          "title": "Exercise: Ngrams Intro",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "ngrams_intro_exercise.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Ngrams_Intro_.1238443\\content\\ngrams_intro_exercise.pdf"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1239166",
+          "folder_name": "File_Slides_Foundations_and_S..._.1239166",
+          "title": "Slides: Foundations and Statistical Language Modelling",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "Foundations_and_Statistical_Language_Modelling.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Foundations_and_S..._.1239166\\content\\Foundations_and_Statistical_Language_Modelling.pdf"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1239711",
+          "folder_name": "File_Notebook_Shakespeare_Son..._.1239711",
+          "title": "Notebook: Shakespeare Sonnet Generator",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "shakespeare_sonnets.ipynb",
+              "type": "ipynb",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Notebook_Shakespeare_Son..._.1239711\\content\\shakespeare_sonnets.ipynb"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1239712",
+          "folder_name": "File_Notebook_N-Grams_noteboo..._.1239712",
+          "title": "Notebook: N-Grams notebook und Alice in Wonderland Generator",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "ngrams_Alice_in_Wonderland.ipynb",
+              "type": "ipynb",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Notebook_N-Grams_noteboo..._.1239712\\content\\ngrams_Alice_in_Wonderland.ipynb"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1246132",
+          "folder_name": "File_bung_1_-_deutsch_.1246132",
+          "title": "Übung 1 - deutsch",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "nlp_lesson1_student_handout_german.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_bung_1_-_deutsch_.1246132\\content\\nlp_lesson1_student_handout_german.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "embeddings",
+      "title": "Embeddings",
+      "items": [
+        {
+          "type": "file",
+          "moodle_id": "1237964",
+          "folder_name": "File_Slides_Embeddings_Introd..._.1237964",
+          "title": "Slides: Embeddings Introduction",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "Embeddings_Intro.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Embeddings_Introd..._.1237964\\content\\Embeddings_Intro.pdf"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1255461",
+          "folder_name": "File_Embeddings_tutorial_with..._.1255461",
+          "title": "Embeddings tutorial with data",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "20251002_1001_embeddings_tutorial.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Embeddings_tutorial_with..._.1255461\\content\\20251002_1001_embeddings_tutorial.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "embeddings_exercises",
+      "title": "Embeddings - Exercises",
+      "items": [
+        {
+          "type": "file",
+          "moodle_id": "1250776",
+          "folder_name": "File_Embeddings_Intro_-_Jupyt..._.1250776",
+          "title": "Embeddings Intro - Jupyter Notebook",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "word_embeddings_3d_msc.ipynb",
+              "type": "ipynb",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Embeddings_Intro_-_Jupyt..._.1250776\\content\\word_embeddings_3d_msc.ipynb"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1250775",
+          "folder_name": "File_Embeddings_-_Vorbereitung_.1250775",
+          "title": "Embeddings - Vorbereitung",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "embeddings_handout.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Embeddings_-_Vorbereitung_.1250775\\content\\embeddings_handout.pdf"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1251159",
+          "folder_name": "File_Exercise_Embeddings_Solu..._.1251159",
+          "title": "Exercise Embeddings Solution Postclass",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "embeddings_postclass_verification_instructor.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Embeddings_Solu..._.1251159\\content\\embeddings_postclass_verification_instructor.pdf"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1251158",
+          "folder_name": "File_bung_-_Embeddings_Postclass_.1251158",
+          "title": "Übung - Embeddings Postclass",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "embeddings_postclass_verification.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_bung_-_Embeddings_Postclass_.1251158\\content\\embeddings_postclass_verification.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neural_language_models_and_embeddings",
+      "title": "Neural Language Models and Embeddings",
+      "items": [
+        {
+          "type": "file",
+          "moodle_id": "1255463",
+          "folder_name": "File_Slides_Pre-Reading_Neura..._.1255463",
+          "title": "Slides Pre-Reading: Neural Networks Introduction",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "20250926_1400_NeuralNetworks_Introduction.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Pre-Reading_Neura..._.1255463\\content\\20250926_1400_NeuralNetworks_Introduction.pdf"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1240175",
+          "folder_name": "File_Slides_Neural_Language_M..._.1240175",
+          "title": "Slides: Neural Language Models and Embeddings",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "NLP_Word2Vec_Neural_Nets.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Neural_Language_M..._.1240175\\content\\NLP_Word2Vec_Neural_Nets.pdf"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1240176",
+          "folder_name": "File_Exercise_Neural_Language..._.1240176",
+          "title": "Exercise: Neural Language Models – Discovering Word Meanings Through Context",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "Neural_Language_Models_Handout_Student.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Neural_Language..._.1240176\\content\\Neural_Language_Models_Handout_Student.pdf"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1240180",
+          "folder_name": "File_Exercise_Solution_Neural..._.1240180",
+          "title": "Exercise Solution: Neural Language Models – Discovering Word Meanings Through Context",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "Neural_Language_Models_Handout_Instructor.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Solution_Neural..._.1240180\\content\\Neural_Language_Models_Handout_Instructor.pdf"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1240218",
+          "folder_name": "File_Exercise_Neuronale_Sprac..._.1240218",
+          "title": "Exercise: Neuronale Sprachmodelle – Bedeutungen aus dem Kontext erschließen",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "week02_word2vec_handout_student.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Neuronale_Sprac..._.1240218\\content\\week02_word2vec_handout_student.pdf"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1240274",
+          "folder_name": "File_Exercise_Solution_Neuron..._.1240274",
+          "title": "Exercise Solution: Neuronale Sprachmodelle – Bedeutungen aus dem Kontext erschließen",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "week02_word2vec_handout_instructor.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Solution_Neuron..._.1240274\\content\\week02_word2vec_handout_instructor.pdf"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1253243",
+          "folder_name": "File_Exercise_Neural_networks..._.1253243",
+          "title": "Exercise: Neural networks - Introduction",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "20250926_0801_function_approximation_handout_v2.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Neural_networks..._.1253243\\content\\20250926_0801_function_approximation_handout_v2.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neuronale_netze_mit_ged_chtnis_rnns_lstms_und_das_vanishing_gradient_problem",
+      "title": "Neuronale Netze mit Gedächtnis – RNNs, LSTMs und das Vanishing-Gradient-Problem",
+      "items": [
+        {
+          "type": "file",
+          "moodle_id": "1240302",
+          "folder_name": "File_bung_Neuronale_Netze_mit..._.1240302",
+          "title": "Übung: Neuronale Netze mit Gedächtnis – RNNs, LSTMs und das Vanishing-Gradient-Problem",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "week03_rnn_handout_student.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_bung_Neuronale_Netze_mit..._.1240302\\content\\week03_rnn_handout_student.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rnns",
+      "title": "RNNs",
+      "items": [
+        {
+          "type": "file",
+          "moodle_id": "1255481",
+          "folder_name": "File_RNNs_Introduction_.1255481",
+          "title": "RNNs Introduction",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "20251003_0800_week03_rnn_bsc_discovery.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_RNNs_Introduction_.1255481\\content\\20251003_0800_week03_rnn_bsc_discovery.pdf"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1253337",
+          "folder_name": "File_RNNs_.1253337",
+          "title": "RNNs",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "20250922_1458_week03_rnn_with_foundations.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_RNNs_.1253337\\content\\20250922_1458_week03_rnn_with_foundations.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lstms",
+      "title": "LSTMs",
+      "items": [
+        {
+          "type": "file",
+          "moodle_id": "1255468",
+          "folder_name": "File_Slides_Introduction_LSTMs_.1255468",
+          "title": "Slides Introduction LSTMs",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "20251002_1300_week03_lstm_bsc_21slides.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Introduction_LSTMs_.1255468\\content\\20251002_1300_week03_lstm_bsc_21slides.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "predicting_the_next_sentence_sequence_to_sequence",
+      "title": "Predicting the next sentence - Sequence to Sequence",
+      "items": [
+        {
+          "type": "file",
+          "moodle_id": "1244479",
+          "folder_name": "File_Sequence-to-Sequence-Mod..._.1244479",
+          "title": "Sequence-to-Sequence-Modelle",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "week04_seq2seq.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Sequence-to-Sequence-Mod..._.1244479\\content\\week04_seq2seq.pdf"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1244480",
+          "folder_name": "File_bung__Maschinen_das_bers..._.1244480",
+          "title": "Übung – Maschinen das Übersetzen beibringen",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "week04_handout_student.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_bung__Maschinen_das_bers..._.1244480\\content\\week04_handout_student.pdf"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1257397",
+          "folder_name": "File_Notebook_statistical_ana..._.1257397",
+          "title": "Notebook: statistical analysis",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "statistical_analysis.ipynb",
+              "type": "ipynb",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Notebook_statistical_ana..._.1257397\\content\\statistical_analysis.ipynb"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "transformers",
+      "title": "Transformers",
+      "items": [
+        {
+          "type": "file",
+          "moodle_id": "1257304",
+          "folder_name": "File_Transformers_.1257304",
+          "title": "Transformers",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "2025.10.10 Transformers.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Transformers_.1257304\\content\\2025.10.10 Transformers.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "background",
+      "title": "Background",
+      "items": [
+        {
+          "type": "file",
+          "moodle_id": "1255483",
+          "folder_name": "File_T-SNE_tutorial_.1255483",
+          "title": "T-SNE tutorial",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "20251003_0820_tsne_tutorial.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_T-SNE_tutorial_.1255483\\content\\20251003_0820_tsne_tutorial.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "multi_agent_llms",
+      "title": "Multi-Agent LLMs",
+      "items": [
+        {
+          "type": "file",
+          "moodle_id": "1267346",
+          "folder_name": "File_Multi-Agent_LLMs_.1267346",
+          "title": "Multi-Agent LLMs",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "multi_agent_blog_writer_fixed.ipynb",
+              "type": "ipynb",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Multi-Agent_LLMs_.1267346\\content\\multi_agent_blog_writer_fixed.ipynb"
+            }
+          ]
+        },
+        {
+          "type": "file",
+          "moodle_id": "1267371",
+          "folder_name": "File_Multi_Agents_Intro_.1267371",
+          "title": "Multi Agents Intro",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "20251113_2101_multiagent_visual.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Multi_Agents_Intro_.1267371\\content\\20251113_2101_multiagent_visual.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "decoding_strategies",
+      "title": "Decoding Strategies",
+      "items": [
+        {
+          "type": "file",
+          "moodle_id": "1269595",
+          "folder_name": "File_Lecture_Decoding_Strategies_.1269595",
+          "title": "Lecture: Decoding Strategies",
+          "description": "TA (dv-) HS25",
+          "files": [
+            {
+              "filename": "Decoding Strategies.pdf",
+              "type": "pdf",
+              "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Lecture_Decoding_Strategies_.1269595\\content\\Decoding Strategies.pdf"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "all_pdfs": [
+    {
+      "filename": "Modulbeschreibung Text Analytics_MScDV.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Modulbeschreibung_.1182620\\content\\Modulbeschreibung Text Analytics_MScDV.pdf",
+      "title": "Modulbeschreibung",
+      "section": "Allgemeines"
+    },
+    {
+      "filename": "Moodle-Template_upload.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Beschreibung_der_Kursele..._.1182623\\content\\Moodle-Template_upload.pdf",
+      "title": "Beschreibung der Kurselemente",
+      "section": "Hinweise für Lehrpersonen (für Studierende unsichtbar)"
+    },
+    {
+      "filename": "2025_NLP.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Gesamte_Vorlesungsfolien_.1239713\\content\\2025_NLP.pdf",
+      "title": "Gesamte Vorlesungsfolien",
+      "section": "Folien: Gesamtüberblick"
+    },
+    {
+      "filename": "ngrams_intro_exercise.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Ngrams_Intro_.1238443\\content\\ngrams_intro_exercise.pdf",
+      "title": "Exercise: Ngrams Intro",
+      "section": "Foundations_and_Statistical_Language_Models"
+    },
+    {
+      "filename": "Foundations_and_Statistical_Language_Modelling.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Foundations_and_S..._.1239166\\content\\Foundations_and_Statistical_Language_Modelling.pdf",
+      "title": "Slides: Foundations and Statistical Language Modelling",
+      "section": "Foundations_and_Statistical_Language_Models"
+    },
+    {
+      "filename": "nlp_lesson1_student_handout_german.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_bung_1_-_deutsch_.1246132\\content\\nlp_lesson1_student_handout_german.pdf",
+      "title": "Übung 1 - deutsch",
+      "section": "Foundations_and_Statistical_Language_Models"
+    },
+    {
+      "filename": "Embeddings_Intro.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Embeddings_Introd..._.1237964\\content\\Embeddings_Intro.pdf",
+      "title": "Slides: Embeddings Introduction",
+      "section": "Embeddings"
+    },
+    {
+      "filename": "20251002_1001_embeddings_tutorial.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Embeddings_tutorial_with..._.1255461\\content\\20251002_1001_embeddings_tutorial.pdf",
+      "title": "Embeddings tutorial with data",
+      "section": "Embeddings"
+    },
+    {
+      "filename": "embeddings_handout.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Embeddings_-_Vorbereitung_.1250775\\content\\embeddings_handout.pdf",
+      "title": "Embeddings - Vorbereitung",
+      "section": "Embeddings - Exercises"
+    },
+    {
+      "filename": "embeddings_postclass_verification_instructor.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Embeddings_Solu..._.1251159\\content\\embeddings_postclass_verification_instructor.pdf",
+      "title": "Exercise Embeddings Solution Postclass",
+      "section": "Embeddings - Exercises"
+    },
+    {
+      "filename": "embeddings_postclass_verification.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_bung_-_Embeddings_Postclass_.1251158\\content\\embeddings_postclass_verification.pdf",
+      "title": "Übung - Embeddings Postclass",
+      "section": "Embeddings - Exercises"
+    },
+    {
+      "filename": "20250926_1400_NeuralNetworks_Introduction.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Pre-Reading_Neura..._.1255463\\content\\20250926_1400_NeuralNetworks_Introduction.pdf",
+      "title": "Slides Pre-Reading: Neural Networks Introduction",
+      "section": "Neural Language Models and Embeddings"
+    },
+    {
+      "filename": "NLP_Word2Vec_Neural_Nets.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Neural_Language_M..._.1240175\\content\\NLP_Word2Vec_Neural_Nets.pdf",
+      "title": "Slides: Neural Language Models and Embeddings",
+      "section": "Neural Language Models and Embeddings"
+    },
+    {
+      "filename": "Neural_Language_Models_Handout_Student.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Neural_Language..._.1240176\\content\\Neural_Language_Models_Handout_Student.pdf",
+      "title": "Exercise: Neural Language Models – Discovering Word Meanings Through Context",
+      "section": "Neural Language Models and Embeddings"
+    },
+    {
+      "filename": "Neural_Language_Models_Handout_Instructor.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Solution_Neural..._.1240180\\content\\Neural_Language_Models_Handout_Instructor.pdf",
+      "title": "Exercise Solution: Neural Language Models – Discovering Word Meanings Through Context",
+      "section": "Neural Language Models and Embeddings"
+    },
+    {
+      "filename": "week02_word2vec_handout_student.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Neuronale_Sprac..._.1240218\\content\\week02_word2vec_handout_student.pdf",
+      "title": "Exercise: Neuronale Sprachmodelle – Bedeutungen aus dem Kontext erschließen",
+      "section": "Neural Language Models and Embeddings"
+    },
+    {
+      "filename": "week02_word2vec_handout_instructor.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Solution_Neuron..._.1240274\\content\\week02_word2vec_handout_instructor.pdf",
+      "title": "Exercise Solution: Neuronale Sprachmodelle – Bedeutungen aus dem Kontext erschließen",
+      "section": "Neural Language Models and Embeddings"
+    },
+    {
+      "filename": "20250926_0801_function_approximation_handout_v2.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Neural_networks..._.1253243\\content\\20250926_0801_function_approximation_handout_v2.pdf",
+      "title": "Exercise: Neural networks - Introduction",
+      "section": "Neural Language Models and Embeddings"
+    },
+    {
+      "filename": "week03_rnn_handout_student.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_bung_Neuronale_Netze_mit..._.1240302\\content\\week03_rnn_handout_student.pdf",
+      "title": "Übung: Neuronale Netze mit Gedächtnis – RNNs, LSTMs und das Vanishing-Gradient-Problem",
+      "section": "Neuronale Netze mit Gedächtnis – RNNs, LSTMs und das Vanishing-Gradient-Problem"
+    },
+    {
+      "filename": "20251003_0800_week03_rnn_bsc_discovery.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_RNNs_Introduction_.1255481\\content\\20251003_0800_week03_rnn_bsc_discovery.pdf",
+      "title": "RNNs Introduction",
+      "section": "RNNs"
+    },
+    {
+      "filename": "20250922_1458_week03_rnn_with_foundations.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_RNNs_.1253337\\content\\20250922_1458_week03_rnn_with_foundations.pdf",
+      "title": "RNNs",
+      "section": "RNNs"
+    },
+    {
+      "filename": "20251002_1300_week03_lstm_bsc_21slides.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Introduction_LSTMs_.1255468\\content\\20251002_1300_week03_lstm_bsc_21slides.pdf",
+      "title": "Slides Introduction LSTMs",
+      "section": "LSTMs"
+    },
+    {
+      "filename": "week04_seq2seq.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Sequence-to-Sequence-Mod..._.1244479\\content\\week04_seq2seq.pdf",
+      "title": "Sequence-to-Sequence-Modelle",
+      "section": "Predicting the next sentence - Sequence to Sequence"
+    },
+    {
+      "filename": "week04_handout_student.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_bung__Maschinen_das_bers..._.1244480\\content\\week04_handout_student.pdf",
+      "title": "Übung – Maschinen das Übersetzen beibringen",
+      "section": "Predicting the next sentence - Sequence to Sequence"
+    },
+    {
+      "filename": "2025.10.10 Transformers.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Transformers_.1257304\\content\\2025.10.10 Transformers.pdf",
+      "title": "Transformers",
+      "section": "Transformers"
+    },
+    {
+      "filename": "20251003_0820_tsne_tutorial.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_T-SNE_tutorial_.1255483\\content\\20251003_0820_tsne_tutorial.pdf",
+      "title": "T-SNE tutorial",
+      "section": "Background"
+    },
+    {
+      "filename": "20251113_2101_multiagent_visual.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Multi_Agents_Intro_.1267371\\content\\20251113_2101_multiagent_visual.pdf",
+      "title": "Multi Agents Intro",
+      "section": "Multi-Agent LLMs"
+    },
+    {
+      "filename": "Decoding Strategies.pdf",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Lecture_Decoding_Strategies_.1269595\\content\\Decoding Strategies.pdf",
+      "title": "Lecture: Decoding Strategies",
+      "section": "Decoding Strategies"
+    }
+  ],
+  "all_notebooks": [
+    {
+      "filename": "shakespeare_sonnets.ipynb",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Notebook_Shakespeare_Son..._.1239711\\content\\shakespeare_sonnets.ipynb",
+      "title": "Notebook: Shakespeare Sonnet Generator",
+      "section": "Foundations_and_Statistical_Language_Models"
+    },
+    {
+      "filename": "ngrams_Alice_in_Wonderland.ipynb",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Notebook_N-Grams_noteboo..._.1239712\\content\\ngrams_Alice_in_Wonderland.ipynb",
+      "title": "Notebook: N-Grams notebook und Alice in Wonderland Generator",
+      "section": "Foundations_and_Statistical_Language_Models"
+    },
+    {
+      "filename": "word_embeddings_3d_msc.ipynb",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Embeddings_Intro_-_Jupyt..._.1250776\\content\\word_embeddings_3d_msc.ipynb",
+      "title": "Embeddings Intro - Jupyter Notebook",
+      "section": "Embeddings - Exercises"
+    },
+    {
+      "filename": "statistical_analysis.ipynb",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Notebook_statistical_ana..._.1257397\\content\\statistical_analysis.ipynb",
+      "title": "Notebook: statistical analysis",
+      "section": "Predicting the next sentence - Sequence to Sequence"
+    },
+    {
+      "filename": "multi_agent_blog_writer_fixed.ipynb",
+      "path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Multi-Agent_LLMs_.1267346\\content\\multi_agent_blog_writer_fixed.ipynb",
+      "title": "Multi-Agent LLMs",
+      "section": "Multi-Agent LLMs"
+    }
+  ],
+  "schedule": [],
+  "assignments": [
+    {
+      "title": "Leistungsnachweise",
+      "description": "TA (dv-) HS25",
+      "moodle_id": "1253213",
+      "section": "Leistungsnachweise - Details",
+      "files": []
+    },
+    {
+      "title": "Zwischenpräsentation",
+      "description": "TA (dv-) HS25",
+      "moodle_id": "1260212",
+      "section": "Leistungsnachweise - Details",
+      "files": []
+    },
+    {
+      "title": "Einzelpräsentation",
+      "description": "TA (dv-) HS25",
+      "moodle_id": "1269832",
+      "section": "Leistungsnachweise - Details",
+      "files": []
+    }
+  ]
+}

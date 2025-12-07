@@ -1,0 +1,65 @@
+AGENT 6: OUTPUT LOCATION FIX & MAIN SITE INTEGRATION
+======================================================================
+
+1. FIXED generate_moodle_site.py OUTPUT PATH
+----------------------------------------------------------------------
+Changed: output_dir: Path("docs/moodle")
+To:      output_dir: Path(__file__).parent.parent.parent / "docs" / "moodle"
+Result:  Pages now generate in correct location
+
+2. MOVED EXISTING FILES
+----------------------------------------------------------------------
+From: docs_backup_static/scripts/docs/moodle/
+To:   docs/moodle/
+Files moved: 5 HTML pages (index, schedule, pdfs, notebooks, assignments)
+
+3. REGENERATED PAGES
+----------------------------------------------------------------------
+Ran: python generate_moodle_site.py
+Output: D:\Joerg\Research\slides\2025_NLP_16\docs\moodle
+Generated 5 pages successfully
+
+4. UPDATED MAIN SITE INDEX
+----------------------------------------------------------------------
+Modified: docs_hugo/content/_index.md
+Added: Moodle HS25 column to Quick Links table
+Link: [View Moodle Site](moodle/)
+Rebuilt Hugo site to docs/
+
+5. VERIFICATION RESULTS
+----------------------------------------------------------------------
+HTML Pages:       5/5 generated
+  - index.html:   11.5 KB
+  - schedule.html: 13.6 KB
+  - pdfs.html:    20.3 KB
+  - notebooks.html: 11.7 KB
+  - assignments.html: 10.5 KB
+
+Assets:
+  - PDFs:         28 files (22.35 MB total)
+  - Notebooks:    5 files
+  - All paths verified successfully
+
+Main Site:
+  - Moodle link added to homepage Quick Links table
+  - Link verified in docs/index.html
+
+6. FINAL STRUCTURE
+----------------------------------------------------------------------
+docs/
+├── index.html (main site with Moodle link)
+├── topics/ (12 week pages)
+├── modules/ (4 module pages)
+└── moodle/ (NEW Moodle subsection)
+    ├── index.html (overview with stats)
+    ├── schedule.html (13-week timeline)
+    ├── pdfs.html (28 PDF downloads)
+    ├── notebooks.html (5 notebooks)
+    ├── assignments.html (3 assessments)
+    └── assets/
+        ├── pdfs/ (28 files)
+        ├── notebooks/ (5 files)
+        └── manifest.json
+
+STATUS: ALL TASKS COMPLETE
+======================================================================

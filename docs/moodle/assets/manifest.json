@@ -1,0 +1,311 @@
+{
+  "generated_at": "2025-12-07T20:18:02.127746",
+  "pdfs": [
+    {
+      "original_filename": "Modulbeschreibung Text Analytics_MScDV.pdf",
+      "output_filename": "modulbeschreibung_text_analytics_mscdv.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Modulbeschreibung_.1182620\\content\\Modulbeschreibung Text Analytics_MScDV.pdf",
+      "output_path": "pdfs/modulbeschreibung_text_analytics_mscdv.pdf",
+      "size_bytes": 78466,
+      "title": "Modulbeschreibung",
+      "section": "Allgemeines"
+    },
+    {
+      "original_filename": "Moodle-Template_upload.pdf",
+      "output_filename": "moodle-template_upload.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Beschreibung_der_Kursele..._.1182623\\content\\Moodle-Template_upload.pdf",
+      "output_path": "pdfs/moodle-template_upload.pdf",
+      "size_bytes": 270580,
+      "title": "Beschreibung der Kurselemente",
+      "section": "Hinweise für Lehrpersonen (für Studierende unsichtbar)"
+    },
+    {
+      "original_filename": "2025_NLP.pdf",
+      "output_filename": "2025_nlp.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Gesamte_Vorlesungsfolien_.1239713\\content\\2025_NLP.pdf",
+      "output_path": "pdfs/2025_nlp.pdf",
+      "size_bytes": 2128510,
+      "title": "Gesamte Vorlesungsfolien",
+      "section": "Folien: Gesamtüberblick"
+    },
+    {
+      "original_filename": "ngrams_intro_exercise.pdf",
+      "output_filename": "ngrams_intro_exercise.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Ngrams_Intro_.1238443\\content\\ngrams_intro_exercise.pdf",
+      "output_path": "pdfs/ngrams_intro_exercise.pdf",
+      "size_bytes": 185815,
+      "title": "Exercise: Ngrams Intro",
+      "section": "Foundations_and_Statistical_Language_Models"
+    },
+    {
+      "original_filename": "Foundations_and_Statistical_Language_Modelling.pdf",
+      "output_filename": "foundations_and_statistical_language_modelling.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Foundations_and_S..._.1239166\\content\\Foundations_and_Statistical_Language_Modelling.pdf",
+      "output_path": "pdfs/foundations_and_statistical_language_modelling.pdf",
+      "size_bytes": 750787,
+      "title": "Slides: Foundations and Statistical Language Modelling",
+      "section": "Foundations_and_Statistical_Language_Models"
+    },
+    {
+      "original_filename": "nlp_lesson1_student_handout_german.pdf",
+      "output_filename": "nlp_lesson1_student_handout_german.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_bung_1_-_deutsch_.1246132\\content\\nlp_lesson1_student_handout_german.pdf",
+      "output_path": "pdfs/nlp_lesson1_student_handout_german.pdf",
+      "size_bytes": 142946,
+      "title": "Übung 1 - deutsch",
+      "section": "Foundations_and_Statistical_Language_Models"
+    },
+    {
+      "original_filename": "Embeddings_Intro.pdf",
+      "output_filename": "embeddings_intro.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Embeddings_Introd..._.1237964\\content\\Embeddings_Intro.pdf",
+      "output_path": "pdfs/embeddings_intro.pdf",
+      "size_bytes": 1081401,
+      "title": "Slides: Embeddings Introduction",
+      "section": "Embeddings"
+    },
+    {
+      "original_filename": "20251002_1001_embeddings_tutorial.pdf",
+      "output_filename": "20251002_1001_embeddings_tutorial.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Embeddings_tutorial_with..._.1255461\\content\\20251002_1001_embeddings_tutorial.pdf",
+      "output_path": "pdfs/20251002_1001_embeddings_tutorial.pdf",
+      "size_bytes": 947421,
+      "title": "Embeddings tutorial with data",
+      "section": "Embeddings"
+    },
+    {
+      "original_filename": "embeddings_handout.pdf",
+      "output_filename": "embeddings_handout.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Embeddings_-_Vorbereitung_.1250775\\content\\embeddings_handout.pdf",
+      "output_path": "pdfs/embeddings_handout.pdf",
+      "size_bytes": 197954,
+      "title": "Embeddings - Vorbereitung",
+      "section": "Embeddings - Exercises"
+    },
+    {
+      "original_filename": "embeddings_postclass_verification_instructor.pdf",
+      "output_filename": "embeddings_postclass_verification_instructor.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Embeddings_Solu..._.1251159\\content\\embeddings_postclass_verification_instructor.pdf",
+      "output_path": "pdfs/embeddings_postclass_verification_instructor.pdf",
+      "size_bytes": 225535,
+      "title": "Exercise Embeddings Solution Postclass",
+      "section": "Embeddings - Exercises"
+    },
+    {
+      "original_filename": "embeddings_postclass_verification.pdf",
+      "output_filename": "embeddings_postclass_verification.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_bung_-_Embeddings_Postclass_.1251158\\content\\embeddings_postclass_verification.pdf",
+      "output_path": "pdfs/embeddings_postclass_verification.pdf",
+      "size_bytes": 173248,
+      "title": "Übung - Embeddings Postclass",
+      "section": "Embeddings - Exercises"
+    },
+    {
+      "original_filename": "20250926_1400_NeuralNetworks_Introduction.pdf",
+      "output_filename": "20250926_1400_neuralnetworks_introduction.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Pre-Reading_Neura..._.1255463\\content\\20250926_1400_NeuralNetworks_Introduction.pdf",
+      "output_path": "pdfs/20250926_1400_neuralnetworks_introduction.pdf",
+      "size_bytes": 944255,
+      "title": "Slides Pre-Reading: Neural Networks Introduction",
+      "section": "Neural Language Models and Embeddings"
+    },
+    {
+      "original_filename": "NLP_Word2Vec_Neural_Nets.pdf",
+      "output_filename": "nlp_word2vec_neural_nets.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Neural_Language_M..._.1240175\\content\\NLP_Word2Vec_Neural_Nets.pdf",
+      "output_path": "pdfs/nlp_word2vec_neural_nets.pdf",
+      "size_bytes": 639684,
+      "title": "Slides: Neural Language Models and Embeddings",
+      "section": "Neural Language Models and Embeddings"
+    },
+    {
+      "original_filename": "Neural_Language_Models_Handout_Student.pdf",
+      "output_filename": "neural_language_models_handout_student.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Neural_Language..._.1240176\\content\\Neural_Language_Models_Handout_Student.pdf",
+      "output_path": "pdfs/neural_language_models_handout_student.pdf",
+      "size_bytes": 116188,
+      "title": "Exercise: Neural Language Models – Discovering Word Meanings Through Context",
+      "section": "Neural Language Models and Embeddings"
+    },
+    {
+      "original_filename": "Neural_Language_Models_Handout_Instructor.pdf",
+      "output_filename": "neural_language_models_handout_instructor.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Solution_Neural..._.1240180\\content\\Neural_Language_Models_Handout_Instructor.pdf",
+      "output_path": "pdfs/neural_language_models_handout_instructor.pdf",
+      "size_bytes": 140287,
+      "title": "Exercise Solution: Neural Language Models – Discovering Word Meanings Through Context",
+      "section": "Neural Language Models and Embeddings"
+    },
+    {
+      "original_filename": "week02_word2vec_handout_student.pdf",
+      "output_filename": "week02_word2vec_handout_student.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Neuronale_Sprac..._.1240218\\content\\week02_word2vec_handout_student.pdf",
+      "output_path": "pdfs/week02_word2vec_handout_student.pdf",
+      "size_bytes": 119321,
+      "title": "Exercise: Neuronale Sprachmodelle – Bedeutungen aus dem Kontext erschließen",
+      "section": "Neural Language Models and Embeddings"
+    },
+    {
+      "original_filename": "week02_word2vec_handout_instructor.pdf",
+      "output_filename": "week02_word2vec_handout_instructor.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Solution_Neuron..._.1240274\\content\\week02_word2vec_handout_instructor.pdf",
+      "output_path": "pdfs/week02_word2vec_handout_instructor.pdf",
+      "size_bytes": 168274,
+      "title": "Exercise Solution: Neuronale Sprachmodelle – Bedeutungen aus dem Kontext erschließen",
+      "section": "Neural Language Models and Embeddings"
+    },
+    {
+      "original_filename": "20250926_0801_function_approximation_handout_v2.pdf",
+      "output_filename": "20250926_0801_function_approximation_handout_v2.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Exercise_Neural_networks..._.1253243\\content\\20250926_0801_function_approximation_handout_v2.pdf",
+      "output_path": "pdfs/20250926_0801_function_approximation_handout_v2.pdf",
+      "size_bytes": 558909,
+      "title": "Exercise: Neural networks - Introduction",
+      "section": "Neural Language Models and Embeddings"
+    },
+    {
+      "original_filename": "week03_rnn_handout_student.pdf",
+      "output_filename": "week03_rnn_handout_student.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_bung_Neuronale_Netze_mit..._.1240302\\content\\week03_rnn_handout_student.pdf",
+      "output_path": "pdfs/week03_rnn_handout_student.pdf",
+      "size_bytes": 149195,
+      "title": "Übung: Neuronale Netze mit Gedächtnis – RNNs, LSTMs und das Vanishing-Gradient-Problem",
+      "section": "Neuronale Netze mit Gedächtnis – RNNs, LSTMs und das Vanishing-Gradient-Problem"
+    },
+    {
+      "original_filename": "20251003_0800_week03_rnn_bsc_discovery.pdf",
+      "output_filename": "20251003_0800_week03_rnn_bsc_discovery.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_RNNs_Introduction_.1255481\\content\\20251003_0800_week03_rnn_bsc_discovery.pdf",
+      "output_path": "pdfs/20251003_0800_week03_rnn_bsc_discovery.pdf",
+      "size_bytes": 403369,
+      "title": "RNNs Introduction",
+      "section": "RNNs"
+    },
+    {
+      "original_filename": "20250922_1458_week03_rnn_with_foundations.pdf",
+      "output_filename": "20250922_1458_week03_rnn_with_foundations.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_RNNs_.1253337\\content\\20250922_1458_week03_rnn_with_foundations.pdf",
+      "output_path": "pdfs/20250922_1458_week03_rnn_with_foundations.pdf",
+      "size_bytes": 909823,
+      "title": "RNNs",
+      "section": "RNNs"
+    },
+    {
+      "original_filename": "20251002_1300_week03_lstm_bsc_21slides.pdf",
+      "output_filename": "20251002_1300_week03_lstm_bsc_21slides.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Slides_Introduction_LSTMs_.1255468\\content\\20251002_1300_week03_lstm_bsc_21slides.pdf",
+      "output_path": "pdfs/20251002_1300_week03_lstm_bsc_21slides.pdf",
+      "size_bytes": 466105,
+      "title": "Slides Introduction LSTMs",
+      "section": "LSTMs"
+    },
+    {
+      "original_filename": "week04_seq2seq.pdf",
+      "output_filename": "week04_seq2seq.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Sequence-to-Sequence-Mod..._.1244479\\content\\week04_seq2seq.pdf",
+      "output_path": "pdfs/week04_seq2seq.pdf",
+      "size_bytes": 951100,
+      "title": "Sequence-to-Sequence-Modelle",
+      "section": "Predicting the next sentence - Sequence to Sequence"
+    },
+    {
+      "original_filename": "week04_handout_student.pdf",
+      "output_filename": "week04_handout_student.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_bung__Maschinen_das_bers..._.1244480\\content\\week04_handout_student.pdf",
+      "output_path": "pdfs/week04_handout_student.pdf",
+      "size_bytes": 151231,
+      "title": "Übung – Maschinen das Übersetzen beibringen",
+      "section": "Predicting the next sentence - Sequence to Sequence"
+    },
+    {
+      "original_filename": "2025.10.10 Transformers.pdf",
+      "output_filename": "2025.10.10_transformers.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Transformers_.1257304\\content\\2025.10.10 Transformers.pdf",
+      "output_path": "pdfs/2025.10.10_transformers.pdf",
+      "size_bytes": 944918,
+      "title": "Transformers",
+      "section": "Transformers"
+    },
+    {
+      "original_filename": "20251003_0820_tsne_tutorial.pdf",
+      "output_filename": "20251003_0820_tsne_tutorial.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_T-SNE_tutorial_.1255483\\content\\20251003_0820_tsne_tutorial.pdf",
+      "output_path": "pdfs/20251003_0820_tsne_tutorial.pdf",
+      "size_bytes": 989709,
+      "title": "T-SNE tutorial",
+      "section": "Background"
+    },
+    {
+      "original_filename": "20251113_2101_multiagent_visual.pdf",
+      "output_filename": "20251113_2101_multiagent_visual.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Multi_Agents_Intro_.1267371\\content\\20251113_2101_multiagent_visual.pdf",
+      "output_path": "pdfs/20251113_2101_multiagent_visual.pdf",
+      "size_bytes": 444143,
+      "title": "Multi Agents Intro",
+      "section": "Multi-Agent LLMs"
+    },
+    {
+      "original_filename": "Decoding Strategies.pdf",
+      "output_filename": "decoding_strategies.pdf",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Lecture_Decoding_Strategies_.1269595\\content\\Decoding Strategies.pdf",
+      "output_path": "pdfs/decoding_strategies.pdf",
+      "size_bytes": 2567910,
+      "title": "Lecture: Decoding Strategies",
+      "section": "Decoding Strategies"
+    }
+  ],
+  "notebooks": [
+    {
+      "original_filename": "shakespeare_sonnets.ipynb",
+      "output_filename": "shakespeare_sonnets.ipynb",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Notebook_Shakespeare_Son..._.1239711\\content\\shakespeare_sonnets.ipynb",
+      "output_path": "notebooks/shakespeare_sonnets.ipynb",
+      "size_bytes": 137586,
+      "title": "Notebook: Shakespeare Sonnet Generator",
+      "section": "Foundations_and_Statistical_Language_Models"
+    },
+    {
+      "original_filename": "ngrams_Alice_in_Wonderland.ipynb",
+      "output_filename": "ngrams_alice_in_wonderland.ipynb",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Notebook_N-Grams_noteboo..._.1239712\\content\\ngrams_Alice_in_Wonderland.ipynb",
+      "output_path": "notebooks/ngrams_alice_in_wonderland.ipynb",
+      "size_bytes": 545383,
+      "title": "Notebook: N-Grams notebook und Alice in Wonderland Generator",
+      "section": "Foundations_and_Statistical_Language_Models"
+    },
+    {
+      "original_filename": "word_embeddings_3d_msc.ipynb",
+      "output_filename": "word_embeddings_3d_msc.ipynb",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Embeddings_Intro_-_Jupyt..._.1250776\\content\\word_embeddings_3d_msc.ipynb",
+      "output_path": "notebooks/word_embeddings_3d_msc.ipynb",
+      "size_bytes": 5042345,
+      "title": "Embeddings Intro - Jupyter Notebook",
+      "section": "Embeddings - Exercises"
+    },
+    {
+      "original_filename": "statistical_analysis.ipynb",
+      "output_filename": "statistical_analysis.ipynb",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Notebook_statistical_ana..._.1257397\\content\\statistical_analysis.ipynb",
+      "output_path": "notebooks/statistical_analysis.ipynb",
+      "size_bytes": 584777,
+      "title": "Notebook: statistical analysis",
+      "section": "Predicting the next sentence - Sequence to Sequence"
+    },
+    {
+      "original_filename": "multi_agent_blog_writer_fixed.ipynb",
+      "output_filename": "multi_agent_blog_writer_fixed.ipynb",
+      "original_path": "Course_Text_Analytics_dv-_HS25_.1182614\\File_Multi-Agent_LLMs_.1267346\\content\\multi_agent_blog_writer_fixed.ipynb",
+      "output_path": "notebooks/multi_agent_blog_writer_fixed.ipynb",
+      "size_bytes": 275647,
+      "title": "Multi-Agent LLMs",
+      "section": "Multi-Agent LLMs"
+    }
+  ],
+  "skipped": [],
+  "statistics": {
+    "total_pdfs": 28,
+    "total_notebooks": 5,
+    "total_skipped": 0,
+    "total_size_mb": 22.35
+  }
+}

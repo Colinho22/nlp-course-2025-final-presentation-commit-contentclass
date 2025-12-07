@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDFs | TA HS25</title>
+  <style>
+
+:root {
+  --moodle-accent: #f59e0b;
+  --moodle-accent-light: #fef3c7;
+  --moodle-accent-dark: #d97706;
+  --text-dark: #1e293b;
+  --text-gray: #64748b;
+  --bg-light: #f8fafc;
+  --border: #e2e8f0;
+  --purple: #3333B2;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.5;
+}
+
+.top-nav {
+  background: #1e3a5f;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+.top-nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.top-nav a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.container {
+  display: flex;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.sidebar {
+  width: 280px;
+  background: #ffffff;
+  border-right: 1px solid var(--border);
+  height: calc(100vh - 42px);
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+  flex-shrink: 0;
+}
+
+.sidebar-header {
+  padding: 15px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, var(--moodle-accent-dark) 0%, var(--moodle-accent) 100%);
+}
+
+.sidebar-header a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+}
+
+.sidebar-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  margin-right: 10px;
+  background: white;
+  padding: 3px;
+}
+
+.course-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.sidebar-nav {
+  padding: 8px 0;
+}
+
+.sidebar-section {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.sidebar-section summary {
+  padding: 10px 15px;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #24292e;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-section summary::-webkit-details-marker {
+  display: none;
+}
+
+.sidebar-section summary::after {
+  content: "+";
+  font-size: 12px;
+  color: #586069;
+}
+
+.sidebar-section[open] summary::after {
+  content: "-";
+}
+
+.sidebar-section summary:hover {
+  background: #f6f8fa;
+}
+
+.sidebar-section ul {
+  list-style: none;
+  padding: 0 0 6px 0;
+  margin: 0;
+}
+
+.sidebar-section li {
+  margin: 0;
+}
+
+.sidebar-section a {
+  display: block;
+  padding: 6px 15px 6px 25px;
+  color: #586069;
+  text-decoration: none;
+  font-size: 12px;
+  border-left: 2px solid transparent;
+}
+
+.sidebar-section a:hover {
+  background: #f6f8fa;
+  color: var(--moodle-accent);
+}
+
+.sidebar-section a.active {
+  border-left-color: var(--moodle-accent);
+  color: var(--moodle-accent);
+  background: #f6f8fa;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.hero {
+  background: linear-gradient(135deg, var(--moodle-accent-dark) 0%, var(--moodle-accent) 100%);
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.hero .subtitle {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-bottom: 12px;
+}
+
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 15px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+.content-area {
+  padding: 25px;
+}
+
+.section {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 18px;
+  border: 1px solid var(--border);
+}
+
+.section h2 {
+  color: #1e3a5f;
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+  border-bottom: 2px solid var(--moodle-accent);
+  padding-bottom: 6px;
+}
+
+.schedule-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.schedule-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: var(--bg-light);
+  border-radius: 6px;
+  border-left: 3px solid var(--moodle-accent);
+}
+
+.schedule-item.mandatory {
+  border-left-color: #dc2626;
+  background: #fef2f2;
+}
+
+.schedule-date {
+  font-weight: 600;
+  min-width: 80px;
+  color: var(--text-dark);
+}
+
+.schedule-topic {
+  flex: 1;
+  font-weight: 500;
+}
+
+.schedule-desc {
+  color: var(--text-gray);
+  font-size: 0.9rem;
+}
+
+.assignment-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.assignment-card {
+  background: var(--bg-light);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.assignment-card h3 {
+  color: #1e3a5f;
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.assignment-weight {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--moodle-accent);
+  display: block;
+  margin-bottom: 5px;
+}
+
+.assignment-type {
+  display: inline-block;
+  background: var(--moodle-accent-light);
+  color: var(--moodle-accent-dark);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.pdf-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.pdf-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: var(--bg-light);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+}
+
+.pdf-item:hover {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.pdf-icon {
+  width: 32px;
+  height: 32px;
+  background: #dc2626;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  margin-right: 10px;
+  font-weight: 600;
+  font-size: 0.7rem;
+}
+
+.pdf-info {
+  flex: 1;
+}
+
+.pdf-title {
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: block;
+}
+
+.pdf-section {
+  font-size: 0.75rem;
+  color: var(--text-gray);
+}
+
+.notebook-list {
+  display: grid;
+  gap: 10px;
+}
+
+.notebook-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: var(--bg-light);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+}
+
+.notebook-item:hover {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.notebook-icon {
+  width: 36px;
+  height: 36px;
+  background: #f59e0b;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  margin-right: 12px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.notebook-info {
+  flex: 1;
+}
+
+.notebook-title {
+  font-weight: 500;
+  font-size: 0.95rem;
+  display: block;
+}
+
+.notebook-section {
+  font-size: 0.8rem;
+  color: var(--text-gray);
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background: white;
+  color: var(--moodle-accent-dark);
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  margin: 5px;
+}
+
+.cta-button:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.footer {
+  text-align: center;
+  padding: 15px;
+  color: var(--text-gray);
+  font-size: 0.8rem;
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    max-height: 40vh;
+  }
+  .assignment-grid {
+    grid-template-columns: 1fr;
+  }
+  .pdf-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+  </style>
+</head><body>
+  <nav class="top-nav">
+    <a href="index.html">Home</a>
+    <a href="schedule.html">Schedule</a>
+    <a href="pdfs.html" class="active">PDFs</a>
+    <a href="notebooks.html">Notebooks</a>
+    <a href="assignments.html">Assignments</a>
+    <a href="https://nlp-evolution.streamlit.app/" target="_blank">NLP Evolution App</a>
+    <a href="https://moodle.fhgr.ch/course/view.php?id=18956" target="_blank">Moodle Course</a>
+  </nav>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html">
+          <img src="https://quantlet.com/images/Q.png" alt="QuantLet" class="sidebar-logo">
+          <span class="course-title">TA HS25</span>
+        </a>
+      </div>
+      <nav class="sidebar-nav">
+        <details class="sidebar-section" open>
+          <summary>Navigation</summary>
+          <ul>
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="schedule.html">Schedule</a></li>
+            <li><a href="pdfs.html" class="active">PDFs</a></li>
+            <li><a href="notebooks.html">Notebooks</a></li>
+            <li><a href="assignments.html">Assignments</a></li>
+          </ul>
+        </details>
+        <details class="sidebar-section">
+          <summary>External Links</summary>
+          <ul>
+            <li><a href="https://nlp-evolution.streamlit.app/" target="_blank">NLP Evolution App</a></li>
+            <li><a href="https://moodle.fhgr.ch/course/view.php?id=18956" target="_blank">Moodle Course</a></li>
+          </ul>
+        </details>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <div class="hero">
+        <h1>PDF Downloads</h1>
+        <p class="subtitle">28 Course Materials Available</p>
+      </div>
+      <div class="content-area">
+        <div class="section">
+          <h2>All PDFs</h2>
+          <div class="pdf-list">
+            <a href="assets/pdfs/modulbeschreibung_text_analytics_mscdv.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Modulbeschreibung</span>
+                <span class="pdf-section">Allgemeines</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/moodle-template_upload.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Beschreibung der Kurselemente</span>
+                <span class="pdf-section">Hinweise für Lehrpersonen (für Studierende unsichtbar)</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/2025_nlp.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Gesamte Vorlesungsfolien</span>
+                <span class="pdf-section">Folien: Gesamtüberblick</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/ngrams_intro_exercise.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Exercise: Ngrams Intro</span>
+                <span class="pdf-section">Foundations_and_Statistical_Language_Models</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/foundations_and_statistical_language_modelling.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Slides: Foundations and Statistical Language Modelling</span>
+                <span class="pdf-section">Foundations_and_Statistical_Language_Models</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/nlp_lesson1_student_handout_german.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Übung 1 - deutsch</span>
+                <span class="pdf-section">Foundations_and_Statistical_Language_Models</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/embeddings_intro.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Slides: Embeddings Introduction</span>
+                <span class="pdf-section">Embeddings</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/20251002_1001_embeddings_tutorial.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Embeddings tutorial with data</span>
+                <span class="pdf-section">Embeddings</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/embeddings_handout.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Embeddings - Vorbereitung</span>
+                <span class="pdf-section">Embeddings - Exercises</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/embeddings_postclass_verification_instructor.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Exercise Embeddings Solution Postclass</span>
+                <span class="pdf-section">Embeddings - Exercises</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/embeddings_postclass_verification.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Übung - Embeddings Postclass</span>
+                <span class="pdf-section">Embeddings - Exercises</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/20250926_1400_neuralnetworks_introduction.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Slides Pre-Reading: Neural Networks Introduction</span>
+                <span class="pdf-section">Neural Language Models and Embeddings</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/nlp_word2vec_neural_nets.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Slides: Neural Language Models and Embeddings</span>
+                <span class="pdf-section">Neural Language Models and Embeddings</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/neural_language_models_handout_student.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Exercise: Neural Language Models – Discovering Word Meanings Through Context</span>
+                <span class="pdf-section">Neural Language Models and Embeddings</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/neural_language_models_handout_instructor.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Exercise Solution: Neural Language Models – Discovering Word Meanings Through Context</span>
+                <span class="pdf-section">Neural Language Models and Embeddings</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/week02_word2vec_handout_student.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Exercise: Neuronale Sprachmodelle – Bedeutungen aus dem Kontext erschließen</span>
+                <span class="pdf-section">Neural Language Models and Embeddings</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/week02_word2vec_handout_instructor.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Exercise Solution: Neuronale Sprachmodelle – Bedeutungen aus dem Kontext erschließen</span>
+                <span class="pdf-section">Neural Language Models and Embeddings</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/20250926_0801_function_approximation_handout_v2.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Exercise: Neural networks - Introduction</span>
+                <span class="pdf-section">Neural Language Models and Embeddings</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/week03_rnn_handout_student.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Übung: Neuronale Netze mit Gedächtnis – RNNs, LSTMs und das Vanishing-Gradient-Problem</span>
+                <span class="pdf-section">Neuronale Netze mit Gedächtnis – RNNs, LSTMs und das Vanishing-Gradient-Problem</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/20251003_0800_week03_rnn_bsc_discovery.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">RNNs Introduction</span>
+                <span class="pdf-section">RNNs</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/20250922_1458_week03_rnn_with_foundations.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">RNNs</span>
+                <span class="pdf-section">RNNs</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/20251002_1300_week03_lstm_bsc_21slides.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Slides Introduction LSTMs</span>
+                <span class="pdf-section">LSTMs</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/week04_seq2seq.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Sequence-to-Sequence-Modelle</span>
+                <span class="pdf-section">Predicting the next sentence - Sequence to Sequence</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/week04_handout_student.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Übung – Maschinen das Übersetzen beibringen</span>
+                <span class="pdf-section">Predicting the next sentence - Sequence to Sequence</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/2025.10.10_transformers.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Transformers</span>
+                <span class="pdf-section">Transformers</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/20251003_0820_tsne_tutorial.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">T-SNE tutorial</span>
+                <span class="pdf-section">Background</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/20251113_2101_multiagent_visual.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Multi Agents Intro</span>
+                <span class="pdf-section">Multi-Agent LLMs</span>
+              </div>
+            </a>
+            <a href="assets/pdfs/decoding_strategies.pdf" class="pdf-item" download>
+              <div class="pdf-icon">PDF</div>
+              <div class="pdf-info">
+                <span class="pdf-title">Lecture: Decoding Strategies</span>
+                <span class="pdf-section">Decoding Strategies</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <footer class="footer">
+        <p>&copy; 2025 FHGR | Text Analytics (dv-) HS25</p>
+      </footer>    </main>
+  </div>
+</body>
+</html>
