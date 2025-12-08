@@ -1,0 +1,1937 @@
+{
+  "metadata": {
+    "base_url": "https://digital-ai-finance.github.io/Natural-Language-Processing/",
+    "timestamp": "2025-12-08T09:31:28.763260",
+    "generator": "link_checker.py"
+  },
+  "statistics": {
+    "total_links": 212,
+    "successful": 184,
+    "broken": 28,
+    "success_rate": 86.79
+  },
+  "broken_links": [
+    {
+      "url": "https://digital-ai-finance.github.io/topics/embeddings/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ngrams/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/ngrams/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/embeddings/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/rnn-lstm/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/embeddings/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/seq2seq/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/rnn-lstm/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/transformers/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/seq2seq/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/pretrained/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/transformers/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/scaling/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/pretrained/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/tokenization/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/scaling/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/decoding/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/tokenization/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/finetuning/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/decoding/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/efficiency/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/finetuning/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/ethics/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/efficiency/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/semantic_clusters_3d.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/embeddings-extended/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/landmark_analogies_3d.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/embeddings-extended/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/context_movement_3d.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/embeddings-extended/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/cultural_analogies_3d.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/embeddings-extended/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/forward_pass_flowchart.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/lstm-primer/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/lstm_architecture.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/lstm-primer/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/gate_activation_heatmap.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/lstm-primer/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/gradient_flow_comparison.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/lstm-primer/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/attention_heatmap_bsc.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/sentiment/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/classifier_head_architecture_bsc.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/sentiment/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/finetuning_pipeline_bsc.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/sentiment/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/deployment_inference_pipeline_bsc.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/sentiment/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/llm_pipeline_graphviz.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/summarization/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/map_reduce_summarization_bsc.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/summarization/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/rag_summarization_pipeline_bsc.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/summarization/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/evaluation_metrics_bsc.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/summarization/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    }
+  ],
+  "all_links": [
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/embeddings/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/transformers/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ngrams/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/seq2seq/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/css/main.css",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/",
+      "link_type": "link",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/rnn-lstm/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/pretrained/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/scaling/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/tokenization/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/finetuning/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/decoding/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/efficiency/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ethics/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/embeddings-extended/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/lstm-primer/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/sentiment/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/summarization/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/index.html",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/pdfs.html",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/schedule.html",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/notebooks.html",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/assignments.html",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://quantlet.com/images/Q.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/",
+      "link_type": "img",
+      "is_internal": false,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/slides/ngrams.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ngrams/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/notebooks/ngrams.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ngrams/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/embeddings/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ngrams/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ngrams/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/ngram_context_windows_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ngrams/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/perplexity_comparison_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ngrams/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/slides/embeddings.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/embeddings/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://github.com/Digital-AI-Finance/Natural-Language-Processing",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/",
+      "link_type": "a",
+      "is_internal": false,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/smoothing_comparison_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ngrams/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/unified_framework_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ngrams/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/ngrams/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/embeddings/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/notebooks/embeddings.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/embeddings/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/word_as_vector_concept_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/embeddings/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/rnn-lstm/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/embeddings/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/notebooks/rnn-lstm.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/rnn-lstm/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/slides/rnn-lstm.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/rnn-lstm/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/skipgram_training_steps_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/embeddings/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/seq2seq/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/rnn-lstm/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/semantic_space_2d_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/embeddings/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/lstm_gates_simple_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/rnn-lstm/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/word2vec_architectures.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/embeddings/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/lstm_architecture_overview_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/rnn-lstm/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/rnn_simple_unrolled_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/rnn-lstm/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://nlp-evolution.streamlit.app/",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/",
+      "link_type": "a",
+      "is_internal": false,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/slides/seq2seq.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/seq2seq/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/notebooks/seq2seq.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/seq2seq/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/vanishing_gradient_problem_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/rnn-lstm/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/transformers/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/seq2seq/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/week4_encoder_decoder_flow.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/seq2seq/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/week4_attention_heatmap.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/seq2seq/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/week4_seq2seq_architecture_minimalist.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/seq2seq/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/week4_beam_search_tree.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/seq2seq/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/slides/transformers.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/transformers/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/notebooks/transformers.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/transformers/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/pretrained/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/transformers/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/3d_multihead_attention.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/transformers/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/sr_16_transformer_architecture_annotated.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/transformers/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/attention_heatmap.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/transformers/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/positional_encoding_3d.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/transformers/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/slides/pretrained.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/pretrained/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/notebooks/pretrained.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/pretrained/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/scaling/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/pretrained/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/bert_architecture_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/pretrained/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/pretraining_finetuning_paradigm_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/pretrained/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/bert_finetuning_process_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/pretrained/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/gpt_architecture_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/pretrained/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/notebooks/scaling.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/scaling/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/slides/scaling.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/scaling/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/tokenization/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/scaling/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/scaling_laws.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/scaling/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/model_scale_timeline.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/scaling/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/emergent_abilities_chart.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/scaling/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/gpt3_capabilities.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/scaling/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/slides/tokenization.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/tokenization/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/decoding/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/tokenization/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/notebooks/tokenization.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/tokenization/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/bpe_progression_visual.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/tokenization/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/tokenization_comparison_visual.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/tokenization/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/rare_word_handling_visual.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/tokenization/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/vocab_size_oov_visual.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/tokenization/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/slides/decoding.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/decoding/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/notebooks/decoding.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/decoding/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/finetuning/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/decoding/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/topk_example_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/decoding/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/beam_search_tree_graphviz.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/decoding/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/temperature_effects_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/decoding/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/slides/finetuning.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/finetuning/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/practical_methods_coverage_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/decoding/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/notebooks/finetuning.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/finetuning/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/transfer_learning_visual.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/finetuning/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/efficiency/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/finetuning/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/lora_explanation.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/finetuning/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/data_performance_curves.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/finetuning/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/finetuning_vs_prompting.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/finetuning/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/notebooks/efficiency.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/efficiency/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/slides/efficiency.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/efficiency/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/model_compression_landscape.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/efficiency/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/topics/ethics/",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/efficiency/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/quantization_comparison.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/efficiency/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/distillation_architecture.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/efficiency/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/accuracy_size_pareto.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/efficiency/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/slides/ethics.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ethics/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/notebooks/ethics.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ethics/",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/bias_sources_flowchart.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ethics/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/fairness_metrics_comparison.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ethics/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/ai_ethics_landscape.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ethics/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/harm_taxonomy_tree.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/topics/ethics/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/semantic_clusters_3d.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/embeddings-extended/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/landmark_analogies_3d.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/embeddings-extended/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/context_movement_3d.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/embeddings-extended/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/cultural_analogies_3d.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/embeddings-extended/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/forward_pass_flowchart.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/lstm-primer/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/lstm_architecture.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/lstm-primer/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/gate_activation_heatmap.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/lstm-primer/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/gradient_flow_comparison.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/lstm-primer/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/attention_heatmap_bsc.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/sentiment/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/classifier_head_architecture_bsc.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/sentiment/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/finetuning_pipeline_bsc.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/sentiment/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/deployment_inference_pipeline_bsc.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/sentiment/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/llm_pipeline_graphviz.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/summarization/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/map_reduce_summarization_bsc.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/summarization/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/rag_summarization_pipeline_bsc.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/summarization/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/charts/evaluation_metrics_bsc.png",
+      "status_code": 404,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/modules/summarization/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/assets/pdfs/20250926_1400_neuralnetworks_introduction.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/pdfs.html",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/assets/pdfs/week03_rnn_handout_student.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/pdfs.html",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/assets/pdfs/20251003_0800_week03_rnn_bsc_discovery.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/pdfs.html",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/assets/pdfs/20250926_0801_function_approximation_handout_v2.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/pdfs.html",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/assets/pdfs/20250922_1458_week03_rnn_with_foundations.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/pdfs.html",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/assets/pdfs/20251002_1300_week03_lstm_bsc_21slides.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/pdfs.html",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/assets/pdfs/week04_seq2seq.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/pdfs.html",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/assets/pdfs/2025.10.10_transformers.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/pdfs.html",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/assets/pdfs/decoding_strategies.pdf",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/pdfs.html",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/assets/notebooks/shakespeare_sonnets.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/notebooks.html",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/assets/notebooks/ngrams_alice_in_wonderland.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/notebooks.html",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/assets/notebooks/word_embeddings_3d_msc.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/notebooks.html",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/assets/notebooks/statistical_analysis.ipynb",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/moodle/notebooks.html",
+      "link_type": "a",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/3d_transformer_architecture.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/beam_search_tree_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/bert_results_glue_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/adapter_architecture_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/bert_vs_gpt_architecture_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/bias_sources_flowchart_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/addk_smoothing_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/bigram_calculation_steps_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/attention_heatmap_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/bleu_comparison_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/catastrophic_forgetting_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/bpe_visualization_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/cbow_architecture_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/classifier_head_architecture_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/conditional_probability_tree_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/bpe_progression_visual_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/distillation_architecture_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/efficiency.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/emergent_abilities_chart_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/degeneration_problem_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/contrastive_vs_nucleus_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/decoding.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/evaluation_metrics_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/ethics.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/fairness_metrics_comparison_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/finetuning.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/gate_activation_heatmap.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/embeddings.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/encoder_decoder_architecture_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/harm_taxonomy_tree_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/forward_pass_flowchart.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/deployment_pipeline_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/lora_explanation_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/lstm_architecture.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/map_reduce_summarization_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/model_compression_landscape_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/compute_scaling_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/llm_pipeline_graphviz.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/gradient_flow_comparison_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/model_scale_timeline_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/multihead_attention_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/negative_sampling_process_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/ngrams.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/parameter_spectrum_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/positional_encoding_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/pretrained.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/pretraining_workflow_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/quantization_levels_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/rag_summarization_pipeline_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/real_world_harms_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/rnn_unrolled_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/scaling.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/scaling_laws_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/seq2seq.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/skipgram_architecture_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/tokenization.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/tokenization_comparison_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/tokenization_impact_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/training_evolution_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/vanishing_gradient_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/finetuning_pipeline_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/vocabulary_probability_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/word_arithmetic_3d_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/lstm_architecture_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/transformers.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/rnn-lstm.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/corpus_statistics_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/deployment_inference_pipeline_bsc.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    },
+    {
+      "url": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/gradient_flow_comparison.png",
+      "status_code": 200,
+      "source_page": "https://digital-ai-finance.github.io/Natural-Language-Processing/charts/",
+      "link_type": "img",
+      "is_internal": true,
+      "error_message": ""
+    }
+  ]
+}
