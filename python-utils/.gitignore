@@ -1,0 +1,25 @@
+# Generated reports
+link_report_*.csv
+link_report_*.json
+quality_report_*.json
+quality_report_*.html
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Claude
+CLAUDE.md
+.claude/
