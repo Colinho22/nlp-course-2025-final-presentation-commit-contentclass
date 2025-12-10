@@ -120,7 +120,7 @@ def main():
 
     markdown_report = generate_markdown_report(results)
     report_md_path = 'NOTEBOOK_TEST_REPORT.md'
-    with open(report_md_path, 'w') as f:
+    with open(report_md_path, 'w', encoding='utf-8') as f:
         f.write(markdown_report)
 
     print(f"Markdown report saved to: {report_md_path}")

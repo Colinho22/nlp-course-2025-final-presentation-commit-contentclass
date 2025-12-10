@@ -1,6 +1,8 @@
 # Private config
 .claude/
 CLAUDE.md
+
+# LaTeX auxiliary files
 *.aux
 *.log
 *.nav
@@ -8,8 +10,37 @@ CLAUDE.md
 *.snm
 *.toc
 *.vrb
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+texput.log
+
+# Temporary and archive folders
 temp/
 archive/
-texput.log
-nul
+previous/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
 .ipynb_checkpoints/
+
+# Reports (generated, not tracked)
+docs/reports/
+quality_report_*.html
+quality_report_*.json
+link_report_*.csv
+link_report_*.json
+
+# OS files
+nul
+.DS_Store
+Thumbs.db
+
+# Backup folders (Hugo, etc.)
+docs_backup_static/
+docs_hugo/
+
+# Moodle exports
+moodle/

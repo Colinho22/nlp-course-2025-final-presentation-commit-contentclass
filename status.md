@@ -1,6 +1,6 @@
 # NLP Course 2025 - Project Status
 
-## Last Updated: 2025-10-27
+## Last Updated: 2025-12-10
 
 ## Overall Progress - 🎉 100% COMPLETE! 🎉
 - **Total Weeks**: 12/12 ✅ **ALL COMPLETE**
@@ -171,6 +171,46 @@
 - **Exercise notebooks**: Shakespeare sonnets, Alice n-grams
 - **Visualization series**: 8 progressive notebooks
 
+## Recent Achievements (2025-12-10)
+1. **CLAUDE.md improvements** ✅
+   - Added troubleshooting section for common errors
+   - Added batch PowerShell commands for chart regeneration
+   - Clarified color scheme usage (BSc Discovery vs legacy)
+   - Updated recent changes section
+
+2. **Moodle Site Launch** (Dec 9) ✅
+   - Student-facing course portal at `/moodle/`
+   - 94% quality score
+   - Learning journey tracker, chart gallery, dark mode
+   - 5 pages: home, schedule, PDFs, notebooks, assignments
+
+3. **Python Utilities** (Dec 9) ✅
+   - `python-utils/quality_checker/` - Website quality scoring
+   - `python-utils/link_checker/` - Link validation with reports
+
+4. **Improved .gitignore** (Dec 10) ✅
+   - Added docs/reports/ exclusion
+   - Added backup folder exclusions
+   - Better organization with comments
+
+## Recent Achievements (2025-11-25)
+1. **Sentiment Analysis Module** ✅
+   - Location: `NLP_slides/sentiment_analysis_module/`
+   - 26 slides (17 main + 9 appendix)
+   - BERT fine-tuning with technical deep dives
+   - 12 professional charts
+
+2. **Week 9 Decoding Final** (Nov 22) ✅
+   - Canonical: `20251122_0935_text_cleaned.pdf` (66 slides)
+   - 27 charts with BSc Discovery styling
+   - Toolbox-first pedagogy
+   - Individual chart scripts in `charts_individual/`
+
+3. **Summarization Module Enhanced** (Nov 15) ✅
+   - 40 slides with discovery-based pedagogy
+   - 87 charts total (82 existing + 5 new)
+   - Four-part structure
+
 ## Recent Achievements (2025-10-10)
 1. ~~Week 4 minimalist lab redesign - 3-part series~~ ✅
    - Fixed TypeError and IndexError in original notebook
@@ -203,11 +243,17 @@
 ## Next Priority Actions
 1. ~~Apply didactic framework to Week 5 Transformers~~ ✅ (COMPLETED 2025-09-28)
 2. Test and fix Jupyter notebook execution issues (Weeks 2-7)
-3. Apply didactic framework to Week 1 (first impression optimization - foundational content)
-4. Apply didactic framework to Week 6 Pre-trained Models (BERT/GPT paradigm shift)
+3. ~~Apply didactic framework to Week 1~~ ✅ (dice analogy, discovery-based)
+4. ~~Apply didactic framework to Week 6 Pre-trained Models~~ ✅ ($1M cost hook)
 5. Create master syllabus with learning objectives and timeline
-6. Create student-facing course website/navigation
-7. Review and enhance Weeks 8-12 presentations using framework checklist
+6. ~~Create student-facing course website/navigation~~ ✅ (Moodle site Dec 2025)
+7. ~~Review and enhance Weeks 8-12 presentations~~ ✅ (All restructured Nov 2025)
+
+## Remaining Tasks
+1. Test Jupyter notebook execution (Weeks 2-7) - verify labs work
+2. Create master syllabus document
+3. Add more interactive elements to Moodle site
+4. Consider video walkthroughs for complex topics
 
 ## Build Commands Reference
 ```bash
