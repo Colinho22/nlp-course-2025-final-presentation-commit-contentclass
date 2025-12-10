@@ -44,3 +44,5 @@ docs_hugo/
 
 # Moodle exports
 moodle/
+notebook_test_results.json
+NOTEBOOK_TEST_REPORT.md
