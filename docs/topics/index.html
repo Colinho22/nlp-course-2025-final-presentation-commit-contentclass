@@ -1,2 +1,548 @@
-<!doctype html><html lang=en><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Topics | NLP Course</title>
-<link rel=stylesheet href=https://digital-ai-finance.github.io/Natural-Language-Processing/css/main.css></head><body><nav class=sidebar><div class=sidebar-header><a href=https://digital-ai-finance.github.io/Natural-Language-Processing/>NLP Course</a></div><ul class=sidebar-nav><li><a href=https://digital-ai-finance.github.io/Natural-Language-Processing/topics/>Topics</a></li><li><a href=https://digital-ai-finance.github.io/Natural-Language-Processing/modules/>Modules</a></li></ul></nav><main class=content><article class=page><h1>Topics</h1><p>12 comprehensive modules covering NLP from foundations to applications.</p><h2 id=part-1-language-foundations>Part 1: Language Foundations</h2><ul><li><a href=ngrams/>Week 1: N-gram Language Models</a> - 42 slides</li><li><a href=embeddings/>Week 2: Word Embeddings</a> - 35 slides</li><li><a href=rnn-lstm/>Week 3: RNN & LSTM Networks</a> - 21 slides</li></ul><h2 id=part-2-core-architectures>Part 2: Core Architectures</h2><ul><li><a href=seq2seq/>Week 4: Sequence-to-Sequence</a> - 38 slides</li><li><a href=transformers/>Week 5: Transformer Architecture</a> - 45 slides</li><li><a href=pretrained/>Week 6: Pre-trained Models</a> - 52 slides</li></ul><h2 id=part-3-advanced-methods>Part 3: Advanced Methods</h2><ul><li><a href=scaling/>Week 7: Scaling & Advanced Topics</a> - 35 slides</li><li><a href=tokenization/>Week 8: Tokenization</a> - 35 slides</li><li><a href=decoding/>Week 9: Decoding Strategies</a> - 66 slides</li></ul><h2 id=part-4-applications>Part 4: Applications</h2><ul><li><a href=finetuning/>Week 10: Fine-tuning Methods</a> - 38 slides</li><li><a href=efficiency/>Week 11: Efficiency & Optimization</a> - 41 slides</li><li><a href=ethics/>Week 12: Ethics & Bias</a> - 26 slides</li></ul></article></main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="NLP Course Topics - 12 comprehensive modules covering Natural Language Processing from foundations to applications">
+  <meta property="og:title" content="Topics | NLP Course">
+  <meta property="og:description" content="12 weeks of NLP: N-grams, Word2Vec, LSTM, Transformers, BERT, and more">
+  <meta property="og:image" content="https://digital-ai-finance.github.io/Natural-Language-Processing/charts/word_arithmetic_3d_bsc.png">
+  <link rel="icon" href="../favicon.png" type="image/png">
+  <title>Topics | NLP Course</title>
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" aria-label="Main navigation">
+    <div class="sidebar-header">
+      <img src="https://quantlet.com/images/QLogo_small.png" alt="QuantLet" class="sidebar-logo" onerror="this.style.display='none'">
+      <div class="sidebar-title"><a href="../">NLP Course</a></div>
+    </div>
+
+    <div class="search-box">
+      <input type="search" class="search-input" id="topic-search" placeholder="Search topics..." aria-label="Search topics">
+    </div>
+
+    <details class="sidebar-section" open>
+      <summary>Part 1: Foundations</summary>
+      <ul class="sidebar-nav" data-part="1">
+        <li><a href="ngrams/">N-grams</a></li>
+        <li><a href="embeddings/">Word2Vec</a></li>
+        <li><a href="rnn-lstm/">LSTM</a></li>
+      </ul>
+    </details>
+
+    <details class="sidebar-section">
+      <summary>Part 2: Architectures</summary>
+      <ul class="sidebar-nav" data-part="2">
+        <li><a href="seq2seq/">Attention</a></li>
+        <li><a href="transformers/">Transformers</a></li>
+        <li><a href="pretrained/">BERT</a></li>
+      </ul>
+    </details>
+
+    <details class="sidebar-section">
+      <summary>Part 3: Advanced</summary>
+      <ul class="sidebar-nav" data-part="3">
+        <li><a href="scaling/">Scaling</a></li>
+        <li><a href="tokenization/">BPE</a></li>
+        <li><a href="decoding/">Decoding</a></li>
+      </ul>
+    </details>
+
+    <details class="sidebar-section">
+      <summary>Part 4: Applications</summary>
+      <ul class="sidebar-nav" data-part="4">
+        <li><a href="finetuning/">LoRA</a></li>
+        <li><a href="efficiency/">Quantization</a></li>
+        <li><a href="ethics/">Bias</a></li>
+      </ul>
+    </details>
+
+    <details class="sidebar-section">
+      <summary>Modules</summary>
+      <ul class="sidebar-nav">
+        <li><a href="../modules/summarization/">Summarization</a></li>
+        <li><a href="../modules/sentiment/">Sentiment</a></li>
+        <li><a href="../modules/embeddings-extended/">Embeddings Deep Dive</a></li>
+      </ul>
+    </details>
+
+    <details class="sidebar-section">
+      <summary>Resources</summary>
+      <ul class="sidebar-nav">
+        <li><a href="../moodle/">Moodle HS25</a></li>
+        <li><a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" target="_blank" rel="noopener">GitHub</a></li>
+      </ul>
+    </details>
+  </nav>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav" aria-label="Quick links">
+    <div class="top-nav-links">
+      <a href="../">Home</a>
+      <a href="./" class="active">Topics</a>
+      <a href="../modules/">Modules</a>
+      <a href="../moodle/">Moodle HS25</a>
+      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="top-nav-actions">
+      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/releases" class="pdf-btn" target="_blank" rel="noopener">Download PDFs</a>
+      <button class="dark-toggle" id="dark-toggle" aria-label="Toggle dark mode">Dark Mode</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <h1>Course Topics</h1>
+    <p class="subtitle">12 Comprehensive Modules from Foundations to Applications</p>
+    <div class="stats">
+      <div class="stat-item">
+        <span class="stat-number">12</span>
+        <span class="stat-label">Weeks</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">4</span>
+        <span class="stat-label">Parts</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">500+</span>
+        <span class="stat-label">Slides</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">250+</span>
+        <span class="stat-label">Charts</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Journey Tracker -->
+  <section class="journey">
+    <h2>Learning Journey</h2>
+    <div class="journey-tracker">
+      <a href="#part1" class="journey-step">
+        <div class="journey-circle">1</div>
+        <span class="journey-label">Foundations</span>
+      </a>
+      <div class="journey-connector"></div>
+      <a href="#part2" class="journey-step">
+        <div class="journey-circle">2</div>
+        <span class="journey-label">Architectures</span>
+      </a>
+      <div class="journey-connector"></div>
+      <a href="#part3" class="journey-step">
+        <div class="journey-circle">3</div>
+        <span class="journey-label">Advanced</span>
+      </a>
+      <div class="journey-connector"></div>
+      <a href="#part4" class="journey-step">
+        <div class="journey-circle">4</div>
+        <span class="journey-label">Applications</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main id="main-content" class="content">
+    <h2>All Topics by Part</h2>
+
+    <div class="parts-grid">
+      <!-- Part 1: Foundations -->
+      <div class="part-card" id="part1">
+        <div class="part-header">
+          <div class="part-number">1</div>
+          <div class="part-title">Language Foundations</div>
+        </div>
+        <p class="part-desc">Statistical models and neural representations</p>
+        <ul class="topics-list">
+          <li>
+            <a href="ngrams/">
+              <strong>Week 1: N-gram Language Models</strong>
+              <span class="slide-count">42 slides</span>
+              <p>Probability chains, Markov assumption, smoothing techniques, perplexity evaluation</p>
+            </a>
+          </li>
+          <li>
+            <a href="embeddings/">
+              <strong>Week 2: Word Embeddings</strong>
+              <span class="slide-count">35 slides</span>
+              <p>Word2Vec, Skip-gram, CBOW, semantic geometry, word arithmetic</p>
+            </a>
+          </li>
+          <li>
+            <a href="rnn-lstm/">
+              <strong>Week 3: RNN & LSTM Networks</strong>
+              <span class="slide-count">21 slides</span>
+              <p>Sequential processing, vanishing gradients, gating mechanisms, memory cells</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Part 2: Architectures -->
+      <div class="part-card" id="part2">
+        <div class="part-header">
+          <div class="part-number">2</div>
+          <div class="part-title">Core Architectures</div>
+        </div>
+        <p class="part-desc">Attention mechanisms and transformer models</p>
+        <ul class="topics-list">
+          <li>
+            <a href="seq2seq/">
+              <strong>Week 4: Sequence-to-Sequence</strong>
+              <span class="slide-count">38 slides</span>
+              <p>Encoder-decoder, attention alignment, Bahdanau vs Luong attention</p>
+            </a>
+          </li>
+          <li>
+            <a href="transformers/">
+              <strong>Week 5: Transformer Architecture</strong>
+              <span class="slide-count">45 slides</span>
+              <p>Self-attention, multi-head attention, positional encoding, parallel processing</p>
+            </a>
+          </li>
+          <li>
+            <a href="pretrained/">
+              <strong>Week 6: Pre-trained Models</strong>
+              <span class="slide-count">52 slides</span>
+              <p>BERT, GPT, masked language modeling, transfer learning, fine-tuning</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Part 3: Advanced -->
+      <div class="part-card" id="part3">
+        <div class="part-header">
+          <div class="part-number">3</div>
+          <div class="part-title">Advanced Methods</div>
+        </div>
+        <p class="part-desc">Scaling, tokenization, and generation</p>
+        <ul class="topics-list">
+          <li>
+            <a href="scaling/">
+              <strong>Week 7: Scaling & Advanced Topics</strong>
+              <span class="slide-count">35 slides</span>
+              <p>Scaling laws, compute-optimal training, Chinchilla, emergent abilities</p>
+            </a>
+          </li>
+          <li>
+            <a href="tokenization/">
+              <strong>Week 8: Tokenization</strong>
+              <span class="slide-count">35 slides</span>
+              <p>BPE, WordPiece, SentencePiece, vocabulary learning, subword units</p>
+            </a>
+          </li>
+          <li>
+            <a href="decoding/">
+              <strong>Week 9: Decoding Strategies</strong>
+              <span class="slide-count">66 slides</span>
+              <p>Greedy, beam search, sampling, temperature, top-k, nucleus sampling</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Part 4: Applications -->
+      <div class="part-card" id="part4">
+        <div class="part-header">
+          <div class="part-number">4</div>
+          <div class="part-title">Applications</div>
+        </div>
+        <p class="part-desc">Fine-tuning, efficiency, and responsible AI</p>
+        <ul class="topics-list">
+          <li>
+            <a href="finetuning/">
+              <strong>Week 10: Fine-tuning Methods</strong>
+              <span class="slide-count">38 slides</span>
+              <p>LoRA, adapters, prompt tuning, parameter-efficient methods, PEFT</p>
+            </a>
+          </li>
+          <li>
+            <a href="efficiency/">
+              <strong>Week 11: Efficiency & Optimization</strong>
+              <span class="slide-count">41 slides</span>
+              <p>Quantization, pruning, distillation, FlashAttention, inference optimization</p>
+            </a>
+          </li>
+          <li>
+            <a href="ethics/">
+              <strong>Week 12: Ethics & Bias</strong>
+              <span class="slide-count">26 slides</span>
+              <p>Bias detection, fairness metrics, responsible AI, alignment, safety</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Featured Charts Gallery -->
+    <section class="gallery-section">
+      <h2>Featured Charts from Each Part</h2>
+      <div class="chart-gallery">
+        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week01_foundations/figures/perplexity_comparison_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
+          <img src="../charts/perplexity_comparison_bsc.png" alt="Perplexity Comparison" loading="lazy">
+          <div class="chart-name">Perplexity</div>
+        </a>
+        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week02_neural_lm/figures/word_arithmetic_3d_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
+          <img src="../charts/word_arithmetic_3d_bsc.png" alt="Word Arithmetic 3D" loading="lazy">
+          <div class="chart-name">Word Arithmetic</div>
+        </a>
+        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week03_rnn/figures/lstm_architecture_overview_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
+          <img src="../charts/lstm_architecture_overview_bsc.png" alt="LSTM Architecture" loading="lazy">
+          <div class="chart-name">LSTM Gates</div>
+        </a>
+        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week05_transformers/figures/attention_visualization_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
+          <img src="../charts/attention_visualization_bsc.png" alt="Attention Visualization" loading="lazy">
+          <div class="chart-name">Attention</div>
+        </a>
+        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week06_pretrained/figures/bert_architecture_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
+          <img src="../charts/bert_architecture_bsc.png" alt="BERT Architecture" loading="lazy">
+          <div class="chart-name">BERT</div>
+        </a>
+        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week07_scaling/figures/scaling_laws_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
+          <img src="../charts/scaling_laws_bsc.png" alt="Scaling Laws" loading="lazy">
+          <div class="chart-name">Scaling Laws</div>
+        </a>
+        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week08_tokenization/figures/bpe_visualization_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
+          <img src="../charts/bpe_visualization_bsc.png" alt="BPE Tokenization" loading="lazy">
+          <div class="chart-name">BPE</div>
+        </a>
+        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week09_decoding/figures/beam_search_visual_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
+          <img src="../charts/beam_search_tree_bsc.png" alt="Beam Search" loading="lazy">
+          <div class="chart-name">Beam Search</div>
+        </a>
+        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week09_decoding/figures/temperature_effects_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
+          <img src="../charts/temperature_effects_bsc.png" alt="Temperature Effects" loading="lazy">
+          <div class="chart-name">Temperature</div>
+        </a>
+        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week10_finetuning/figures/lora_architecture_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
+          <img src="../charts/lora_architecture_bsc.png" alt="LoRA Architecture" loading="lazy">
+          <div class="chart-name">LoRA</div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <a href="#" class="back-to-top">Back to Top</a>
+    <p>2025 NLP Course | <a href="https://github.com/Digital-AI-Finance" target="_blank" rel="noopener">Digital AI Finance</a> | <a href="https://quantlet.com/" target="_blank" rel="noopener">QuantLet</a></p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // Dark mode toggle
+    const darkToggle = document.getElementById('dark-toggle');
+    const body = document.body;
+
+    if (localStorage.getItem('darkMode') === 'true' ||
+        (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      body.classList.add('dark');
+      darkToggle.textContent = 'Light Mode';
+    }
+
+    darkToggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      const isDark = body.classList.contains('dark');
+      localStorage.setItem('darkMode', isDark);
+      darkToggle.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+    });
+
+    // Topic search
+    const searchInput = document.getElementById('topic-search');
+    const sidebarSections = document.querySelectorAll('.sidebar-section');
+
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      sidebarSections.forEach(section => {
+        const items = section.querySelectorAll('.sidebar-nav a');
+        let hasMatch = false;
+        items.forEach(item => {
+          const text = item.textContent.toLowerCase();
+          const matches = query === '' || text.includes(query);
+          item.parentElement.style.display = matches ? '' : 'none';
+          if (matches) hasMatch = true;
+        });
+        if (query === '') {
+          section.style.display = '';
+        } else {
+          section.style.display = hasMatch ? '' : 'none';
+          if (hasMatch) section.open = true;
+        }
+      });
+    });
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href === '#') return;
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Back to top
+    document.querySelector('.back-to-top').addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+
+  <style>
+    /* Additional styles for Topics page */
+    .part-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .topics-list {
+      list-style: none;
+    }
+    .topics-list li {
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+    }
+    .topics-list li:last-child {
+      border-bottom: none;
+    }
+    .topics-list a {
+      display: block;
+      padding: 12px 0;
+      text-decoration: none;
+      color: var(--text);
+      transition: var(--transition);
+    }
+    .topics-list a:hover {
+      padding-left: 8px;
+      color: var(--accent);
+    }
+    .topics-list strong {
+      display: block;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .topics-list p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .slide-count {
+      font-size: 11px;
+      color: var(--accent);
+      background: rgba(37, 99, 235, 0.1);
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 8px;
+    }
+    .top-nav-links a.active {
+      background: rgba(255,255,255,0.2);
+    }
+    .content h2 {
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin-bottom: 24px;
+      padding-bottom: 8px;
+      border-bottom: 3px solid var(--accent);
+      display: inline-block;
+    }
+    .content {
+      padding: 40px;
+    }
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin: 24px 0;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-number {
+      display: block;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .stat-label {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    .journey {
+      padding: 32px 40px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+    .journey h2 {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+    .journey-tracker {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .journey-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .journey-step:hover {
+      transform: scale(1.05);
+    }
+    .journey-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: var(--shadow);
+    }
+    .journey-label {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .journey-connector {
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--border));
+      margin: 0 12px;
+      margin-bottom: 28px;
+    }
+    .footer {
+      background: var(--primary);
+      color: white;
+      padding: 24px 40px;
+      text-align: center;
+    }
+    .footer a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+    }
+    .footer a:hover {
+      color: white;
+    }
+    .back-to-top {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+    }
+  </style>
+</body>
+</html>
