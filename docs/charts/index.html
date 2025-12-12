@@ -1,501 +1,1420 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chart Gallery | NLP Course</title>
-    <link rel="stylesheet" href="/Natural-Language-Processing/css/main.css">
-    <style>
-        .gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px; }
-        .gallery-item { border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden; background: white; }
-        .gallery-item img { width: 100%; height: 120px; object-fit: contain; background: #f8fafc; padding: 8px; }
-        .gallery-item span { display: block; font-size: 11px; padding: 8px; text-align: center; border-top: 1px solid #e2e8f0; }
-        @media (max-width: 768px) { .gallery { grid-template-columns: repeat(2, 1fr); } }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="121 professional visualizations covering all NLP concepts from N-grams to Transformers">
+  <meta property="og:title" content="Chart Gallery | NLP Course">
+  <meta property="og:description" content="121 professional visualizations for Natural Language Processing">
+  <link rel="icon" href="../favicon.png" type="image/png">
+  <title>Chart Gallery | NLP Course</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    /* Gallery-specific styles */
+    .gallery-header {
+      margin-bottom: 2rem;
+    }
+    .gallery-stats {
+      display: flex;
+      gap: 2rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+    .stat-item {
+      background: var(--bg-card);
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .stat-item strong {
+      display: block;
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+
+    /* Filter buttons */
+    .filter-bar {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: var(--bg-card);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+    .filter-btn:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .filter-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Gallery grid */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .gallery-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .gallery-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 160px;
+      object-fit: contain;
+      background: #fafafa;
+      padding: 10px;
+    }
+    .gallery-item-info {
+      padding: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+    .gallery-item-title {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+    .gallery-item-category {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Category badges */
+    .category-badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+    .category-foundations { background: #d4edda; color: #155724; }
+    .category-embeddings { background: #cce5ff; color: #004085; }
+    .category-lstm { background: #fff3cd; color: #856404; }
+    .category-attention { background: #f8d7da; color: #721c24; }
+    .category-transformers { background: #e2d5f1; color: #4a235a; }
+    .category-bert { background: #d1ecf1; color: #0c5460; }
+    .category-scaling { background: #ffeeba; color: #856404; }
+    .category-tokenization { background: #c3e6cb; color: #155724; }
+    .category-decoding { background: #b8daff; color: #004085; }
+    .category-finetuning { background: #f5c6cb; color: #721c24; }
+    .category-efficiency { background: #d6d8db; color: #383d41; }
+    .category-ethics { background: #fdfdfe; color: #383d41; border: 1px solid #d6d8db; }
+
+    /* Dark mode adjustments */
+    .dark .gallery-item img {
+      background: #2d3748;
+    }
+    .dark .stat-item {
+      background: var(--bg-card);
+    }
+
+    @media (max-width: 768px) {
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .gallery-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <nav class="sidebar">
-        <div class="sidebar-header"><a href="/Natural-Language-Processing/">NLP Course</a></div>
-        <ul class="sidebar-nav">
-            <li><a href="/Natural-Language-Processing/topics/">Topics</a></li>
-            <li><a href="/Natural-Language-Processing/modules/">Modules</a></li>
-        </ul>
-    </nav>
-    <main class="content">
-        <article class="page">
-            <h1>Chart Gallery</h1>
-            <p>117 visualizations from the NLP course.</p>
-            <div class="gallery">
-                <div class="gallery-item">
-                    <img src="3d_multihead_attention.png" alt="3D Multihead Attention">
-                    <span>3D Multihead Attention</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="3d_transformer_architecture.png" alt="3D Transformer Architecture">
-                    <span>3D Transformer Architecture</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="accuracy_size_pareto.png" alt="Accuracy Size Pareto">
-                    <span>Accuracy Size Pareto</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="adapter_architecture_bsc.png" alt="Adapter Architecture">
-                    <span>Adapter Architecture</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="addk_smoothing_bsc.png" alt="Addk Smoothing">
-                    <span>Addk Smoothing</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="ai_ethics_landscape.png" alt="Ai Ethics Landscape">
-                    <span>Ai Ethics Landscape</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="attention_heatmap.png" alt="Attention Heatmap">
-                    <span>Attention Heatmap</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="attention_heatmap_bsc.png" alt="Attention Heatmap">
-                    <span>Attention Heatmap</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="beam_search_tree_bsc.png" alt="Beam Search Tree">
-                    <span>Beam Search Tree</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="beam_search_tree_graphviz.png" alt="Beam Search Tree Graphviz">
-                    <span>Beam Search Tree Graphviz</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="bert_architecture_bsc.png" alt="Bert Architecture">
-                    <span>Bert Architecture</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="bert_finetuning_process_bsc.png" alt="Bert Finetuning Process">
-                    <span>Bert Finetuning Process</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="bert_results_glue_bsc.png" alt="Bert Results Glue">
-                    <span>Bert Results Glue</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="bert_vs_gpt_architecture_bsc.png" alt="Bert Vs Gpt Architecture">
-                    <span>Bert Vs Gpt Architecture</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="bias_sources_flowchart.png" alt="Bias Sources Flowchart">
-                    <span>Bias Sources Flowchart</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="bias_sources_flowchart_bsc.png" alt="Bias Sources Flowchart">
-                    <span>Bias Sources Flowchart</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="bigram_calculation_steps_bsc.png" alt="Bigram Calculation Steps">
-                    <span>Bigram Calculation Steps</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="bleu_comparison_bsc.png" alt="Bleu Comparison">
-                    <span>Bleu Comparison</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="bpe_progression_visual.png" alt="Bpe Progression Visual">
-                    <span>Bpe Progression Visual</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="bpe_progression_visual_bsc.png" alt="Bpe Progression Visual">
-                    <span>Bpe Progression Visual</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="bpe_visualization_bsc.png" alt="Bpe Visualization">
-                    <span>Bpe Visualization</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="catastrophic_forgetting_bsc.png" alt="Catastrophic Forgetting">
-                    <span>Catastrophic Forgetting</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="cbow_architecture_bsc.png" alt="Cbow Architecture">
-                    <span>Cbow Architecture</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="classifier_head_architecture_bsc.png" alt="Classifier Head Architecture">
-                    <span>Classifier Head Architecture</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="compute_scaling_bsc.png" alt="Compute Scaling">
-                    <span>Compute Scaling</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="conditional_probability_tree_bsc.png" alt="Conditional Probability Tree">
-                    <span>Conditional Probability Tree</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="contrastive_vs_nucleus_bsc.png" alt="Contrastive Vs Nucleus">
-                    <span>Contrastive Vs Nucleus</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="corpus_statistics_bsc.png" alt="Corpus Statistics">
-                    <span>Corpus Statistics</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="data_performance_curves.png" alt="Data Performance Curves">
-                    <span>Data Performance Curves</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="decoding.png" alt="Decoding">
-                    <span>Decoding</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="degeneration_problem_bsc.png" alt="Degeneration Problem">
-                    <span>Degeneration Problem</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="deployment_inference_pipeline_bsc.png" alt="Deployment Inference Pipeline">
-                    <span>Deployment Inference Pipeline</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="deployment_pipeline_bsc.png" alt="Deployment Pipeline">
-                    <span>Deployment Pipeline</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="distillation_architecture.png" alt="Distillation Architecture">
-                    <span>Distillation Architecture</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="distillation_architecture_bsc.png" alt="Distillation Architecture">
-                    <span>Distillation Architecture</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="efficiency.png" alt="Efficiency">
-                    <span>Efficiency</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="embeddings.png" alt="Embeddings">
-                    <span>Embeddings</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="emergent_abilities_chart.png" alt="Emergent Abilities Chart">
-                    <span>Emergent Abilities Chart</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="emergent_abilities_chart_bsc.png" alt="Emergent Abilities Chart">
-                    <span>Emergent Abilities Chart</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="encoder_decoder_architecture_bsc.png" alt="Encoder Decoder Architecture">
-                    <span>Encoder Decoder Architecture</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="ethics.png" alt="Ethics">
-                    <span>Ethics</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="evaluation_metrics_bsc.png" alt="Evaluation Metrics">
-                    <span>Evaluation Metrics</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="fairness_metrics_comparison.png" alt="Fairness Metrics Comparison">
-                    <span>Fairness Metrics Comparison</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="fairness_metrics_comparison_bsc.png" alt="Fairness Metrics Comparison">
-                    <span>Fairness Metrics Comparison</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="finetuning.png" alt="Finetuning">
-                    <span>Finetuning</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="finetuning_pipeline_bsc.png" alt="Finetuning Pipeline">
-                    <span>Finetuning Pipeline</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="finetuning_vs_prompting.png" alt="Finetuning Vs Prompting">
-                    <span>Finetuning Vs Prompting</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="forward_pass_flowchart.png" alt="Forward Pass Flowchart">
-                    <span>Forward Pass Flowchart</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="gate_activation_heatmap.png" alt="Gate Activation Heatmap">
-                    <span>Gate Activation Heatmap</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="gpt3_capabilities.png" alt="Gpt3 Capabilities">
-                    <span>Gpt3 Capabilities</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="gpt_architecture_bsc.png" alt="Gpt Architecture">
-                    <span>Gpt Architecture</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="gradient_flow_comparison.png" alt="Gradient Flow Comparison">
-                    <span>Gradient Flow Comparison</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="gradient_flow_comparison_bsc.png" alt="Gradient Flow Comparison">
-                    <span>Gradient Flow Comparison</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="harm_taxonomy_tree.png" alt="Harm Taxonomy Tree">
-                    <span>Harm Taxonomy Tree</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="harm_taxonomy_tree_bsc.png" alt="Harm Taxonomy Tree">
-                    <span>Harm Taxonomy Tree</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="llm_pipeline_graphviz.png" alt="Llm Pipeline Graphviz">
-                    <span>Llm Pipeline Graphviz</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="lora_explanation.png" alt="Lora Explanation">
-                    <span>Lora Explanation</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="lora_explanation_bsc.png" alt="Lora Explanation">
-                    <span>Lora Explanation</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="lstm_architecture.png" alt="Lstm Architecture">
-                    <span>Lstm Architecture</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="lstm_architecture_bsc.png" alt="Lstm Architecture">
-                    <span>Lstm Architecture</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="lstm_architecture_overview_bsc.png" alt="Lstm Architecture Overview">
-                    <span>Lstm Architecture Overview</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="lstm_gates_simple_bsc.png" alt="Lstm Gates Simple">
-                    <span>Lstm Gates Simple</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="map_reduce_summarization_bsc.png" alt="Map Reduce Summarization">
-                    <span>Map Reduce Summarization</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="model_compression_landscape.png" alt="Model Compression Landscape">
-                    <span>Model Compression Landscape</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="model_compression_landscape_bsc.png" alt="Model Compression Landscape">
-                    <span>Model Compression Landscape</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="model_scale_timeline.png" alt="Model Scale Timeline">
-                    <span>Model Scale Timeline</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="model_scale_timeline_bsc.png" alt="Model Scale Timeline">
-                    <span>Model Scale Timeline</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="multihead_attention_bsc.png" alt="Multihead Attention">
-                    <span>Multihead Attention</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="negative_sampling_process_bsc.png" alt="Negative Sampling Process">
-                    <span>Negative Sampling Process</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="ngram_context_windows_bsc.png" alt="Ngram Context Windows">
-                    <span>Ngram Context Windows</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="ngrams.png" alt="Ngrams">
-                    <span>Ngrams</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="parameter_spectrum_bsc.png" alt="Parameter Spectrum">
-                    <span>Parameter Spectrum</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="perplexity_comparison_bsc.png" alt="Perplexity Comparison">
-                    <span>Perplexity Comparison</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="positional_encoding_3d.png" alt="Positional Encoding 3D">
-                    <span>Positional Encoding 3D</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="positional_encoding_bsc.png" alt="Positional Encoding">
-                    <span>Positional Encoding</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="practical_methods_coverage_bsc.png" alt="Practical Methods Coverage">
-                    <span>Practical Methods Coverage</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="pretrained.png" alt="Pretrained">
-                    <span>Pretrained</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="pretraining_finetuning_paradigm_bsc.png" alt="Pretraining Finetuning Paradigm">
-                    <span>Pretraining Finetuning Paradigm</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="pretraining_workflow_bsc.png" alt="Pretraining Workflow">
-                    <span>Pretraining Workflow</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="quantization_comparison.png" alt="Quantization Comparison">
-                    <span>Quantization Comparison</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="quantization_levels_bsc.png" alt="Quantization Levels">
-                    <span>Quantization Levels</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="rag_summarization_pipeline_bsc.png" alt="Rag Summarization Pipeline">
-                    <span>Rag Summarization Pipeline</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="rare_word_handling_visual.png" alt="Rare Word Handling Visual">
-                    <span>Rare Word Handling Visual</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="real_world_harms_bsc.png" alt="Real World Harms">
-                    <span>Real World Harms</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="rnn-lstm.png" alt="Rnn-Lstm">
-                    <span>Rnn-Lstm</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="rnn_simple_unrolled_bsc.png" alt="Rnn Simple Unrolled">
-                    <span>Rnn Simple Unrolled</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="rnn_unrolled_bsc.png" alt="Rnn Unrolled">
-                    <span>Rnn Unrolled</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="scaling.png" alt="Scaling">
-                    <span>Scaling</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="scaling_laws.png" alt="Scaling Laws">
-                    <span>Scaling Laws</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="scaling_laws_bsc.png" alt="Scaling Laws">
-                    <span>Scaling Laws</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="semantic_space_2d_bsc.png" alt="Semantic Space 2D">
-                    <span>Semantic Space 2D</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="seq2seq.png" alt="Seq2Seq">
-                    <span>Seq2Seq</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="skipgram_architecture_bsc.png" alt="Skipgram Architecture">
-                    <span>Skipgram Architecture</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="skipgram_training_steps_bsc.png" alt="Skipgram Training Steps">
-                    <span>Skipgram Training Steps</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="smoothing_comparison_bsc.png" alt="Smoothing Comparison">
-                    <span>Smoothing Comparison</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="sr_16_transformer_architecture_annotated.png" alt="Sr 16 Transformer Architecture Annotated">
-                    <span>Sr 16 Transformer Architecture Annotated</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="temperature_effects_bsc.png" alt="Temperature Effects">
-                    <span>Temperature Effects</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="tokenization.png" alt="Tokenization">
-                    <span>Tokenization</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="tokenization_comparison_bsc.png" alt="Tokenization Comparison">
-                    <span>Tokenization Comparison</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="tokenization_comparison_visual.png" alt="Tokenization Comparison Visual">
-                    <span>Tokenization Comparison Visual</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="tokenization_impact_bsc.png" alt="Tokenization Impact">
-                    <span>Tokenization Impact</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="topk_example_bsc.png" alt="Topk Example">
-                    <span>Topk Example</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="training_evolution_bsc.png" alt="Training Evolution">
-                    <span>Training Evolution</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="transfer_learning_visual.png" alt="Transfer Learning Visual">
-                    <span>Transfer Learning Visual</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="transformers.png" alt="Transformers">
-                    <span>Transformers</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="unified_framework_bsc.png" alt="Unified Framework">
-                    <span>Unified Framework</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="vanishing_gradient_bsc.png" alt="Vanishing Gradient">
-                    <span>Vanishing Gradient</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="vanishing_gradient_problem_bsc.png" alt="Vanishing Gradient Problem">
-                    <span>Vanishing Gradient Problem</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="vocab_size_oov_visual.png" alt="Vocab Size Oov Visual">
-                    <span>Vocab Size Oov Visual</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="vocabulary_probability_bsc.png" alt="Vocabulary Probability">
-                    <span>Vocabulary Probability</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="week4_attention_heatmap.png" alt="Week4 Attention Heatmap">
-                    <span>Week4 Attention Heatmap</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="week4_beam_search_tree.png" alt="Week4 Beam Search Tree">
-                    <span>Week4 Beam Search Tree</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="week4_encoder_decoder_flow.png" alt="Week4 Encoder Decoder Flow">
-                    <span>Week4 Encoder Decoder Flow</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="week4_seq2seq_architecture_minimalist.png" alt="Week4 Seq2Seq Architecture Minimalist">
-                    <span>Week4 Seq2Seq Architecture Minimalist</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="word2vec_architectures.png" alt="Word2Vec Architectures">
-                    <span>Word2Vec Architectures</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="word_arithmetic_3d_bsc.png" alt="Word Arithmetic 3D">
-                    <span>Word Arithmetic 3D</span>
-                </div>
-                <div class="gallery-item">
-                    <img src="word_as_vector_concept_bsc.png" alt="Word As Vector Concept">
-                    <span>Word As Vector Concept</span>
-                </div>
-            </div>
-        </article>
-    </main>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" aria-label="Course navigation">
+    <div class="sidebar-header">
+      <img src="https://quantlet.com/images/QLogo_small.png" alt="QuantLet" class="sidebar-logo" onerror="this.style.display='none'">
+      <div class="sidebar-title"><a href="../">Natural Language Processing</a></div>
+      <div class="sidebar-subtitle">BSc Course - 12 Weeks</div>
+    </div>
+
+    <!-- Search -->
+    <div class="sidebar-search">
+      <input type="text" id="site-search" placeholder="Search topics..." aria-label="Search topics">
+    </div>
+
+    <div class="sidebar-content">
+      <!-- Foundations -->
+      <div class="sidebar-section" data-section="foundations">
+        <div class="section-header" onclick="toggleSection('foundations')">
+          <span>Foundations</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="../topics/ngrams/">Week 1: N-grams</a></li>
+            <li><a href="../topics/embeddings/">Week 2: Word2Vec</a></li>
+            <li><a href="../topics/rnn-lstm/">Week 3: LSTM</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Core -->
+      <div class="sidebar-section" data-section="core">
+        <div class="section-header" onclick="toggleSection('core')">
+          <span>Core Architectures</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="../topics/seq2seq/">Week 4: Seq2Seq</a></li>
+            <li><a href="../topics/transformers/">Week 5: Transformers</a></li>
+            <li><a href="../topics/pretrained/">Week 6: BERT</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Advanced -->
+      <div class="sidebar-section" data-section="advanced">
+        <div class="section-header" onclick="toggleSection('advanced')">
+          <span>Advanced Topics</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="../topics/scaling/">Week 7: Scaling Laws</a></li>
+            <li><a href="../topics/tokenization/">Week 8: Tokenization</a></li>
+            <li><a href="../topics/decoding/">Week 9: Decoding</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Applications -->
+      <div class="sidebar-section" data-section="applications">
+        <div class="section-header" onclick="toggleSection('applications')">
+          <span>Applications</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="../topics/finetuning/">Week 10: Fine-tuning</a></li>
+            <li><a href="../topics/efficiency/">Week 11: Efficiency</a></li>
+            <li><a href="../topics/ethics/">Week 12: Ethics</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Modules -->
+      <div class="sidebar-section" data-section="modules">
+        <div class="section-header" onclick="toggleSection('modules')">
+          <span>Deep-Dive Modules</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="../modules/summarization/">Summarization</a></li>
+            <li><a href="../modules/sentiment/">Sentiment Analysis</a></li>
+            <li><a href="../modules/embeddings-extended/">Embeddings Deep Dive</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" target="_blank" rel="noopener">GitHub</a> |
+      <a href="../moodle/">Moodle HS25</a>
+    </div>
+  </nav>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav" aria-label="Quick links">
+    <div class="top-nav-links">
+      <a href="../">Home</a>
+      <a href="../topics/">Topics</a>
+      <a href="../modules/">Modules</a>
+      <a href="./" class="active">Charts</a>
+      <a href="../moodle/">Moodle</a>
+      <a href="../about.html">About</a>
+    </div>
+    <div class="top-nav-actions">
+      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/releases" class="download-btn" target="_blank" rel="noopener">Download PDFs</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="gallery-header">
+      <h1>Chart Gallery</h1>
+      <p>Professional visualizations covering all NLP concepts from statistical language models to modern transformers.</p>
+
+      <div class="gallery-stats">
+        <div class="stat-item">
+          <strong>121</strong>
+          <span>Total Charts</span>
+        </div>
+        <div class="stat-item">
+          <strong>12</strong>
+          <span>Topics Covered</span>
+        </div>
+        <div class="stat-item">
+          <strong>3D</strong>
+          <span>Interactive Visualizations</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">All Charts</button>
+      <button class="filter-btn" data-filter="ngrams">N-grams</button>
+      <button class="filter-btn" data-filter="embeddings">Embeddings</button>
+      <button class="filter-btn" data-filter="lstm">LSTM/RNN</button>
+      <button class="filter-btn" data-filter="attention">Attention</button>
+      <button class="filter-btn" data-filter="transformers">Transformers</button>
+      <button class="filter-btn" data-filter="bert">BERT</button>
+      <button class="filter-btn" data-filter="scaling">Scaling</button>
+      <button class="filter-btn" data-filter="tokenization">Tokenization</button>
+      <button class="filter-btn" data-filter="decoding">Decoding</button>
+      <button class="filter-btn" data-filter="finetuning">Fine-tuning</button>
+      <button class="filter-btn" data-filter="efficiency">Efficiency</button>
+      <button class="filter-btn" data-filter="ethics">Ethics</button>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="gallery-grid">
+      <!-- 3D Visualizations -->
+      <div class="gallery-item" data-category="transformers" onclick="openLightbox('3d_multihead_attention.png')">
+        <img src="3d_multihead_attention.png" alt="3D Multihead Attention" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">3D Multihead Attention</div>
+          <span class="category-badge category-transformers">Transformers</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="transformers" onclick="openLightbox('3d_transformer_architecture.png')">
+        <img src="3d_transformer_architecture.png" alt="3D Transformer Architecture" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">3D Transformer Architecture</div>
+          <span class="category-badge category-transformers">Transformers</span>
+        </div>
+      </div>
+
+      <!-- Scaling -->
+      <div class="gallery-item" data-category="scaling" onclick="openLightbox('accuracy_size_pareto.png')">
+        <img src="accuracy_size_pareto.png" alt="Accuracy Size Pareto" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Accuracy vs Size Pareto</div>
+          <span class="category-badge category-scaling">Scaling</span>
+        </div>
+      </div>
+
+      <!-- Fine-tuning -->
+      <div class="gallery-item" data-category="finetuning" onclick="openLightbox('adapter_architecture_bsc.png')">
+        <img src="adapter_architecture_bsc.png" alt="Adapter Architecture" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Adapter Architecture</div>
+          <span class="category-badge category-finetuning">Fine-tuning</span>
+        </div>
+      </div>
+
+      <!-- N-grams -->
+      <div class="gallery-item" data-category="ngrams" onclick="openLightbox('addk_smoothing_bsc.png')">
+        <img src="addk_smoothing_bsc.png" alt="Add-k Smoothing" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Add-k Smoothing</div>
+          <span class="category-badge category-foundations">N-grams</span>
+        </div>
+      </div>
+
+      <!-- Ethics -->
+      <div class="gallery-item" data-category="ethics" onclick="openLightbox('ai_ethics_landscape.png')">
+        <img src="ai_ethics_landscape.png" alt="AI Ethics Landscape" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">AI Ethics Landscape</div>
+          <span class="category-badge category-ethics">Ethics</span>
+        </div>
+      </div>
+
+      <!-- Attention -->
+      <div class="gallery-item" data-category="attention" onclick="openLightbox('attention_heatmap.png')">
+        <img src="attention_heatmap.png" alt="Attention Heatmap" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Attention Heatmap</div>
+          <span class="category-badge category-attention">Attention</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="attention" onclick="openLightbox('attention_heatmap_bsc.png')">
+        <img src="attention_heatmap_bsc.png" alt="Attention Heatmap BSc" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Attention Heatmap (BSc)</div>
+          <span class="category-badge category-attention">Attention</span>
+        </div>
+      </div>
+
+      <!-- Decoding -->
+      <div class="gallery-item" data-category="decoding" onclick="openLightbox('beam_search_tree_bsc.png')">
+        <img src="beam_search_tree_bsc.png" alt="Beam Search Tree" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Beam Search Tree</div>
+          <span class="category-badge category-decoding">Decoding</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="decoding" onclick="openLightbox('beam_search_tree_graphviz.png')">
+        <img src="beam_search_tree_graphviz.png" alt="Beam Search Tree Graphviz" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Beam Search Tree (Graphviz)</div>
+          <span class="category-badge category-decoding">Decoding</span>
+        </div>
+      </div>
+
+      <!-- BERT -->
+      <div class="gallery-item" data-category="bert" onclick="openLightbox('bert_architecture_bsc.png')">
+        <img src="bert_architecture_bsc.png" alt="BERT Architecture" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">BERT Architecture</div>
+          <span class="category-badge category-bert">BERT</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="bert" onclick="openLightbox('bert_finetuning_process_bsc.png')">
+        <img src="bert_finetuning_process_bsc.png" alt="BERT Fine-tuning Process" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">BERT Fine-tuning Process</div>
+          <span class="category-badge category-bert">BERT</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="bert" onclick="openLightbox('bert_results_glue_bsc.png')">
+        <img src="bert_results_glue_bsc.png" alt="BERT GLUE Results" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">BERT GLUE Results</div>
+          <span class="category-badge category-bert">BERT</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="bert" onclick="openLightbox('bert_vs_gpt_architecture_bsc.png')">
+        <img src="bert_vs_gpt_architecture_bsc.png" alt="BERT vs GPT Architecture" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">BERT vs GPT Architecture</div>
+          <span class="category-badge category-bert">BERT</span>
+        </div>
+      </div>
+
+      <!-- Ethics -->
+      <div class="gallery-item" data-category="ethics" onclick="openLightbox('bias_sources_flowchart.png')">
+        <img src="bias_sources_flowchart.png" alt="Bias Sources Flowchart" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Bias Sources Flowchart</div>
+          <span class="category-badge category-ethics">Ethics</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="ethics" onclick="openLightbox('bias_sources_flowchart_bsc.png')">
+        <img src="bias_sources_flowchart_bsc.png" alt="Bias Sources Flowchart BSc" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Bias Sources Flowchart (BSc)</div>
+          <span class="category-badge category-ethics">Ethics</span>
+        </div>
+      </div>
+
+      <!-- N-grams -->
+      <div class="gallery-item" data-category="ngrams" onclick="openLightbox('bigram_calculation_steps_bsc.png')">
+        <img src="bigram_calculation_steps_bsc.png" alt="Bigram Calculation Steps" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Bigram Calculation Steps</div>
+          <span class="category-badge category-foundations">N-grams</span>
+        </div>
+      </div>
+
+      <!-- Decoding -->
+      <div class="gallery-item" data-category="decoding" onclick="openLightbox('bleu_comparison_bsc.png')">
+        <img src="bleu_comparison_bsc.png" alt="BLEU Comparison" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">BLEU Score Comparison</div>
+          <span class="category-badge category-decoding">Decoding</span>
+        </div>
+      </div>
+
+      <!-- Tokenization -->
+      <div class="gallery-item" data-category="tokenization" onclick="openLightbox('bpe_progression_visual.png')">
+        <img src="bpe_progression_visual.png" alt="BPE Progression" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">BPE Progression</div>
+          <span class="category-badge category-tokenization">Tokenization</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="tokenization" onclick="openLightbox('bpe_progression_visual_bsc.png')">
+        <img src="bpe_progression_visual_bsc.png" alt="BPE Progression BSc" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">BPE Progression (BSc)</div>
+          <span class="category-badge category-tokenization">Tokenization</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="tokenization" onclick="openLightbox('bpe_visualization_bsc.png')">
+        <img src="bpe_visualization_bsc.png" alt="BPE Visualization" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">BPE Visualization</div>
+          <span class="category-badge category-tokenization">Tokenization</span>
+        </div>
+      </div>
+
+      <!-- Fine-tuning -->
+      <div class="gallery-item" data-category="finetuning" onclick="openLightbox('catastrophic_forgetting_bsc.png')">
+        <img src="catastrophic_forgetting_bsc.png" alt="Catastrophic Forgetting" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Catastrophic Forgetting</div>
+          <span class="category-badge category-finetuning">Fine-tuning</span>
+        </div>
+      </div>
+
+      <!-- Embeddings -->
+      <div class="gallery-item" data-category="embeddings" onclick="openLightbox('cbow_architecture_bsc.png')">
+        <img src="cbow_architecture_bsc.png" alt="CBOW Architecture" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">CBOW Architecture</div>
+          <span class="category-badge category-embeddings">Embeddings</span>
+        </div>
+      </div>
+
+      <!-- BERT -->
+      <div class="gallery-item" data-category="bert" onclick="openLightbox('classifier_head_architecture_bsc.png')">
+        <img src="classifier_head_architecture_bsc.png" alt="Classifier Head Architecture" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Classifier Head Architecture</div>
+          <span class="category-badge category-bert">BERT</span>
+        </div>
+      </div>
+
+      <!-- Scaling -->
+      <div class="gallery-item" data-category="scaling" onclick="openLightbox('compute_scaling_bsc.png')">
+        <img src="compute_scaling_bsc.png" alt="Compute Scaling" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Compute Scaling</div>
+          <span class="category-badge category-scaling">Scaling</span>
+        </div>
+      </div>
+
+      <!-- N-grams -->
+      <div class="gallery-item" data-category="ngrams" onclick="openLightbox('conditional_probability_tree_bsc.png')">
+        <img src="conditional_probability_tree_bsc.png" alt="Conditional Probability Tree" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Conditional Probability Tree</div>
+          <span class="category-badge category-foundations">N-grams</span>
+        </div>
+      </div>
+
+      <!-- Embeddings -->
+      <div class="gallery-item" data-category="embeddings" onclick="openLightbox('context_movement_3d.png')">
+        <img src="context_movement_3d.png" alt="Context Movement 3D" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Context Movement 3D</div>
+          <span class="category-badge category-embeddings">Embeddings</span>
+        </div>
+      </div>
+
+      <!-- Decoding -->
+      <div class="gallery-item" data-category="decoding" onclick="openLightbox('contrastive_vs_nucleus_bsc.png')">
+        <img src="contrastive_vs_nucleus_bsc.png" alt="Contrastive vs Nucleus" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Contrastive vs Nucleus</div>
+          <span class="category-badge category-decoding">Decoding</span>
+        </div>
+      </div>
+
+      <!-- N-grams -->
+      <div class="gallery-item" data-category="ngrams" onclick="openLightbox('corpus_statistics_bsc.png')">
+        <img src="corpus_statistics_bsc.png" alt="Corpus Statistics" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Corpus Statistics</div>
+          <span class="category-badge category-foundations">N-grams</span>
+        </div>
+      </div>
+
+      <!-- Embeddings -->
+      <div class="gallery-item" data-category="embeddings" onclick="openLightbox('cultural_analogies_3d.png')">
+        <img src="cultural_analogies_3d.png" alt="Cultural Analogies 3D" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Cultural Analogies 3D</div>
+          <span class="category-badge category-embeddings">Embeddings</span>
+        </div>
+      </div>
+
+      <!-- Scaling -->
+      <div class="gallery-item" data-category="scaling" onclick="openLightbox('data_performance_curves.png')">
+        <img src="data_performance_curves.png" alt="Data Performance Curves" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Data Performance Curves</div>
+          <span class="category-badge category-scaling">Scaling</span>
+        </div>
+      </div>
+
+      <!-- Decoding -->
+      <div class="gallery-item" data-category="decoding" onclick="openLightbox('decoding.png')">
+        <img src="decoding.png" alt="Decoding Overview" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Decoding Overview</div>
+          <span class="category-badge category-decoding">Decoding</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="decoding" onclick="openLightbox('degeneration_problem_bsc.png')">
+        <img src="degeneration_problem_bsc.png" alt="Degeneration Problem" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Degeneration Problem</div>
+          <span class="category-badge category-decoding">Decoding</span>
+        </div>
+      </div>
+
+      <!-- Efficiency -->
+      <div class="gallery-item" data-category="efficiency" onclick="openLightbox('deployment_inference_pipeline_bsc.png')">
+        <img src="deployment_inference_pipeline_bsc.png" alt="Deployment Inference Pipeline" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Deployment Inference Pipeline</div>
+          <span class="category-badge category-efficiency">Efficiency</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="efficiency" onclick="openLightbox('deployment_pipeline_bsc.png')">
+        <img src="deployment_pipeline_bsc.png" alt="Deployment Pipeline" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Deployment Pipeline</div>
+          <span class="category-badge category-efficiency">Efficiency</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="efficiency" onclick="openLightbox('distillation_architecture.png')">
+        <img src="distillation_architecture.png" alt="Distillation Architecture" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Distillation Architecture</div>
+          <span class="category-badge category-efficiency">Efficiency</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="efficiency" onclick="openLightbox('distillation_architecture_bsc.png')">
+        <img src="distillation_architecture_bsc.png" alt="Distillation Architecture BSc" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Distillation Architecture (BSc)</div>
+          <span class="category-badge category-efficiency">Efficiency</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="efficiency" onclick="openLightbox('efficiency.png')">
+        <img src="efficiency.png" alt="Efficiency Overview" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Efficiency Overview</div>
+          <span class="category-badge category-efficiency">Efficiency</span>
+        </div>
+      </div>
+
+      <!-- Embeddings -->
+      <div class="gallery-item" data-category="embeddings" onclick="openLightbox('embeddings.png')">
+        <img src="embeddings.png" alt="Embeddings Overview" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Embeddings Overview</div>
+          <span class="category-badge category-embeddings">Embeddings</span>
+        </div>
+      </div>
+
+      <!-- Scaling -->
+      <div class="gallery-item" data-category="scaling" onclick="openLightbox('emergent_abilities_chart.png')">
+        <img src="emergent_abilities_chart.png" alt="Emergent Abilities Chart" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Emergent Abilities Chart</div>
+          <span class="category-badge category-scaling">Scaling</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="scaling" onclick="openLightbox('emergent_abilities_chart_bsc.png')">
+        <img src="emergent_abilities_chart_bsc.png" alt="Emergent Abilities Chart BSc" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Emergent Abilities (BSc)</div>
+          <span class="category-badge category-scaling">Scaling</span>
+        </div>
+      </div>
+
+      <!-- Attention -->
+      <div class="gallery-item" data-category="attention" onclick="openLightbox('encoder_decoder_architecture_bsc.png')">
+        <img src="encoder_decoder_architecture_bsc.png" alt="Encoder Decoder Architecture" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Encoder-Decoder Architecture</div>
+          <span class="category-badge category-attention">Attention</span>
+        </div>
+      </div>
+
+      <!-- Ethics -->
+      <div class="gallery-item" data-category="ethics" onclick="openLightbox('ethics.png')">
+        <img src="ethics.png" alt="Ethics Overview" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Ethics Overview</div>
+          <span class="category-badge category-ethics">Ethics</span>
+        </div>
+      </div>
+
+      <!-- Decoding -->
+      <div class="gallery-item" data-category="decoding" onclick="openLightbox('evaluation_metrics_bsc.png')">
+        <img src="evaluation_metrics_bsc.png" alt="Evaluation Metrics" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Evaluation Metrics</div>
+          <span class="category-badge category-decoding">Decoding</span>
+        </div>
+      </div>
+
+      <!-- Ethics -->
+      <div class="gallery-item" data-category="ethics" onclick="openLightbox('fairness_metrics_comparison.png')">
+        <img src="fairness_metrics_comparison.png" alt="Fairness Metrics Comparison" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Fairness Metrics Comparison</div>
+          <span class="category-badge category-ethics">Ethics</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="ethics" onclick="openLightbox('fairness_metrics_comparison_bsc.png')">
+        <img src="fairness_metrics_comparison_bsc.png" alt="Fairness Metrics Comparison BSc" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Fairness Metrics (BSc)</div>
+          <span class="category-badge category-ethics">Ethics</span>
+        </div>
+      </div>
+
+      <!-- Fine-tuning -->
+      <div class="gallery-item" data-category="finetuning" onclick="openLightbox('finetuning.png')">
+        <img src="finetuning.png" alt="Fine-tuning Overview" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Fine-tuning Overview</div>
+          <span class="category-badge category-finetuning">Fine-tuning</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="finetuning" onclick="openLightbox('finetuning_pipeline_bsc.png')">
+        <img src="finetuning_pipeline_bsc.png" alt="Fine-tuning Pipeline" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Fine-tuning Pipeline</div>
+          <span class="category-badge category-finetuning">Fine-tuning</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="finetuning" onclick="openLightbox('finetuning_vs_prompting.png')">
+        <img src="finetuning_vs_prompting.png" alt="Fine-tuning vs Prompting" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Fine-tuning vs Prompting</div>
+          <span class="category-badge category-finetuning">Fine-tuning</span>
+        </div>
+      </div>
+
+      <!-- LSTM -->
+      <div class="gallery-item" data-category="lstm" onclick="openLightbox('forward_pass_flowchart.png')">
+        <img src="forward_pass_flowchart.png" alt="Forward Pass Flowchart" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Forward Pass Flowchart</div>
+          <span class="category-badge category-lstm">LSTM/RNN</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="lstm" onclick="openLightbox('gate_activation_heatmap.png')">
+        <img src="gate_activation_heatmap.png" alt="Gate Activation Heatmap" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Gate Activation Heatmap</div>
+          <span class="category-badge category-lstm">LSTM/RNN</span>
+        </div>
+      </div>
+
+      <!-- Scaling -->
+      <div class="gallery-item" data-category="scaling" onclick="openLightbox('gpt3_capabilities.png')">
+        <img src="gpt3_capabilities.png" alt="GPT-3 Capabilities" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">GPT-3 Capabilities</div>
+          <span class="category-badge category-scaling">Scaling</span>
+        </div>
+      </div>
+
+      <!-- BERT -->
+      <div class="gallery-item" data-category="bert" onclick="openLightbox('gpt_architecture_bsc.png')">
+        <img src="gpt_architecture_bsc.png" alt="GPT Architecture" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">GPT Architecture</div>
+          <span class="category-badge category-bert">BERT</span>
+        </div>
+      </div>
+
+      <!-- LSTM -->
+      <div class="gallery-item" data-category="lstm" onclick="openLightbox('gradient_flow_comparison.png')">
+        <img src="gradient_flow_comparison.png" alt="Gradient Flow Comparison" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Gradient Flow Comparison</div>
+          <span class="category-badge category-lstm">LSTM/RNN</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="lstm" onclick="openLightbox('gradient_flow_comparison_bsc.png')">
+        <img src="gradient_flow_comparison_bsc.png" alt="Gradient Flow Comparison BSc" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Gradient Flow (BSc)</div>
+          <span class="category-badge category-lstm">LSTM/RNN</span>
+        </div>
+      </div>
+
+      <!-- Ethics -->
+      <div class="gallery-item" data-category="ethics" onclick="openLightbox('harm_taxonomy_tree.png')">
+        <img src="harm_taxonomy_tree.png" alt="Harm Taxonomy Tree" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Harm Taxonomy Tree</div>
+          <span class="category-badge category-ethics">Ethics</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="ethics" onclick="openLightbox('harm_taxonomy_tree_bsc.png')">
+        <img src="harm_taxonomy_tree_bsc.png" alt="Harm Taxonomy Tree BSc" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Harm Taxonomy Tree (BSc)</div>
+          <span class="category-badge category-ethics">Ethics</span>
+        </div>
+      </div>
+
+      <!-- Embeddings -->
+      <div class="gallery-item" data-category="embeddings" onclick="openLightbox('landmark_analogies_3d.png')">
+        <img src="landmark_analogies_3d.png" alt="Landmark Analogies 3D" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Landmark Analogies 3D</div>
+          <span class="category-badge category-embeddings">Embeddings</span>
+        </div>
+      </div>
+
+      <!-- Transformers -->
+      <div class="gallery-item" data-category="transformers" onclick="openLightbox('llm_pipeline_graphviz.png')">
+        <img src="llm_pipeline_graphviz.png" alt="LLM Pipeline" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">LLM Pipeline</div>
+          <span class="category-badge category-transformers">Transformers</span>
+        </div>
+      </div>
+
+      <!-- Fine-tuning -->
+      <div class="gallery-item" data-category="finetuning" onclick="openLightbox('lora_explanation.png')">
+        <img src="lora_explanation.png" alt="LoRA Explanation" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">LoRA Explanation</div>
+          <span class="category-badge category-finetuning">Fine-tuning</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="finetuning" onclick="openLightbox('lora_explanation_bsc.png')">
+        <img src="lora_explanation_bsc.png" alt="LoRA Explanation BSc" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">LoRA Explanation (BSc)</div>
+          <span class="category-badge category-finetuning">Fine-tuning</span>
+        </div>
+      </div>
+
+      <!-- LSTM -->
+      <div class="gallery-item" data-category="lstm" onclick="openLightbox('lstm_architecture.png')">
+        <img src="lstm_architecture.png" alt="LSTM Architecture" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">LSTM Architecture</div>
+          <span class="category-badge category-lstm">LSTM/RNN</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="lstm" onclick="openLightbox('lstm_architecture_bsc.png')">
+        <img src="lstm_architecture_bsc.png" alt="LSTM Architecture BSc" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">LSTM Architecture (BSc)</div>
+          <span class="category-badge category-lstm">LSTM/RNN</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="lstm" onclick="openLightbox('lstm_architecture_overview_bsc.png')">
+        <img src="lstm_architecture_overview_bsc.png" alt="LSTM Architecture Overview" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">LSTM Architecture Overview</div>
+          <span class="category-badge category-lstm">LSTM/RNN</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="lstm" onclick="openLightbox('lstm_gates_simple_bsc.png')">
+        <img src="lstm_gates_simple_bsc.png" alt="LSTM Gates Simple" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">LSTM Gates (Simple)</div>
+          <span class="category-badge category-lstm">LSTM/RNN</span>
+        </div>
+      </div>
+
+      <!-- Decoding -->
+      <div class="gallery-item" data-category="decoding" onclick="openLightbox('map_reduce_summarization_bsc.png')">
+        <img src="map_reduce_summarization_bsc.png" alt="Map Reduce Summarization" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Map-Reduce Summarization</div>
+          <span class="category-badge category-decoding">Decoding</span>
+        </div>
+      </div>
+
+      <!-- Efficiency -->
+      <div class="gallery-item" data-category="efficiency" onclick="openLightbox('model_compression_landscape.png')">
+        <img src="model_compression_landscape.png" alt="Model Compression Landscape" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Model Compression Landscape</div>
+          <span class="category-badge category-efficiency">Efficiency</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="efficiency" onclick="openLightbox('model_compression_landscape_bsc.png')">
+        <img src="model_compression_landscape_bsc.png" alt="Model Compression Landscape BSc" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Model Compression (BSc)</div>
+          <span class="category-badge category-efficiency">Efficiency</span>
+        </div>
+      </div>
+
+      <!-- Scaling -->
+      <div class="gallery-item" data-category="scaling" onclick="openLightbox('model_scale_timeline.png')">
+        <img src="model_scale_timeline.png" alt="Model Scale Timeline" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Model Scale Timeline</div>
+          <span class="category-badge category-scaling">Scaling</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="scaling" onclick="openLightbox('model_scale_timeline_bsc.png')">
+        <img src="model_scale_timeline_bsc.png" alt="Model Scale Timeline BSc" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Model Scale Timeline (BSc)</div>
+          <span class="category-badge category-scaling">Scaling</span>
+        </div>
+      </div>
+
+      <!-- Transformers -->
+      <div class="gallery-item" data-category="transformers" onclick="openLightbox('multihead_attention_bsc.png')">
+        <img src="multihead_attention_bsc.png" alt="Multihead Attention" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Multihead Attention</div>
+          <span class="category-badge category-transformers">Transformers</span>
+        </div>
+      </div>
+
+      <!-- Embeddings -->
+      <div class="gallery-item" data-category="embeddings" onclick="openLightbox('negative_sampling_process_bsc.png')">
+        <img src="negative_sampling_process_bsc.png" alt="Negative Sampling Process" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Negative Sampling Process</div>
+          <span class="category-badge category-embeddings">Embeddings</span>
+        </div>
+      </div>
+
+      <!-- N-grams -->
+      <div class="gallery-item" data-category="ngrams" onclick="openLightbox('ngram_context_windows_bsc.png')">
+        <img src="ngram_context_windows_bsc.png" alt="N-gram Context Windows" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">N-gram Context Windows</div>
+          <span class="category-badge category-foundations">N-grams</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="ngrams" onclick="openLightbox('ngrams.png')">
+        <img src="ngrams.png" alt="N-grams Overview" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">N-grams Overview</div>
+          <span class="category-badge category-foundations">N-grams</span>
+        </div>
+      </div>
+
+      <!-- Fine-tuning -->
+      <div class="gallery-item" data-category="finetuning" onclick="openLightbox('parameter_spectrum_bsc.png')">
+        <img src="parameter_spectrum_bsc.png" alt="Parameter Spectrum" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Parameter Spectrum</div>
+          <span class="category-badge category-finetuning">Fine-tuning</span>
+        </div>
+      </div>
+
+      <!-- N-grams -->
+      <div class="gallery-item" data-category="ngrams" onclick="openLightbox('perplexity_comparison_bsc.png')">
+        <img src="perplexity_comparison_bsc.png" alt="Perplexity Comparison" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Perplexity Comparison</div>
+          <span class="category-badge category-foundations">N-grams</span>
+        </div>
+      </div>
+
+      <!-- Transformers -->
+      <div class="gallery-item" data-category="transformers" onclick="openLightbox('positional_encoding_3d.png')">
+        <img src="positional_encoding_3d.png" alt="Positional Encoding 3D" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Positional Encoding 3D</div>
+          <span class="category-badge category-transformers">Transformers</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="transformers" onclick="openLightbox('positional_encoding_bsc.png')">
+        <img src="positional_encoding_bsc.png" alt="Positional Encoding" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Positional Encoding</div>
+          <span class="category-badge category-transformers">Transformers</span>
+        </div>
+      </div>
+
+      <!-- Efficiency -->
+      <div class="gallery-item" data-category="efficiency" onclick="openLightbox('practical_methods_coverage_bsc.png')">
+        <img src="practical_methods_coverage_bsc.png" alt="Practical Methods Coverage" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Practical Methods Coverage</div>
+          <span class="category-badge category-efficiency">Efficiency</span>
+        </div>
+      </div>
+
+      <!-- BERT -->
+      <div class="gallery-item" data-category="bert" onclick="openLightbox('pretrained.png')">
+        <img src="pretrained.png" alt="Pre-trained Overview" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Pre-trained Overview</div>
+          <span class="category-badge category-bert">BERT</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="bert" onclick="openLightbox('pretraining_finetuning_paradigm_bsc.png')">
+        <img src="pretraining_finetuning_paradigm_bsc.png" alt="Pretraining Finetuning Paradigm" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Pretraining-Finetuning Paradigm</div>
+          <span class="category-badge category-bert">BERT</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="bert" onclick="openLightbox('pretraining_workflow_bsc.png')">
+        <img src="pretraining_workflow_bsc.png" alt="Pretraining Workflow" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Pretraining Workflow</div>
+          <span class="category-badge category-bert">BERT</span>
+        </div>
+      </div>
+
+      <!-- Efficiency -->
+      <div class="gallery-item" data-category="efficiency" onclick="openLightbox('quantization_comparison.png')">
+        <img src="quantization_comparison.png" alt="Quantization Comparison" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Quantization Comparison</div>
+          <span class="category-badge category-efficiency">Efficiency</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="efficiency" onclick="openLightbox('quantization_levels_bsc.png')">
+        <img src="quantization_levels_bsc.png" alt="Quantization Levels" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Quantization Levels</div>
+          <span class="category-badge category-efficiency">Efficiency</span>
+        </div>
+      </div>
+
+      <!-- Decoding -->
+      <div class="gallery-item" data-category="decoding" onclick="openLightbox('rag_summarization_pipeline_bsc.png')">
+        <img src="rag_summarization_pipeline_bsc.png" alt="RAG Summarization Pipeline" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">RAG Summarization Pipeline</div>
+          <span class="category-badge category-decoding">Decoding</span>
+        </div>
+      </div>
+
+      <!-- Tokenization -->
+      <div class="gallery-item" data-category="tokenization" onclick="openLightbox('rare_word_handling_visual.png')">
+        <img src="rare_word_handling_visual.png" alt="Rare Word Handling" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Rare Word Handling</div>
+          <span class="category-badge category-tokenization">Tokenization</span>
+        </div>
+      </div>
+
+      <!-- Ethics -->
+      <div class="gallery-item" data-category="ethics" onclick="openLightbox('real_world_harms_bsc.png')">
+        <img src="real_world_harms_bsc.png" alt="Real World Harms" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Real World Harms</div>
+          <span class="category-badge category-ethics">Ethics</span>
+        </div>
+      </div>
+
+      <!-- LSTM -->
+      <div class="gallery-item" data-category="lstm" onclick="openLightbox('rnn-lstm.png')">
+        <img src="rnn-lstm.png" alt="RNN-LSTM Overview" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">RNN-LSTM Overview</div>
+          <span class="category-badge category-lstm">LSTM/RNN</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="lstm" onclick="openLightbox('rnn_simple_unrolled_bsc.png')">
+        <img src="rnn_simple_unrolled_bsc.png" alt="RNN Simple Unrolled" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">RNN Simple Unrolled</div>
+          <span class="category-badge category-lstm">LSTM/RNN</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="lstm" onclick="openLightbox('rnn_unrolled_bsc.png')">
+        <img src="rnn_unrolled_bsc.png" alt="RNN Unrolled" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">RNN Unrolled</div>
+          <span class="category-badge category-lstm">LSTM/RNN</span>
+        </div>
+      </div>
+
+      <!-- Scaling -->
+      <div class="gallery-item" data-category="scaling" onclick="openLightbox('scaling.png')">
+        <img src="scaling.png" alt="Scaling Overview" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Scaling Overview</div>
+          <span class="category-badge category-scaling">Scaling</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="scaling" onclick="openLightbox('scaling_laws.png')">
+        <img src="scaling_laws.png" alt="Scaling Laws" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Scaling Laws</div>
+          <span class="category-badge category-scaling">Scaling</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="scaling" onclick="openLightbox('scaling_laws_bsc.png')">
+        <img src="scaling_laws_bsc.png" alt="Scaling Laws BSc" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Scaling Laws (BSc)</div>
+          <span class="category-badge category-scaling">Scaling</span>
+        </div>
+      </div>
+
+      <!-- Embeddings -->
+      <div class="gallery-item" data-category="embeddings" onclick="openLightbox('semantic_clusters_3d.png')">
+        <img src="semantic_clusters_3d.png" alt="Semantic Clusters 3D" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Semantic Clusters 3D</div>
+          <span class="category-badge category-embeddings">Embeddings</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="embeddings" onclick="openLightbox('semantic_space_2d_bsc.png')">
+        <img src="semantic_space_2d_bsc.png" alt="Semantic Space 2D" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Semantic Space 2D</div>
+          <span class="category-badge category-embeddings">Embeddings</span>
+        </div>
+      </div>
+
+      <!-- Attention -->
+      <div class="gallery-item" data-category="attention" onclick="openLightbox('seq2seq.png')">
+        <img src="seq2seq.png" alt="Seq2Seq Overview" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Seq2Seq Overview</div>
+          <span class="category-badge category-attention">Attention</span>
+        </div>
+      </div>
+
+      <!-- Embeddings -->
+      <div class="gallery-item" data-category="embeddings" onclick="openLightbox('skipgram_architecture_bsc.png')">
+        <img src="skipgram_architecture_bsc.png" alt="Skip-gram Architecture" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Skip-gram Architecture</div>
+          <span class="category-badge category-embeddings">Embeddings</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="embeddings" onclick="openLightbox('skipgram_training_steps_bsc.png')">
+        <img src="skipgram_training_steps_bsc.png" alt="Skip-gram Training Steps" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Skip-gram Training Steps</div>
+          <span class="category-badge category-embeddings">Embeddings</span>
+        </div>
+      </div>
+
+      <!-- N-grams -->
+      <div class="gallery-item" data-category="ngrams" onclick="openLightbox('smoothing_comparison_bsc.png')">
+        <img src="smoothing_comparison_bsc.png" alt="Smoothing Comparison" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Smoothing Comparison</div>
+          <span class="category-badge category-foundations">N-grams</span>
+        </div>
+      </div>
+
+      <!-- Transformers -->
+      <div class="gallery-item" data-category="transformers" onclick="openLightbox('sr_16_transformer_architecture_annotated.png')">
+        <img src="sr_16_transformer_architecture_annotated.png" alt="Transformer Architecture Annotated" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Transformer Architecture (Annotated)</div>
+          <span class="category-badge category-transformers">Transformers</span>
+        </div>
+      </div>
+
+      <!-- Decoding -->
+      <div class="gallery-item" data-category="decoding" onclick="openLightbox('temperature_effects_bsc.png')">
+        <img src="temperature_effects_bsc.png" alt="Temperature Effects" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Temperature Effects</div>
+          <span class="category-badge category-decoding">Decoding</span>
+        </div>
+      </div>
+
+      <!-- Tokenization -->
+      <div class="gallery-item" data-category="tokenization" onclick="openLightbox('tokenization.png')">
+        <img src="tokenization.png" alt="Tokenization Overview" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Tokenization Overview</div>
+          <span class="category-badge category-tokenization">Tokenization</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="tokenization" onclick="openLightbox('tokenization_comparison_bsc.png')">
+        <img src="tokenization_comparison_bsc.png" alt="Tokenization Comparison" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Tokenization Comparison</div>
+          <span class="category-badge category-tokenization">Tokenization</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="tokenization" onclick="openLightbox('tokenization_comparison_visual.png')">
+        <img src="tokenization_comparison_visual.png" alt="Tokenization Comparison Visual" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Tokenization Comparison (Visual)</div>
+          <span class="category-badge category-tokenization">Tokenization</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="tokenization" onclick="openLightbox('tokenization_impact_bsc.png')">
+        <img src="tokenization_impact_bsc.png" alt="Tokenization Impact" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Tokenization Impact</div>
+          <span class="category-badge category-tokenization">Tokenization</span>
+        </div>
+      </div>
+
+      <!-- Decoding -->
+      <div class="gallery-item" data-category="decoding" onclick="openLightbox('topk_example_bsc.png')">
+        <img src="topk_example_bsc.png" alt="Top-K Example" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Top-K Example</div>
+          <span class="category-badge category-decoding">Decoding</span>
+        </div>
+      </div>
+
+      <!-- BERT -->
+      <div class="gallery-item" data-category="bert" onclick="openLightbox('training_evolution_bsc.png')">
+        <img src="training_evolution_bsc.png" alt="Training Evolution" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Training Evolution</div>
+          <span class="category-badge category-bert">BERT</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="bert" onclick="openLightbox('transfer_learning_visual.png')">
+        <img src="transfer_learning_visual.png" alt="Transfer Learning Visual" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Transfer Learning Visual</div>
+          <span class="category-badge category-bert">BERT</span>
+        </div>
+      </div>
+
+      <!-- Transformers -->
+      <div class="gallery-item" data-category="transformers" onclick="openLightbox('transformers.png')">
+        <img src="transformers.png" alt="Transformers Overview" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Transformers Overview</div>
+          <span class="category-badge category-transformers">Transformers</span>
+        </div>
+      </div>
+
+      <!-- BERT -->
+      <div class="gallery-item" data-category="bert" onclick="openLightbox('unified_framework_bsc.png')">
+        <img src="unified_framework_bsc.png" alt="Unified Framework" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Unified Framework</div>
+          <span class="category-badge category-bert">BERT</span>
+        </div>
+      </div>
+
+      <!-- LSTM -->
+      <div class="gallery-item" data-category="lstm" onclick="openLightbox('vanishing_gradient_bsc.png')">
+        <img src="vanishing_gradient_bsc.png" alt="Vanishing Gradient" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Vanishing Gradient</div>
+          <span class="category-badge category-lstm">LSTM/RNN</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="lstm" onclick="openLightbox('vanishing_gradient_problem_bsc.png')">
+        <img src="vanishing_gradient_problem_bsc.png" alt="Vanishing Gradient Problem" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Vanishing Gradient Problem</div>
+          <span class="category-badge category-lstm">LSTM/RNN</span>
+        </div>
+      </div>
+
+      <!-- Tokenization -->
+      <div class="gallery-item" data-category="tokenization" onclick="openLightbox('vocab_size_oov_visual.png')">
+        <img src="vocab_size_oov_visual.png" alt="Vocab Size OOV Visual" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Vocabulary Size vs OOV</div>
+          <span class="category-badge category-tokenization">Tokenization</span>
+        </div>
+      </div>
+
+      <!-- N-grams -->
+      <div class="gallery-item" data-category="ngrams" onclick="openLightbox('vocabulary_probability_bsc.png')">
+        <img src="vocabulary_probability_bsc.png" alt="Vocabulary Probability" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Vocabulary Probability</div>
+          <span class="category-badge category-foundations">N-grams</span>
+        </div>
+      </div>
+
+      <!-- Attention -->
+      <div class="gallery-item" data-category="attention" onclick="openLightbox('week4_attention_heatmap.png')">
+        <img src="week4_attention_heatmap.png" alt="Week 4 Attention Heatmap" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Attention Heatmap (Week 4)</div>
+          <span class="category-badge category-attention">Attention</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="attention" onclick="openLightbox('week4_beam_search_tree.png')">
+        <img src="week4_beam_search_tree.png" alt="Week 4 Beam Search Tree" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Beam Search Tree (Week 4)</div>
+          <span class="category-badge category-attention">Attention</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="attention" onclick="openLightbox('week4_encoder_decoder_flow.png')">
+        <img src="week4_encoder_decoder_flow.png" alt="Week 4 Encoder Decoder Flow" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Encoder-Decoder Flow (Week 4)</div>
+          <span class="category-badge category-attention">Attention</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="attention" onclick="openLightbox('week4_seq2seq_architecture_minimalist.png')">
+        <img src="week4_seq2seq_architecture_minimalist.png" alt="Week 4 Seq2Seq Architecture" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Seq2Seq Architecture (Week 4)</div>
+          <span class="category-badge category-attention">Attention</span>
+        </div>
+      </div>
+
+      <!-- Embeddings -->
+      <div class="gallery-item" data-category="embeddings" onclick="openLightbox('word_arithmetic_3d_bsc.png')">
+        <img src="word_arithmetic_3d_bsc.png" alt="Word Arithmetic 3D" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Word Arithmetic 3D</div>
+          <span class="category-badge category-embeddings">Embeddings</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="embeddings" onclick="openLightbox('word_as_vector_concept_bsc.png')">
+        <img src="word_as_vector_concept_bsc.png" alt="Word as Vector Concept" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Word as Vector Concept</div>
+          <span class="category-badge category-embeddings">Embeddings</span>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="embeddings" onclick="openLightbox('word2vec_architectures.png')">
+        <img src="word2vec_architectures.png" alt="Word2Vec Architectures" loading="lazy">
+        <div class="gallery-item-info">
+          <div class="gallery-item-title">Word2Vec Architectures</div>
+          <span class="category-badge category-embeddings">Embeddings</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <a href="#" class="back-to-top">Back to Top</a>
+    <p>2025 NLP Course | <a href="https://github.com/Digital-AI-Finance" target="_blank" rel="noopener">Digital AI Finance</a> | <a href="https://quantlet.com/" target="_blank" rel="noopener">QuantLet</a></p>
+  </footer>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+    <img src="" alt="Enlarged chart">
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // Sidebar section toggle with persistence
+    function toggleSection(sectionId) {
+      const section = document.querySelector(`[data-section="${sectionId}"]`);
+      section.classList.toggle('collapsed');
+      saveCollapsedState();
+    }
+
+    function saveCollapsedState() {
+      const collapsed = {};
+      document.querySelectorAll('[data-section]').forEach(section => {
+        collapsed[section.dataset.section] = section.classList.contains('collapsed');
+      });
+      localStorage.setItem('sidebarCollapsed', JSON.stringify(collapsed));
+    }
+
+    function loadCollapsedState() {
+      const saved = localStorage.getItem('sidebarCollapsed');
+      if (saved) {
+        const collapsed = JSON.parse(saved);
+        Object.entries(collapsed).forEach(([sectionId, isCollapsed]) => {
+          const section = document.querySelector(`[data-section="${sectionId}"]`);
+          if (section && isCollapsed) {
+            section.classList.add('collapsed');
+          }
+        });
+      }
+    }
+
+    // Load saved state on page load
+    document.addEventListener('DOMContentLoaded', loadCollapsedState);
+
+    // Search functionality
+    const searchInput = document.getElementById('site-search');
+    searchInput.addEventListener('input', function() {
+      const query = this.value.toLowerCase().trim();
+      const navItems = document.querySelectorAll('.sidebar-nav li');
+      const sections = document.querySelectorAll('.sidebar-section');
+
+      if (query === '') {
+        navItems.forEach(item => item.style.display = '');
+        sections.forEach(section => section.style.display = '');
+        loadCollapsedState();
+        return;
+      }
+
+      sections.forEach(section => {
+        section.classList.remove('collapsed');
+        section.style.display = '';
+      });
+
+      navItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(query) ? '' : 'none';
+      });
+
+      sections.forEach(section => {
+        const visibleItems = section.querySelectorAll('.sidebar-nav li:not([style*="display: none"])');
+        section.style.display = visibleItems.length === 0 ? 'none' : '';
+      });
+    });
+
+    // Lightbox functions
+    function openLightbox(imgSrc) {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.querySelector('img').src = imgSrc;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Close lightbox with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    // Filter functionality
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+
+        // Update active button
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Filter gallery items
+        galleryItems.forEach(item => {
+          if (filter === 'all' || item.dataset.category === filter) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Smooth scroll for back to top
+    document.querySelector('.back-to-top').addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
 </body>
 </html>

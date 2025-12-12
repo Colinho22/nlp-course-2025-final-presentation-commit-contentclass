@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Natural Language Processing course - From N-grams to Transformers: A complete graduate course with 12 topics, 500+ slides, and 250+ charts">
+  <meta name="description" content="Natural Language Processing - A BSc-level course from N-grams to Transformers with 12 topics, 500+ slides, and hands-on labs">
   <meta property="og:title" content="Natural Language Processing | NLP Course">
   <meta property="og:description" content="From N-grams to Transformers: A Complete Graduate Course">
   <meta property="og:image" content="https://digital-ai-finance.github.io/Natural-Language-Processing/charts/word_arithmetic_3d_bsc.png">
@@ -15,273 +15,293 @@
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- Sidebar -->
-  <nav class="sidebar" aria-label="Main navigation">
+  <nav class="sidebar" aria-label="Course navigation">
     <div class="sidebar-header">
       <img src="https://quantlet.com/images/QLogo_small.png" alt="QuantLet" class="sidebar-logo" onerror="this.style.display='none'">
-      <div class="sidebar-title"><a href="./">NLP Course</a></div>
+      <div class="sidebar-title"><a href="./">Natural Language Processing</a></div>
+      <div class="sidebar-subtitle">BSc Course - 12 Weeks</div>
     </div>
 
-    <div class="search-box">
-      <input type="search" class="search-input" id="topic-search" placeholder="Search topics..." aria-label="Search topics">
+    <!-- Search -->
+    <div class="sidebar-search">
+      <input type="text" id="site-search" placeholder="Search topics..." aria-label="Search topics">
     </div>
 
-    <details class="sidebar-section" open>
-      <summary>Part 1: Foundations</summary>
-      <ul class="sidebar-nav" data-part="1">
-        <li><a href="topics/ngrams/">N-grams</a></li>
-        <li><a href="topics/embeddings/">Word2Vec</a></li>
-        <li><a href="topics/rnn-lstm/">LSTM</a></li>
-      </ul>
-    </details>
+    <div class="sidebar-content">
+      <!-- Foundations -->
+      <div class="sidebar-section" data-section="foundations">
+        <div class="section-header" onclick="toggleSection('foundations')">
+          <span>Foundations</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="topics/ngrams/">Week 1: N-grams</a></li>
+            <li><a href="topics/embeddings/">Week 2: Word2Vec</a></li>
+            <li><a href="topics/rnn-lstm/">Week 3: LSTM</a></li>
+          </ul>
+        </div>
+      </div>
 
-    <details class="sidebar-section">
-      <summary>Part 2: Architectures</summary>
-      <ul class="sidebar-nav" data-part="2">
-        <li><a href="topics/seq2seq/">Attention</a></li>
-        <li><a href="topics/transformers/">Transformers</a></li>
-        <li><a href="topics/pretrained/">BERT</a></li>
-      </ul>
-    </details>
+      <!-- Core -->
+      <div class="sidebar-section" data-section="core">
+        <div class="section-header" onclick="toggleSection('core')">
+          <span>Core Architectures</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="topics/seq2seq/">Week 4: Seq2Seq</a></li>
+            <li><a href="topics/transformers/">Week 5: Transformers</a></li>
+            <li><a href="topics/pretrained/">Week 6: BERT</a></li>
+          </ul>
+        </div>
+      </div>
 
-    <details class="sidebar-section">
-      <summary>Part 3: Advanced</summary>
-      <ul class="sidebar-nav" data-part="3">
-        <li><a href="topics/scaling/">Scaling</a></li>
-        <li><a href="topics/tokenization/">BPE</a></li>
-        <li><a href="topics/decoding/">Decoding</a></li>
-      </ul>
-    </details>
+      <!-- Advanced -->
+      <div class="sidebar-section" data-section="advanced">
+        <div class="section-header" onclick="toggleSection('advanced')">
+          <span>Advanced Topics</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="topics/scaling/">Week 7: Scaling Laws</a></li>
+            <li><a href="topics/tokenization/">Week 8: Tokenization</a></li>
+            <li><a href="topics/decoding/">Week 9: Decoding</a></li>
+          </ul>
+        </div>
+      </div>
 
-    <details class="sidebar-section">
-      <summary>Part 4: Applications</summary>
-      <ul class="sidebar-nav" data-part="4">
-        <li><a href="topics/finetuning/">LoRA</a></li>
-        <li><a href="topics/efficiency/">Quantization</a></li>
-        <li><a href="topics/ethics/">Bias</a></li>
-      </ul>
-    </details>
+      <!-- Applications -->
+      <div class="sidebar-section" data-section="applications">
+        <div class="section-header" onclick="toggleSection('applications')">
+          <span>Applications</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="topics/finetuning/">Week 10: Fine-tuning</a></li>
+            <li><a href="topics/efficiency/">Week 11: Efficiency</a></li>
+            <li><a href="topics/ethics/">Week 12: Ethics</a></li>
+          </ul>
+        </div>
+      </div>
 
-    <details class="sidebar-section">
-      <summary>Modules</summary>
-      <ul class="sidebar-nav">
-        <li><a href="modules/summarization/">Summarization</a></li>
-        <li><a href="modules/sentiment/">Sentiment</a></li>
-        <li><a href="modules/embeddings-extended/">Embeddings Deep Dive</a></li>
-      </ul>
-    </details>
+      <!-- Modules -->
+      <div class="sidebar-section" data-section="modules">
+        <div class="section-header" onclick="toggleSection('modules')">
+          <span>Deep-Dive Modules</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="modules/summarization/">Summarization</a></li>
+            <li><a href="modules/sentiment/">Sentiment Analysis</a></li>
+            <li><a href="modules/embeddings-extended/">Embeddings Deep Dive</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
-    <details class="sidebar-section">
-      <summary>Resources</summary>
-      <ul class="sidebar-nav">
-        <li><a href="moodle/">Moodle HS25</a></li>
-        <li><a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" target="_blank" rel="noopener">GitHub</a></li>
-        <li><a href="https://nlp-evolution.streamlit.app/" target="_blank" rel="noopener">NLP Evolution App</a></li>
-      </ul>
-    </details>
+    <div class="sidebar-footer">
+      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" target="_blank" rel="noopener">GitHub</a> |
+      <a href="moodle/">Moodle HS25</a>
+    </div>
   </nav>
 
   <!-- Top Navigation -->
   <nav class="top-nav" aria-label="Quick links">
     <div class="top-nav-links">
+      <a href="./" class="active">Home</a>
       <a href="topics/">Topics</a>
       <a href="modules/">Modules</a>
-      <a href="moodle/">Moodle HS25</a>
-      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" target="_blank" rel="noopener">GitHub</a>
+      <a href="charts/">Charts</a>
+      <a href="moodle/">Moodle</a>
+      <a href="about.html">About</a>
     </div>
     <div class="top-nav-actions">
-      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/releases" class="pdf-btn" target="_blank" rel="noopener">Download PDFs</a>
-      <button class="dark-toggle" id="dark-toggle" aria-label="Toggle dark mode">Dark Mode</button>
+      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/releases" class="download-btn" target="_blank" rel="noopener">Download PDFs</a>
     </div>
   </nav>
 
   <!-- Hero Section -->
   <header class="hero">
     <h1>Natural Language Processing</h1>
-    <p class="subtitle">From N-grams to Transformers: A Complete Graduate Course</p>
-    <div class="stats">
-      <div class="stat-item">
-        <span class="stat-number">12</span>
-        <span class="stat-label">Topics</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number">500+</span>
-        <span class="stat-label">Slides</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number">250+</span>
-        <span class="stat-label">Charts</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number">26+</span>
-        <span class="stat-label">Notebooks</span>
-      </div>
+    <p class="subtitle">A BSc-level course bridging statistical language models with modern transformer architectures.</p>
+    <div class="hero-buttons">
+      <a href="topics/" class="hero-btn primary">Browse Topics</a>
+      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/releases" class="hero-btn secondary" target="_blank" rel="noopener">Download ZIP</a>
+      <a href="moodle/pdfs.html" class="hero-btn secondary">All PDFs</a>
     </div>
-    <div class="cta-buttons">
-      <a href="topics/" class="cta-button">Browse Topics</a>
-      <a href="moodle/" class="cta-button secondary">Moodle HS25</a>
-      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" class="cta-button secondary" target="_blank" rel="noopener">GitHub</a>
+
+    <!-- Featured Images -->
+    <div class="hero-images">
+      <div class="hero-image" onclick="openLightbox('charts/word_arithmetic_3d_bsc.png')">
+        <img src="charts/word_arithmetic_3d_bsc.png" alt="Word Embeddings 3D" loading="lazy">
+        <span>Word Embeddings</span>
+      </div>
+      <div class="hero-image" onclick="openLightbox('charts/bert_architecture_bsc.png')">
+        <img src="charts/bert_architecture_bsc.png" alt="BERT Architecture" loading="lazy">
+        <span>BERT Architecture</span>
+      </div>
+      <div class="hero-image" onclick="openLightbox('charts/beam_search_tree_bsc.png')">
+        <img src="charts/beam_search_tree_bsc.png" alt="Beam Search" loading="lazy">
+        <span>Beam Search</span>
+      </div>
     </div>
   </header>
 
-  <!-- Journey Tracker -->
-  <section class="journey">
-    <h2>Learning Journey</h2>
-    <div class="journey-tracker">
-      <a href="#part1" class="journey-step">
-        <div class="journey-circle">1</div>
-        <span class="journey-label">Foundations</span>
-      </a>
-      <div class="journey-connector"></div>
-      <a href="#part2" class="journey-step">
-        <div class="journey-circle">2</div>
-        <span class="journey-label">Architectures</span>
-      </a>
-      <div class="journey-connector"></div>
-      <a href="#part3" class="journey-step">
-        <div class="journey-circle">3</div>
-        <span class="journey-label">Advanced</span>
-      </a>
-      <div class="journey-connector"></div>
-      <a href="#part4" class="journey-step">
-        <div class="journey-circle">4</div>
-        <span class="journey-label">Applications</span>
-      </a>
-    </div>
-  </section>
-
   <!-- Main Content -->
-  <main id="main-content" class="content">
-    <h2>Course Topics by Part</h2>
-
-    <div class="parts-grid">
-      <!-- Part 1 -->
-      <div class="part-card" id="part1">
-        <div class="part-header">
-          <div class="part-number">1</div>
-          <div class="part-title">Language Foundations</div>
+  <main id="main-content">
+    <!-- Topics by Part -->
+    <section class="topics-section">
+      <h2 class="section-title">Course Topics</h2>
+      <div class="topics-grid">
+        <!-- Week 1 -->
+        <div class="topic-card">
+          <h3><a href="topics/ngrams/">N-grams & Language Models</a></h3>
+          <p>Statistical foundations of NLP: probability chains, Markov assumptions, and perplexity evaluation.</p>
+          <div class="topic-meta">
+            <span class="difficulty-badge beginner">Beginner</span>
+            <span class="duration">2 hours</span>
+          </div>
         </div>
-        <ul class="topics-list">
-          <li><a href="topics/ngrams/">N-grams - Statistical language models and probability chains</a></li>
-          <li><a href="topics/embeddings/">Word2Vec - Dense word representations and semantic geometry</a></li>
-          <li><a href="topics/rnn-lstm/">LSTM - Sequential processing and memory mechanisms</a></li>
-        </ul>
-      </div>
 
-      <!-- Part 2 -->
-      <div class="part-card" id="part2">
-        <div class="part-header">
-          <div class="part-number">2</div>
-          <div class="part-title">Core Architectures</div>
+        <!-- Week 2 -->
+        <div class="topic-card">
+          <h3><a href="topics/embeddings/">Word2Vec & Embeddings</a></h3>
+          <p>Dense word representations, Skip-gram architecture, and semantic geometry in vector space.</p>
+          <div class="topic-meta">
+            <span class="difficulty-badge beginner">Beginner</span>
+            <span class="duration">2.5 hours</span>
+          </div>
         </div>
-        <ul class="topics-list">
-          <li><a href="topics/seq2seq/">Attention - Encoder-decoder and alignment mechanisms</a></li>
-          <li><a href="topics/transformers/">Transformers - Self-attention and parallel processing</a></li>
-          <li><a href="topics/pretrained/">BERT - Pre-trained language models and transfer learning</a></li>
-        </ul>
-      </div>
 
-      <!-- Part 3 -->
-      <div class="part-card" id="part3">
-        <div class="part-header">
-          <div class="part-number">3</div>
-          <div class="part-title">Advanced Methods</div>
+        <!-- Week 3 -->
+        <div class="topic-card">
+          <h3><a href="topics/rnn-lstm/">RNN & LSTM Networks</a></h3>
+          <p>Sequential processing, vanishing gradients, and memory mechanisms with gated architectures.</p>
+          <div class="topic-meta">
+            <span class="difficulty-badge intermediate">Intermediate</span>
+            <span class="duration">3 hours</span>
+          </div>
         </div>
-        <ul class="topics-list">
-          <li><a href="topics/scaling/">Scaling - Scaling laws and computational efficiency</a></li>
-          <li><a href="topics/tokenization/">BPE - Subword tokenization and vocabulary learning</a></li>
-          <li><a href="topics/decoding/">Decoding - Generation strategies and sampling methods</a></li>
-        </ul>
-      </div>
 
-      <!-- Part 4 -->
-      <div class="part-card" id="part4">
-        <div class="part-header">
-          <div class="part-number">4</div>
-          <div class="part-title">Applications</div>
+        <!-- Week 4 -->
+        <div class="topic-card">
+          <h3><a href="topics/seq2seq/">Seq2Seq & Attention</a></h3>
+          <p>Encoder-decoder models, attention mechanisms, and alignment in neural machine translation.</p>
+          <div class="topic-meta">
+            <span class="difficulty-badge intermediate">Intermediate</span>
+            <span class="duration">2.5 hours</span>
+          </div>
         </div>
-        <ul class="topics-list">
-          <li><a href="topics/finetuning/">LoRA - Parameter-efficient fine-tuning techniques</a></li>
-          <li><a href="topics/efficiency/">Quantization - Model compression and deployment</a></li>
-          <li><a href="topics/ethics/">Bias - Ethics, fairness, and responsible AI</a></li>
-        </ul>
-      </div>
-    </div>
 
-    <!-- Chart Gallery -->
-    <section class="gallery-section">
-      <h2>Featured Charts (250+ Total)</h2>
-      <div class="chart-gallery">
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week01_foundations/figures/perplexity_comparison_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="charts/perplexity_comparison_bsc.png" alt="Perplexity Comparison" loading="lazy">
-          <div class="chart-name">Perplexity Comparison</div>
-        </a>
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week02_neural_lm/figures/word_arithmetic_3d_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="charts/word_arithmetic_3d_bsc.png" alt="Word Arithmetic 3D" loading="lazy">
-          <div class="chart-name">Word Arithmetic 3D</div>
-        </a>
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week02_neural_lm/figures/skipgram_architecture_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="charts/skipgram_architecture_bsc.png" alt="Skip-gram Architecture" loading="lazy">
-          <div class="chart-name">Skip-gram Architecture</div>
-        </a>
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week03_rnn/figures/lstm_architecture_overview_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="charts/lstm_architecture_overview_bsc.png" alt="LSTM Architecture" loading="lazy">
-          <div class="chart-name">LSTM Architecture</div>
-        </a>
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week03_rnn/figures/vanishing_gradient_problem_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="charts/vanishing_gradient_problem_bsc.png" alt="Vanishing Gradient" loading="lazy">
-          <div class="chart-name">Vanishing Gradient</div>
-        </a>
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week06_pretrained/figures/bert_architecture_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="charts/bert_architecture_bsc.png" alt="BERT Architecture" loading="lazy">
-          <div class="chart-name">BERT Architecture</div>
-        </a>
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week06_pretrained/figures/pretraining_workflow_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="charts/pretraining_workflow_bsc.png" alt="Pretraining Workflow" loading="lazy">
-          <div class="chart-name">Pretraining Workflow</div>
-        </a>
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week06_pretrained/figures/transfer_learning_pipeline_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="charts/transfer_learning_visual.png" alt="Transfer Learning" loading="lazy">
-          <div class="chart-name">Transfer Learning</div>
-        </a>
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week09_decoding/figures/beam_search_visual_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="charts/beam_search_tree_bsc.png" alt="Beam Search" loading="lazy">
-          <div class="chart-name">Beam Search</div>
-        </a>
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week09_decoding/figures/temperature_effects_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="charts/temperature_effects_bsc.png" alt="Temperature Effects" loading="lazy">
-          <div class="chart-name">Temperature Effects</div>
-        </a>
+        <!-- Week 5 -->
+        <div class="topic-card">
+          <h3><a href="topics/transformers/">Transformers</a></h3>
+          <p>Self-attention, multi-head attention, positional encoding, and parallel processing.</p>
+          <div class="topic-meta">
+            <span class="difficulty-badge intermediate">Intermediate</span>
+            <span class="duration">3.5 hours</span>
+          </div>
+        </div>
+
+        <!-- Week 6 -->
+        <div class="topic-card">
+          <h3><a href="topics/pretrained/">BERT & Pre-training</a></h3>
+          <p>Pre-trained language models, masked language modeling, and transfer learning pipelines.</p>
+          <div class="topic-meta">
+            <span class="difficulty-badge intermediate">Intermediate</span>
+            <span class="duration">3 hours</span>
+          </div>
+        </div>
+
+        <!-- Week 7 -->
+        <div class="topic-card">
+          <h3><a href="topics/scaling/">Scaling Laws</a></h3>
+          <p>Compute-optimal training, Chinchilla scaling, and emergent capabilities in large models.</p>
+          <div class="topic-meta">
+            <span class="difficulty-badge advanced">Advanced</span>
+            <span class="duration">2 hours</span>
+          </div>
+        </div>
+
+        <!-- Week 8 -->
+        <div class="topic-card">
+          <h3><a href="topics/tokenization/">BPE & Tokenization</a></h3>
+          <p>Subword tokenization, Byte-Pair Encoding, and vocabulary optimization strategies.</p>
+          <div class="topic-meta">
+            <span class="difficulty-badge intermediate">Intermediate</span>
+            <span class="duration">2 hours</span>
+          </div>
+        </div>
+
+        <!-- Week 9 -->
+        <div class="topic-card">
+          <h3><a href="topics/decoding/">Text Generation & Decoding</a></h3>
+          <p>Greedy, beam search, sampling strategies, temperature, and nucleus sampling.</p>
+          <div class="topic-meta">
+            <span class="difficulty-badge advanced">Advanced</span>
+            <span class="duration">3 hours</span>
+          </div>
+        </div>
+
+        <!-- Week 10 -->
+        <div class="topic-card">
+          <h3><a href="topics/finetuning/">Fine-tuning & LoRA</a></h3>
+          <p>Parameter-efficient fine-tuning, adapters, LoRA, and prompt engineering techniques.</p>
+          <div class="topic-meta">
+            <span class="difficulty-badge advanced">Advanced</span>
+            <span class="duration">3 hours</span>
+          </div>
+        </div>
+
+        <!-- Week 11 -->
+        <div class="topic-card">
+          <h3><a href="topics/efficiency/">Efficiency & Quantization</a></h3>
+          <p>Model compression, quantization, distillation, pruning, and deployment optimization.</p>
+          <div class="topic-meta">
+            <span class="difficulty-badge advanced">Advanced</span>
+            <span class="duration">2.5 hours</span>
+          </div>
+        </div>
+
+        <!-- Week 12 -->
+        <div class="topic-card">
+          <h3><a href="topics/ethics/">Ethics & Bias</a></h3>
+          <p>Bias detection, fairness metrics, WEAT tests, and responsible AI development.</p>
+          <div class="topic-meta">
+            <span class="difficulty-badge beginner">Beginner</span>
+            <span class="duration">2 hours</span>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Resources -->
-    <h2>Resources</h2>
-    <div class="resources-grid">
-      <a href="moodle/" class="resource-card">
-        <h3>Moodle HS25</h3>
-        <p>FHGR course materials, schedule, PDFs, and Jupyter notebooks for the current semester.</p>
-      </a>
-      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" class="resource-card" target="_blank" rel="noopener">
-        <h3>GitHub Repository</h3>
-        <p>Source code, slides, notebooks, and all course materials in a single repository.</p>
-      </a>
-      <a href="https://nlp-evolution.streamlit.app/" class="resource-card" target="_blank" rel="noopener">
-        <h3>NLP Evolution App</h3>
-        <p>Interactive Streamlit application exploring the evolution of NLP techniques.</p>
-      </a>
-      <a href="https://quantlet.com/" class="resource-card" target="_blank" rel="noopener">
-        <h3>QuantLet</h3>
-        <p>Reproducible code repository for quantitative and computational research.</p>
-      </a>
-      <a href="modules/" class="resource-card">
-        <h3>Deep-Dive Modules</h3>
-        <p>Standalone modules on summarization, sentiment analysis, and embeddings.</p>
-      </a>
-      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/releases" class="resource-card" target="_blank" rel="noopener">
-        <h3>Download All PDFs</h3>
-        <p>Download complete lecture slides as PDF files from GitHub releases.</p>
-      </a>
-    </div>
+    <section class="resources-section">
+      <h2 class="section-title">Resources</h2>
+      <div class="resources-grid">
+        <a href="moodle/" class="resource-card">
+          <h3>Moodle HS25</h3>
+          <p>Course schedule, lecture PDFs, Jupyter notebooks, and assignment information.</p>
+        </a>
+        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" class="resource-card" target="_blank" rel="noopener">
+          <h3>GitHub Repository</h3>
+          <p>Complete source code, slides, notebooks, and all course materials.</p>
+        </a>
+        <a href="charts/" class="resource-card">
+          <h3>Chart Gallery</h3>
+          <p>250+ professional visualizations covering all NLP concepts.</p>
+        </a>
+        <a href="modules/" class="resource-card">
+          <h3>Deep-Dive Modules</h3>
+          <p>Specialized content on summarization, sentiment analysis, and embeddings.</p>
+        </a>
+      </div>
+    </section>
   </main>
 
   <!-- Footer -->
@@ -290,61 +310,104 @@
     <p>2025 NLP Course | <a href="https://github.com/Digital-AI-Finance" target="_blank" rel="noopener">Digital AI Finance</a> | <a href="https://quantlet.com/" target="_blank" rel="noopener">QuantLet</a></p>
   </footer>
 
+  <!-- Lightbox Modal -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+    <img src="" alt="Enlarged chart">
+  </div>
+
   <!-- JavaScript -->
   <script>
-    // Dark mode toggle
-    const darkToggle = document.getElementById('dark-toggle');
-    const body = document.body;
-
-    if (localStorage.getItem('darkMode') === 'true' ||
-        (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      body.classList.add('dark');
-      darkToggle.textContent = 'Light Mode';
+    // Sidebar section toggle with persistence
+    function toggleSection(sectionId) {
+      const section = document.querySelector(`[data-section="${sectionId}"]`);
+      section.classList.toggle('collapsed');
+      saveCollapsedState();
     }
 
-    darkToggle.addEventListener('click', () => {
-      body.classList.toggle('dark');
-      const isDark = body.classList.contains('dark');
-      localStorage.setItem('darkMode', isDark);
-      darkToggle.textContent = isDark ? 'Light Mode' : 'Dark Mode';
-    });
+    function saveCollapsedState() {
+      const collapsed = {};
+      document.querySelectorAll('[data-section]').forEach(section => {
+        collapsed[section.dataset.section] = section.classList.contains('collapsed');
+      });
+      localStorage.setItem('sidebarCollapsed', JSON.stringify(collapsed));
+    }
 
-    // Topic search
-    const searchInput = document.getElementById('topic-search');
-    const sidebarSections = document.querySelectorAll('.sidebar-section');
-
-    searchInput.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase().trim();
-      sidebarSections.forEach(section => {
-        const items = section.querySelectorAll('.sidebar-nav a');
-        let hasMatch = false;
-        items.forEach(item => {
-          const text = item.textContent.toLowerCase();
-          const matches = query === '' || text.includes(query);
-          item.parentElement.style.display = matches ? '' : 'none';
-          if (matches) hasMatch = true;
+    function loadCollapsedState() {
+      const saved = localStorage.getItem('sidebarCollapsed');
+      if (saved) {
+        const collapsed = JSON.parse(saved);
+        Object.entries(collapsed).forEach(([sectionId, isCollapsed]) => {
+          const section = document.querySelector(`[data-section="${sectionId}"]`);
+          if (section && isCollapsed) {
+            section.classList.add('collapsed');
+          }
         });
-        if (query === '') {
-          section.style.display = '';
+      }
+    }
+
+    // Load saved state on page load
+    document.addEventListener('DOMContentLoaded', loadCollapsedState);
+
+    // Search functionality
+    const searchInput = document.getElementById('site-search');
+    searchInput.addEventListener('input', function() {
+      const query = this.value.toLowerCase().trim();
+      const navItems = document.querySelectorAll('.sidebar-nav li');
+      const sections = document.querySelectorAll('.sidebar-section');
+
+      if (query === '') {
+        // Show all items and restore collapsed state
+        navItems.forEach(item => item.style.display = '');
+        sections.forEach(section => section.style.display = '');
+        loadCollapsedState();
+        return;
+      }
+
+      // Expand all sections and filter
+      sections.forEach(section => {
+        section.classList.remove('collapsed');
+        section.style.display = '';
+      });
+
+      navItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        if (text.includes(query)) {
+          item.style.display = '';
         } else {
-          section.style.display = hasMatch ? '' : 'none';
-          if (hasMatch) section.open = true;
+          item.style.display = 'none';
+        }
+      });
+
+      // Hide sections with no visible items
+      sections.forEach(section => {
+        const visibleItems = section.querySelectorAll('.sidebar-nav li:not([style*="display: none"])');
+        if (visibleItems.length === 0) {
+          section.style.display = 'none';
         }
       });
     });
 
-    // Smooth scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        const href = this.getAttribute('href');
-        if (href === '#') return;
-        e.preventDefault();
-        const target = document.querySelector(href);
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
+    // Lightbox functions
+    function openLightbox(imgSrc) {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.querySelector('img').src = imgSrc;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Close lightbox with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
     });
 
-    // Back to top
+    // Smooth scroll for back to top
     document.querySelector('.back-to-top').addEventListener('click', (e) => {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });

@@ -10,74 +10,219 @@
   <link rel="icon" href="../favicon.png" type="image/png">
   <title>Special Modules | NLP Course</title>
   <link rel="stylesheet" href="../css/main.css">
+  <style>
+    /* Module-specific styles */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .module-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.2s ease;
+    }
+    .module-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      border-color: var(--accent);
+    }
+    .module-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .module-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      color: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .module-meta h3 {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin: 0 0 0.5rem 0;
+    }
+    .module-meta h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .module-meta h3 a:hover {
+      color: var(--accent);
+    }
+    .module-badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .slide-count {
+      font-size: 0.75rem;
+      color: var(--accent);
+      background: rgba(49, 130, 206, 0.1);
+      padding: 0.2rem 0.6rem;
+      border-radius: 10px;
+    }
+    .module-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+    .module-topics {
+      list-style: none;
+      margin-bottom: 1.25rem;
+      padding: 0;
+    }
+    .module-topics li {
+      font-size: 0.85rem;
+      color: var(--text);
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .module-topics li:last-child {
+      border-bottom: none;
+    }
+    .module-topics li::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .module-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .module-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(49, 130, 206, 0.3);
+    }
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+  </style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- Sidebar -->
-  <nav class="sidebar" aria-label="Main navigation">
+  <nav class="sidebar" aria-label="Course navigation">
     <div class="sidebar-header">
       <img src="https://quantlet.com/images/QLogo_small.png" alt="QuantLet" class="sidebar-logo" onerror="this.style.display='none'">
-      <div class="sidebar-title"><a href="../">NLP Course</a></div>
+      <div class="sidebar-title"><a href="../">Natural Language Processing</a></div>
+      <div class="sidebar-subtitle">BSc Course - 12 Weeks</div>
     </div>
 
-    <div class="search-box">
-      <input type="search" class="search-input" id="topic-search" placeholder="Search topics..." aria-label="Search topics">
+    <!-- Search -->
+    <div class="sidebar-search">
+      <input type="text" id="site-search" placeholder="Search topics..." aria-label="Search topics">
     </div>
 
-    <details class="sidebar-section">
-      <summary>Part 1: Foundations</summary>
-      <ul class="sidebar-nav" data-part="1">
-        <li><a href="../topics/ngrams/">N-grams</a></li>
-        <li><a href="../topics/embeddings/">Word2Vec</a></li>
-        <li><a href="../topics/rnn-lstm/">LSTM</a></li>
-      </ul>
-    </details>
+    <div class="sidebar-content">
+      <!-- Foundations -->
+      <div class="sidebar-section" data-section="foundations">
+        <div class="section-header" onclick="toggleSection('foundations')">
+          <span>Foundations</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="../topics/ngrams/">Week 1: N-grams</a></li>
+            <li><a href="../topics/embeddings/">Week 2: Word2Vec</a></li>
+            <li><a href="../topics/rnn-lstm/">Week 3: LSTM</a></li>
+          </ul>
+        </div>
+      </div>
 
-    <details class="sidebar-section">
-      <summary>Part 2: Architectures</summary>
-      <ul class="sidebar-nav" data-part="2">
-        <li><a href="../topics/seq2seq/">Attention</a></li>
-        <li><a href="../topics/transformers/">Transformers</a></li>
-        <li><a href="../topics/pretrained/">BERT</a></li>
-      </ul>
-    </details>
+      <!-- Core -->
+      <div class="sidebar-section" data-section="core">
+        <div class="section-header" onclick="toggleSection('core')">
+          <span>Core Architectures</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="../topics/seq2seq/">Week 4: Seq2Seq</a></li>
+            <li><a href="../topics/transformers/">Week 5: Transformers</a></li>
+            <li><a href="../topics/pretrained/">Week 6: BERT</a></li>
+          </ul>
+        </div>
+      </div>
 
-    <details class="sidebar-section">
-      <summary>Part 3: Advanced</summary>
-      <ul class="sidebar-nav" data-part="3">
-        <li><a href="../topics/scaling/">Scaling</a></li>
-        <li><a href="../topics/tokenization/">BPE</a></li>
-        <li><a href="../topics/decoding/">Decoding</a></li>
-      </ul>
-    </details>
+      <!-- Advanced -->
+      <div class="sidebar-section" data-section="advanced">
+        <div class="section-header" onclick="toggleSection('advanced')">
+          <span>Advanced Topics</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="../topics/scaling/">Week 7: Scaling Laws</a></li>
+            <li><a href="../topics/tokenization/">Week 8: Tokenization</a></li>
+            <li><a href="../topics/decoding/">Week 9: Decoding</a></li>
+          </ul>
+        </div>
+      </div>
 
-    <details class="sidebar-section">
-      <summary>Part 4: Applications</summary>
-      <ul class="sidebar-nav" data-part="4">
-        <li><a href="../topics/finetuning/">LoRA</a></li>
-        <li><a href="../topics/efficiency/">Quantization</a></li>
-        <li><a href="../topics/ethics/">Bias</a></li>
-      </ul>
-    </details>
+      <!-- Applications -->
+      <div class="sidebar-section" data-section="applications">
+        <div class="section-header" onclick="toggleSection('applications')">
+          <span>Applications</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="../topics/finetuning/">Week 10: Fine-tuning</a></li>
+            <li><a href="../topics/efficiency/">Week 11: Efficiency</a></li>
+            <li><a href="../topics/ethics/">Week 12: Ethics</a></li>
+          </ul>
+        </div>
+      </div>
 
-    <details class="sidebar-section" open>
-      <summary>Modules</summary>
-      <ul class="sidebar-nav">
-        <li><a href="summarization/">Summarization</a></li>
-        <li><a href="sentiment/">Sentiment</a></li>
-        <li><a href="embeddings-extended/">Embeddings Deep Dive</a></li>
-        <li><a href="lstm-primer/">LSTM Primer</a></li>
-      </ul>
-    </details>
+      <!-- Modules -->
+      <div class="sidebar-section" data-section="modules">
+        <div class="section-header" onclick="toggleSection('modules')">
+          <span>Deep-Dive Modules</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="summarization/">Summarization</a></li>
+            <li><a href="sentiment/">Sentiment Analysis</a></li>
+            <li><a href="embeddings-extended/">Embeddings Deep Dive</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
-    <details class="sidebar-section">
-      <summary>Resources</summary>
-      <ul class="sidebar-nav">
-        <li><a href="../moodle/">Moodle HS25</a></li>
-        <li><a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" target="_blank" rel="noopener">GitHub</a></li>
-      </ul>
-    </details>
+    <div class="sidebar-footer">
+      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" target="_blank" rel="noopener">GitHub</a> |
+      <a href="../moodle/">Moodle HS25</a>
+    </div>
   </nav>
 
   <!-- Top Navigation -->
@@ -86,151 +231,133 @@
       <a href="../">Home</a>
       <a href="../topics/">Topics</a>
       <a href="./" class="active">Modules</a>
-      <a href="../moodle/">Moodle HS25</a>
-      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" target="_blank" rel="noopener">GitHub</a>
+      <a href="../charts/">Charts</a>
+      <a href="../moodle/">Moodle</a>
+      <a href="../about.html">About</a>
     </div>
     <div class="top-nav-actions">
-      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/releases" class="pdf-btn" target="_blank" rel="noopener">Download PDFs</a>
-      <button class="dark-toggle" id="dark-toggle" aria-label="Toggle dark mode">Dark Mode</button>
+      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/releases" class="download-btn" target="_blank" rel="noopener">Download PDFs</a>
     </div>
   </nav>
 
   <!-- Hero Section -->
   <header class="hero">
     <h1>Special Modules</h1>
-    <p class="subtitle">Deep-Dive Standalone Content on Specialized NLP Topics</p>
-    <div class="stats">
-      <div class="stat-item">
-        <span class="stat-number">4</span>
-        <span class="stat-label">Modules</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number">161</span>
-        <span class="stat-label">Slides</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number">100+</span>
-        <span class="stat-label">Charts</span>
-      </div>
+    <p class="subtitle">Deep-dive standalone content on specialized NLP topics</p>
+    <div class="hero-buttons">
+      <a href="#modules" class="hero-btn primary">View Modules</a>
+      <a href="../topics/" class="hero-btn secondary">Course Topics</a>
     </div>
   </header>
 
   <!-- Main Content -->
-  <main id="main-content" class="content">
-    <h2>Available Modules</h2>
+  <main id="main-content">
+    <section class="topics-section" id="modules">
+      <h2 class="section-title">Available Modules</h2>
+      <p class="section-desc">Comprehensive standalone modules that complement the main course curriculum with deep dives into specific topics.</p>
 
-    <div class="modules-grid">
-      <!-- Summarization Module -->
-      <div class="module-card">
-        <div class="module-header">
-          <div class="module-icon">S</div>
-          <div class="module-meta">
-            <h3>LLM Summarization</h3>
-            <span class="slide-count">40 slides</span>
+      <div class="modules-grid">
+        <!-- Summarization Module -->
+        <div class="module-card">
+          <div class="module-header">
+            <div class="module-icon">S</div>
+            <div class="module-meta">
+              <h3><a href="summarization/">LLM Summarization</a></h3>
+              <div class="module-badges">
+                <span class="slide-count">40 slides</span>
+                <span class="difficulty-badge intermediate">Intermediate</span>
+              </div>
+            </div>
           </div>
+          <p class="module-desc">Complete guide to text summarization with large language models. Covers extractive vs abstractive approaches, ROUGE evaluation, and modern LLM techniques.</p>
+          <ul class="module-topics">
+            <li>Extractive Summarization</li>
+            <li>Abstractive Methods</li>
+            <li>ROUGE Metrics</li>
+            <li>Prompt Engineering for Summarization</li>
+          </ul>
+          <a href="summarization/" class="module-btn">View Module</a>
         </div>
-        <p class="module-desc">Complete guide to text summarization with large language models. Covers extractive vs abstractive approaches, ROUGE evaluation, and modern LLM techniques.</p>
-        <ul class="module-topics">
-          <li>Extractive Summarization</li>
-          <li>Abstractive Methods</li>
-          <li>ROUGE Metrics</li>
-          <li>Prompt Engineering for Summarization</li>
-        </ul>
-        <a href="summarization/" class="module-btn">View Module</a>
-      </div>
 
-      <!-- Sentiment Module -->
-      <div class="module-card">
-        <div class="module-header">
-          <div class="module-icon">A</div>
-          <div class="module-meta">
-            <h3>Sentiment Analysis</h3>
-            <span class="slide-count">26 slides</span>
+        <!-- Sentiment Module -->
+        <div class="module-card">
+          <div class="module-header">
+            <div class="module-icon">A</div>
+            <div class="module-meta">
+              <h3><a href="sentiment/">Sentiment Analysis</a></h3>
+              <div class="module-badges">
+                <span class="slide-count">26 slides</span>
+                <span class="difficulty-badge intermediate">Intermediate</span>
+              </div>
+            </div>
           </div>
+          <p class="module-desc">BERT-based sentiment analysis with fine-tuning techniques. Two-tier structure with technical deep dives in the appendix.</p>
+          <ul class="module-topics">
+            <li>BERT Fine-tuning</li>
+            <li>Classification Heads</li>
+            <li>Training Strategies</li>
+            <li>Evaluation Metrics</li>
+          </ul>
+          <a href="sentiment/" class="module-btn">View Module</a>
         </div>
-        <p class="module-desc">BERT-based sentiment analysis with fine-tuning techniques. Two-tier structure with technical deep dives in the appendix.</p>
-        <ul class="module-topics">
-          <li>BERT Fine-tuning</li>
-          <li>Classification Heads</li>
-          <li>Training Strategies</li>
-          <li>Evaluation Metrics</li>
-        </ul>
-        <a href="sentiment/" class="module-btn">View Module</a>
-      </div>
 
-      <!-- Embeddings Extended Module -->
-      <div class="module-card">
-        <div class="module-header">
-          <div class="module-icon">E</div>
-          <div class="module-meta">
-            <h3>Word Embeddings: Complete Guide</h3>
-            <span class="slide-count">48 slides</span>
+        <!-- Embeddings Extended Module -->
+        <div class="module-card">
+          <div class="module-header">
+            <div class="module-icon">E</div>
+            <div class="module-meta">
+              <h3><a href="embeddings-extended/">Word Embeddings: Complete Guide</a></h3>
+              <div class="module-badges">
+                <span class="slide-count">48 slides</span>
+                <span class="difficulty-badge beginner">Beginner</span>
+              </div>
+            </div>
           </div>
+          <p class="module-desc">Comprehensive exploration of word embeddings with interactive 3D visualizations. From one-hot encoding to contextual embeddings.</p>
+          <ul class="module-topics">
+            <li>One-Hot to Dense Vectors</li>
+            <li>Word2Vec Deep Dive</li>
+            <li>3D Semantic Geometry</li>
+            <li>Contextual Embeddings</li>
+          </ul>
+          <a href="embeddings-extended/" class="module-btn">View Module</a>
         </div>
-        <p class="module-desc">Comprehensive exploration of word embeddings with interactive 3D visualizations. From one-hot encoding to contextual embeddings.</p>
-        <ul class="module-topics">
-          <li>One-Hot to Dense Vectors</li>
-          <li>Word2Vec Deep Dive</li>
-          <li>3D Semantic Geometry</li>
-          <li>Contextual Embeddings</li>
-        </ul>
-        <a href="embeddings-extended/" class="module-btn">View Module</a>
-      </div>
 
-      <!-- LSTM Primer Module -->
-      <div class="module-card">
-        <div class="module-header">
-          <div class="module-icon">L</div>
-          <div class="module-meta">
-            <h3>LSTM Primer</h3>
-            <span class="slide-count">47 slides</span>
+        <!-- LSTM Primer Module -->
+        <div class="module-card">
+          <div class="module-header">
+            <div class="module-icon">L</div>
+            <div class="module-meta">
+              <h3><a href="lstm-primer/">LSTM Primer</a></h3>
+              <div class="module-badges">
+                <span class="slide-count">47 slides</span>
+                <span class="difficulty-badge intermediate">Intermediate</span>
+              </div>
+            </div>
           </div>
+          <p class="module-desc">Zero-to-hero guide to Long Short-Term Memory networks. Modular design with checkpoint quizzes for self-assessment.</p>
+          <ul class="module-topics">
+            <li>Vanishing Gradient Problem</li>
+            <li>Gate Mechanisms</li>
+            <li>Memory Cells</li>
+            <li>Bidirectional LSTMs</li>
+          </ul>
+          <a href="lstm-primer/" class="module-btn">View Module</a>
         </div>
-        <p class="module-desc">Zero-to-hero guide to Long Short-Term Memory networks. Modular design with checkpoint quizzes for self-assessment.</p>
-        <ul class="module-topics">
-          <li>Vanishing Gradient Problem</li>
-          <li>Gate Mechanisms</li>
-          <li>Memory Cells</li>
-          <li>Bidirectional LSTMs</li>
-        </ul>
-        <a href="lstm-primer/" class="module-btn">View Module</a>
-      </div>
-    </div>
-
-    <!-- Featured Charts Gallery -->
-    <section class="gallery-section">
-      <h2>Featured Module Charts</h2>
-      <div class="chart-gallery">
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/summarization_module/figures/map_reduce_summarization_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="../charts/map_reduce_summarization_bsc.png" alt="Map-Reduce Summarization" loading="lazy">
-          <div class="chart-name">Summarization Types</div>
-        </a>
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/sentiment_analysis_module/figures/bert_sentiment_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="../charts/bert_architecture_bsc.png" alt="BERT Sentiment" loading="lazy">
-          <div class="chart-name">BERT for Sentiment</div>
-        </a>
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/embeddings/figures/word_arithmetic_3d_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="../charts/word_arithmetic_3d_bsc.png" alt="Word Arithmetic 3D" loading="lazy">
-          <div class="chart-name">Word Arithmetic</div>
-        </a>
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/lstm_primer/figures/lstm_gates_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="../charts/lstm_architecture_overview_bsc.png" alt="LSTM Gates" loading="lazy">
-          <div class="chart-name">LSTM Gates</div>
-        </a>
-        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/blob/main/NLP_slides/week02_neural_lm/figures/skipgram_architecture_bsc.pdf" class="chart-item" target="_blank" rel="noopener">
-          <img src="../charts/skipgram_architecture_bsc.png" alt="Skip-gram" loading="lazy">
-          <div class="chart-name">Skip-gram</div>
-        </a>
       </div>
     </section>
 
     <!-- Resources -->
     <section class="resources-section">
-      <h2>Related Resources</h2>
+      <h2 class="section-title">Related Resources</h2>
       <div class="resources-grid">
         <a href="../topics/" class="resource-card">
           <h3>Course Topics</h3>
           <p>12-week curriculum covering NLP foundations to applications.</p>
+        </a>
+        <a href="../charts/" class="resource-card">
+          <h3>Chart Gallery</h3>
+          <p>120+ professional visualizations with topic filtering.</p>
         </a>
         <a href="../moodle/" class="resource-card">
           <h3>Moodle HS25</h3>
@@ -250,50 +377,101 @@
     <p>2025 NLP Course | <a href="https://github.com/Digital-AI-Finance" target="_blank" rel="noopener">Digital AI Finance</a> | <a href="https://quantlet.com/" target="_blank" rel="noopener">QuantLet</a></p>
   </footer>
 
+  <!-- Lightbox Modal -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+    <img src="" alt="Enlarged chart">
+  </div>
+
   <!-- JavaScript -->
   <script>
-    // Dark mode toggle
-    const darkToggle = document.getElementById('dark-toggle');
-    const body = document.body;
-
-    if (localStorage.getItem('darkMode') === 'true' ||
-        (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      body.classList.add('dark');
-      darkToggle.textContent = 'Light Mode';
+    // Sidebar section toggle with persistence
+    function toggleSection(sectionId) {
+      const section = document.querySelector(`[data-section="${sectionId}"]`);
+      section.classList.toggle('collapsed');
+      saveCollapsedState();
     }
 
-    darkToggle.addEventListener('click', () => {
-      body.classList.toggle('dark');
-      const isDark = body.classList.contains('dark');
-      localStorage.setItem('darkMode', isDark);
-      darkToggle.textContent = isDark ? 'Light Mode' : 'Dark Mode';
-    });
+    function saveCollapsedState() {
+      const collapsed = {};
+      document.querySelectorAll('[data-section]').forEach(section => {
+        collapsed[section.dataset.section] = section.classList.contains('collapsed');
+      });
+      localStorage.setItem('sidebarCollapsed', JSON.stringify(collapsed));
+    }
 
-    // Topic search
-    const searchInput = document.getElementById('topic-search');
-    const sidebarSections = document.querySelectorAll('.sidebar-section');
-
-    searchInput.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase().trim();
-      sidebarSections.forEach(section => {
-        const items = section.querySelectorAll('.sidebar-nav a');
-        let hasMatch = false;
-        items.forEach(item => {
-          const text = item.textContent.toLowerCase();
-          const matches = query === '' || text.includes(query);
-          item.parentElement.style.display = matches ? '' : 'none';
-          if (matches) hasMatch = true;
+    function loadCollapsedState() {
+      const saved = localStorage.getItem('sidebarCollapsed');
+      if (saved) {
+        const collapsed = JSON.parse(saved);
+        Object.entries(collapsed).forEach(([sectionId, isCollapsed]) => {
+          const section = document.querySelector(`[data-section="${sectionId}"]`);
+          if (section && isCollapsed) {
+            section.classList.add('collapsed');
+          }
         });
-        if (query === '') {
-          section.style.display = '';
-        } else {
-          section.style.display = hasMatch ? '' : 'none';
-          if (hasMatch) section.open = true;
-        }
+      }
+    }
+
+    // Load saved state on page load
+    document.addEventListener('DOMContentLoaded', loadCollapsedState);
+
+    // Search functionality
+    const searchInput = document.getElementById('site-search');
+    searchInput.addEventListener('input', function() {
+      const query = this.value.toLowerCase().trim();
+      const navItems = document.querySelectorAll('.sidebar-nav li');
+      const sections = document.querySelectorAll('.sidebar-section');
+
+      if (query === '') {
+        navItems.forEach(item => item.style.display = '');
+        sections.forEach(section => section.style.display = '');
+        loadCollapsedState();
+        return;
+      }
+
+      sections.forEach(section => {
+        section.classList.remove('collapsed');
+        section.style.display = '';
+      });
+
+      navItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(query) ? '' : 'none';
+      });
+
+      sections.forEach(section => {
+        const visibleItems = section.querySelectorAll('.sidebar-nav li:not([style*="display: none"])');
+        section.style.display = visibleItems.length === 0 ? 'none' : '';
       });
     });
 
-    // Smooth scroll
+    // Lightbox functions
+    function openLightbox(imgSrc) {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.querySelector('img').src = imgSrc;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Close lightbox with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    // Smooth scroll for back to top
+    document.querySelector('.back-to-top').addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
@@ -303,194 +481,6 @@
         if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
-
-    // Back to top
-    document.querySelector('.back-to-top').addEventListener('click', (e) => {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
   </script>
-
-  <style>
-    /* Module-specific styles */
-    .modules-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
-      margin-bottom: 40px;
-    }
-    .module-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      transition: var(--transition);
-      box-shadow: var(--shadow);
-    }
-    .module-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--accent);
-    }
-    .module-header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .module-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, var(--accent), var(--primary));
-      color: white;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 20px;
-    }
-    .module-meta h3 {
-      font-size: 1.1rem;
-      color: var(--primary);
-      margin: 0 0 4px 0;
-    }
-    .slide-count {
-      font-size: 12px;
-      color: var(--accent);
-      background: rgba(37, 99, 235, 0.1);
-      padding: 2px 8px;
-      border-radius: 10px;
-    }
-    .module-desc {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      line-height: 1.6;
-    }
-    .module-topics {
-      list-style: none;
-      margin-bottom: 20px;
-    }
-    .module-topics li {
-      font-size: 12px;
-      color: var(--text);
-      padding: 6px 0;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .module-topics li:last-child {
-      border-bottom: none;
-    }
-    .module-topics li::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-    }
-    .module-btn {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--accent), var(--primary));
-      color: white;
-      padding: 10px 20px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 600;
-      transition: var(--transition);
-    }
-    .module-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow);
-    }
-    .top-nav-links a.active {
-      background: rgba(255,255,255,0.2);
-    }
-    .content {
-      padding: 40px;
-    }
-    .content h2 {
-      font-size: 1.5rem;
-      color: var(--primary);
-      margin-bottom: 24px;
-      padding-bottom: 8px;
-      border-bottom: 3px solid var(--accent);
-      display: inline-block;
-    }
-    .stats {
-      display: flex;
-      justify-content: center;
-      gap: 48px;
-      margin: 24px 0;
-    }
-    .stat-item {
-      text-align: center;
-    }
-    .stat-number {
-      display: block;
-      font-size: 2rem;
-      font-weight: 700;
-    }
-    .stat-label {
-      font-size: 12px;
-      opacity: 0.8;
-    }
-    .resources-section {
-      margin-top: 40px;
-    }
-    .resources-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-    }
-    .resource-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px;
-      text-decoration: none;
-      color: var(--text);
-      transition: var(--transition);
-      box-shadow: var(--shadow);
-    }
-    .resource-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--accent);
-    }
-    .resource-card h3 {
-      font-size: 1rem;
-      color: var(--primary);
-      margin: 0 0 8px 0;
-    }
-    .resource-card p {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin: 0;
-    }
-    .footer {
-      background: var(--primary);
-      color: white;
-      padding: 24px 40px;
-      text-align: center;
-    }
-    .footer a {
-      color: rgba(255,255,255,0.8);
-      text-decoration: none;
-    }
-    .footer a:hover {
-      color: white;
-    }
-    .back-to-top {
-      display: inline-block;
-      margin-bottom: 12px;
-      padding: 8px 16px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 4px;
-    }
-  </style>
 </body>
 </html>

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="About the NLP Course - Learn about the course structure, instructors, and learning objectives">
+  <meta property="og:title" content="About | NLP Course">
+  <meta property="og:description" content="BSc-level Natural Language Processing course covering N-grams to Transformers">
+  <meta property="og:image" content="https://digital-ai-finance.github.io/Natural-Language-Processing/charts/word_arithmetic_3d_bsc.png">
+  <link rel="icon" href="favicon.png" type="image/png">
+  <title>About | NLP Course</title>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    /* About page specific styles */
+    .about-hero {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+    }
+
+    .about-hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .about-hero .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .about-section {
+      padding: 3rem 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .about-section h2 {
+      color: var(--primary);
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .about-section p {
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    .learning-objectives {
+      list-style: none;
+      padding: 0;
+    }
+
+    .learning-objectives li {
+      padding: 0.75rem 0;
+      padding-left: 2rem;
+      position: relative;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .learning-objectives li:last-child {
+      border-bottom: none;
+    }
+
+    .learning-objectives li::before {
+      content: ">";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+
+    .tech-badge {
+      background: var(--primary);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+      margin: 2rem 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--accent);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 2rem;
+    }
+
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      top: 0.5rem;
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      transform: translateX(-5px);
+    }
+
+    .timeline-item h4 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-item p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .contact-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .dark .stat-card {
+      background: var(--bg-card);
+    }
+
+    .dark .contact-link {
+      background: var(--bg-card);
+      border-color: var(--border);
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" aria-label="Course navigation">
+    <div class="sidebar-header">
+      <img src="https://quantlet.com/images/QLogo_small.png" alt="QuantLet" class="sidebar-logo" onerror="this.style.display='none'">
+      <div class="sidebar-title"><a href="./">Natural Language Processing</a></div>
+      <div class="sidebar-subtitle">BSc Course - 12 Weeks</div>
+    </div>
+
+    <!-- Search -->
+    <div class="sidebar-search">
+      <input type="text" id="site-search" placeholder="Search topics..." aria-label="Search topics">
+    </div>
+
+    <div class="sidebar-content">
+      <!-- Foundations -->
+      <div class="sidebar-section" data-section="foundations">
+        <div class="section-header" onclick="toggleSection('foundations')">
+          <span>Foundations</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="topics/ngrams/">Week 1: N-grams</a></li>
+            <li><a href="topics/embeddings/">Week 2: Word2Vec</a></li>
+            <li><a href="topics/rnn-lstm/">Week 3: LSTM</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Core -->
+      <div class="sidebar-section" data-section="core">
+        <div class="section-header" onclick="toggleSection('core')">
+          <span>Core Architectures</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="topics/seq2seq/">Week 4: Seq2Seq</a></li>
+            <li><a href="topics/transformers/">Week 5: Transformers</a></li>
+            <li><a href="topics/pretrained/">Week 6: BERT</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Advanced -->
+      <div class="sidebar-section" data-section="advanced">
+        <div class="section-header" onclick="toggleSection('advanced')">
+          <span>Advanced Topics</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="topics/scaling/">Week 7: Scaling Laws</a></li>
+            <li><a href="topics/tokenization/">Week 8: Tokenization</a></li>
+            <li><a href="topics/decoding/">Week 9: Decoding</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Applications -->
+      <div class="sidebar-section" data-section="applications">
+        <div class="section-header" onclick="toggleSection('applications')">
+          <span>Applications</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="topics/finetuning/">Week 10: Fine-tuning</a></li>
+            <li><a href="topics/efficiency/">Week 11: Efficiency</a></li>
+            <li><a href="topics/ethics/">Week 12: Ethics</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Modules -->
+      <div class="sidebar-section" data-section="modules">
+        <div class="section-header" onclick="toggleSection('modules')">
+          <span>Deep-Dive Modules</span>
+          <div class="section-toggle"></div>
+        </div>
+        <div class="section-content">
+          <ul class="sidebar-nav">
+            <li><a href="modules/summarization/">Summarization</a></li>
+            <li><a href="modules/sentiment/">Sentiment Analysis</a></li>
+            <li><a href="modules/embeddings-extended/">Embeddings Deep Dive</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" target="_blank" rel="noopener">GitHub</a> |
+      <a href="moodle/">Moodle HS25</a>
+    </div>
+  </nav>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav" aria-label="Quick links">
+    <div class="top-nav-links">
+      <a href="./">Home</a>
+      <a href="topics/">Topics</a>
+      <a href="modules/">Modules</a>
+      <a href="charts/">Charts</a>
+      <a href="moodle/">Moodle</a>
+    </div>
+    <div class="top-nav-actions">
+      <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/releases" class="download-btn" target="_blank" rel="noopener">Download PDFs</a>
+    </div>
+  </nav>
+
+  <!-- About Hero -->
+  <header class="about-hero">
+    <h1>About This Course</h1>
+    <p class="subtitle">A comprehensive BSc-level journey through Natural Language Processing, from classical statistical methods to state-of-the-art transformer architectures.</p>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <!-- Course Overview -->
+    <section class="about-section">
+      <h2>Course Overview</h2>
+      <p>
+        This Natural Language Processing course provides a rigorous introduction to the field, designed for undergraduate students in computer science, data science, and related disciplines. The curriculum bridges the gap between classical statistical language models and modern deep learning approaches.
+      </p>
+      <p>
+        Through 12 weeks of structured content, students progress from understanding basic n-gram models to implementing transformer-based architectures like BERT. Each week combines theoretical foundations with hands-on practical exercises.
+      </p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-number">12</span>
+          <div class="stat-label">Weeks</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">500+</span>
+          <div class="stat-label">Slides</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">250+</span>
+          <div class="stat-label">Charts</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">26+</span>
+          <div class="stat-label">Notebooks</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learning Objectives -->
+    <section class="about-section">
+      <h2>Learning Objectives</h2>
+      <p>By the end of this course, students will be able to:</p>
+      <ul class="learning-objectives">
+        <li>Explain and implement statistical language models including n-grams with various smoothing techniques</li>
+        <li>Understand word embedding methods (Word2Vec, GloVe) and their mathematical foundations</li>
+        <li>Design and train recurrent neural networks (RNNs) and LSTMs for sequence modeling</li>
+        <li>Implement attention mechanisms and understand the transformer architecture</li>
+        <li>Fine-tune pre-trained language models (BERT, GPT) for downstream NLP tasks</li>
+        <li>Apply efficient training techniques including LoRA, quantization, and knowledge distillation</li>
+        <li>Evaluate NLP systems using appropriate metrics and identify potential biases</li>
+        <li>Make informed decisions about model selection based on scaling laws and compute budgets</li>
+      </ul>
+    </section>
+
+    <!-- Course Structure -->
+    <section class="about-section">
+      <h2>Course Structure</h2>
+      <p>The course is organized into four progressive parts:</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4>Part 1: Foundations (Weeks 1-3)</h4>
+          <p>Statistical language models, word embeddings, and recurrent neural networks. Building intuition through hands-on experiments with n-grams, Word2Vec, and LSTM architectures.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Part 2: Core Architectures (Weeks 4-6)</h4>
+          <p>Sequence-to-sequence models, attention mechanisms, and the transformer architecture. Deep dive into BERT and pre-training paradigms.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Part 3: Advanced Topics (Weeks 7-9)</h4>
+          <p>Scaling laws, tokenization strategies (BPE, WordPiece), and text generation methods including beam search and nucleus sampling.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Part 4: Applications (Weeks 10-12)</h4>
+          <p>Parameter-efficient fine-tuning with LoRA, model compression techniques, and responsible AI development including bias detection and mitigation.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section class="about-section">
+      <h2>Technology Stack</h2>
+      <p>This course uses industry-standard tools and frameworks:</p>
+      <div class="tech-stack">
+        <span class="tech-badge">Python 3.8+</span>
+        <span class="tech-badge">PyTorch</span>
+        <span class="tech-badge">Hugging Face Transformers</span>
+        <span class="tech-badge">Jupyter Notebooks</span>
+        <span class="tech-badge">NumPy</span>
+        <span class="tech-badge">Matplotlib</span>
+        <span class="tech-badge">scikit-learn</span>
+        <span class="tech-badge">NLTK</span>
+      </div>
+    </section>
+
+    <!-- Prerequisites -->
+    <section class="about-section">
+      <h2>Prerequisites</h2>
+      <p>Students should have:</p>
+      <ul class="learning-objectives">
+        <li>Proficiency in Python programming</li>
+        <li>Understanding of basic linear algebra (vectors, matrices, operations)</li>
+        <li>Familiarity with probability and statistics fundamentals</li>
+        <li>Introduction to machine learning concepts (supervised learning, gradient descent)</li>
+      </ul>
+      <p>For students needing a refresher, the course includes optional primer modules on neural networks and LSTM fundamentals.</p>
+    </section>
+
+    <!-- Resources -->
+    <section class="about-section">
+      <h2>Resources &amp; Links</h2>
+      <p>Access course materials and connect with the project:</p>
+      <div class="contact-links">
+        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing" class="contact-link" target="_blank" rel="noopener">
+          GitHub Repository
+        </a>
+        <a href="https://github.com/Digital-AI-Finance/Natural-Language-Processing/releases" class="contact-link" target="_blank" rel="noopener">
+          Download Materials
+        </a>
+        <a href="moodle/" class="contact-link">
+          Moodle HS25
+        </a>
+        <a href="https://quantlet.com/" class="contact-link" target="_blank" rel="noopener">
+          QuantLet
+        </a>
+      </div>
+    </section>
+
+    <!-- Attribution -->
+    <section class="about-section">
+      <h2>Attribution</h2>
+      <p>
+        This course is developed by <a href="https://github.com/Digital-AI-Finance" target="_blank" rel="noopener">Digital AI Finance</a>
+        in collaboration with <a href="https://quantlet.com/" target="_blank" rel="noopener">QuantLet</a>.
+      </p>
+      <p>
+        All course materials including slides, notebooks, and visualizations are available under open-source licenses.
+        See the GitHub repository for specific licensing information.
+      </p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <a href="#" class="back-to-top">Back to Top</a>
+    <p>2025 NLP Course | <a href="https://github.com/Digital-AI-Finance" target="_blank" rel="noopener">Digital AI Finance</a> | <a href="https://quantlet.com/" target="_blank" rel="noopener">QuantLet</a></p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // Sidebar section toggle with persistence
+    function toggleSection(sectionId) {
+      const section = document.querySelector(`[data-section="${sectionId}"]`);
+      section.classList.toggle('collapsed');
+      saveCollapsedState();
+    }
+
+    function saveCollapsedState() {
+      const collapsed = {};
+      document.querySelectorAll('[data-section]').forEach(section => {
+        collapsed[section.dataset.section] = section.classList.contains('collapsed');
+      });
+      localStorage.setItem('sidebarCollapsed', JSON.stringify(collapsed));
+    }
+
+    function loadCollapsedState() {
+      const saved = localStorage.getItem('sidebarCollapsed');
+      if (saved) {
+        const collapsed = JSON.parse(saved);
+        Object.entries(collapsed).forEach(([sectionId, isCollapsed]) => {
+          const section = document.querySelector(`[data-section="${sectionId}"]`);
+          if (section && isCollapsed) {
+            section.classList.add('collapsed');
+          }
+        });
+      }
+    }
+
+    // Load saved state on page load
+    document.addEventListener('DOMContentLoaded', loadCollapsedState);
+
+    // Search functionality
+    const searchInput = document.getElementById('site-search');
+    searchInput.addEventListener('input', function() {
+      const query = this.value.toLowerCase().trim();
+      const navItems = document.querySelectorAll('.sidebar-nav li');
+      const sections = document.querySelectorAll('.sidebar-section');
+
+      if (query === '') {
+        navItems.forEach(item => item.style.display = '');
+        sections.forEach(section => section.style.display = '');
+        loadCollapsedState();
+        return;
+      }
+
+      sections.forEach(section => {
+        section.classList.remove('collapsed');
+        section.style.display = '';
+      });
+
+      navItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(query) ? '' : 'none';
+      });
+
+      sections.forEach(section => {
+        const visibleItems = section.querySelectorAll('.sidebar-nav li:not([style*="display: none"])');
+        section.style.display = visibleItems.length === 0 ? 'none' : '';
+      });
+    });
+
+    // Smooth scroll for back to top
+    document.querySelector('.back-to-top').addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
